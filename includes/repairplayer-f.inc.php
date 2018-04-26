@@ -45,7 +45,7 @@ else {
 		$Eq_D = explode('<!>',$Player['eqwep']);
 		$Eq_E = explode('<!>',$Player['p_equip']);
 		$SQL = ("SELECT `spec` FROM `".$GLOBALS['DBPrefix']."phpeb_sys_wep` WHERE id = '". $Eq_D[0] ."' || id = '". $Eq_E[0] ."' Limit 2;");
-		$Query = mysql_query($SQL) or die ('<hr>MySQL ¸ê®Æ®w¦s¨ú¿ù»~, ½ĞÁpµ¸GM, ¿ù»~¥N¸¹ RPF-000<br>');
+		$Query = mysql_query($SQL) or die ('<hr>MySQL è³‡æ–™åº«å­˜å–éŒ¯èª¤, è«‹è¯çµ¡GM, éŒ¯èª¤ä»£è™Ÿ RPF-000<br>');
 		$Eq['D'] = mysql_fetch_array($Query);
 		if(mysql_num_rows($Query) == 2) $Eq['E'] = mysql_fetch_array($Query);
 		else $Eq['E'] = $Eq['D'];
@@ -76,9 +76,9 @@ else {
 	if($Update && $Time_Difference >= 3){
 		if($Var["hp"] != $Player['hp'] || $Var["en"] != $Player['en'] || $Var["sp"] != $Player['sp'] || $Var["status"] != $Player['status']){
 			$SQL = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `hp` = '".$Var['hp']."', `en` = '".$Var['en']."' ,`sp` = '".$Var['sp']."', `status` = '".$Var['status']."' WHERE `username` = '".$Player['name']."' LIMIT 1;");
-			mysql_query($SQL) or die ('<hr>MySQL ¸ê®Æ®w§ó·s¿ù»~, ½ĞÁpµ¸GM, ¿ù»~¥N¸¹ RPF-001<br>');
+			mysql_query($SQL) or die ('<hr>MySQL è³‡æ–™åº«æ›´æ–°éŒ¯èª¤, è«‹è¯çµ¡GM, éŒ¯èª¤ä»£è™Ÿ RPF-001<br>');
 			$SQL = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `time1` = '".$Use_Time."' WHERE `username` = '".$Player['name']."' LIMIT 1;");
-			mysql_query($SQL) or die ('<hr>MySQL ¸ê®Æ®w§ó·s¿ù»~, ½ĞÁpµ¸GM, ¿ù»~¥N¸¹ RPF-002<br>');
+			mysql_query($SQL) or die ('<hr>MySQL è³‡æ–™åº«æ›´æ–°éŒ¯èª¤, è«‹è¯çµ¡GM, éŒ¯èª¤ä»£è™Ÿ RPF-002<br>');
 		}
 	}
 

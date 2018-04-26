@@ -3,22 +3,51 @@ $mode = ( isset($_GET['action']) ) ? $_GET['action'] : $_POST['action'];
 $IncludeLFFI = false;
 include('cfu.php');
 include('includes/repairplayer-f.inc.php');
+include('includes/lf-fi.inc.php');
 if (empty($PriTarget)) $PriTarget = 'Alpha';
 if (empty($SecTarget)) $SecTarget = 'Beta';
 if (!isset($Game_Scrn_Type)) $Game_Scrn_Type = 1;
 $additionalHeader = '<link href="images/alphaChannel.css" rel="stylesheet" type="text/css" />';
 postHead('','phpeb_session_dir',$additionalHeader);
-AuthUser("$Pl_Value[USERNAME]","$Pl_Value[PASSWORD]");
-if ($CFU_Time >= $TIMEAUTH+$TIME_OUT_TIME || $TIMEAUTH <= $CFU_Time-$TIME_OUT_TIME){echo "³s½u¹O®É¡I<br>½Ğ­«·sµn¤J¡I";exit;}
+AuthUser();
+GetUsrDetails("$_SESSION[username]",'Gen','Game');
+if ($CFU_Time >= $_SESSION['timeauth']+$TIME_OUT_TIME || $_SESSION['timeauth'] <= $CFU_Time-$TIME_OUT_TIME){echo "é€£ç·šé€¾æ™‚ï¼<br>è«‹é‡æ–°ç™»å…¥ï¼";exit;}
 mt_srand ((double) microtime()*1000000);
+
+$War_State = false;
+
+function checkWartime($Coord){
+	global $CFU_Time,$Otp_TellTime;
+	$Otp_Area_Sql = ("SELECT `t_start`,`t_end` FROM `".$GLOBALS['DBPrefix']."phpeb_user_war` WHERE `mission` = 'Atk<$Coord>' AND `t_end` > '$CFU_Time' ORDER BY `t_start` ASC LIMIT 1");
+	$Otp_Area_Q = mysql_query($Otp_Area_Sql) or die(mysql_error());
+	$Otp_A_ITar = mysql_fetch_array($Otp_Area_Q);
+	if ($Otp_A_ITar){
+		if ($Otp_A_ITar['t_start'] >= $CFU_Time){
+		$TimeTSSec = $Otp_A_ITar['t_start'] - $CFU_Time;
+		$TimetS['hours'] = floor($TimeTSSec/3600);
+		$TimetS['minutes'] = floor(($TimeTSSec - ($TimetS['hours']*3600))/60);
+		$TimetS['seconds'] = floor($TimeTSSec - ($TimetS['hours']*3600) - ($TimetS['minutes']*60));
+		$Otp_TellTime = "é‚„æœ‰$TimetS[hours]å°æ™‚$TimetS[minutes]åˆ†é˜$TimetS[seconds]ç§’é–‹å§‹æˆ°çˆ­ã€‚";
+		}
+		else{
+		$TimeTSSec = $Otp_A_ITar['t_end'] - $CFU_Time;
+		$TimetS['hours'] = floor($TimeTSSec/3600);
+		$TimetS['minutes'] = floor(($TimeTSSec - ($TimetS['hours']*3600))/60);
+		$TimetS['seconds'] = floor($TimeTSSec - ($TimetS['hours']*3600) - ($TimetS['minutes']*60));
+		$Otp_TellTime = "é‚„æœ‰$TimetS[hours]å°æ™‚$TimetS[minutes]åˆ†é˜$TimetS[seconds]ç§’æˆ°çˆ­å®£å‘Šçµ‚äº†1ã€‚";
+		return true;
+		}
+	}
+	return false;
+}
 
 include('includes/sfo.class.php');
 
 $Pl = new player_stats;
-$Pl->SetUser($Pl_Value['USERNAME']);
+$Pl->SetUser($_SESSION['username']);
 $Pl->FetchPlayer(true,true);
 
-if (($CFU_Time - $Pl->Player['btltime']) < $Move_Intv){echo "¶ZÂ÷¤W¦¸§ğÀ»©Î²¾°Êªº®É¶¡¤Óµu¤F¡I<br>½Ğ¦b ".($Move_Intv-($CFU_Time - $Pl->Player['btltime']))." ¬í«á¦A²¾°Ê¡I";exit;}
+if (($CFU_Time - $Pl->Player['btltime']) < $Move_Intv){echo "è·é›¢ä¸Šæ¬¡æ”»æ“Šæˆ–ç§»å‹•çš„æ™‚é–“å¤ªçŸ­äº†ï¼<br>è«‹åœ¨ ".($Move_Intv-($CFU_Time - $Pl->Player['btltime']))." ç§’å¾Œå†ç§»å‹•ï¼";exit;}
 
 if ($Pl->Player['msuit']){
 	$Pl->ProcessAllWeapon();
@@ -28,8 +57,9 @@ if ($Pl->Player['msuit']){
 	$Pl->Player['sp'] = $Pl_Repaired['sp'];
 	$Pl->Player['status'] = $Pl_Repaired['status'];
 	$t_now = $Pl->Player['time1'] = $Pl_Repaired['time1'];
-	if ($Pl->Player['status']){echo "­×²z¤¤¡AµLªk²¾°Ê¡C";postFooter();exit;}
-}else {echo "<center>§A¨S¦³¾÷Åé¡A¤£¯à²¾°Ê¡C";postFooter();exit;}
+	if ($Pl->Player['status']){echo "ä¿®ç†ä¸­ï¼Œç„¡æ³•ç§»å‹•ã€‚";postFooter();exit;}
+}else {echo "<center>ä½ æ²’æœ‰æ©Ÿé«”ï¼Œä¸èƒ½ç§»å‹•ã€‚";postFooter();exit;}
+
 
 
 //$AreaLandForm = ReturnMType($Area["Sys"]["type"]);
@@ -38,6 +68,14 @@ if ($Pl->Player['organization'])
 $Pl_Org = ReturnOrg($Pl->Player['organization']);
 //Special Commands GUI
 if ($mode=='Move' && $actionb == 'A'){
+	
+	$War_State = checkWartime($Gen['coordinates']);
+
+	if($War_State){
+		echo "<center>è™•æ–¼æˆ°çˆ­ç‹€æ…‹ï¼Œåœ°åœ–ç§»å‹•åŠŸèƒ½é—œé–‰ï¼</center>";
+		postFooter();
+		exit;
+	}
 
 	echo "<style type=\"text/css\">.pointHand{cursor: pointer}</style>";
 	echo "<script language=\"JavaScript\">";
@@ -86,21 +124,21 @@ if ($mode=='Move' && $actionb == 'A'){
 	echo "}";
 	echo "</script>";
 
-	echo "<font style=\"font-size: 12pt\">²¾°Ê</font>";
+	echo "<font style=\"font-size: 12pt\">ç§»å‹•</font>";
 	printTHR();
 
 	echo "<form action=map.php?action=Move method=post name=mainform>";
 	echo "<input type=hidden value='Process' name=actionb>";
 	echo "<input type=hidden name=destination value=''>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	
 	
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt; border-color: #FFFFFF\">";
-	echo "<tr><td align=left width=250><b style=\"font-size: 10pt;\">±q {$Pl->Player[coordinates]} ²¾°Êªº¥i¯à©Ê: </b></td></tr>";
+	echo "<tr><td align=left width=250><b style=\"font-size: 10pt;\">å¾ {$Pl->Player[coordinates]} ç§»å‹•çš„å¯èƒ½æ€§: </b></td></tr>";
 	echo "<tr><td align=center>";
-	echo "<div align=left><b>¥@¬É¦a¹Ï:</b></div>";
+	echo "<div align=left><b>ä¸–ç•Œåœ°åœ–:</b></div>";
 
 
 
@@ -159,16 +197,16 @@ if ($mode=='Move' && $actionb == 'A'){
 				foreach($i_r as $i_c => $a_id){
 					$MType = ReturnMType($A_Inf[$a_id]['Sys']['type']);
 					echo "<span id=MapDiscription_".$a_id." style=\"visibility: hidden; position: absolute;\">";
-					echo $A_Inf[$a_id]['User']['aname']." ($MType)<br>&nbsp;&nbsp;&nbsp;­x¤O: ".$A_Inf[$a_id]['User']['tickets'];
-					echo "<br>&nbsp;&nbsp;&nbsp;©ÒÄİ°ê: ".$O_Inf[$a_id]['name'];
-					echo "<br>&nbsp;&nbsp;&nbsp;°Ï°ì¤H¼Æ: ".$PlayerCount[$a_id];
+					echo $A_Inf[$a_id]['User']['aname']." ($MType)<br>&nbsp;&nbsp;&nbsp;è»åŠ›: ".$A_Inf[$a_id]['User']['tickets'];
+					echo "<br>&nbsp;&nbsp;&nbsp;æ‰€å±¬åœ‹: ".$O_Inf[$a_id]['name'];
+					echo "<br>&nbsp;&nbsp;&nbsp;å€åŸŸäººæ•¸: ".$PlayerCount[$a_id];
 					echo "</span>";
 					$cursor = 'default';
 					$dis = 'return false;';
 					$border = '';
 					$label = "<span style='background: black; width: 30px'>$a_id</span>";
 					if(strpos($Pl->Area['Sys']['movement'],$A_Inf[$a_id]['Sys']['area']) !== false || ($Pl->Area['Sys']['area'] == $A_Inf[$a_id]['Sys']['area'] && $Pl->Player['coordinates'] != $a_id)){
-						$dis = "mainform.destination.value='$a_id';mainform.moveBtn.disabled=false;mainform.moveBtn.value='²¾°Ê©¹$a_id';";
+						$dis = "mainform.destination.value='$a_id';mainform.moveBtn.disabled=false;mainform.moveBtn.value='ç§»å‹•å¾€$a_id';";
 						$cursor = 'pointer';
 					}
 					elseif($a_id == $Pl->Player['coordinates']) $border = 'border: 2px solid white;';
@@ -185,35 +223,46 @@ if ($mode=='Move' && $actionb == 'A'){
 		echo "</table>";
 
 	echo "</td></tr></table>";
-	echo "<hr width=80%><input type=submit value=(½Ğ¥ªÀ»¦a¹Ï¬D¿ï¥Øªº¦a) name=moveBtn disabled $BStyleB style=\"$BStyleA\"><br>";
-	echo "Åã¥Ü°ê®aÃC¦â: <span onClick=\"document.getElementById('rdo0').click()\" class='pointHand'><input type='radio' name='mapCColor' value='0' onClick='modifyMap(0)' checked id=rdo0>¥b³z©ú</span> ";
-	echo "<span onClick=\"document.getElementById('rdo1').click()\" class='pointHand'><input type='radio' name='mapCColor' value='1' onClick='modifyMap(1)' id=rdo1>¤£³z©ú</span> ";
-	echo "<span onClick=\"document.getElementById('rdo2').click()\" class='pointHand'><input type='radio' name='mapCColor' value='2' onClick='modifyMap(2)' id=rdo2>¤£Åã¥Ü</span> ";
+	echo "<hr width=80%><input type=submit value=(è«‹å·¦æ“Šåœ°åœ–æŒ‘é¸ç›®çš„åœ°) name=moveBtn disabled $BStyleB style=\"$BStyleA\"><br>";
+	echo "é¡¯ç¤ºåœ‹å®¶é¡è‰²: <span onClick=\"document.getElementById('rdo0').click()\" class='pointHand'><input type='radio' name='mapCColor' value='0' onClick='modifyMap(0)' checked id=rdo0>åŠé€æ˜</span> ";
+	echo "<span onClick=\"document.getElementById('rdo1').click()\" class='pointHand'><input type='radio' name='mapCColor' value='1' onClick='modifyMap(1)' id=rdo1>ä¸é€æ˜</span> ";
+	echo "<span onClick=\"document.getElementById('rdo2').click()\" class='pointHand'><input type='radio' name='mapCColor' value='2' onClick='modifyMap(2)' id=rdo2>ä¸é¡¯ç¤º</span> ";
 	echo "</td></tr></form></table>";
 	// Map Information Div
 	echo "<div id=mapinfo style=\"position:absolute; z-index:3;color: black;\" align=left></div>";
 
 }
 elseif ($mode=='Move' && $actionb == 'Process'){
+	
+	$War_State = checkWartime($Gen['coordinates']);
+
+	if($War_State){
+		echo "<center>è™•æ–¼æˆ°çˆ­ç‹€æ…‹ï¼Œåœ°åœ–ç§»å‹•åŠŸèƒ½é—œé–‰ï¼</center>";
+		postFooter();
+		exit;
+	}
+	
+	if (($CFU_Time - $Pl->Player['btltime']) < $Move_Intv){echo "è·é›¢ä¸Šæ¬¡æ”»æ“Šæˆ–ç§»å‹•çš„æ™‚é–“å¤ªçŸ­äº†ï¼<br>è«‹åœ¨ ".($Move_Intv-($CFU_Time - $Pl->Player['btltime']))." ç§’å¾Œå†ç§»å‹•ï¼";exit;}
+	if ($Pl->Player['status']){echo "ä¿®ç†ä¸­ï¼Œç„¡æ³•ç§»å‹•ã€‚";postFooter();exit;}
 
 $Area = ReturnMap($Pl->Player['coordinates']);
 $dest = substr($destination,0,2);
 //$Area_Org = ReturnOrg($Area["User"]["occupied"]);
-if (!$destination){echo "¿ù»~¡I½Ğ¥ı«ü©w­n²¾°Ê¨ìªº¥Øªº¦a¡C";postFooter();exit;}
-if(strpos($Area["Sys"]["movement"],$dest) === false && $Area['Sys']['area'] != $dest){echo "¿ù»~¡I";postFooter();exit;}
+if (!$destination){echo "éŒ¯èª¤ï¼è«‹å…ˆæŒ‡å®šè¦ç§»å‹•åˆ°çš„ç›®çš„åœ°ã€‚";postFooter();exit;}
+if(strpos($Area["Sys"]["movement"],$dest) === false && $Area['Sys']['area'] != $dest){echo "éŒ¯èª¤ï¼";postFooter();exit;}
 
 	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `coordinates` = '$destination',`btltime` = '$CFU_Time' WHERE `username` = '".$Pl->Player['name']."' LIMIT 1");
-	$query = mysql_query($sql) or die ('µLªk¨ú±o²ÕÂ´¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+	$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—çµ„ç¹”è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 
 	echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-	echo "<p align=center style=\"font-size: 16pt\">²¾°Ê§¹¦¨¤F¡I<input type=submit value=\"ªğ¦^\" onClick=\"parent.SecTarget.location.replace('gen_info.php')\"></p>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	echo "<p align=center style=\"font-size: 16pt\">ç§»å‹•å®Œæˆäº†ï¼<input type=submit value=\"è¿”å›\" onClick=\"parent.SecTarget.location.replace('gen_info.php')\"></p>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 
 }
-else {echo "¥¼©w¸q°Ê§@¡I";}
+else {echo "æœªå®šç¾©å‹•ä½œï¼";}
 postFooter();
 echo "</body>";
 echo "</html>";

@@ -27,7 +27,7 @@ if(!$mode || $mode == 'login'){
 	<head>
 		<title>AJAX Chat</title>
 		<meta http-equiv="Pragma" content="no-cache" />
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<link href="chatStyle.css" rel="stylesheet" type="text/css" />
 <?php 
 	if(!$mode){

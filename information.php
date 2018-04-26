@@ -4,12 +4,12 @@ $InfSbAct = (isset($InfSbAct)) ? $InfSbAct : false;
 include('cfu.php');
 $additionalHeader = '<link href="images/alphaChannel.css" rel="stylesheet" type="text/css" />';
 postHead('','phpeb_session_dir',$additionalHeader);
-AuthUser("$Pl_Value[USERNAME]","$Pl_Value[PASSWORD]");
-if ($CFU_Time >= $TIMEAUTH+$TIME_OUT_TIME || $TIMEAUTH <= $CFU_Time-$TIME_OUT_TIME){echo "³s½u¹O®É¡I<br>½Ğ­«·sµn¤J¡I";exit;}
+AuthUser();
+if ($CFU_Time >= $_SESSION['timeauth']+$TIME_OUT_TIME || $_SESSION['timeauth'] <= $CFU_Time-$TIME_OUT_TIME){echo "é€£ç·šé€¾æ™‚ï¼<br>è«‹é‡æ–°ç™»å…¥ï¼";exit;}
 
 include('includes/sfo.class.php');
 $Pl = new player_stats;
-$Pl->SetUser($Pl_Value['USERNAME']);
+$Pl->SetUser($_SESSION['username']);
 $Pl->FetchPlayer(true,true);
 
 //Adjust to user's setting
@@ -97,8 +97,8 @@ if ($mode == 'Main'){
 
 echo "<style type=\"text/css\">.pointHand{cursor: pointer}</style>";
 echo "<form action=information.php method=post name=infoForm>";
-echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+
+
 echo "<input type=hidden value='Main' name=action>";
 echo "<input type=hidden value='false' name=ByID>";
 echo "<input type=hidden value='A1N' name=searchArea>";
@@ -124,13 +124,13 @@ echo "</script>";
 echo "<table width=100% height=90%><tr><td align=center>";
 
 echo "<table cellspacing=2 cellpadding=3>";
-echo "<tr><td colspan=3 align=center style='font-size: 12pt;'><b>±¡³ø</b><br>".sprintTHR()."</td></tr>";
-echo "<tr align=center><td colspan=3><b>¦a°Ï±¡³ø</b></td></tr>";
+echo "<tr><td colspan=3 align=center style='font-size: 12pt;'><b>æƒ…å ±</b><br>".sprintTHR()."</td></tr>";
+echo "<tr align=center><td colspan=3><b>åœ°å€æƒ…å ±</b></td></tr>";
 
 echo "<tr align=center><td colspan=2>";
-echo "Åã¥Ü°ê®aÃC¦â: <span onClick=\"document.getElementById('rdo0').click()\" class='pointHand'><input type='radio' name='mapCColor' value='0' onClick='modifyMap(0)' id=rdo0>¥b³z©ú</span> ";
-echo "<span onClick=\"document.getElementById('rdo1').click()\" class='pointHand'><input type='radio' name='mapCColor' value='1' onClick='modifyMap(1)' id=rdo1>¤£³z©ú</span> ";
-echo "<span onClick=\"document.getElementById('rdo2').click()\" class='pointHand'><input type='radio' name='mapCColor' value='2' onClick='modifyMap(2)' checked id=rdo2>¤£Åã¥Ü</span> ";
+echo "é¡¯ç¤ºåœ‹å®¶é¡è‰²: <span onClick=\"document.getElementById('rdo0').click()\" class='pointHand'><input type='radio' name='mapCColor' value='0' onClick='modifyMap(0)' id=rdo0>åŠé€æ˜</span> ";
+echo "<span onClick=\"document.getElementById('rdo1').click()\" class='pointHand'><input type='radio' name='mapCColor' value='1' onClick='modifyMap(1)' id=rdo1>ä¸é€æ˜</span> ";
+echo "<span onClick=\"document.getElementById('rdo2').click()\" class='pointHand'><input type='radio' name='mapCColor' value='2' onClick='modifyMap(2)' checked id=rdo2>ä¸é¡¯ç¤º</span> ";
 echo "</td><td>&nbsp;</td></tr>";
 
 echo "<tr align=center valign=center><td colspan=2>";
@@ -167,9 +167,9 @@ echo "<tr align=center valign=center><td colspan=2>";
 			foreach($i_r as $i_c => $a_id){
 				$parentArea = substr($a_id,0,2);
 				echo "<span id=MapDiscription_".$a_id." style=\"visibility: hidden; position: absolute;\">";
-				echo "$a_id (".ReturnMType($A_Inf[$a_id]['Sys']['type']).")<br>".$A_Inf[$a_id]['User']['aname']."<br>&nbsp;&nbsp;&nbsp;­x¤O: ".$A_Inf[$a_id]['User']['tickets'];
-				echo "<br>&nbsp;&nbsp;&nbsp;©ÒÄİ°ê: ".$O_Inf[$a_id]['name'];
-				echo "<br>&nbsp;&nbsp;&nbsp;°Ï°ì¤H¼Æ: ".$PlayerCount[$a_id];
+				echo "$a_id (".ReturnMType($A_Inf[$a_id]['Sys']['type']).")<br>".$A_Inf[$a_id]['User']['aname']."<br>&nbsp;&nbsp;&nbsp;è»åŠ›: ".$A_Inf[$a_id]['User']['tickets'];
+				echo "<br>&nbsp;&nbsp;&nbsp;æ‰€å±¬åœ‹: ".$O_Inf[$a_id]['name'];
+				echo "<br>&nbsp;&nbsp;&nbsp;å€åŸŸäººæ•¸: ".$PlayerCount[$a_id];
 				echo "</span>";
 				
 				if(isset($PlayerCount[$parentArea])) $PlayerCount[$parentArea] += $PlayerCount[$a_id];
@@ -187,37 +187,37 @@ echo "<tr align=center valign=center><td colspan=2>";
 
 echo "</table></td>";
 
-echo "<td valign=top align=left>¤j°Ï±¡³ø:<br>";
+echo "<td valign=top align=left>å¤§å€æƒ…å ±:<br>";
 
 foreach($P_Areas as $P_Area){
 	echo "<div style=\"width: 100%; margin: 0px; padding-left: 5px; cursor: pointer;\" onclick=\"getPlayerListByPArea('$P_Area');\"; ";
 	echo " onmouseover=\"this.style.color='yellow';\" onmouseout=\"this.style.color='white';\">";
-	echo "$P_Area: $PlayerCount[$P_Area]¤H</div>";
+	echo "$P_Area: $PlayerCount[$P_Area]äºº</div>";
 }
 
 echo "</td></tr>";
 
-echo "<tr align=center><td>²ÕÂ´±¡³ø</td><td>ª±®a±¡³ø</td><td>¾ú¥v</td></tr>";
+echo "<tr align=center><td>çµ„ç¹”æƒ…å ±</td><td>ç©å®¶æƒ…å ±</td><td>æ­·å²</td></tr>";
 
 echo "<tr><td align=center>";
 
 	// Organization Info
-	echo "<input type=text name=searchOrg value='<<¿é¤J²ÕÂ´¦WºÙ>>' $textboxStyle onClick=\"this.value='';orgSearchBtn.disabled=false;\"> ";
-	echo "<input type=button name=orgSearchBtn value='·j´M' onClick=\"sendAction('searchOrg');\" $textboxStyle disabled>";
-	echo "<br><input type=button value='²ÕÂ´¦Cªí' onClick=\"sendAction('listOrg');\" $textboxStyle>";
+	echo "<input type=text name=searchOrg value='<<è¼¸å…¥çµ„ç¹”åç¨±>>' $textboxStyle onClick=\"this.value='';orgSearchBtn.disabled=false;\"> ";
+	echo "<input type=button name=orgSearchBtn value='æœå°‹' onClick=\"sendAction('searchOrg');\" $textboxStyle disabled>";
+	echo "<br><input type=button value='çµ„ç¹”åˆ—è¡¨' onClick=\"sendAction('listOrg');\" $textboxStyle>";
 	
 
 echo "</td><td align=center>";
 
 	// Player Info
-	echo "<input type=text name=searchPlayer value='<<¿é¤Jª±®a¦WºÙ>>' $textboxStyle onClick=\"this.value='';plSearchBtn.disabled=false;\"> ";
-	echo "<input type=button name=plSearchBtn value='·j´M' onClick=\"sendAction('searchPlayer');\" $textboxStyle disabled>";
-	echo "<br><input type=button value='½u¤Wª±®a' $textboxStyle onClick=\"sendAction('onlinePlayers');\">";
+	echo "<input type=text name=searchPlayer value='<<è¼¸å…¥ç©å®¶åç¨±>>' $textboxStyle onClick=\"this.value='';plSearchBtn.disabled=false;\"> ";
+	echo "<input type=button name=plSearchBtn value='æœå°‹' onClick=\"sendAction('searchPlayer');\" $textboxStyle disabled>";
+	echo "<br><input type=button value='ç·šä¸Šç©å®¶' $textboxStyle onClick=\"sendAction('onlinePlayers');\">";
 
 echo "</td><td align=center>";
 
 	// History Info
-	echo "<input type=button value='¬d¸ß¾ú¥v' onClick=\"sendAction('History');\" $textboxStyle>";
+	echo "<input type=button value='æŸ¥è©¢æ­·å²' onClick=\"sendAction('History');\" $textboxStyle>";
 
 
 echo "</td></tr>";
@@ -253,20 +253,20 @@ elseif($mode == 'searchPlayer'){
 	
 	if($result['count'] != 1){
 		echo "<form action=information.php method=post name=infoForm>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		
+		
 		echo "<input type=hidden value='listPlayers' name=action>";
 		echo "<input type=hidden name=search value='$searchPlayer'>";
 		echo "<input type=hidden name=listMethod value='search'>";
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 		if($ByID == 'true'){
-			echo "<p align=center style=\"font-size: 12pt; color: white;\"><Br><br><br>§ä¤£¨ì¥Ø¼Ğª±®a, ¦^¨ì±¡³ø­º­¶¤¤¡I</p>";
+			echo "<p align=center style=\"font-size: 12pt; color: white;\"><Br><br><br>æ‰¾ä¸åˆ°ç›®æ¨™ç©å®¶, å›åˆ°æƒ…å ±é¦–é ä¸­ï¼</p>";
 			echo "<script language=\"JavaScript\">";
 			echo "setTimeout(\"infoForm.action.value='Main';infoForm.submit();\",1000);";
 			echo "</script>";
 		}
 		else{
-			echo "<p align=center style=\"font-size: 12pt; color: white;\"><Br><br><br>§ä¤£¨ì¥Ø¼Ğª±®a¡u".$searchPlayer."¡v, ¶i¦æÃöÁä¦r·j¯Á¤¤¡I</p>";
+			echo "<p align=center style=\"font-size: 12pt; color: white;\"><Br><br><br>æ‰¾ä¸åˆ°ç›®æ¨™ç©å®¶ã€Œ".$searchPlayer."ã€, é€²è¡Œé—œéµå­—æœç´¢ä¸­ï¼</p>";
 			echo "<script language=\"JavaScript\">";
 			echo "setTimeout(\"infoForm.submit();\",1000);";
 			echo "</script>";
@@ -361,16 +361,16 @@ elseif($mode == 'searchPlayer'){
 		$i = 0;
 		$ms_js = '';
 		foreach($Eq_Listing as $I => $V){
-			$displayXp = '¡Ó0%';
+			$displayXp = 'Â±0%';
 			$W_Inf = '';
 			if ($Op->Player[$V] && $Op->Player[$V] != '0<!>0') {
 				if ($Op->Eq[$I]['exp'] > 0) $displayXp = '+'.($Op->Eq[$I]['exp']/100).'%';
 				elseif ($Op->Eq[$I]['exp'] < 0) $displayXp = ($Op->Eq[$I]['exp']/100).'%';
-				$W_Inf = $Op->Eq[$I]['name']."<br>ª¬ºA­È: ".$displayXp."<hr width=95%>¯à¤O:<br>";
-				$W_Inf .= "¡@§ğÀ»¤O: ".$Op->Eq[$I]['atk']."¡@¡@¡@¦^¼Æ: ".$Op->Eq[$I]['rd']."<br>¡@©R¤¤: ".$Op->Eq[$I]['hit']."¡@¡@¡@EN®ø¶O: ".$Op->Eq[$I]['enc']."<br>";
-				$W_Inf .= "¶ZÂ÷/Äİ©Ê: ".getRangeAttrb($Op->Eq[$I]['range'],$Op->Eq[$I]['attrb'],$Op->Eq[$I]['equip'],false)."<br>";
-				$W_Inf .= "¯S®í®ÄªG:<br>";
-				if ($Op->Eq[$I]['equip']) $W_Inf .= "¥i¥H¸Ë³Æ<br>";
+				$W_Inf = $Op->Eq[$I]['name']."<br>ç‹€æ…‹å€¼: ".$displayXp."<hr width=95%>èƒ½åŠ›:<br>";
+				$W_Inf .= "ã€€æ”»æ“ŠåŠ›: ".$Op->Eq[$I]['atk']."ã€€ã€€ã€€å›æ•¸: ".$Op->Eq[$I]['rd']."<br>ã€€å‘½ä¸­: ".$Op->Eq[$I]['hit']."ã€€ã€€ã€€ENæ¶ˆè²»: ".$Op->Eq[$I]['enc']."<br>";
+				$W_Inf .= "è·é›¢/å±¬æ€§: ".getRangeAttrb($Op->Eq[$I]['range'],$Op->Eq[$I]['attrb'],$Op->Eq[$I]['equip'],false)."<br>";
+				$W_Inf .= "ç‰¹æ®Šæ•ˆæœ:<br>";
+				if ($Op->Eq[$I]['equip']) $W_Inf .= "å¯ä»¥è£å‚™<br>";
 				$W_Inf .= ReturnSpecs($Op->Eq[$I]['spec']);
 				$ms_js .= "msJsTxt[".$i."] = '".$W_Inf."';\n";
 				$Wep_Sym[$I] = 1;
@@ -401,16 +401,16 @@ elseif($mode == 'searchPlayer'){
 	if($Pl->Player['organization'] && $Pl->Player['rights'] && !$Op->Player['rights'] && $Op->Player['organization'] != $Pl->Player['organization'] && $Pl->User != $Op->User){
 		$orgCmd = true;
 		echo "<form action='organization.php?action=Employ' method='post' name='orgForm'>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		
+		
 		echo "<input type=hidden value='B' name=actionb>";
-		echo "<input type=hidden value='{$Op->User}' name=EmployTar>";
+		echo "<input type=hidden value='{$Op->Player[gamename]}' name=EmployTar>";
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 		echo "</form>";
 	}else $orgCmd = false;
 	echo "<form action=information.php method=post name=infoForm>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name='action' value='Main'>";
 	echo "<input type=hidden name='searchOrg' value=''>";
 	echo "<input type=hidden name='searchArea' value=''>";
@@ -431,7 +431,7 @@ elseif($mode == 'searchPlayer'){
 	echo "<table width=100% height=100%><tr><td align=center>";
 	
 	echo "<table cellspacing=2 cellpadding=3>";
-	echo "<tr><td align=center colspan=2><b>ª±®a ".$Op->Player['gamename']." $Op_Rank ªº¸ê®Æ</b></td></tr>";
+	echo "<tr><td align=center colspan=2><b>ç©å®¶ ".$Op->Player['gamename']." $Op_Rank çš„è³‡æ–™</b></td></tr>";
 
 	echo "<tr>";
 	
@@ -456,14 +456,14 @@ elseif($mode == 'searchPlayer'){
 		echo "</td></tr>";
 
 		echo "<tr style=\"font-weight: Bold;\">";
-		echo "<td width=50>Level:</td>";
-		echo "<td width=100>Type:</td>";
-		echo "<td width=70 rowspan=2><b>©ÒÄİ²ÕÂ´:</b><br>";
+		echo "<td width=50>ç­‰ç´š:</td>";
+		echo "<td width=100>ç¨®æ—:</td>";
+		echo "<td width=70 rowspan=2><b>æ‰€å±¬çµ„ç¹”:</b><br>";
 		echo "&nbsp;&nbsp;&nbsp;<span style='color: $Op_Org[color]; cursor: pointer' onClick=\"getInfo('".$Op_Org['name']."');\">".$Op_Org['name']."</span><br>";
-		echo "<b>©Ò¦b°Ï°ì:</b><br>";
+		echo "<b>æ‰€åœ¨å€åŸŸ:</b><br>";
 		echo "&nbsp;&nbsp;&nbsp;<span style='cursor: pointer; text-decoration: underline;' onClick=\"getAreaInfo('".$Op->Player['coordinates']."');\" $hoverPhrase>".$Op->Player['coordinates']."</span>";
 		echo "</td>";
-		echo "<td width=100>³Ó§Q:</td>";
+		echo "<td width=100>å‹åˆ©:</td>";
 		echo "</tr>";
 
 		echo "<tr height=50 align=center valign=top>";
@@ -481,7 +481,7 @@ elseif($mode == 'searchPlayer'){
 			echo "<br><span id=examTxt style=\"color: FF0000;font-weight: bold\">EXAM Activated</span>";
 		else	echo "<br><span id=examTxt>&nbsp;</span>";
 		echo "</b></td>";
-		echo "<td align=left>ÁZ¤À:".$Op->Player['v_points']." <br> ¦¸¼Æ:".$Op->Player['victory']."</td>";
+		echo "<td align=left>ç©åˆ†:".$Op->Player['v_points']." <br> æ¬¡æ•¸:".$Op->Player['victory']."</td>";
 		echo "</tr>";
 	
 		echo "<tr><td colspan=4 align=center>";
@@ -490,31 +490,31 @@ elseif($mode == 'searchPlayer'){
 		echo "<tr><td colspan=4 align=center>";
 			echo "<table align=center border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" width=\"300\">";
 			echo "<tr style=\"font-weight: Bold;\">";
-			echo "<td width=75 align=center>Attacking</td>";
+			echo "<td width=75 align=center>æ”»æ“Š</td>";
 			echo "<td width=35 align=right>".dualConvert($Op->Player['attacking'])."&nbsp;</td>";
 			echo "<td width=35>+ ".dualConvert($Op->PiFix['attacking'],30)."</td>";
-			echo "<td width=75 align=center>§ğÀ»­È</td>";
+			echo "<td width=75 align=center>æ”»æ“Šå€¼</td>";
 			echo "<td width=30>".dualConvert($Op->Player['attacking'] + $Op->PiFix['attacking'],200)."</td>";
 			echo "</tr>";
 			echo "<tr style=\"font-weight: Bold;\">";
-			echo "<td width=75 align=center>Defending</td>";
+			echo "<td width=75 align=center>é˜²ç¦¦</td>";
 			echo "<td width=35 align=right>".dualConvert($Op->Player['defending'])."&nbsp;</td>";
 			echo "<td width=35>+ ".dualConvert($Op->PiFix['defending'],30)."</td>";
-			echo "<td width=75 align=center>¨¾¿m­È</td>";
+			echo "<td width=75 align=center>é˜²ç¦¦å€¼</td>";
 			echo "<td width=30>".dualConvert($Op->Player['defending'] + $Op->PiFix['defending'],200)."</td>";
 			echo "</tr>";
 			echo "<tr style=\"font-weight: Bold;\">";
-			echo "<td width=75 align=center>Reacting</td>";
+			echo "<td width=75 align=center>è¿´é¿</td>";
 			echo "<td width=35 align=right>".dualConvert($Op->Player['reacting'])."&nbsp;</td>";
 			echo "<td width=35>+ ".dualConvert($Op->PiFix['reacting'],30)."</td>";
-			echo "<td width=75 align=center>¦^Á×­È</td>";
+			echo "<td width=75 align=center>å›é¿å€¼</td>";
 			echo "<td width=30>".dualConvert($Op->Player['reacting'] + $Op->PiFix['reacting'],200)."</td>";
 			echo "</tr>";
 			echo "<tr style=\"font-weight: Bold;\">";
-			echo "<td width=75 align=center>Targeting</td>";
+			echo "<td width=75 align=center>å‘½ä¸­</td>";
 			echo "<td width=35 align=right>".dualConvert($Op->Player['targeting'])."&nbsp;</td>";
 			echo "<td width=35>+ ".dualConvert($Op->PiFix['targeting'],30)."</td>";
-			echo "<td width=75 align=center>©R¤¤­È</td>";
+			echo "<td width=75 align=center>å‘½ä¸­å€¼</td>";
 			echo "<td width=30>".dualConvert($Op->Player['targeting'] + $Op->PiFix['targeting'],200)."</td>";
 			echo "</tr>";
 			echo "</table>";
@@ -524,14 +524,14 @@ elseif($mode == 'searchPlayer'){
 		echo "<img src='$General_Image_Dir/neo/dot_rule.gif'>";
 		echo "</td></tr>";
 		echo "<tr><td colspan=4 align=center>";
-		echo "<b>¾÷ÅéªZ¸Ë</b>:";
+		echo "<b>æ©Ÿé«”æ­¦è£</b>:";
 			echo "<table align=center border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" width=300>";
 			echo "<tr align=center>";
-			echo "<td width=60>¥DªZ¾¹</td>";
-			echo "<td width=60>³Æ¥Î¤@</td>";
-			echo "<td width=60>³Æ¥Î¤G</td>";
-			echo "<td width=60>»²§U¸Ë³Æ</td>";
-			echo "<td width=60>±`³W¸Ë³Æ</td>";
+			echo "<td width=60>ä¸»æ­¦å™¨</td>";
+			echo "<td width=60>å‚™ç”¨ä¸€</td>";
+			echo "<td width=60>å‚™ç”¨äºŒ</td>";
+			echo "<td width=60>è¼”åŠ©è£å‚™</td>";
+			echo "<td width=60>å¸¸è¦è£å‚™</td>";
 			echo "</tr>";
 			echo "<tr align=center>";
 			echo "<td width=60 OnMouseOver=\"trySetLayer(event.clientX,event.clientY,200,100,0)\" OnMouseOut=\"offLayer()\" ><img src='".$tcImg[$Wep_Sym['A']]."' alt=''></td>";
@@ -546,32 +546,41 @@ elseif($mode == 'searchPlayer'){
 	//MS Status
 	echo "<td align=center>";
 		echo "<table align=center border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;\" width=\"300\">";
-		echo "<tr style=\"font-weight: Bold;\"><td colspan=4>".$Op->MS['msname']."</td></tr>";
+		echo "<tr style=\"font-weight: Bold;\"><td colspan=4>".$Op->MS['msname']."ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€æ©Ÿé«”ç­‰ç´š: ".$Op->Player['mslv']."</td></tr>";
 		echo "<tr><td colspan=4 align=center><img src=\"".$Unit_Image_Dir."/".$Op->MS['image']."\"></td></tr>";
 		echo "<tr><td colspan=4 align=center><img src='$General_Image_Dir/neo/dot_rule.gif'></td></tr>";
 		echo "<tr style=\"font-weight: Bold;\">";
-		echo "<td width=60 align=center>Attacking</td>";
+			
+		//Ms Level
+			$A_AvgMs = floor(($Op->MS['atf'] + $Op->MS['taf']) / 2);
+			$B_AvgMs = floor(($Op->MS['def'] + $Op->MS['ref']) / 2);
+			$Op->MS['atf'] += ceil($Op->Player['mslv'] * $Op->MS['atf'] / $A_AvgMs);
+			$Op->MS['taf'] += ceil($Op->Player['mslv'] * $Op->MS['def'] / $A_AvgMs);
+			$Op->MS['def'] += ceil($Op->Player['mslv'] * $Op->MS['ref'] / $B_AvgMs);
+			$Op->MS['ref'] += ceil($Op->Player['mslv'] * $Op->MS['taf'] / $B_AvgMs);
+		
+		echo "<td width=60 align=center>æ”»æ“Š</td>";
 		echo "<td width=60 colspan=2 align=left>&nbsp;".dualConvert($Op->MS['atf'],65)."</td>";
-		echo "<td width=180 rowspan=4 valign=top style=\"font-size: 8pt;padding-left: 5px\"><font style=\"font-size: 10pt\">¯S®í®ÄªG:</font><br><span style=\"padding-left: 10px\">";
+		echo "<td width=180 rowspan=4 valign=top style=\"font-size: 8pt;padding-left: 5px\"><font style=\"font-size: 10pt\">ç‰¹æ®Šæ•ˆæœ:</font><br><span style=\"padding-left: 10px\">";
 		echo ReturnSpecs($Op->MS['spec']);
 		echo "</span></td></tr>";
 		echo "<tr style=\"font-weight: Bold;\">";
-		echo "<td width=60 align=center>Defending</td>";
+		echo "<td width=60 align=center>é˜²ç¦¦</td>";
 		echo "<td width=60 colspan=2 align=left>&nbsp;".dualConvert($Op->MS['def'],75)."</td>";
 		echo "</tr>";
 		echo "<tr style=\"font-weight: Bold;\">";
-		echo "<td width=60 align=center>Mobility</td>";
+		echo "<td width=60 align=center>è¿´é¿</td>";
 		echo "<td width=60 colspan=2 align=left>&nbsp;".dualConvert($Op->MS['ref'],75)."</td>";
 		echo "</tr>";
 		echo "<tr style=\"font-weight: Bold;\">";
-		echo "<td width=60 align=center>Targeting</td>";
+		echo "<td width=60 align=center>å‘½ä¸­</td>";
 		echo "<td width=60 colspan=2 align=left>&nbsp;".dualConvert($Op->MS['taf'],75)."</td>";
 		echo "</tr>";
 		echo "<tr><td colspan=4>&nbsp;</td></tr>";
 		echo "</table>";
 		echo "<br>";
-		if($orgCmd) echo "<input type=button value='©Û¶Ò' onClick=\"document.orgForm.submit();\" $textboxStyle>";
-	echo "<input type=submit value='ªğ¦^' onClick=\"infoForm.action.value='Main'\" $textboxStyle>";
+		if($orgCmd && $Pl_Org[cnum] < 10) echo "<input type=button value='æ‹›å‹Ÿ' onClick=\"document.orgForm.submit();\" $textboxStyle>";
+	echo "<input type=submit value='è¿”å›' onClick=\"infoForm.action.value='Main'\" $textboxStyle>";
 	echo "</td></tr></table>";
 	echo "</form>";
 
@@ -582,8 +591,6 @@ elseif($mode == 'searchPlayer'){
 elseif ($mode == 'onlinePlayers'){
 
 	echo "<form action=information.php method=post name=infoForm>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
 	echo "<input type=hidden value='Main' name=action>";
 	echo "<input type=hidden value='true' name=ByID>";
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
@@ -597,10 +604,11 @@ elseif ($mode == 'onlinePlayers'){
 	echo "<input type=hidden name=searchPlayer value=''>";
 	echo "<table width=100% height=100% border=0><tr><td align=center valign=center>";
 	echo "<table width=100% cellspacing=2 cellpadding=3 style=\"font-size:11px;\" border=1>";
-	echo "<tr><td colspan=6><center><b>¦b½uª±®a</b></center></td></tr>";
-	echo "<tr><td>½s¸¹</td><td>¾r¾p­û¦WºÙ</td><td>©ÒÄİ°ê®a</td><td>µ¥¯Å</td><td>©Ò¦b¦a°Ï</td></tr>";
-	$sqlgen  = ("SELECT gen.username AS `username`, `gamename`, `level`, `coordinates`, org.name As `oname` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` game,`".$GLOBALS['DBPrefix']."phpeb_user_general_info` gen,`".$GLOBALS['DBPrefix']."phpeb_user_organization` org WHERE ($CFU_Time - `time2`) < ".$GLOBALS['Offline_Time']." AND gen.username = game.username AND org.id = organization ORDER BY organization DESC,coordinates,level DESC");
-	$query_gen = mysql_query($sqlgen) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+	echo "<tr><td colspan=6><center><b>åœ¨ç·šç©å®¶</b></center></td></tr>";
+	echo "<tr><td>ç·¨è™Ÿ</td><td>é§•é§›å“¡åç¨±</td><td>æ‰€å±¬åœ‹å®¶</td><td>ç­‰ç´š</td><td>æ‰€åœ¨åœ°å€</td></tr>";
+	$Online_Time = time() - $Offline_Time;
+	$sqlgen  = ("SELECT gen.username AS `username`, `gamename`, `level`, `coordinates`, org.name As `oname` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` game,`".$GLOBALS['DBPrefix']."phpeb_user_general_info` gen,`".$GLOBALS['DBPrefix']."phpeb_user_organization` org WHERE `lastlogin` > '$Online_Time' AND gen.username = game.username AND org.id = organization AND game.isnpc = '0' AND gen.username != 'c0re' ORDER BY organization DESC,coordinates,level DESC");
+	$query_gen = mysql_query($sqlgen) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 	$counter = 0;
 	while($R_Inf = mysql_fetch_array($query_gen)){
 		$counter++;
@@ -614,7 +622,7 @@ elseif ($mode == 'onlinePlayers'){
 			"</tr>";
 	}
 	echo "</table>";
-	echo "<br><input type=submit value='ªğ¦^' onClick=\"infoForm.action.value='Main'\" $textboxStyle>";
+	echo "<br><input type=submit value='è¿”å›' onClick=\"infoForm.action.value='Main'\" $textboxStyle>";
 	echo "</td></tr></table>";
 	echo "</form>";
 }elseif ($mode == 'listPlayers'){
@@ -655,8 +663,8 @@ elseif ($mode == 'onlinePlayers'){
 	}
 
 	echo "<form action=information.php method=post name=infoForm>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=action value='searchPlayer'>";
 	echo "<input type=hidden name=searchPlayer value=''>";
 	echo "<input type=hidden name=ByID value='true'>";
@@ -670,7 +678,7 @@ elseif ($mode == 'onlinePlayers'){
 
 	echo "<table width=100% height=100% border=0><tr><td align=center valign=center>";
 	echo "<table width=680 cellspacing=2 cellpadding=3 style=\"font-size:11px; border: 1px solid white; border-collapse: collapse;\">";
-	echo "<tr><td colspan=4 style=\"border: 1px solid white;\" align=center><b>ª±®a¦Cªí</b></td></tr>";
+	echo "<tr><td colspan=4 style=\"border: 1px solid white;\" align=center><b>ç©å®¶åˆ—è¡¨</b></td></tr>";
 
 	$i = count($Players);
 	
@@ -694,11 +702,11 @@ elseif ($mode == 'onlinePlayers'){
 			echo "<td>&nbsp;</td><td>&nbsp;</td></tr>";
 		}
 	}else{
-		echo "<td colspan=4>¨S¦³¥ô¦óª±®a¡C</td></tr>";
+		echo "<td colspan=4>æ²’æœ‰ä»»ä½•ç©å®¶ã€‚</td></tr>";
 	}
 
 	echo "</table>";
-	echo "<br><input type=submit value='ªğ¦^' onClick=\"infoForm.action.value='Main'\" $textboxStyle>";
+	echo "<br><input type=submit value='è¿”å›' onClick=\"infoForm.action.value='Main'\" $textboxStyle>";
 	echo "</td></tr></table>";
 	echo "</form>";
 
@@ -727,11 +735,11 @@ elseif ($mode == 'searchOrg'){
 	if( $results['count'] != 1 ) {
 
 		echo "<form action=information.php method=post name=infoForm>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		
+		
 		echo "<input type=hidden value='listOrg' name=action>";
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
-		echo "<p align=center style=\"font-size: 12pt; color: white;\"><Br><br><br>§ä¤£¨ì¥Ø¼Ğ²ÕÂ´, ¦^¨ì²ÕÂ´¦Cªí¤¤...</p>";
+		echo "<p align=center style=\"font-size: 12pt; color: white;\"><Br><br><br>æ‰¾ä¸åˆ°ç›®æ¨™çµ„ç¹”, å›åˆ°çµ„ç¹”åˆ—è¡¨ä¸­...</p>";
 		echo "<script language=\"JavaScript\">";
 		echo "setTimeout(\"infoForm.submit();\",1000);";
 		echo "</script>";
@@ -754,7 +762,7 @@ elseif ($mode == 'searchOrg'){
 	$sql = "SELECT `username`, `gamename`, `rights` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `organization` = '".$Info['id'] . "' AND rights > 0;";
 	$query = mysql_query($sql);
 
-	$noViceName = '--- ¥¼¥ô©R ---';
+	$noViceName = '--- æœªä»»å‘½ ---';
 	$Info['vice'] = $noViceName;
 	while($temp = mysql_fetch_array($query)){
 		if($temp['rights'] == 1) {
@@ -770,16 +778,16 @@ elseif ($mode == 'searchOrg'){
 	if($Info['license'] < 2 && $Info['id'] != 0 && $Pl->Player['organization'] == 0){
 		$orgCmd = true;
 		echo "<form action='organization.php?action=JoinOrg' method='post' name='orgForm'>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		
+		
 		echo "<input type=hidden value='B' name=actionb>";
-		echo "<input type=hidden value='{$Info['id']}' name=GiveTar>";
+		echo "<input type=hidden value='{$Info['id']}' name=join>";
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 		echo "</form>";
 	}else $orgCmd = false;
 	echo "<form action=information.php method=post name=infoForm>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden value='Main' name=action>";
 	echo "<input type=hidden value='' name=search>";
 	echo "<input type=hidden value='true' name=ByID>";
@@ -814,20 +822,20 @@ elseif ($mode == 'searchOrg'){
 
 	echo "<tr>";
 	echo "<td width=280 valign=top>";
-	echo "²ÕÂ´¥D®u: <span style=\"cursor: pointer;\" onClick=\"getPlayerInfo('$Info[leader_id]');\" $hoverPhrase>$Info[leader]</span><br>";
-	echo "¥N²z¥D®u: <span style=\"cursor: pointer;\" onClick=\"". (($Info['vice'] != $noViceName) ? "getPlayerInfo('$Info[vice_id]');" : '')."\" $hoverPhrase>$Info[vice]</span><br>";
-	echo "¦¨­û¤H¼Æ: $Info[members] ­Ó <span style=\"cursor: pointer;\" onClick=\"getPlayerListByOrg('".$Info['id']."')\" $hoverPhrase>(¬d¸ß)</span><br>";
-	echo "²ÕÂ´¸êª÷: ".number_format($Info['funds'])."<br>";
-	echo "»â¦a¼Æ¶q: ".(($Info['occupiedNum'] > 0) ? $Info['occupiedNum'] : 0)." ­Ó<br>";
-	echo "¥ş°ê­x¤O: ".(($Info['tickets'] > 0) ? number_format($Info['tickets']) : 0)." ÂI<br>";
+	echo "çµ„ç¹”ä¸»å¸­: <span style=\"cursor: pointer;\" onClick=\"getPlayerInfo('$Info[leader_id]');\" $hoverPhrase>$Info[leader]</span><br>";
+	echo "ä»£ç†ä¸»å¸­: <span style=\"cursor: pointer;\" onClick=\"". (($Info['vice'] != $noViceName) ? "getPlayerInfo('$Info[vice_id]');" : '')."\" $hoverPhrase>$Info[vice]</span><br>";
+	echo "æˆå“¡äººæ•¸: $Info[members] å€‹ <span style=\"cursor: pointer;\" onClick=\"getPlayerListByOrg('".$Info['id']."')\" $hoverPhrase>(æŸ¥è©¢)</span><br>";
+	echo "çµ„ç¹”è³‡é‡‘: ".number_format($Info['funds'])."<br>";
+	echo "é ˜åœ°æ•¸é‡: ".(($Info['occupiedNum'] > 0) ? $Info['occupiedNum'] : 0)." å€‹<br>";
+	echo "å…¨åœ‹è»åŠ›: ".(($Info['tickets'] > 0) ? number_format($Info['tickets']) : 0)." é»<br>";
 	switch($Info['license']){
-		case 0: $licenseDisplay = '¦Û¥Ñ¥[¤J, ¦Û¥Ñ°h¥X'; break;
-		case 1: $licenseDisplay = '¦Û¥Ñ¥[¤J, ­­¨î°h¥X'; break;
-		case 2: $licenseDisplay = '­­¨î¥[¤J, ¦Û¥Ñ°h¥X'; break;
-		case 3: $licenseDisplay = '­­¨î¥[¤J, ­­¨î°h¥X'; break;
+		case 0: $licenseDisplay = 'è‡ªç”±åŠ å…¥, è‡ªç”±é€€å‡º'; break;
+		case 1: $licenseDisplay = 'è‡ªç”±åŠ å…¥, é™åˆ¶é€€å‡º'; break;
+		case 2: $licenseDisplay = 'é™åˆ¶åŠ å…¥, è‡ªç”±é€€å‡º'; break;
+		case 3: $licenseDisplay = 'é™åˆ¶åŠ å…¥, é™åˆ¶é€€å‡º'; break;
 	}
-	echo "¤H¨Æ¤è°w: $licenseDisplay <br>";
-	if($orgCmd) echo "<input type=button value='¥[¤J¦¹²ÕÂ´' onClick=\"document.orgForm.submit();\" $textboxStyle>";
+	echo "äººäº‹æ–¹é‡: $licenseDisplay <br>";
+	if($orgCmd) echo "<input type=button value='åŠ å…¥æ­¤çµ„ç¹”' onClick=\"document.orgForm.submit();\" $textboxStyle>";
 	echo "</td>";
 	echo "<td width=420 height=312 style=\"background: url($General_Image_Dir/background/map_bg_s.png);\">";
 
@@ -858,9 +866,9 @@ elseif ($mode == 'searchOrg'){
 			echo "<tr>";
 			foreach($i_r as $i_c => $a_id){
 				echo "<span id=MapDiscription_".$a_id." style=\"visibility: hidden; position: absolute;\">";
-				echo "$a_id (".ReturnMType($A_Inf[$a_id]['Sys']['type']).")<br>".$A_Inf[$a_id]['User']['aname']."<br>&nbsp;&nbsp;&nbsp;­x¤O: ".$A_Inf[$a_id]['User']['tickets'];
-				echo "<br>&nbsp;&nbsp;&nbsp;©ÒÄİ°ê: ".$O_Inf[$a_id]['name'];
-				echo "<br>&nbsp;&nbsp;&nbsp;°Ï°ì¤H¼Æ: ".$PlayerCount[$a_id];
+				echo "$a_id (".ReturnMType($A_Inf[$a_id]['Sys']['type']).")<br>".$A_Inf[$a_id]['User']['aname']."<br>&nbsp;&nbsp;&nbsp;è»åŠ›: ".$A_Inf[$a_id]['User']['tickets'];
+				echo "<br>&nbsp;&nbsp;&nbsp;æ‰€å±¬åœ‹: ".$O_Inf[$a_id]['name'];
+				echo "<br>&nbsp;&nbsp;&nbsp;å€åŸŸäººæ•¸: ".$PlayerCount[$a_id];
 				echo "</span>";
 				
 				echo '<td align=center width=70 height=52 style="cursor: pointer; ';
@@ -882,7 +890,7 @@ elseif ($mode == 'searchOrg'){
 
 
 	echo "</table>";
-	echo "<br><input type=submit value='¦^¨ì²ÕÂ´¨Òªí' onClick=\"listOrg();\" $textboxStyle><input type=submit value='ªğ¦^±¡³ø­º­¶' onClick=\"infoForm.action.value='Main'\" $textboxStyle>";
+	echo "<br><input type=submit value='å›åˆ°çµ„ç¹”åˆ—è¡¨' onClick=\"listOrg();\" $textboxStyle><input type=submit value='è¿”å›æƒ…å ±é¦–é ' onClick=\"infoForm.action.value='Main'\" $textboxStyle>";
 
 	echo "</td></tr></table>";
 	echo "</form>";
@@ -909,8 +917,8 @@ elseif ($mode == 'listOrg'){
 	}
 
 	echo "<form action=information.php method=post name=infoForm>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=action value='searchOrg'>";
 	echo "<input type=hidden name=searchOrg value=''>";
 	echo "<input type=hidden name=ByID value='true'>";
@@ -923,7 +931,7 @@ elseif ($mode == 'listOrg'){
 	echo "	}</script>";
 	echo "<table width=100% height=100% border=0><tr><td align=center valign=center>";
 	echo "<table width=680 cellspacing=2 cellpadding=3 style=\"font-size:11px; border: 1px solid white; border-collapse: collapse;\">";
-	echo "<tr><td colspan=4 style=\"border: 1px solid white;\" align=center><b>²ÕÂ´¦Cªí</b></td></tr>";
+	echo "<tr><td colspan=4 style=\"border: 1px solid white;\" align=center><b>çµ„ç¹”åˆ—è¡¨</b></td></tr>";
 
 	$i = count($Organizations);
 	$name = '';
@@ -946,7 +954,7 @@ elseif ($mode == 'listOrg'){
 	}
 
 	echo "</table>";
-	echo "<br><input type=submit value='ªğ¦^' onClick=\"infoForm.action.value='Main'\" $textboxStyle>";
+	echo "<br><input type=submit value='è¿”å›' onClick=\"infoForm.action.value='Main'\" $textboxStyle>";
 	echo "</td></tr></table>";
 	echo "</form>";
 
@@ -965,7 +973,7 @@ else if($mode == 'areaInfo'){
 
 	// Problem
 	if( $results['count'] != 1 ) {
-		echo "§ä¤£¨ì¥Ø¼Ğ°Ï°ì";
+		echo "æ‰¾ä¸åˆ°ç›®æ¨™å€åŸŸ";
 		exit();
 	}
 
@@ -1008,8 +1016,8 @@ else if($mode == 'areaInfo'){
 
 
 	echo "<form action=information.php method=post name=infoForm>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden value='Main' name=action>";
 	echo "<input type=hidden name=searchOrg value=''>";
 	echo "<input type=hidden name=ByID value='true'>";
@@ -1043,28 +1051,28 @@ else if($mode == 'areaInfo'){
 
 	echo "<tr>";
 	echo "<td width=350 valign=top>";
-	echo "°Ï°ì¤H¼Æ: $Info[count] ­Ó <span style=\"cursor: pointer;\" onClick=\"getPlayerListByArea('".$Info['id']."')\" $hoverPhrase>(¬d¸ß)</span><br>";
-	echo "©ÒÄİ°Ï°ì: $Info[area]<br>";
-	echo "³s±µ°Ï°ì: ".str_replace("\n", ', ', $Info['movement'])."<br>";
-	echo "¦û»â¶O¥Î: ".number_format($Info['occprice'])."<br>";
-	echo "°_©l¯à¤O: <br>";
-	echo "&nbsp;&nbsp;&nbsp; HP¤W­­: ".$Info['s_hpmax']."<br>";
-	echo "&nbsp;&nbsp;&nbsp; Attacking: ".$Info['s_at']."<br>";
-	echo "&nbsp;&nbsp;&nbsp; Defending: ".$Info['s_de']."<br>";
-	echo "&nbsp;&nbsp;&nbsp; Targeting: ".$Info['s_ta']."<br>";
-	echo "&nbsp;&nbsp;&nbsp; ªZ¾¹: ".$Info['weapon']['s_wepa']['name']."<br>";
+	echo "å€åŸŸäººæ•¸: $Info[count] å€‹ <span style=\"cursor: pointer;\" onClick=\"getPlayerListByArea('".$Info['id']."')\" $hoverPhrase>(æŸ¥è©¢)</span><br>";
+	echo "æ‰€å±¬å€åŸŸ: $Info[area]<br>";
+	echo "é€£æ¥å€åŸŸ: ".str_replace("\n", ', ', $Info['movement'])."<br>";
+	echo "ä½”é ˜è²»ç”¨: ".number_format($Info['occprice'])."<br>";
+	echo "èµ·å§‹èƒ½åŠ›: <br>";
+	echo "&nbsp;&nbsp;&nbsp; HPä¸Šé™: ".$Info['s_hpmax']."<br>";
+	echo "&nbsp;&nbsp;&nbsp; æ”»æ“Š: ".$Info['s_at']."<br>";
+	echo "&nbsp;&nbsp;&nbsp; é˜²ç¦¦: ".$Info['s_de']."<br>";
+	echo "&nbsp;&nbsp;&nbsp; å‘½ä¸­: ".$Info['s_ta']."<br>";
+	echo "&nbsp;&nbsp;&nbsp; æ­¦å™¨: ".$Info['weapon']['s_wepa']['name']."<br>";
 	
 	echo "</td>";
 	echo "<td width=350 valign=top>";
-	echo "°Ï°ì¬FÅv: <span style=\"color: ".$Info['color']."; cursor: pointer; text-decoration: underline\" onClick=\"getOrgInfo('".$Info['org_id']."')\">".$Info['org_name']."</span><br>";
-	echo "¦u½Ã¤H¼Æ: $Info[defender_count] <span style=\"cursor: pointer;\" onClick=\"".( ($Info['defender_count'] > 0) ? 'getPlayerListByDefenders();' : '')."\" $hoverPhrase>(¬d¸ß)</span><br>";
-	echo "¥»°Ï­x¤O: $Info[tickets]<br>";
-	echo "­n¶ëª¬ºA: <br>";
+	echo "å€åŸŸæ”¿æ¬Š: <span style=\"color: ".$Info['color']."; cursor: pointer; text-decoration: underline\" onClick=\"getOrgInfo('".$Info['org_id']."')\">".$Info['org_name']."</span><br>";
+	echo "å®ˆè¡›äººæ•¸: $Info[defender_count] <span style=\"cursor: pointer;\" onClick=\"".( ($Info['defender_count'] > 0) ? 'getPlayerListByDefenders();' : '')."\" $hoverPhrase>(æŸ¥è©¢)</span><br>";
+	echo "æœ¬å€è»åŠ›: $Info[tickets]<br>";
+	echo "è¦å¡ç‹€æ…‹: <br>";
 	echo "&nbsp;&nbsp;&nbsp; HP: ".$Info['hp']."/".$Info['hpmax']."<br>";
-	echo "&nbsp;&nbsp;&nbsp; Attacking: ".$Info['at']."<br>";
-	echo "&nbsp;&nbsp;&nbsp; Defending: ".$Info['de']."<br>";
-	echo "&nbsp;&nbsp;&nbsp; Targeting: ".$Info['ta']."<br>";
-	echo "&nbsp;&nbsp;&nbsp; ªZ¾¹: ".$Info['weapon']['wepa']['name']."<br>";
+	echo "&nbsp;&nbsp;&nbsp; æ”»æ“Š: ".$Info['at']."<br>";
+	echo "&nbsp;&nbsp;&nbsp; é˜²ç¦¦: ".$Info['de']."<br>";
+	echo "&nbsp;&nbsp;&nbsp; å‘½ä¸­: ".$Info['ta']."<br>";
+	echo "&nbsp;&nbsp;&nbsp; æ­¦å™¨: ".$Info['weapon']['wepa']['name']."<br>";
 	echo "</td>";
 	echo "</tr>";
 	
@@ -1080,7 +1088,7 @@ else if($mode == 'areaInfo'){
 		$Abundancy[$temp['mining_pid']] = $temp['rate']/100;
 	}
 
-	echo "<tr><td colspan=2 align=center><b>­ì®Æ¥X²£:</b>: &nbsp;";
+	echo "<tr><td colspan=2 align=center><b>åŸæ–™å‡ºç”¢:</b>: &nbsp;";
 	$pFormatStr = '%s: %s%% &nbsp; &nbsp;';
 	for($i = 1; $i <= 8; $i++){
 		printf($pFormatStr, $product_id_list[$i], $Abundancy[$i]);
@@ -1094,15 +1102,15 @@ else if($mode == 'areaInfo'){
 
 	// End
 
-	echo "<br><input type=submit value='ªğ¦^' onClick=\"infoForm.action.value='Main'\" $textboxStyle>";
+	echo "<br><input type=submit value='è¿”å›' onClick=\"infoForm.action.value='Main'\" $textboxStyle>";
 
 	echo "</td></tr></table>";
 	echo "</form>";
 }
 elseif($mode = 'History'){
 	echo "<form action=information.php method=post name=infoForm>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden value='Main' name=action>";
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 
@@ -1110,7 +1118,7 @@ elseif($mode = 'History'){
 
 	// Start
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#111111\" width=\"70%\">";
-	echo "<tr><td align=center style=\"font-size:16px;\"><b>§¹¾ã¾ú¥v¦Cªí<b></tr></td>";
+	echo "<tr><td align=center style=\"font-size:16px;\"><b>å®Œæ•´æ­·å²åˆ—è¡¨<b></tr></td>";
 
 	$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_game_history` ORDER BY `time` DESC");
 	$query = mysql_query($sql);
@@ -1127,12 +1135,12 @@ elseif($mode = 'History'){
 	echo "</table>";
 	//End
 
-	echo "<br><input type=submit value='ªğ¦^' $textboxStyle>";
+	echo "<br><input type=submit value='è¿”å›' $textboxStyle>";
 	echo "</td></tr></table>";
 	echo "</form>";
 }
 else {
-	echo "¥¼©w¸q°Ê§@¡I";
+	echo "æœªå®šç¾©å‹•ä½œï¼";
 }
 postFooter();
 echo "</body>";

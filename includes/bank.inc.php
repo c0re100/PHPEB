@@ -28,7 +28,7 @@ function printRawReq($Str,$Msg){
 	foreach($product_id_list As $p_id => $p_name){
 		if($Raw[$p_id] == 0) continue;
 		if($i == 0) echo '<tr>';
-		echo "<td align=right width=60>$p_name:&nbsp;</td><td width=40>$Raw[$p_id] ­Ó</td>";
+		echo "<td align=right width=60>$p_name:&nbsp;</td><td width=40>$Raw[$p_id] å€‹</td>";
 		if($i == 1){
 			echo '</tr>';
 			$i = 0;
@@ -44,7 +44,7 @@ function printProductTable($elmName){
 	global $product_id_list;
 
 	echo "<table align=center>";
-	echo "<tr align=center style='font-weight: Bold'><td>­ì®Æ</td><td>¼Æ¶q</td><td>­ì®Æ</td><td>¼Æ¶q</td></tr>";
+	echo "<tr align=center style='font-weight: Bold'><td>åŸæ–™</td><td>æ•¸é‡</td><td>åŸæ–™</td><td>æ•¸é‡</td></tr>";
 
 	$i = 0;
 	foreach($product_id_list As $p_id => $p_name){
@@ -70,7 +70,7 @@ function getInbox($sh,$sh_slot){
 	$SafeIN_Wep = explode('<!>',$SafeIN[2]);
 
 	$sql = ("SELECT `gamename`,`name`,`atk`,`hit`,`rd`,`enc`,`w`.`spec`,`equip` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` `g`,`".$GLOBALS['DBPrefix']."phpeb_sys_wep` `w` WHERE `username`='". $SafeIN[0] ."' AND `id` = '". $SafeIN_Wep[0] ."'");
-	$query = mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+	$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 	$SafeIN_Dealer = mysql_fetch_array($query);
 		if ($SafeIN_Wep[2]){
 			if ($SafeIN_Wep[2]==1) $SafeIN_Dealer['name'] = $SafeIN_Wep[3].$SafeIN_Dealer['name']."<sub>&copy;</sub>";
@@ -82,27 +82,27 @@ function getInbox($sh,$sh_slot){
 		}
 	if ($SafeIN_Wep[1] > 0) $SafeIN_Wep['displayXp'] = '+'.($SafeIN_Wep[1]/100).'%';
 	elseif ($SafeIN_Wep[1] < 0) $SafeIN_Wep['displayXp'] = ($SafeIN_Wep[1]/100).'%';
-	else $SafeIN_Wep['displayXp'] = '¡Ó0%';
-	echo "½æ®a: $SafeIN_Dealer[gamename]<br>¥X»ù: ".number_format($SafeIN[1]);
+	else $SafeIN_Wep['displayXp'] = 'Â±0%';
+	echo "è³£å®¶: $SafeIN_Dealer[gamename]<br>å‡ºåƒ¹: ".number_format($SafeIN[1]);
 	
-	printRawReq($SafeIN[5],'<br>­ì®Æ - ±z»İ¤ä¥I:<br>');
-	printRawReq($SafeIN[4],'<br>­ì®Æ - ½æ®a¤ä¥I:<br>');
+	printRawReq($SafeIN[5],'<br>åŸæ–™ - æ‚¨éœ€æ”¯ä»˜:<br>');
+	printRawReq($SafeIN[4],'<br>åŸæ–™ - è³£å®¶æ”¯ä»˜:<br>');
 	
 	if($SafeIN_Wep[0]){
-		echo "<br>¸Ë³Æ: $SafeIN_Dealer[name]<br>ª¬ºA­È: $SafeIN_Wep[displayXp]<br>¯à¤O: <br>";
-		echo "¡@§ğÀ»¤O: $SafeIN_Dealer[atk]¡@¡@¡@¦^¼Æ: $SafeIN_Dealer[rd]<br>¡@©R¤¤: $SafeIN_Dealer[hit]¡@¡@¡@EN®ø¶O: $SafeIN_Dealer[enc]<br>";
+		echo "<br>è£å‚™: $SafeIN_Dealer[name]<br>ç‹€æ…‹å€¼: $SafeIN_Wep[displayXp]<br>èƒ½åŠ›: <br>";
+		echo "ã€€æ”»æ“ŠåŠ›: $SafeIN_Dealer[atk]ã€€ã€€ã€€å›æ•¸: $SafeIN_Dealer[rd]<br>ã€€å‘½ä¸­: $SafeIN_Dealer[hit]ã€€ã€€ã€€ENæ¶ˆè²»: $SafeIN_Dealer[enc]<br>";
 		$D_Specs = ReturnSpecs($SafeIN_Dealer['spec']);
-		echo "¯S®í®ÄªG:";
-		if ($SafeIN_Dealer['equip']) echo "¥i¥H¸Ë³Æ<br>";
+		echo "ç‰¹æ®Šæ•ˆæœ:";
+		if ($SafeIN_Dealer['equip']) echo "å¯ä»¥è£å‚™<br>";
 		if ($SafeIN_Dealer['spec']) echo $D_Specs;
-		elseif(!$SafeIN_Dealer['spec'] && !$SafeIN_Dealer['equip']) echo "¨S¦³¥ô¦ó¯S®í®ÄªG<br>";
+		elseif(!$SafeIN_Dealer['spec'] && !$SafeIN_Dealer['equip']) echo "æ²’æœ‰ä»»ä½•ç‰¹æ®Šæ•ˆæœ<br>";
 	}
 	else{
-		echo "<br>¦¹¥æ©ö¨S¦³¯A¤ÎªZ¸Ë¥æ©ö¡C<br>";
+		echo "<br>æ­¤äº¤æ˜“æ²’æœ‰æ¶‰åŠæ­¦è£äº¤æ˜“ã€‚<br>";
 	}
 
-	echo "<input type=submit $disableOnFull onClick=\"return ConfirmDeal('$sh_slot')\" value=½T»{¥æ©ö>";
-	echo "<input type=submit onClick=\"return RejectDeal('$sh_slot')\" value=©Úµ´¥æ©ö>";
+	echo "<input type=submit $disableOnFull onClick=\"return ConfirmDeal('$sh_slot')\" value=ç¢ºèªäº¤æ˜“>";
+	echo "<input type=submit onClick=\"return RejectDeal('$sh_slot')\" value=æ‹’çµ•äº¤æ˜“>";
 
 }
 function getOutbox($sh,$sh_slot,$user){
@@ -113,7 +113,7 @@ function getOutbox($sh,$sh_slot,$user){
 	$sql = "SELECT `gamename`,`name`,`atk`,`hit`,`rd`,`enc`,`w`.`spec` AS `spec`, `equip`, `$SafeOUT[3]` AS `inbox` ";
 	$sql .= " FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` `g`, `".$GLOBALS['DBPrefix']."phpeb_sys_wep` `w`, `".$GLOBALS['DBPrefix']."phpeb_user_bank` `b` ";
 	$sql .= " WHERE `g`.`username`='". $SafeOUT[0] ."' AND `id` = '". $SafeOUT_Wep[0] ."' AND `b`.`username` = `g`.`username`; ";
-	$query = mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+	$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 	$SafeOUT_Dealer = mysql_fetch_array($query);
 		if (isset($SafeOUT_Wep[2])){
 			if ($SafeOUT_Wep[2]==1) $SafeOUT_Dealer['name'] = $SafeOUT_Wep[3].$SafeOUT_Dealer['name']."<sub>&copy;</sub>";
@@ -125,26 +125,26 @@ function getOutbox($sh,$sh_slot,$user){
 		}
 	if ($SafeOUT_Wep[1] > 0) $SafeOUT_Wep['displayXp'] = '+'.($SafeOUT_Wep[1]/100).'%';
 	elseif ($SafeOUT_Wep[1] < 0) $SafeOUT_Wep['displayXp'] = ($SafeOUT_Wep[1]/100).'%';
-	else $SafeOUT_Wep['displayXp'] = '¡Ó0%';
-	echo "¥Ø¼Ğ¶R®a: $SafeOUT_Dealer[gamename]<br>°â»ù: ".number_format($SafeOUT[1]);
+	else $SafeOUT_Wep['displayXp'] = 'Â±0%';
+	echo "ç›®æ¨™è²·å®¶: $SafeOUT_Dealer[gamename]<br>å”®åƒ¹: ".number_format($SafeOUT[1]);
 
-	printRawReq($SafeOUT[4],'<br>­ì®Æ - ±z±N¤ä¥I:<br>');
-	printRawReq($SafeOUT[5],'<br>­ì®Æ - ¹ï¤è¤ä¥I:<br>');
+	printRawReq($SafeOUT[4],'<br>åŸæ–™ - æ‚¨å°‡æ”¯ä»˜:<br>');
+	printRawReq($SafeOUT[5],'<br>åŸæ–™ - å°æ–¹æ”¯ä»˜:<br>');
 
 	if($SafeOUT_Wep[0]){
-		echo "<br>¸Ë³Æ: $SafeOUT_Dealer[name]<br>ª¬ºA­È: $SafeOUT_Wep[displayXp]<br>¯à¤O: <br>";
-		echo "¡@§ğÀ»¤O: $SafeOUT_Dealer[atk]¡@¡@¡@¦^¼Æ: $SafeOUT_Dealer[rd]<br>¡@©R¤¤: $SafeOUT_Dealer[hit]¡@¡@¡@EN®ø¶O: $SafeOUT_Dealer[enc]<br>";
+		echo "<br>è£å‚™: $SafeOUT_Dealer[name]<br>ç‹€æ…‹å€¼: $SafeOUT_Wep[displayXp]<br>èƒ½åŠ›: <br>";
+		echo "ã€€æ”»æ“ŠåŠ›: $SafeOUT_Dealer[atk]ã€€ã€€ã€€å›æ•¸: $SafeOUT_Dealer[rd]<br>ã€€å‘½ä¸­: $SafeOUT_Dealer[hit]ã€€ã€€ã€€ENæ¶ˆè²»: $SafeOUT_Dealer[enc]<br>";
 		$D_Specs = ReturnSpecs($SafeOUT_Dealer['spec']);
-		echo "¯S®í®ÄªG:";
-		if ($SafeOUT_Dealer['equip']) echo "¥i¥H¸Ë³Æ<br>";
+		echo "ç‰¹æ®Šæ•ˆæœ:";
+		if ($SafeOUT_Dealer['equip']) echo "å¯ä»¥è£å‚™<br>";
 		if ($SafeOUT_Dealer['spec']) echo $D_Specs;
-		else echo "¨S¦³¥ô¦ó¯S®í®ÄªG<br>";
+		else echo "æ²’æœ‰ä»»ä½•ç‰¹æ®Šæ•ˆæœ<br>";
 	}
 	else{
-		echo "<br>¦¹¥æ©ö¨S¦³¯A¤ÎªZ¸Ë¥æ©ö¡C<br>";
+		echo "<br>æ­¤äº¤æ˜“æ²’æœ‰æ¶‰åŠæ­¦è£äº¤æ˜“ã€‚<br>";
 	}
 
-	echo "<input type=submit $disableOnFull onClick=\"return CancelDeal('$sh_slot')\" value=¤¤¤î¥æ©ö>";
+	echo "<input type=submit $disableOnFull onClick=\"return CancelDeal('$sh_slot')\" value=ä¸­æ­¢äº¤æ˜“>";
 	$RejectedFlag = false;
 	if(!$SafeOUT_Dealer['inbox']) $RejectedFlag = true;
 	else{
@@ -160,7 +160,7 @@ function getOutbox($sh,$sh_slot,$user){
 			}
 		}
 	}
-	if($RejectedFlag) echo "&nbsp;&nbsp;(¹ï¤è¤v©Úµ´¤F¥æ©ö)";
+	if($RejectedFlag) echo "&nbsp;&nbsp;(å°æ–¹å·±æ‹’çµ•äº†äº¤æ˜“)";
 
 }
 

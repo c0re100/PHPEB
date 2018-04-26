@@ -16,9 +16,9 @@ function initSpCost(){
 
 function checkTactics($Chosen){
 	// Called by active player only
-	if(strpos($this->Player['tactics'],$Chosen) === false && $Chosen) $this->sendError("¥¼²ß±o¸Ó¾Ô³N¡C");
-	elseif (empty($this->Tactics['name'])) $this->sendError("¤£©úªº¾Ô³N¡C");
-	elseif (!$this->Tactics['name']) $this->sendError("¤£©úªº¾Ô³N¡C");
+	if(strpos($this->Player['tactics'],$Chosen) === false && $Chosen) $this->sendError("æœªç¿’å¾—è©²æˆ°è¡“ã€‚");
+	elseif (empty($this->Tactics['name'])) $this->sendError("ä¸æ˜çš„æˆ°è¡“ã€‚");
+	elseif (!$this->Tactics['name']) $this->sendError("ä¸æ˜çš„æˆ°è¡“ã€‚");
 
 	// Init. EN cost and SP cost
 	$this->Tactics['enc'] = (isset($this->Tactics['enc'])) ? $this->Tactics['enc'] : 0;
@@ -97,9 +97,9 @@ function ProcessMS(){
 
 function checkStart(){
 	// Requires EN cost & SP Cost to be processed first
-	if (!$this->Eq['A']['id']) $this->sendError("§A¨S¦³¸Ë³ÆªZ¾¹¡A¤£¯à¥XÀ»¡C");
-	elseif ($this->Player['en'] < $this->RequireEN) $this->sendError("EN¤£¨¬¡AµLªk¥XÀ»¡C");
-	elseif ($this->Player['sp'] < $this->SP_Cost) $this->sendError("SP¤£¨¬¡AµLªk¥H $Pl->Tactics[name] ¥XÀ»¡C");
+	if (!$this->Eq['A']['id']) $this->sendError("ä½ æ²’æœ‰è£å‚™æ­¦å™¨ï¼Œä¸èƒ½å‡ºæ“Šã€‚");
+	elseif ($this->Player['en'] < $this->RequireEN) $this->sendError("ENä¸è¶³ï¼Œç„¡æ³•å‡ºæ“Šã€‚");
+	elseif ($this->Player['sp'] < $this->SP_Cost) $this->sendError("SPä¸è¶³ï¼Œç„¡æ³•ä»¥ $Pl->Tactics[name] å‡ºæ“Šã€‚");
 }
 
 function processGundam00specs(&$UpdateMSFlag){
@@ -200,7 +200,7 @@ function applySpecFixEffects(&$Spec_Event_Tag, $isActive = true){
 	$Spec_AtkA_R= mt_rand(0,100);
 	if(strpos($this->Specs,'AtkA') !== false && $Spec_AtkA_R >= 50){
 		$this->PiFix['attacking'] += 20;
-		$Spec_Event_Tag .= ( $isActive ) ? "<Br>§A¶i¤J¤F¿³¾Äª¬ºA¡I" : "<Br>¹ï¤â¶i¤J¤F¿³¾Äª¬ºA¡I";
+		$Spec_Event_Tag .= ( $isActive ) ? "<Br>ä½ é€²å…¥äº†èˆˆå¥®ç‹€æ…‹ï¼" : "<Br>å°æ‰‹é€²å…¥äº†èˆˆå¥®ç‹€æ…‹ï¼";
 	}
 
 	//DefX Effect
@@ -210,11 +210,11 @@ function applySpecFixEffects(&$Spec_Event_Tag, $isActive = true){
 	if($hasDefXinSpec || $this->Player['hypermode'] == 3){
 		if($DefX_pc >= 40) {
 			$this->PiFix['defending'] += 15;
-			$Spec_Event_Tag .= ( $isActive ) ? "<Br>§Aªº©³¤OÃzµo¤F¡I" : "<Br>¹ï¤è©³¤OÃzµo¤F¡I";
+			$Spec_Event_Tag .= ( $isActive ) ? "<Br>ä½ çš„åº•åŠ›çˆ†ç™¼äº†ï¼" : "<Br>å°æ–¹åº•åŠ›çˆ†ç™¼äº†ï¼";
 			if($hasDefXinSpec && $this->Player['hypermode'] == 3){
 				if($DefX2_pc >= 80) {
 					$this->PiFix['defending'] += 15;
-					$Spec_Event_Tag .= ( $isActive ) ? "<Br>§A©À°Ê¤O¤§©³¤OÃzµo¤F¡I" : "<Br>¹ï¤è©À°Ê¤O¤§©³¤OÃzµo¤F¡I";
+					$Spec_Event_Tag .= ( $isActive ) ? "<Br>ä½ å¿µå‹•åŠ›ä¹‹åº•åŠ›çˆ†ç™¼äº†ï¼" : "<Br>å°æ–¹å¿µå‹•åŠ›ä¹‹åº•åŠ›çˆ†ç™¼äº†ï¼";
 				}
 			}
 		}
@@ -329,7 +329,7 @@ function msDamageSpec(&$Spec_Event_Tag, &$Resulting_EN, &$DamA_S_Flag, $StrikePe
 	$DamA_S_R = mt_rand(0,100);
 	if(strpos($this->Eq['A']['spec'],'DamA') !== false && $DamA_S_R >= 85 && $this->Eq['A']['exp'] >= 0 && $StrikePercentage > 0){
 		$Resulting_EN	=  floor($Resulting_EN * 0.5);
-		$Spec_Event_Tag	.= ($isActive) ? "<br>¹ï¤âªº¾÷Åé³Q·lÃa¡A³Ñ¾l¯à·½¤U­°¡I" : "<br>§Aªº¾÷Åé³Q¹ï¤â·lÃa¡A³Ñ¾l¯à·½¤U­°¡I";
+		$Spec_Event_Tag	.= ($isActive) ? "<br>å°æ‰‹çš„æ©Ÿé«”è¢«æå£ï¼Œå‰©é¤˜èƒ½æºä¸‹é™ï¼" : "<br>ä½ çš„æ©Ÿé«”è¢«å°æ‰‹æå£ï¼Œå‰©é¤˜èƒ½æºä¸‹é™ï¼";
 		$DamA_S_Flag	= ($this->Eq['A']['exp'] > 10000) ? 30 : 10;
 	}
 }

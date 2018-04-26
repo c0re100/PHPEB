@@ -22,17 +22,17 @@ function getWeaponName($id, $getSpec = false){
 }
 
 function printPutOption($UsrWep,$Pos){
-	$PosName = ( $Pos == 'b' ) ? '¤@' : '¤G';
+	$PosName = ( $Pos == 'b' ) ? 'ä¸€' : 'äºŒ';
 	$WpInf = getWeaponName($UsrWep[0],true);
 
-	echo "<tr><td width=350><b>³Æ¥Î¸Ë³Æ$PosName:</b><font style=\"font-size: 10pt\"><br>".$WpInf['name'];
-	if ($UsrWep[1]) echo "<br>(ª¬ºA­È: ".($UsrWep[1]/100)."%)";
+	echo "<tr><td width=350><b>å‚™ç”¨è£å‚™$PosName:</b><font style=\"font-size: 10pt\"><br>".$WpInf['name'];
+	if ($UsrWep[1]) echo "<br>(ç‹€æ…‹å€¼: ".($UsrWep[1]/100)."%)";
 	echo "</font></td><td width=50 align=center>";
 	$UsrWep[2] = (isset($UsrWep[2])) ? $UsrWep[2] : 0;
 	if ($UsrWep[0] && !$UsrWep[2] && $UsrWep[1] >= $GLOBALS['RepairEqCondMax'])
-		echo "<input type=button name='put$Pos' value='¸m©ñ' onClick=\"actionb.value='put';actionc.value='wep$Pos';mainform.submit()\">";
+		echo "<input type=button name='put$Pos' value='ç½®æ”¾' onClick=\"actionb.value='put';actionc.value='wep$Pos';mainform.submit()\">";
 	if (strpos($WpInf['spec'],'Blueprint') !== false){
-		echo "<input type=button name='view$Pos' value='ÀËµø' onClick=\"actionb.value='view';actionc.value='wep$Pos';mainform.submit()\">";		
+		echo "<input type=button name='view$Pos' value='æª¢è¦–' onClick=\"actionb.value='view';actionc.value='wep$Pos';mainform.submit()\">";		
 	}
 	else echo "&nbsp;";
 	echo "</td></tr>";
@@ -44,9 +44,9 @@ function printBinDetails($binNumber){
 	$bin = 'm'.$binNumber;
 	if ($TactFactory[$bin]){
 		echo "<td width=260>".getWeaponName($TactFactory[$bin])."</td>";
-		echo "<td width=50><input type=button name='reclaim$binNumber' value='¦^¦¬' onClick=\"actionb.value='reclaim';actionc.value='$bin';mainform.submit()\"></td>";
+		echo "<td width=50><input type=button name='reclaim$binNumber' value='å›æ”¶' onClick=\"actionb.value='reclaim';actionc.value='$bin';mainform.submit()\"></td>";
 	}
-	else echo "<td width=300 colspan=2 align=center style=\"font-size: 8pt\">¦¹®æ¨S¦³¸m©ñ¥ô¦ó­ì®Æ</td>";
+	else echo "<td width=300 colspan=2 align=center style=\"font-size: 8pt\">æ­¤æ ¼æ²’æœ‰ç½®æ”¾ä»»ä½•åŸæ–™</td>";
 }
 
 function printBPTable($Bin, $pIdList){
@@ -54,13 +54,13 @@ function printBPTable($Bin, $pIdList){
 	$format =  "<tr><td style='width: 5%%;'>%d:</td><td style='width: 45%%; text-align: center;'>%s</td><td style='width: 5%%;'>%d:</td><td style='width: 45%%; text-align: center;'>%s</td></tr>";
 	$formatb =  "<tr><td style='width: 45%%; text-align: center;' colspan=2>%s</td><td style='width: 45%%; text-align: center;' colspan=2>%s</td></tr>";
 	echo "<table style='width: 75%; text-align: center;' align=center>";
-	echo "<tr><td colspan=4 style='font-weight: Bold;'>ÂÅ¹Ï:</td></tr>";
+	echo "<tr><td colspan=4 style='font-weight: Bold;'>è—åœ–:</td></tr>";
 	for($i = 1; $i <= 10; $i++){
-		$a = ($Bin[$i]) ? getWeaponName($Bin[$i]) : '¨S¦³';
-		$b = ($Bin[$i + 10]) ? getWeaponName($Bin[$i + 10]) : '¨S¦³';
+		$a = ($Bin[$i]) ? getWeaponName($Bin[$i]) : 'æ²’æœ‰';
+		$b = ($Bin[$i + 10]) ? getWeaponName($Bin[$i + 10]) : 'æ²’æœ‰';
 		printf($format, $i, $a, ($i + 10), $b);
 	}
-	echo "<tr><td colspan=4 style='font-weight: Bold;'>­ì®Æ: </td></tr>";
+	echo "<tr><td colspan=4 style='font-weight: Bold;'>åŸæ–™: </td></tr>";
 	$raws = getRaw($Bin[21]);
 	for($i = 1; $i <= 4; $i++){
 		$a = $pIdList[$i]. ": " . $raws[$i];

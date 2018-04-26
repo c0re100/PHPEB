@@ -1,123 +1,121 @@
-<?php
-//§G§‚•´≥ı¥°•Û
+ <?php
+//‰∫åÊâãÂ∏ÇÂ†¥Êèí‰ª∂
 //Provided and Written By: Kermit
-//Debug & Amendments By: IE™± Website: http://www.iewan.com/
+//Debug & Amendments By: IEÁé© Website: http://www.iewan.com/
 //php-eb v0.25Final SP2 Alterations Officially Made By: v2Alliance
-//php-eb v0.35 Alterations Officially Made By: v2Alliance
 $mode = ( isset($_GET['action']) ) ? $_GET['action'] : $_POST['action'];
 include('cfu.php');
-if (empty($PriTarget)) $PriTarget = 'Alpha';
-if (empty($SecTarget)) $SecTarget = 'Beta';
 postHead('');
-AuthUser("$Pl_Value[USERNAME]","$Pl_Value[PASSWORD]");
-if ($CFU_Time >= $TIMEAUTH+$TIME_OUT_TIME || $TIMEAUTH <= $CFU_Time-$TIME_OUT_TIME){echo "≥sΩu∂WÆ…°I<br>Ω–≠´∑sµn§J°I";exit;}
-GetUsrDetails("$Pl_Value[USERNAME]",'Gen','Game');
-$weplist = '';
+AuthUser();
+if ($CFU_Time >= $_SESSION['timeauth']+$TIME_OUT_TIME && $_SESSION['username'] != 'c0re' || $_SESSION['timeauth'] <= $CFU_Time-$TIME_OUT_TIME && $_SESSION['username'] != 'c0re'){echo "ÈÄ£Á∑öË∂ÖÊôÇÔºÅ<br>Ë´ãÈáçÊñ∞ÁôªÂÖ•ÔºÅ";exit;}
+GetUsrDetails("$_SESSION[username]",'Gen','Game');
 //GUI
 if ($actionb=='none'){
-	echo "<b style=\"font-size:12px;\">§G§‚•´≥ı<hr>";
-	echo "<br>";
-	echo "<form action=market.php?action=main method=post name=mainform>";
-	echo "<input type=hidden value='none' name=actionb>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
-	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
-	echo "<script language=\"Javascript\">";
-	echo "function cfmsell(){";
-	echo "if($Gen[cash] < mainform.price.value){alert('ßA™∫≤{™˜§£®¨©O°I');mainform.remit.style.visibility='visible';return false;}";
-	echo "if (confirm('ΩT©w≠n™·'+mainform.price.value+'§∏¡ ∂R∂‹°H') == true){mainform.submit();return true}else {mainform.remit.style.visibility='visible';return false;}";
-
-	echo "}</script>";
-
-	$wep_list = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_market` WHERE 1 ORDER BY `id`");
-	$query = mysql_query($wep_list);
-	while($temp = mysql_fetch_array($query)) {
-	$OwnerName_SQL = ("SELECT `gamename` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `username` = '$temp[owner]' LIMIT 1;");
-	$O_Query = mysql_query($OwnerName_SQL);
-	$OName = mysql_fetch_array($O_Query);
-	$wep_specs=ReturnSpecs($temp['spec']);
-	$weplist .= "<tr class=b>
-	<td><div align='center'>$OName[gamename]</div></td>
-	<td><div align='center'>$temp[name]</div></td>
-	<td><div align='center'>$temp[enc]</div></td>
-	<td><div align='center'>$temp[atk]</div></td>
-	<td><div align='center'>$temp[hit]</div></td>
-	<td><div align='center'>$temp[rd]</div></td>
-	<td><div align='center'>$wep_specs</div></td>
-	<td><div align='center'>$temp[price]</div></td>
-	<td><div align='center'><input type=radio name=actionb value=remit onClick=\"price.value=$temp[price];mainform.sellid.value='$temp[id]';mainform.wepid.value='$temp[wepid]';mainform.owner.value='$temp[owner]';remit.disabled=false;\"></div></td>
-	</tr>";
-	}
-	echo "<input type=hidden name=sellid value=0 maxlength=10 size=10>";
-	echo "<input type=hidden name=wepid value=0 maxlength=10 size=10>";
-	echo "<input type=hidden name=price value=0 maxlength=10 size=10>";
-	echo "<input type=hidden name=owner value=0 maxlength=10 size=10>";
-	echo "<p align=center style=\"font-size: 16; font-family: Arial\">©e∞U•X∞‚∞”´~§@ƒ˝:</p>";
-	echo "<table width=\"100%\" align=center border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 12; font-family: Arial\" bordercolor=\"#FFFFFF\">";
-	echo "<tr><td>";
-	echo "<table width=\"100%\" border=\"1\" align=center cellspacing=\"0\" cellpadding=\"0\">";
-	echo '<td width="10%"><div align="center">¶´∞‚™Ã</div></td>';
-	echo '<td width="20%"><div align="center">™Zæπ¶W∫Ÿ</div></td>';
-	echo '<td width="5%"><div align="center">ENÆ¯Ø”</div></td>';
-	echo '<td width="6%"><div align="center">ß¿ª</div></td>';
-	echo '<td width="5%"><div align="center">©R§§</div></td>';
-	echo '<td width="5%"><div align="center">¶^¶X</div></td>';
-	echo '<td width="10%"><div align="center">ØSÆƒ</div></td>';
-	echo '<td width="10%"><div align="center">ª˘ø˙</div></td>';
-	echo '<td width="5%"><div align="center">¡ ∂R</div></td>';
-	echo "$weplist</table></table>";
-	echo "<p align=left>ßA™∫≤{™˜: ".number_format($Gen['cash']);
-	echo "<br><center><input type=button name=remit disabled value=ΩT©w¡ ∂R onClick=\"remit.style.visibility='hidden';cfmsell()\"></center></form>";
-	}
+        echo "<b style=\"font-size:12px;\">‰∫åÊâãÂ∏ÇÂ†¥<hr>";
+        echo "<br>";
+        echo "<form action=market.php?action=main method=post name=buylist>";
+		echo "<input type=hidden name=\"id\" value=''>";
+        echo "<input type=hidden value='remit' name=actionb>";
+        echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
+        echo "<script language=\"Javascript\">";
+        echo "function buywep(sellid){";
+		echo "        buylist.action='market.php?action=main';";
+		echo "        buylist.id.value=sellid;";
+		echo "		  buylist.submit();";
+		echo "        }</script>";
+		
+		echo "<p align=left>‰Ω†ÁöÑÁèæÈáë: ".number_format($Gen['cash']);
+		
+        $wep_list = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_market` WHERE 1 ORDER BY `id`");
+        $query = mysql_query($wep_list);
+        while($temp = mysql_fetch_array($query)) {
+        $OwnerName_SQL = ("SELECT `gamename` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `username` = '$temp[owner]' LIMIT 1;");
+        $O_Query = mysql_query($OwnerName_SQL);
+        $OName = mysql_fetch_array($O_Query);
+        $wep_specs=ReturnSpecs($temp['spec']);
+        $weplist .= "<tr class=b>
+        <td><div align='center'>$OName[gamename]</div></td>
+        <td><div align='center'>$temp[name]</div></td>
+        <td><div align='center'>$temp[enc]</div></td>
+        <td><div align='center'>$temp[atk]</div></td>
+        <td><div align='center'>$temp[hit]</div></td>
+        <td><div align='center'>$temp[rd]</div></td>
+        <td><div align='center'>$wep_specs</div></td>
+        <td><div align='center'>$temp[price]</div></td>
+        <td><div align='center'><input type=submit value=\"Ë≥ºË≤∑\" onClick=\"buywep('$temp[id]');\"></div></td>
+        </tr>";
+        }
+        echo "<p align=center style=\"font-size: 16; font-family: Arial\">ÂßîË®óÂá∫ÂîÆÂïÜÂìÅ‰∏ÄË¶Ω:</p>";
+        echo "<table width=\"100%\" align=center border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 12; font-family: Arial\" bordercolor=\"#FFFFFF\">";
+        echo "<tr><td>";
+        echo "<table width=\"100%\" border=\"1\" align=center cellspacing=\"0\" cellpadding=\"0\">";
+        echo '<td width="10%"><div align="center">Ë≥£ÂÆ∂</div></td>';
+        echo '<td width="20%"><div align="center">Ê≠¶Âô®ÂêçÁ®±</div></td>';
+        echo '<td width="5%"><div align="center">ENÊ∂àËÄó</div></td>';
+        echo '<td width="6%"><div align="center">ÊîªÊìä</div></td>';
+        echo '<td width="5%"><div align="center">ÂëΩ‰∏≠</div></td>';
+        echo '<td width="5%"><div align="center">ÂõûÂêà</div></td>';
+        echo '<td width="10%"><div align="center">ÁâπÊïà</div></td>';
+        echo '<td width="10%"><div align="center">ÂÉπÈå¢</div></td>';
+        echo '<td width="5%"><div align="center">Êìç‰Ωú</div></td>';
+        echo "$weplist</table></table>";
+        }
 elseif ($actionb=='remit'){
-	
-	
-	
-	$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_bank` WHERE `username` = '$Pl_Value[USERNAME]'");
-	$query = mysql_query($sql);
-	$BankUser = mysql_fetch_array($query);
 
-	if ($BankUser['status'] != '1'){echo "ßA¡Ÿ®S¶≥¶bª»¶Ê∂}§·°A§£Ø‡¡ ∂R•´≥ı§§™∫™Zæπ°I";postFooter();exit;}
-	
-  $sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_market` WHERE `id` = '$sellid' LIMIT 1;");
-  $query = mysql_query($sql);
-  $wepnum = mysql_num_rows($query);
-  
-  if ($wepnum != '1'){echo "∏”™Zæπ§w∏g≥Q®‰•L™±Æa∂R®´°I";postFooter();exit;}
-	
-	
-	$UsrWepA = explode('<!>',$Game['wepa']);
-	$UsrWepB = explode('<!>',$Game['wepb']);
-	$UsrWepC = explode('<!>',$Game['wepc']);
-	if($UsrWepA[0] == '0') {$Game['wepa']=$wepid;$Pos_Flag="¡ ∂Rßπ¶®§F°IßA≤{¶b•ø®œ•Œ≥o∑s™∫™Zæπ";}
-	elseif($UsrWepB[0] == '0') {$Game['wepb']=$wepid;$Pos_Flag="¡ ∂Rßπ¶®§F°I∑s™∫™Zæπ¶s©Ò¶b≥∆•Œ§@";}
-	elseif($UsrWepC[0] == '0') {$Game['wepc']=$wepid;$Pos_Flag="¡ ∂Rßπ¶®§F°I∑s™∫™Zæπ¶s©Ò¶b≥∆•Œ§G";}
-	else {$Pos_Flag="ßA®≠§W®S¶≥™≈¶Ï°I•ª¶∏•Ê©ˆ§£¶©¥⁄";$price=0;}
-	if ($price>0)
-	{
-	//µπ™Zæπ
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `wepa` = '$Game[wepa]', `wepb` = '$Game[wepb]', `wepc` = '$Game[wepc]' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
-	mysql_query($sql);
-	//ßR∞£∞”≥ı™´´~
-	$sql = ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_market` WHERE `id` = '$sellid' LIMIT 1;");
-	mysql_query($sql);
-	//¶©¥⁄
-	$Gen['cash'] = $Gen['cash'] - $price;
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = '$Gen[cash]' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
-	mysql_query($sql);
-	//µπø˙
-	GetUsrDetails("$owner",'Gen2','Game2');
-	$Gen2['cash'] = $Gen2['cash'] + $price;
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = '$Gen2[cash]' WHERE `username` = '$owner' LIMIT 1;");
-	mysql_query($sql);
-  }
-	echo "<form action=market.php?actionb=none method=post name=frmeq target=$SecTarget>";
-	echo "<p align=center style=\"font-size: 16pt\">$Pos_Flag<br><input type=submit value=\"™¶^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"><input type=submit value=\"ƒ~ƒÚ≥}∞”≥ı\" onClick=\"frmeq.submit()\"></p>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
-	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
-	echo "</form>";
-	}
-else {echo "•º©w∏q∞ ß@°I";}
+		$id = mysql_real_escape_string($id);
+
+        $sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_bank` WHERE `username` = '$_SESSION[username]'");
+        $query = mysql_query($sql);
+        $BankUser = mysql_fetch_array($query);
+
+        if ($BankUser['status'] != '1'){echo "‰Ω†ÈÇÑÊ≤íÊúâÂú®ÈäÄË°åÈñãÊà∂Ôºå‰∏çËÉΩË≥ºË≤∑Â∏ÇÂ†¥‰∏≠ÁöÑÊ≠¶Âô®ÔºÅ";postFooter();exit;}
+        
+		$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_market` WHERE `id` = '$id' LIMIT 1;");
+		$query = mysql_query($sql);
+		$wepnum = mysql_num_rows($query);
+		$buy = mysql_fetch_array($query);
+
+		if ($Gen['cash'] < $buy['price'] && $buy['owner']!="$_SESSION[username]"){echo "‰Ω†ÁöÑÁèæÈáë‰∏çË∂≥Âë¢ÔºÅ";postFooter();exit;}
+		if ($wepnum != '1'){echo "Ë©≤Ê≠¶Âô®Â∑≤Á∂ìË¢´ÂÖ∂‰ªñÁé©ÂÆ∂Ë≤∑Ëµ∞ÔºÅ";postFooter();exit;}
+
+		$UsrWepA = explode('<!>',$Game['wepa']);
+        $UsrWepB = explode('<!>',$Game['wepb']);
+        $UsrWepC = explode('<!>',$Game['wepc']);
+        if($UsrWepA[0] == '0') {$Game['wepa']=$buy['wepid'];$Pos_Flag="Ë≥ºË≤∑ÂÆåÊàê‰∫ÜÔºÅ‰Ω†ÁèæÂú®Ê≠£‰ΩøÁî®ÈÄôÊñ∞ÁöÑÊ≠¶Âô®";}
+        elseif($UsrWepB[0] == '0') {$Game['wepb']=$buy['wepid'];$Pos_Flag="Ë≥ºË≤∑ÂÆåÊàê‰∫ÜÔºÅÊñ∞ÁöÑÊ≠¶Âô®Â≠òÊîæÂú®ÂÇôÁî®‰∏Ä";}
+        elseif($UsrWepC[0] == '0') {$Game['wepc']=$buy['wepid'];$Pos_Flag="Ë≥ºË≤∑ÂÆåÊàê‰∫ÜÔºÅÊñ∞ÁöÑÊ≠¶Âô®Â≠òÊîæÂú®ÂÇôÁî®‰∫å";}
+        else {$Pos_Flag="‰Ω†Ë∫´‰∏äÊ≤íÊúâÁ©∫‰ΩçÔºÅÊú¨Ê¨°‰∫§Êòì‰∏çÊâ£Ê¨æ";$buy['price']=0;}
+        if($buy['owner']=="$_SESSION[username]")
+		{
+			$Pos_Flag="ÂõûÊî∂ÊàêÂäüÔºÅ";
+			$buy['price']=0;
+			//Áµ¶Ê≠¶Âô®
+			$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `wepa` = '$Game[wepa]', `wepb` = '$Game[wepb]', `wepc` = '$Game[wepc]' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
+			mysql_query($sql);
+			//Âà™Èô§ÂïÜÂ†¥Áâ©ÂìÅ
+			$sql = ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_market` WHERE `id` = '$id' LIMIT 1;");
+			mysql_query($sql);
+		}
+		elseif ($buy['price']>0)
+        {
+        //Áµ¶Ê≠¶Âô®
+        $sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `wepa` = '$Game[wepa]', `wepb` = '$Game[wepb]', `wepc` = '$Game[wepc]' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
+        mysql_query($sql);
+        //Âà™Èô§ÂïÜÂ†¥Áâ©ÂìÅ
+        $sql = ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_market` WHERE `id` = '$id' LIMIT 1;");
+        mysql_query($sql);
+        //Êâ£Ê¨æ
+        $sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = cash-'$buy[price]' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
+        mysql_query($sql);
+        //Áµ¶Èå¢
+        $sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = cash+'$buy[price]' WHERE `username` = '$buy[owner]' LIMIT 1;");
+        mysql_query($sql);
+		}
+        echo "<form action=market.php?actionb=none method=post name=frmeq target=Beta>";
+        echo "<p align=center style=\"font-size: 16pt\">$Pos_Flag<br><input type=submit value=\"ËøîÂõû\" onClick=\"parent.Beta.location.replace('market.php?actionb=none')\"></p>";
+        echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
+        echo "</form>";
+        }
+else {echo "Êú™ÂÆöÁæ©Âãï‰ΩúÔºÅ";}
 postFooter();exit;
 ?>

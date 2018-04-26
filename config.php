@@ -5,20 +5,20 @@
 //---------------------------   Release Candidate 1    --------------------------//
 //-------------------------//-------------------------//-------------------------//
 
-//��T�]�w
+//資訊設定
 global $sSpec, $WebMasterName, $WebMasterSite;
-$sSpec = 'Official RC';                                  //��L������T, �o���i�ۥѭק�
-$WebMasterName = 'v2Alliance';                           //���D�W��
-$WebMasterSite = 'http://v2alliance.no-ip.org/';         //���W���}, ���U "$sSpec" �ɩҶ}�Ҫ�����
+$sSpec = 'Ext4! Version 0.3b';                                  //其他版本資訊, 這項可自由修改
+$WebMasterName = 'Ext4!';                           //網主名稱
+$WebMasterSite = 'https://ebs.ext4.me/';         //網名網址, 按下 "$sSpec" 時所開啟的網頁
 
-//Database Configs ��Ʈw�]�w
+//Database Configs 資料庫設定
 global $DBHost, $DBUser, $DBPass, $DBName, $DBPrefix;
 
-$DBHost = 'localhost';                                   //��Ʈw��m, �p localhost, 127.0.0.1, www.yourdomain.com
-$DBUser = 'root';                                        //��Ʈw�ϥΪ̦W��
-$DBPass = '';                                            //��Ʈw�K�X
-$DBName = 'phpeb';                                       //��Ʈw�W��
-$DBPrefix = 'v2a_';                                      //��ƪ��e��W, �w�˫e�Ы_�����!! �w�˫ᤣ��A���!!
+$DBHost = 'localhost';                                   //資料庫位置, 如 localhost, 127.0.0.1, www.yourdomain.com
+$DBUser = 'ebs';                                        //資料庫使用者名稱
+$DBPass = 'wfc';                                            //資料庫密碼
+$DBName = 'phpeb';                                       //資料庫名稱
+$DBPrefix = 'v2a_';                                      //資料表前綴名, 安裝前請冒必更改!! 安裝後不能再更改!!
 
 //Setting Configs
 global $MAX_PLAYERS, $Offline_Time, $TIME_OUT_TIME, $RepairHPCost, $RepairENCost, $EmergencyCost, $OrganizingCost, $HP_BASE_RECOVERY, $EN_BASE_RECOVERY;
@@ -26,155 +26,156 @@ global $General_Image_Dir, $Unit_Image_Dir, $Base_Image_Dir, $Org_War_Cost, $Max
 global $Mod_HP, $Mod_HP_Cost, $Mod_HP_UCost, $Mod_EN, $Mod_EN_Cost, $Mod_EN_UCost,$TFDCostCons;
 global $ticketMax, $dailyTicketLim, $ticketCost;
 
-//�򥻳]�w
-$TIME_OUT_TIME = 3600;           //�O�ɮɶ�, ����
-$Offline_Time =	600;             //�P�w���u�𮧤��v, ���u���ɶ�, ����, �H user_game �� time2 �@��
-$MAX_PLAYERS = 500;              //�n���H�ƤW��, �Y���]�w�γ]�w���s, ���Ѽƫh�L��
-$HP_BASE_RECOVERY = 0.0033;      //HP�򥻦^�_�v
-$EN_BASE_RECOVERY = 0;           //EN�򥻦^�_�v, �w�L��
-$OLimit = 25;                    //�W�u�H�ƤW��, �Y���]�w�γ]�w���s, ���Ѽƫh�L��
+//基本設定
+$TIME_OUT_TIME = 3600;           //逾時時間, 秒數
+$Offline_Time =	600;             //判定為「休息中」, 離線的時間, 秒數, 以 user_game 的 time2 作準
+$MAX_PLAYERS = 0;              //登錄人數上限, 若不設定或設定為零, 此參數則無效
+$HP_BASE_RECOVERY = 0.0033;      //HP基本回復率
+$EN_BASE_RECOVERY = 0;           //EN基本回復率, 已無效
+$OLimit = 50;                    //上線人數上限, 若不設定或設定為零, 此參數則無效
 
-//�Ϲ���m�]�w
-$General_Image_Dir = 'images';   //�򥻹Ϥ���m(�I���Ϥ�)
-$Unit_Image_Dir = 'unitimg';     //����Ϥ���m
-$Base_Image_Dir = 'img1';        //�t�ιϤ���m
+//圖像位置設定
+$General_Image_Dir = 'images';   //基本圖片位置(背景圖片)
+$Unit_Image_Dir = 'unitimg';     //機體圖片位置
+$Base_Image_Dir = 'img1';        //系統圖片位置
 
-//�򥻵��ݮɶ��]�w
-$Btl_Intv = 3;                   //�԰����ݮɶ�, �Y���A���W�u�H�Ʀh, �г]�j�@�I, �H��֨t�θ귽����
-$Move_Intv = 15;                 //���ʵ��ݮɶ�, �Y���Ϥj����, �i�H�]�֤@�I, ���Ъ`�N��Ԯɤu�t���ϥ�
+//基本等待時間設定
+$Btl_Intv = 3;                   //戰鬥等待時間, 若伺服器上線人數多, 請設大一點, 以減少系統資源消耗
+$Move_Intv = 5;                 //移動等待時間, 若版圖大的話, 可以設少一點, 但請注意國戰時工廠的使用
 
-//�Ȧ�]�w
-$BankRqLv = 30;                  //�Ȧ�}��һݵ��� -- ��ĳ���� 26 ��, �H����h�� Account �˿�
-$BankRqMoney = 1500000;          //�Ȧ�}��һݭn�������{�� -- ��ĳ���� 150�U, ��]�P�W
-$BankFee = 100000;               //�}�����O
-$Bank_SLog_Entries = 30;         //�����C����ܪ��ƥ�, ��ĳ���n�W�L30
+//銀行設定
+$BankRqLv = 30;                  //銀行開戶所需等級 -- 建議高於 26 級, 以防止多重 Account 倒錢
+$BankRqMoney = 150000;          //銀行開戶所需要的持有現金 -- 建議高於 150萬, 原因同上
+$BankFee = 100000;               //開戶手續費
+$Bank_SLog_Entries = 30;         //紀錄每頁顯示的數目, 建議不要超過30
 
-//��´�����]�w
-$OrganizingCost = '5000000';    //�إ߲�´����
-$OrganizingFame = '5';          //�إ߲�´�һݭn�W�n -- �W�n���M�c�W���]�i�H�إ߲�´
-$OrganizingNotor = '-5';        //�إ߲�´�һݭn�c�W (�ݬ��t��) -- �W�n���M�c�W���]�i�H�إ߲�´
-$Org_War_Cost = 200000;          //�Ԫ�1�p�ɩһݻ���
-//php-eb Ultimate Edition �����]�w
-$ticketMax = 50000;              //�x�ƤO�q�W��
-$dailyTicketLim = 2500;          //�x�O�C�����B�W��
-$ticketCost = 2000;              //�C�@�I�x�O������
+//組織相關設定
+$OrganizingCost = '500000';    //建立組織價錢
+$OrganizingFame = '5';          //建立組織所需要名聲 -- 名聲高和惡名高也可以建立組織
+$OrganizingNotor = '-5';        //建立組織所需要惡名 (需為負數) -- 名聲高和惡名高也可以建立組織
+$Org_War_Cost = 200000;          //戰爭1小時所需價錢
+//php-eb Ultimate Edition 相關設定
+$ticketMax = 50000;              //軍事力量上限
+$dailyTicketLim = 2500;          //軍力每日投資額上限
+$ticketCost = 2000;              //每一點軍力的價格
 
-//�Z���]�w
-$Max_Wep_Exp = 25000;            //�Z�����A�W�� -- ����ĳ�j��25000�Τ֩�15000, 10000 �۵��� �u���A��: +100%�v
-$Min_Wep_Exp = -10000;           //�Z�����A�U�� -- ����֩� -10000, -10000 �۵��� �u���A��: -100%�v
+//武器設定
+$Max_Wep_Exp = 25000;            //武器狀態上限 -- 不建議大於25000或少於15000, 10000 相等於 「狀態值: +100%」
+$Min_Wep_Exp = -10000;           //武器狀態下限 -- 不能少於 -10000, -10000 相等於 「狀態值: -100%」
 
-//��������]�w
-$Max_HP = 10;                    //HP �W������, �p�G���Q%�^�_HP������L�j���ܧO�]�Ӱ�
-$Max_EN = 10;                    //EN �W������, �p�G���ڦ^EN�ܶQ����, �i�H�]���@�I(5000�w�ܰ�)
-//�����y�]�w
-$Mod_HP_Cost = 50000;            //�򥻧�yHP������
-$Mod_HP_UCost = 250000;          //��HP�q��yHP������, �p�W��������, �i�H��o Set ���@�I
-$Mod_EN_Cost = 50000;            //�򥻧�yEN������, �p�G���ڦ^EN�ܶQ����, �i�H�]�C�@�I
-$Mod_EN_UCost = 250000;          //��EN�q��yEN������, �P�W
-//����u�򥻧�y�u�{�v����
-$Mod_MS_base_success = 0;        //�򥻦��\�v, ��ĳ 0 �� 100, ����i�]���t�ƩΤj��100
-$Mod_MS_cpt_cost = 250000;       //�C�I��y�ȩүӪ���
-$Mod_MS_vpt_cost = 10;           //�C�I��y�ȩүӳӧQ�n��
-$Mod_MS_cpt_penalty = 0.25;      //�C�I��y�Ȧ������򥻦��\�v(�����ʤ���, 0.25 �Y 0.25%)
-$Mod_MS_cpt_bonus = 0.25;        //�C�I��y�I�ƪ��򥻦��\�v�[��(�P�W)
-//����u����˳ƦX���u�{�v����
-$Mod_MS_pequip_c = 2.5;          //���\�v�t��, ���\�v��������: �u((100-���鵥��)*�t��/100)*100%�v
+//機體相關設定
+$Max_HP = 10;                    //HP 上限倍數, 如果不想%回復HP的機體過強的話別設太高
+$Max_EN = 10;                    //EN 上限倍數, 如果附款回EN很貴的話, 可以設高一點(5000已很高)
+//機體改造設定
+$Mod_HP_Cost = 50000;            //基本改造HP的價錢
+$Mod_HP_UCost = 200000;          //高HP量改造HP的價錢, 如上限高的話, 可以把這 Set 高一點
+$Mod_EN_Cost = 50000;            //基本改造EN的價錢, 如果附款回EN很貴的話, 可以設低一點
+$Mod_EN_UCost = 200000;          //高EN量改造EN的價錢, 同上
+//機體「基本改造工程」相關
+$Mod_MS_base_success = 50;        //基本成功率, 建議 0 至 100, 但亦可設為負數或大於100
+$Mod_MS_cpt_cost = 250000;       //每點改造值所耗金錢
+$Mod_MS_vpt_cost = 10;           //每點改造值所耗勝利積分
+$Mod_MS_cpt_penalty = 0.25;      //每點改造值扣除的基本成功率(此為百分比, 0.25 即 0.25%)
+$Mod_MS_cpt_bonus = 0.25;        //每點改造點數的基本成功率加成(同上)
+//機體「機體裝備合成工程」相關
+$Mod_MS_pequip_c = 2.5;          //成功率系數, 成功率的公式為: 「((100-機體等級)*系數/100)*100%」
 
-//��Ǯw�����]�w
-$Hangar_Price = 100000;          //��Ǯw�H�s����(�C���O�s), �p�X�{�ݥΪ����p, �Х[��...
-$Hangar_Limit = 25;              //��Ǯw����W��(�C�쪱�a), ��Ǯw�Q�����Өt�θ귽, ��ĳ���n�Ӧh
+//格納庫相關設定
+$Hangar_Price = 1000000;          //格納庫寄存價錢(每次記存), 如出現濫用的情況, 請加價...
+$Hangar_Limit = 25;              //格納庫機體上限(每位玩家), 格納庫十分消耗系統資源, 建議不要太多
 
-//�ײz�]�w
-$RepairHPCost = '5';             //�u�t�^�_1 HP�һݻ���, 5 �ݩ�Q��
-$RepairENCost = '5';             //�u�t�^�_1 EN�һݻ���, 5 �ݩ����K�y
-$EmergencyCost = 50;             //���X��������, �n���H���鵥��
-$RepairEqCondCost = 500;         //�u�t�^�_ 0.01% �˳ƪ��A�ȩһݻ���
-$RepairEqCondMax = 0;            //�u�t�^�_�˳ƪ��A�ȳ̤j��, 0 �� ��0%, -1000 �� -10%, 1000 �� +10%... ����ĳ�j�� 0
+//修理設定
+$RepairHPCost = '5';             //工廠回復1 HP所需價錢, 5 屬於貴的
+$RepairENCost = '10';             //工廠回復1 EN所需價錢, 5 屬於比較便宜
+$EmergencyCost = 50;             //緊急出擊的價錢, 要乘以機體等級
+$RepairEqCondCost = 500;         //工廠回復 0.01% 裝備狀態值所需價錢
+$RepairEqCondMax = 0;            //工廠回復裝備狀態值最大值, 0 為 ±0%, -1000 為 -10%, 1000 為 +10%... 不建議大於 0
 
-//��L�]�w - ��
-$VPt2AlloyReq = 1000;            //�h�ֳӧQ�Z���~��I���@�ӦX��
-$AlloyID = '800690';             //�X��ID (v0.3x�� �X���Z����ƪ�ID: 800690)
-$AlloyPoints = 50;               //�X��ID �I������y�I��
-                                 //�Ա��Ѿ\�w�ˤεo�i����
+//其他設定 - 基本
+$VPt2AlloyReq = 250;            //多少勝利積分才能兌換一個合金
+$AlloyID = '800690';             //合金ID (v0.3x版 合金武器資料表ID: 800690)
+$AlloyPoints = 100;               //合金ID 兌換的改造點數
+                                 //詳情參閱安裝及發展指引
 
-$TFDCostCons = 5000;            //�ʶR�X����k�������t��, ����: [2^(�ż�)]*�����t��
+$TFDCostCons = 5000;            //購買合成方法的價錢系數, 公式: [2^(級數)]*價錢系數
 
-$NotoriousIgnore = -25;          //�W�n(�t�Ƭ��c�W)�h�֥H�U(���O�]�A�o�ӼƦr), �۰ʨ��������b�u���aĵ�i
+$NotoriousIgnore = -25;          //名聲(負數為惡名)多少以下(不是包括這個數字), 自動取消攻擊在線玩家警告
 
-$ModChType_Cost = 1000000;       //�H�ا�y������
+$ModChType_Cost = 1000000;       //人種改造的價格
 
-//Chatroom Board Configs - �d���O�]�w
-$rmChatAutoRefresh = 5;          //�Y�ɲ�ѥD�ʧ�s�۹j�ɶ�, ����, v0.44Beta ��w�L�@��
-$SpeakIntv = 5;                  //�o���۹j�ɶ�, ����
-$ChatShow = 30;                  //�����ܪ��ƥ�
-$ChatSave = 0;                   //��Ѹ�T�O�d����, �i�Τ�{��,�u(24*3600)�v���@��@�], ���]�w�γ]�� 0 �|�ä[�O�d
-$ChatAutoRefresh = 60;           //��Ѹ�T�۰ʨ�s������, ��ĳ���n�ֹL 60 ��
+//Chatroom Board Configs - 留言板設定
+$rmChatAutoRefresh = 5;          //即時聊天主動更新相隔時間, 秒數, v0.44Beta 後已無作用
+$SpeakIntv = 5;                  //發言相隔時間, 秒數
+$ChatShow = 30;                  //聊天顯示的數目
+$ChatSave = 0;                   //聊天資訊保留秒數, 可用方程式,「(24*3600)」為一日一夜, 不設定或設為 0 會永久保留
+$ChatAutoRefresh = 60;           //聊天資訊自動刷新的秒數, 建議不要少過 60 秒
 
-//Instant Chat Plugin Config - ��ѫǴ���]�w
+//Instant Chat Plugin Config - 聊天室插件設定
 global $iChatInstalled, $iChatScript, $iChatConfig, $iChatTarget;
-$iChatInstalled = 1;                          //�Y�ɲ�ѫǴ���w�w��, 0: ���w��, 1: �w�w��
-$iChatScript = 'plugins/ichat/iChat.php';	    //�Y�ɲ�ѫǴ����m
-$iChatConfig = 'plugins/ichat/config.php';	  //�Y�ɲ�ѫǴ��� Config ��m
-$iChatTarget = 'iChat';                       //�Y�ɲ�ѫǵ��� ID
+$iChatInstalled = 1;                          //即時聊天室插件已安裝, 0: 未安裝, 1: 已安裝
+$iChatScript = 'chat.php';	    			  //即時聊天室插件位置
+$iChatConfig = 'plugins/ichat/config.php';	  //即時聊天室插件 Config 位置
+$iChatTarget = 'ThrTarget';                       //即時聊天室視窗 ID
 
-//Battle System Configs - �԰��t�γ]�w
+//Battle System Configs - 戰鬥系統設定
 global $Damage_MS_Bias, $Damage_MS_Sense, $Damage_Pi_Bias, $Damage_Pi_Sense, $Acc_MS_Bias, $Acc_MS_Sense, $Acc_Pi_Bias, $Acc_Pi_Sense, $Exp_Multiplier;
 
-$Damage_MS_Bias = 1;                //����𨾰����t��, ���u����������O�v�P�u�u����騾�m�O�v�ۦP��, �Z�������O�����ơC�]�w�� 1 ��, �Y�𨾬۵���, ���X�Z���즳�����O�C
-$Damage_MS_Sense = 40;              //����𨾱ӷP�t��, ���𰪩󨾦h��, �Z�������O�W�ɪ�����
-$Damage_Pi_Bias = 1;                //���v�𨾰����t��
-$Damage_Pi_Sense = 100;             //���v�𨾱ӷP�t��
-$Acc_MS_Bias = 1;                   //����R�^�����t��
-$Acc_MS_Sense = 40;                 //����R�^�ӷP�t��
-$Acc_Pi_Bias = 0.8;                 //���v�R�^�����t��
-$Acc_Pi_Sense = 100;                //���v�R�^�ӷP�t��
+$Damage_MS_Bias = 1;                //機體攻防偏重系數, 當「攻方機體攻擊力」與「守方機體防禦力」相同時, 武器攻擊力的成數。設定為 1 時, 即攻防相等時, 打出武器原有攻擊力。
+$Damage_MS_Sense = 60;              //機體攻防敏感系數, 當攻高於防多少, 武器攻擊力上升的倍數
+$Damage_Pi_Bias = 1;                //機師攻防偏重系數
+$Damage_Pi_Sense = 100;             //機師攻防敏感系數
+$Acc_MS_Bias = 1;                   //機體命回偏重系數
+$Acc_MS_Sense = 40;                 //機體命回敏感系數
+$Acc_Pi_Bias = 0.8;                 //機師命回偏重系數
+$Acc_Pi_Sense = 100;                //機師命回敏感系數
 
-$Eq_Damage_Co = 1;                  //�Z���θ˳ƪ��A�ȷl�Өt��, ��ĳ�]�w: 1 (ps. �l�Ӱ򥻭Ȭ� 5)
-$Eq_Damage_On_Co = 25;              //�u�b�u��M�v�����A�ȷl�ӫ׭���, ��ĳ�]�w: 50
-$Eq_Damage_Off_lim = 1000;          //�U�u��, ���A�ȧK�l�ӭ�, �]�w�� 1000 ��, �N�����A�ȳ̦h�Q���� �u+10%�v
-$Eq_Damage_Ex = 20;                 //�Q���}��, �B�~�������A��
-$Eq_Cond_Bonus_Basic = 5;           //�˳ƪ��A�ȼW���򥻭�
-$Eq_Cond_Bonus_ExCo = 5;            //�ԳӮ�, ���A�ȼW�����[���t��
-$Eq_Damage_IgnoreLv = 50;           //�O�@�s�����, �h�֯ťH�U���A�Ȥ���
-$Eq_Damage_ReduceLvGap = 20;        //�O�@�s�����, �����̰������̦h�֯ťH�W, ���A�Ȧ���q��b
+$Eq_Damage_Co = 1;                  //武器及裝備狀態值損耗系數, 建議設定: 1 (ps. 損耗基本值為 5)
+$Eq_Damage_On_Co = 25;              //「在線對決」的狀態值損耗度倍數, 建議設定: 50
+$Eq_Damage_Off_lim = 1000;          //下線時, 狀態值免損耗值, 設定為 1000 時, 代表狀態值最多被扣至 「+10%」
+$Eq_Damage_Ex = 20;                 //被擊破時, 額外扣的狀態值
+$Eq_Cond_Bonus_Basic = 5;           //裝備狀態值增長基本值
+$Eq_Cond_Bonus_ExCo = 5;            //戰勝時, 狀態值增長的加成系數
+$Eq_Damage_IgnoreLv = 50;           //保護新手機制, 多少級以下狀態值不扣
+$Eq_Damage_ReduceLvGap = 20;        //保護新手機制, 攻擊者高反擊者多少級以上, 狀態值扣減量減半
 
-$Exp_Multiplier = 1;               //�g��/�������W�t��
+$Exp_Multiplier = 6;               //經驗/金錢倍增系數
 
 $Eq_Cond_Bonus_Basic *= $Exp_Multiplier;
-$VPt2AlloyReq = floor($VPt2AlloyReq / $Exp_Multiplier);
 
-//Other System Configs - ��L�t�γ]�w
+//Other System Configs - 其他系統設定
 global $LogEntries, $Show_ptime, $ChatShow, $ChatSave, $ChatAutoRefresh, $StartZoneRestriction, $dbcharset, $BStyleA, $BStyleB, $Game_Scrn_Type;
-$NPC_RegKey = '';                   //�L�������U�X��, �ݭn��SQL Server�ۦ��@
-$Game_Scrn_Type = 0;                //�C���e���ﶵ, 0: v0.35���� ; 1: �ǲ� php-eb ����
-$AllowRefreshFormBtl = 0;           //��ܾ԰��᭫�s��z�����s, �A�Ω� v0.35 �����H�᪺�sGUI, 0: �����, 1:���
-$Show_ptime = 1;                    //��ܵ{���B�@�ɶ�, �]�� 0 �h�����
-$LogEntries = 5;                    //�԰������ƥؤW��, �п�J '0' �� '5', ��J�s�h�|�����԰������t��, �Фų]�j��5, �H�K�t�ΥX��
-                                    //�����b�u�H�Ʀh��10�H����, ��ĳ���3�h�H�U, �H��C��Ʈ���
-$StartZoneRestriction = 8;          //���a�}�l�ɪ��ϰ�, �H������, �i�H�]�� '0' �� '8'
-                                    //�]�� 0 �ɥ��w�|�b A1 �}�l�C��
-                                    //�]�� 2 �ɷ|�b A1 �� A3 �H���X�{, �p������
-                                    //�p�]�� 5 �ɷ|�b A1 �� B3 �H���X�{,
-                                    //�]�� 8 �ɷ|�b A1 �� C3 �H���X�{, �̰��i�]��8
-                                    //�аѦ� register.php Line 233 �� Line 244
-$dbcharset = 'big5';                //��Ʈw���A����r�չ� - �c�骩 php-eb �L�ݧ��
-$Time_Fix = 0;                      //�P���A���ɮt�ץ�, ��쬰��, �p���A���ĥ�GMT��ڮɶ�, �ӻݭn�έ���B�x�_�B�_�ʮɶ�, �h��J 8*3600
-$BStyleA = 'font-size: 9pt; color: #ffffff; background-color: #000000;';                          //�D�e�������s�˦�
-$BStyleB = "onmouseover=\"this.style.color='yellow'\" onmouseout=\"this.style.color='FFFFFF'\"";  //�P�W, �ƹ����L�ɷ|��⪺�y�k
+$NPC_RegKey = '';                   //無限型註冊碼值, 需要到SQL Server自行制作
+$Game_Scrn_Type = 0;                //遊戲畫面選項, 0: v0.35版本 ; 1: 傳統 php-eb 版本
+$AllowRefreshFormBtl = 0;           //顯示戰鬥後重新整理的按鈕, 適用於 v0.35 版本以後的新GUI, 0: 不顯示, 1:顯示
+$Show_ptime = 1;                    //顯示程式運作時間, 設為 0 則不顯示
+$LogEntries = 5;                    //戰鬥紀錄數目上限, 請輸入 '0' 至 '5', 輸入零則會關閉戰鬥紀錄系統, 請勿設大於5, 以免系統出錯
+                                    //平均在線人數多於10人的話, 建議減至3則以下, 以減低資料消耗
+$StartZoneRestriction = 2;          //玩家開始時的區域, 隨機分區, 可以設為 '0' 至 '8'
+                                    //設為 0 時必定會在 A1 開始遊戲
+                                    //設為 2 時會在 A1 至 A3 隨機出現, 如此類推
+                                    //如設為 5 時會在 A1 至 B3 隨機出現,
+                                    //設為 8 時會在 A1 至 C3 隨機出現, 最高可設為8
+                                    //請參考 register.php Line 233 至 Line 244
+$dbcharset = 'utf8';                //資料庫伺服器文字校對 - 繁體版 php-eb 無需更改
+$Time_Fix = 0;                      //與伺服器時差修正, 單位為秒, 如伺服器採用GMT國際時間, 而需要用香港、台北、北京時間, 則輸入 8*3600
+$BStyleA = 'font-size: 9pt; color: #ffffff; background-color: #000000;';                          //主畫面的按鈕樣式
+$BStyleB = "onmouseover=\"this.style.color='yellow'\" onmouseout=\"this.style.color='FFFFFF'\"";  //同上, 滑鼠移過時會轉色的語法
 
-//v0.35 �� php-eb Ultimate Edition �����]�w
-$SP_Stat_Req = 5;           //�C�I�B�~ SP �һݦ����I��
+//v0.35 及 php-eb Ultimate Edition 相關設定
+$SP_Stat_Req = 5;           //每點額外 SP 所需成長點數
 
-//GUI - �A�Ω� v0.35(�Χ�᪺����) �� ��GUI, �ǲ�GUI����Ϊ���!!
-$PriTarget = 'Alpha';       //�D������ id, php-eb ������ ���� �� id�W��,
-$SecTarget = 'Beta';        //�Ƶ����� id, �Ƶ����Y�ǲΤ����U�b������Frame
-$ProcTarget = 'Process';    //�B�z������ id, �Ω�B�z�@�ǫ��O, �@�뤣�|�Q���a�ݨ쪺
+//GUI - 適用於 v0.35(或更後的版本) 及 其GUI, 傳統GUI不能用的啊!!
+$PriTarget = 'Alpha';       //主視窗的 id, php-eb 的所屬 視窗 的 id名稱,
+$SecTarget = 'Beta';        //副視窗的 id, 副視窗即傳統介面下半部份的Frame
+$ThrTarget = 'Chat';        //聊天室的 id
+$AdTarget = 'Ads';        	//AdSense的 id
+$ProcTarget = 'Process';    //處理視窗的 id, 用於處理一些指令, 一般不會被玩家看到的
 
-//Registering Config           //���U�]�w
+//Registering Config           //註冊設定
 global $CFU_CheckRegKey, $CFU_CheckIP;
-$CFU_CheckRegKey = '0';        //If True, Enabled	<-�ˬd���U�X, 0�����ˬd, 1���ˬd, �нT�{ Portal �t�Υ��`�B�@��
-$CFU_CheckIP = '0';            //As above		<-�ˬdIP��m, 0�����ˬd, 1���ˬd
-$CFU_RegLowerCaseOnly = '1';   //����u��ϥΤp�g���^��Τ�W�� - �|����w��, ��ĳ����
+$CFU_CheckRegKey = '0';        //If True, Enabled	<-檢查註冊碼, 0為不檢查, 1為檢查, 請確認 Portal 系統正常運作中
+$CFU_CheckIP = '0';            //As above		<-檢查IP位置, 0為不檢查, 1為檢查
+$CFU_RegLowerCaseOnly = '0';   //限制只能使用小寫階英文用戶名稱 - 會比較安全, 建議限制
 
 //Behaviour Checker
 $Use_Behavior_Checker = true;

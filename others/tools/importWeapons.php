@@ -1,12 +1,12 @@
 <?php
 // Turn this on (set to true) or delete this file when not using!!
-// ¤£¨Ï¥Î®É, °O±o³]©w¬°¡uTrue¡v ©Î §R°£³o­ÓÀÉ®×!!
+// ä¸ä½¿ç”¨æ™‚, è¨˜å¾—è¨­å®šç‚ºã€ŒTrueã€ æˆ– åˆªé™¤é€™å€‹æª”æ¡ˆ!!
 $UseAuth = false;
 $Script_Name = 'importWeapons.php';
 // Import Weapons
 // For v0.50 Version
-include('../../cfu.php');
-postHead('','../../phpeb_session_dir');
+include('cfu.php');
+postHead('');
 
 $mode = ( isset($_POST['action']) ) ? $_POST['action'] : '';
 
@@ -33,9 +33,9 @@ if($UseAuth){
 	AuthUser($Pl_Value['USERNAME'],$Pl_Value['PASSWORD']);
 	GetUsrDetails("$Pl_Value[USERNAME]",'Gen','Game');
 		
-	if($Gen['acc_status'] >= 0){
+	if($Gen['acc_status'] != 9){
 		
-		echo "¨S¦³Åv­­¦s¨ú¡C<br>¦p±z¬OºÞ²z­û, ½Ð¥ý³]©wºÞ²z­û¨­¥÷¡C<BR>";
+		echo "æ²’æœ‰æ¬Šé™å­˜å–ã€‚<br>å¦‚æ‚¨æ˜¯ç®¡ç†å“¡, è«‹å…ˆè¨­å®šç®¡ç†å“¡èº«ä»½ã€‚<BR>";
 		postFooter();
 		exit;
 	

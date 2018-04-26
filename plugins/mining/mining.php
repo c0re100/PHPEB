@@ -9,10 +9,10 @@ include('../../includes/sfo.class.php');
 include('mining.class.php');
 include('mining.config.php');
 
-AuthUser("$Pl_Value[USERNAME]","$Pl_Value[PASSWORD]");
+AuthUser();
 
 $Pl = new player_stats;
-$Pl->SetUser($Pl_Value['USERNAME']);
+$Pl->SetUser($_SESSION['username']);
 $Pl->FetchPlayer();
 
 $Area = ReturnMap($Pl->Player['coordinates']);
@@ -33,7 +33,7 @@ postHead('','../../phpeb_session_dir',$additionalHeader);
 $Mining = new mining($DBPrefix, $CFU_Time, $Work_Length, $Base_Unit_Cost);
 $Mining->getDetails($Pl->User, $Pl->Player['coordinates'], $Pl->Player['level'], $Pl->Player['organization']);
 
-echo "<font style='font-size: 12pt;'>­ì®Æ±Ä¶°</font><hr>";
+echo "<font style='font-size: 12pt;'>åŸæ–™æ¡é›†</font><hr>";
 
 //
 // Make Payment Process
@@ -54,8 +54,6 @@ $Mining->doMining();
 //
 
 echo "<form action=mining.php method=post name=miningForm>";
-echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
 echo "<input type=hidden value='changeSchedule' name=action>";
 
 //
@@ -79,15 +77,15 @@ $templateHTML = file_get_contents('main.template.html');
 $templateScheduleEntry = file_get_contents('schedule_entry.template.html');
 
 // Show Products
-$show_area_products = '<tr><td colspan=2 align=left>°Ï°ì:' . $Pl->Player['coordinates'] . "<br>²Îªv²ÕÂ´: <font style='color: $Area_Org[color];'>$Area_Org[name]</font><br>±Ä¶°Åv­­: ";
-$show_area_products .= ($Pl_LocalOrgFlag) ? '¾Ö¦³<br>' : '¨S¦³<br>' ;
-$show_area_products .= '°ò¥»¦¬¶O: $<span id="baseCost">'.$Base_Unit_Cost.'</span><br>';
-$show_area_products .= 'À³Ãº´Ú¶µ: $<span id="billsPending">'.$Mining->schedule['mining_bills'].'</span></td>';
-$show_area_products .= '<td colspan=2 align=center><input type=submit onclick="return checkPayment();" value=¤ä¥I´Ú¶µ></td></tr>';
+$show_area_products = '<tr><td colspan=2 align=left>å€åŸŸ:' . $Pl->Player['coordinates'] . "<br>çµ±æ²»çµ„ç¹”: <font style='color: $Area_Org[color];'>$Area_Org[name]</font><br>æ¡é›†æ¬Šé™: ";
+$show_area_products .= ($Pl_LocalOrgFlag) ? 'æ“æœ‰<br>' : 'æ²’æœ‰<br>' ;
+$show_area_products .= 'åŸºæœ¬æ”¶è²»: $<span id="baseCost">'.$Base_Unit_Cost.'</span><br>';
+$show_area_products .= 'æ‡‰ç¹³æ¬¾é …: $<span id="billsPending">'.$Mining->schedule['mining_bills'].'</span></td>';
+$show_area_products .= '<td colspan=2 align=center><input type=submit onclick="return checkPayment();" value=æ”¯ä»˜æ¬¾é …></td></tr>';
 
 $TableFormat = '<tr><td class=width10>%s</td><td class=width40>%s</td><td class=width10>%s</td><td class=width40>%s</td></tr>';
 
-$show_area_products .= '<tr><td class=tHeader>­ì®Æ</td><td class=tHeader>»ù®æ @ ¦¨¥\²v</td><td class=tHeader>­ì®Æ</td><td class=tHeader>»ù®æ @ ¦¨¥\²v</td></tr>';
+$show_area_products .= '<tr><td class=tHeader>åŸæ–™</td><td class=tHeader>åƒ¹æ ¼ @ æˆåŠŸç‡</td><td class=tHeader>åŸæ–™</td><td class=tHeader>åƒ¹æ ¼ @ æˆåŠŸç‡</td></tr>';
 
 function sprintAP($i){
 	global $Mining, $Pl;
@@ -107,7 +105,7 @@ for($i = 1; $i < 8; $i += 2){
 }
 
 // Show Yields
-$show_yeilds = '<tr><td class=tHeader>­ì®Æ</td><td class=tHeader>¼Æ¶q</td><td class=tHeader>­ì®Æ</td><td class=tHeader>¼Æ¶q</td></tr>';
+$show_yeilds = '<tr><td class=tHeader>åŸæ–™</td><td class=tHeader>æ•¸é‡</td><td class=tHeader>åŸæ–™</td><td class=tHeader>æ•¸é‡</td></tr>';
 
 if(count($Mining->yeild)){
 	$v = array('','');
@@ -133,11 +131,11 @@ if(count($Mining->yeild)){
 		}
 	}
 }
-else $show_yeilds = '<tr><td>¨S¦³</td></tr>';
+else $show_yeilds = '<tr><td>æ²’æœ‰</td></tr>';
 
 // Show Storage
 $TableFormat = '<tr><td class=width10>%s</td><td class=width40c>%s</td><td class=width10>%s</td><td class=width40c>%s</td></tr>';
-$show_storage = '<tr><td class=tHeader>­ì®Æ</td><td class=tHeader>¼Æ¶q</td><td class=tHeader>­ì®Æ</td><td class=tHeader>¼Æ¶q</td></tr>';
+$show_storage = '<tr><td class=tHeader>åŸæ–™</td><td class=tHeader>æ•¸é‡</td><td class=tHeader>åŸæ–™</td><td class=tHeader>æ•¸é‡</td></tr>';
 for($i = 1; $i < 8; $i += 2){
 	$v1 = $product_id_list[$i];
 	$a1 = $Mining->storage[$i];
@@ -189,11 +187,11 @@ if($Pl_LocalOrgFlag){
 		$show_schedule .= sprintf($templateScheduleEntry,($i+1).": ",$i,$disable,$show_schedule_options);
 
 	}
-	$show_schedule .= '<tr><td>&nbsp;</td><td align=right><input type=submit value=§ó§ï±Æµ{ onclick="return checkChange();"></td></tr>';
-	$show_schedule .= '<tr><td>&nbsp;</td><td><br>¶ZÂ÷¤U¦¸§¹¦¨©|¾l:<span id="timeLeft"></span></td></tr>';
+	$show_schedule .= '<tr><td>&nbsp;</td><td align=right><input type=submit value=æ›´æ”¹æ’ç¨‹ onclick="return checkChange();"></td></tr>';
+	$show_schedule .= '<tr><td>&nbsp;</td><td><br>è·é›¢ä¸‹æ¬¡å®Œæˆå°šé¤˜:<span id="timeLeft"></span></td></tr>';
 }
 else{
-	$show_schedule .= '<tr><td>¨S¦³¦¹°Ï°ìªº±Ä¶°Åv­­</td></tr>';
+	$show_schedule .= '<tr><td>æ²’æœ‰æ­¤å€åŸŸçš„æ¡é›†æ¬Šé™</td></tr>';
 }
 
 
@@ -212,14 +210,14 @@ echo "<input type='hidden' name='timeEnd' value='".($Mining->schedule['mining_st
 echo "<script language='JavaScript'>";
 echo "function checkPayment(){";
 if($Mining->schedule['mining_bills'] > $Pl->Player['cash'])
-	echo "alert('ª÷¿ú¤£¨¬¡I');return false;";
+	echo "alert('é‡‘éŒ¢ä¸è¶³ï¼');return false;";
 else
-	echo "if(confirm('§Y±N¤ä¥I $".number_format($Mining->schedule['mining_bills']).", ½T©w¶Ü¡H') == true ){miningForm.action.value='makePayment';return true;}else{return false;}";
+	echo "if(confirm('å³å°‡æ”¯ä»˜ $".number_format($Mining->schedule['mining_bills']).", ç¢ºå®šå—ï¼Ÿ') == true ){miningForm.action.value='makePayment';return true;}else{return false;}";
 echo "}";
 ?>
 
 function checkChange(){
-	if(confirm('­n§ó§ï±Æµ{¶Ü¡H') == true ){
+	if(confirm('è¦æ›´æ”¹æ’ç¨‹å—ï¼Ÿ') == true ){
 		document.miningForm.action.value='changeSchedule';
 		document.getElementById("firstSchedule").disabled = false;
 		return true;
@@ -241,24 +239,24 @@ var dTimeNow = new Date();
 oBaseCost.innerHTML = numFormat(iBaseCost);
 oBillsPending.innerHTML = numFormat(iBillsPending);
 
-if(iBillsPending > iBaseCost * 1000) alert("§A©|¤í $" + oBillsPending.innerHTML + " ±ÄÄq¶O¥¼Ãº¡I\n½Ğ°O±oÃº¥I¶O¥Î¡A§_«h±N¤£¯à¨Ï¥Î®w¦s¤ºªºÄq²£¡I");
+if(iBillsPending > iBaseCost * 1000) alert("ä½ å°šæ¬  $" + oBillsPending.innerHTML + " æ¡ç¤¦è²»æœªç¹³ï¼\nè«‹è¨˜å¾—ç¹³ä»˜è²»ç”¨ï¼Œå¦å‰‡å°‡ä¸èƒ½ä½¿ç”¨åº«å­˜å…§çš„ç¤¦ç”¢ï¼");
 
 function updateTime(){
 	dTimeNow = new Date();
 	var nTimeLeft = dTimeEnd.getTime() - dTimeNow.getTime();
 	if (document.getElementById("firstSchedule").disabled == false){
-		document.getElementById('timeLeft').innerHTML = ' ¨S¦³¶i¦æ¤¤ªº±Æµ{¡C';
+		document.getElementById('timeLeft').innerHTML = ' æ²’æœ‰é€²è¡Œä¸­çš„æ’ç¨‹ã€‚';
 		return;
 	}
 	if(nTimeLeft <= 0){
-		document.getElementById('timeLeft').innerHTML = ' ±Æµ{¤w§¹¦¨¡C<br>­«·s¾ã²z«á¥i¬İ¨ìµ²ªG¡C';
+		document.getElementById('timeLeft').innerHTML = ' æ’ç¨‹å·²å®Œæˆã€‚<br>é‡æ–°æ•´ç†å¾Œå¯çœ‹åˆ°çµæœã€‚';
 		return;
 	}
 	var dTimeLeft = new Date(nTimeLeft);
 	var h = (dTimeLeft.getHours() + Math.floor(dTimeLeft.getTimezoneOffset()/60));
 	var m = (dTimeLeft.getMinutes() + (dTimeLeft.getTimezoneOffset()%60));
 	var s = (dTimeLeft.getSeconds());
-	document.getElementById('timeLeft').innerHTML = h + ' ¤p®É ' + m + ' ¤ÀÄÁ ' + s + ' ¬í';
+	document.getElementById('timeLeft').innerHTML = h + ' å°æ™‚ ' + m + ' åˆ†é˜ ' + s + ' ç§’';
 	setTimeout("updateTime();",1000);
 }
 

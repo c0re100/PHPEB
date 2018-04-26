@@ -8,7 +8,7 @@ $Mining_Configured = true;
 $Work_Length = 1800;
 $Base_Unit_Cost = 2500;
 $tax = 0.1;
-$product_id_list = array(1 => 'ºë¿û', 2 => '­ìªo', 3 => '½Æ¦X¾T', 4 => '¯Â»È', 5 => '¤ëÜg', 6 => '¶W¾ÉÅé', 7 => 'ºÒÅÖ', 8 => '­«²B');
+$product_id_list = array(1 => 'ç²¾é‹¼', 2 => 'åŸæ²¹', 3 => 'è¤‡åˆé‹', 4 => 'ç´”éŠ€', 5 => 'æœˆéˆ¦', 6 => 'è¶…å°é«”', 7 => 'ç¢³çº–', 8 => 'é‡æ°«');
 $additionalHeader = '<link href="mining.style.css" rel="stylesheet" type="text/css" />';
 
 //
@@ -20,7 +20,7 @@ function checkMBillsPending($user){
 	$sql = "SELECT `mining_bills` FROM `".$GLOBALS['DBPrefix']."phpeb_mining_schedule` WHERE `mining_user` = '$user' LIMIT 1;";
 	$query = mysql_query($sql);
 	if(!mysql_num_rows($query)){
-		echo "§ä¤£¨ì¥Ø¼ĞÀx¦s®w, ½Ğ¨ì¡u­ì®Æ±Ä¶°¡v¤@¹C¡C";
+		echo "æ‰¾ä¸åˆ°ç›®æ¨™å„²å­˜åº«, è«‹åˆ°ã€ŒåŸæ–™æ¡é›†ã€ä¸€éŠã€‚";
 		postFooter();
 		exit;
 	}
@@ -43,7 +43,7 @@ function getMiningStorage($user){
 			$storage[$temp['item']] = $temp['quantity'];
 		}
 	}else{
-		echo "§ä¤£¨ì¥Ø¼ĞÀx¦s®w, ½Ğ¨ì¡u­ì®Æ±Ä¶°¡v¤@¹C¡C";
+		echo "æ‰¾ä¸åˆ°ç›®æ¨™å„²å­˜åº«, è«‹åˆ°ã€ŒåŸæ–™æ¡é›†ã€ä¸€éŠã€‚";
 		postFooter();
 		exit;
 	}

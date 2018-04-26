@@ -7,18 +7,21 @@ if (empty($PriTarget)) $PriTarget = 'Alpha';
 if (empty($SecTarget)) $SecTarget = 'Beta';
 if (!isset($Game_Scrn_Type)) $Game_Scrn_Type = 1;
 postHead('');
-AuthUser("$Pl_Value[USERNAME]","$Pl_Value[PASSWORD]");
-if ($CFU_Time >= $TIMEAUTH+$TIME_OUT_TIME || $TIMEAUTH <= $CFU_Time-$TIME_OUT_TIME){echo "³s½u¹O®É¡I<br>½Ğ­«·sµn¤J¡I";exit;}
+AuthUser();
+if ($CFU_Time >= $_SESSION['timeauth']+$TIME_OUT_TIME || $_SESSION['timeauth'] <= $CFU_Time-$TIME_OUT_TIME){echo "é€£ç·šé€¾æ™‚ï¼<br>è«‹é‡æ–°ç™»å…¥ï¼";exit;}
 mt_srand ((double) microtime()*1000000);
 
 include('includes/sfo.class.php');
 include('includes/obattle.ext.php');
 
+require 'seccheck.php';
+validatedOrDie($_SESSION[username]);
+
 $Pl = new oBattle;
-$Pl->SetUser($Pl_Value['USERNAME']);
+$Pl->SetUser($_SESSION['username']);
 $Pl->FetchPlayer(true,true);
 
-if (($CFU_Time - $Pl->Player['btltime']) < $Btl_Intv){echo "¶ZÂ÷¤W¦¸§ğÀ»©Î²¾°Êªº®É¶¡¤Óµu¤F¡I<br>½Ğ¦b ".($Btl_Intv-($CFU_Time - $Pl->Player['btltime']))." ¬í«á¦A¶i¦æ§ğÀ»¡I";exit;}
+if (($CFU_Time - $Pl->Player['btltime']) < $Btl_Intv){echo "è·é›¢ä¸Šæ¬¡æ”»æ“Šæˆ–ç§»å‹•çš„æ™‚é–“å¤ªçŸ­äº†ï¼<br>è«‹åœ¨ ".($Btl_Intv-($CFU_Time - $Pl->Player['btltime']))." ç§’å¾Œå†é€²è¡Œæ”»æ“Šï¼";exit;}
 
 if ($Pl->Player['msuit']){
 	$Pl->ProcessAllWeapon();
@@ -28,8 +31,8 @@ if ($Pl->Player['msuit']){
 	$Pl->Player['sp'] = $Pl_Repaired['sp'];
 	$Pl->Player['status'] = $Pl_Repaired['status'];
 	$t_now = $Pl->Player['time1'] = $Pl_Repaired['time1'];
-	if ($Pl->Player['status']){echo "­×²z¤¤¡AµLªk¥XÀ»¡C";postFooter();exit;}
-}else {echo "<center>§A¨S¦³¾÷Åé¡A¤£¯à¥XÀ»¡C";postFooter();exit;}
+	if ($Pl->Player['status']){echo "ä¿®ç†ä¸­ï¼Œç„¡æ³•å‡ºæ“Šã€‚";postFooter();exit;}
+}else {echo "<center>ä½ æ²’æœ‰æ©Ÿé«”ï¼Œä¸èƒ½å‡ºæ“Šã€‚";postFooter();exit;}
 
 //Adjust to user's setting
 if ($Pl->Player['gen_img_dir'])
@@ -49,7 +52,7 @@ $Pl_Org = ($Area['User']['occupied'] != $Pl->Player['organization']) ? ReturnOrg
 $Pl_LocalOrgFlag = 0;
 if ($Area['User']['occupied'] == $Pl->Player['organization'] && $Pl->Player['organization'] != '0') $Pl_LocalOrgFlag = 1;
 
-//­n¶ë°ò¥»¯à¤O
+//è¦å¡åŸºæœ¬èƒ½åŠ›
 $Area_At = $Area["User"]["at"];
 $Area_De = $Area["User"]["de"];
 $Area_Ta = $Area["User"]["ta"];
@@ -57,11 +60,11 @@ $Area_Pi = ceil($Area["User"]["tickets"] * 0.0025);
 if($Area_Pi > 100) $Area_Pi = 100;
 elseif($Area_Pi < 1) $Area_Pi = 1;
 
-//°ê¾Ô¬ÛÃö
+//åœ‹æˆ°ç›¸é—œ
 $WarMessage = $WarFlag = $AttackFort = $FortDestoryedMsg = '';
 $Defenders = array();
 if($Area['User']['defenders'])	$Defenders = explode(',',$Area['User']['defenders']);
-if ($Area["User"]["hp"] <= 0)	$FortDestoryedMsg = "<br><font color=red><b>­n¶ë¤w¸g²_³´¡I</b></font>";
+if ($Area["User"]["hp"] <= 0)	$FortDestoryedMsg = "<br><font color=red><b>è¦å¡å·²ç¶“æ·ªé™·ï¼</b></font>";
 
 $enemyOrgs = array();
 
@@ -75,21 +78,21 @@ while($enemyOrgs_fetch = mysql_fetch_array($query)){
 if(count($enemyOrgs) > 0) {
 	if($i > 0) $WarFlag = '<defend>';
 	else $enemyOrgs = array();
-	$WarMessage = "<font color=green>[¨¾¦u¥Ø¼Ğ]</font> ";
+	$WarMessage = "<font color=green>[é˜²å®ˆç›®æ¨™]</font> ";
 }
 
 if($Pl_Org['optmissioni']){
 	$enemyOrgs_copy = $enemyOrgs;
 	unset($enemyOrgs);
 	$enemyOrgs = array();
-	//§ğ¤è§P©w
+	//æ”»æ–¹åˆ¤å®š
 	$sql = ("SELECT `war_id`,`t_start`,`a_org`,`b_org` FROM `".$GLOBALS['DBPrefix']."phpeb_user_war` WHERE `t_end` > '".$CFU_Time."' AND `mission` REGEXP '".$Pl->Player['coordinates']."' ORDER BY `t_start`");
 	$query = mysql_query($sql);
 	while($enemyOrgs_fetch = mysql_fetch_array($query)){
 		if($enemyOrgs_fetch['war_id'] == $Pl_Org['optmissioni']){
 			if($enemyOrgs_fetch['b_org'] != 0) $enemyOrgs[] = $enemyOrgs_fetch['b_org'];
-			$WarMessage = "<font color=red>[§ğ²¤¥Ø¼Ğ]</font> ";
-			if(!$Pl->Player['battle_def_filter']) $WarMessage .= '<br><b>½Ğ¥ı¨ì¡u¯S®í«ü¥O¡v->¡u¹CÀ¸³]©w¡v§ï¥Î¡u¹w³]³]©w¡v¡I</b><br>';
+			$WarMessage = "<font color=red>[æ”»ç•¥ç›®æ¨™]</font> ";
+			if(!$Pl->Player['battle_def_filter']) $WarMessage .= '<br><b>è«‹å…ˆåˆ°ã€Œç‰¹æ®ŠæŒ‡ä»¤ã€->ã€ŒéŠæˆ²è¨­å®šã€æ”¹ç”¨ã€Œé è¨­è¨­å®šã€ï¼</b><br>';
 			if ($CFU_Time > $enemyOrgs_fetch['t_start']){
 				$AttackFort = 'True';
 				$WarFlag = $enemyOrgs_fetch['b_org'];
@@ -99,10 +102,10 @@ if($Pl_Org['optmissioni']){
 	if(!$AttackFort) $enemyOrgs = $enemyOrgs_copy;
 }
 
-//§P©w¥XÀ» EN ¤ÎªZ¾¹
+//åˆ¤å®šå‡ºæ“Š EN åŠæ­¦å™¨
 $RequireEN['Pl'] = ($Pl->Eq['A']['enc'] + $Pl->Eq['D']['enc'] + $Pl->Eq['E']['enc']);
-if (!$Pl->Eq['A']['id']) {echo "§A¨S¦³¸Ë³ÆªZ¾¹¡A¤£¯à¥XÀ»¡C";postFooter();exit;}
-elseif ($Pl->Player['en'] < $RequireEN['Pl']) {echo 'EN¤£¨¬¡AµLªk¥XÀ»¡C<br>²{¦³EN: '.$Pl->Player['en'].' ©Ò»İEN: '.$RequireEN['Pl'];postFooter();exit;}
+if (!$Pl->Eq['A']['id']) {echo "ä½ æ²’æœ‰è£å‚™æ­¦å™¨ï¼Œä¸èƒ½å‡ºæ“Šã€‚";postFooter();exit;}
+elseif ($Pl->Player['en'] < $RequireEN['Pl']) {echo 'ENä¸è¶³ï¼Œç„¡æ³•å‡ºæ“Šã€‚<br>ç¾æœ‰EN: '.$Pl->Player['en'].' æ‰€éœ€EN: '.$RequireEN['Pl'];postFooter();exit;}
 
 if ($mode == 'battle_sel')		include('battle-filter.php');
 elseif ($mode == 'attack_target')	include('battle-2.php');

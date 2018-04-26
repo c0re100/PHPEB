@@ -4,84 +4,84 @@ include('cfu.php');
 if (empty($PriTarget)) $PriTarget = 'Alpha';
 if (empty($SecTarget)) $SecTarget = 'Beta';
 postHead('');
-AuthUser("$Pl_Value[USERNAME]","$Pl_Value[PASSWORD]");
-if ($CFU_Time >= $TIMEAUTH+$TIME_OUT_TIME || $TIMEAUTH <= $CFU_Time-$TIME_OUT_TIME){echo "³s½u¹O®É¡I<br>½Ğ­«·sµn¤J¡I";exit;}
-GetUsrDetails("$Pl_Value[USERNAME]",'Gen','Game');
+AuthUser();
+if ($CFU_Time >= $_SESSION['timeauth']+$TIME_OUT_TIME || $_SESSION['timeauth'] <= $CFU_Time-$TIME_OUT_TIME){echo "é€£ç·šé€¾æ™‚ï¼<br>è«‹é‡æ–°ç™»å…¥ï¼";exit;}
+GetUsrDetails("$_SESSION[username]",'Gen','Game');
 
 mt_srand ((double) microtime()*1000000);
 
-if(!$Gen['msuit']){echo "§A¨S¦³¾÷Åé¡I¤£¯à¶i¦æ§ï³y¤uµ{¡I";exit;}
+if(!$Gen['msuit']){echo "ä½ æ²’æœ‰æ©Ÿé«”ï¼ä¸èƒ½é€²è¡Œæ”¹é€ å·¥ç¨‹ï¼";exit;}
 else{
 
 GetMsDetails("$Gen[msuit]",'Pl_Ms');
 	//Set DataTable
-	$sql = ("SELECT `c_point`,`time` FROM `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` WHERE username='". $Pl_Value['USERNAME'] ."'");
+	$sql = ("SELECT `c_point`,`time` FROM `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` WHERE username='". $_SESSION['username'] ."'");
 	$query_ttf = mysql_query($sql);$defineuserc = 0;
 	$defineuserc = mysql_num_rows($query_ttf);
 	
 	if ($defineuserc == 0){
-		$sqldftf = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` (username,time) VALUES('$Pl_Value[USERNAME]','$CFU_Time')");
-		mysql_query($sqldftf) or die ('<br><center>¥¼¯à«Ø¥ß§L¾¹»s³y¤u³õ¸ê®Æ<br>­ì¦]:' . mysql_error() . '<br>');
-		$sql = ("SELECT `c_point`,`time` FROM `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` WHERE username='". $Pl_Value['USERNAME'] ."'");
-		$query_ttf = mysql_query($sql) or die ('<br><center>¥¼¯à¨ú±o§L¾¹»s³y¤u³õ¸ê®Æ<br>­ì¦]:' . mysql_error() . '<br>');
+		$sqldftf = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` (username,time) VALUES('$_SESSION[username]','$CFU_Time')");
+		mysql_query($sqldftf) or die ('<br><center>æœªèƒ½å»ºç«‹å…µå™¨è£½é€ å·¥å ´è³‡æ–™<br>åŸå› :' . mysql_error() . '<br>');
+		$sql = ("SELECT `c_point`,`time` FROM `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` WHERE username='". $_SESSION['username'] ."'");
+		$query_ttf = mysql_query($sql) or die ('<br><center>æœªèƒ½å–å¾—å…µå™¨è£½é€ å·¥å ´è³‡æ–™<br>åŸå› :' . mysql_error() . '<br>');
 		$TactFactory['time'] -= 2;
 	}
 $TactFactory = mysql_fetch_array($query_ttf);
-if (($CFU_Time - $TactFactory['time']) < 1){echo "§A¹ê¦b«öªº¤Ó§Ö¤F¡C½Ğ©ó¨â¬í«á¦A«ö¡C<br>¦hÁÂ¦X§@¡I";exit;}
+if (($CFU_Time - $TactFactory['time']) < 1){echo "ä½ å¯¦åœ¨æŒ‰çš„å¤ªå¿«äº†ã€‚è«‹æ–¼å…©ç§’å¾Œå†æŒ‰ã€‚<br>å¤šè¬åˆä½œï¼";exit;}
 
 }
 
 
 if ($mode=='ms_custom' && $actionb == 'GUI'){
 
-	if ($Game['ms_custom']){echo "¤w¸g¶i¦æ¹L°ò¥»§ï³y¤uµ{¡I";exit;}
+	if ($Game['ms_custom']){echo "å·²ç¶“é€²è¡ŒéåŸºæœ¬æ”¹é€ å·¥ç¨‹ï¼";exit;}
 	if(isset($a)) unset($a);
 	if(preg_match('/TransAM<([EnxNo]{2})><([0-9]+)>/',$Pl_Ms['spec'],$a)){
 		if($a[1] != 'En') {
-			echo "¦³ TransAM ¨t²Îªº¾÷Åé¥u¯à¦b¥¿±`ª¬ºA¤U¶i¦æ§ï³y¡I";
+			echo "æœ‰ TransAM ç³»çµ±çš„æ©Ÿé«”åªèƒ½åœ¨æ­£å¸¸ç‹€æ…‹ä¸‹é€²è¡Œæ”¹é€ ï¼";
 			exit;
 		}
 		unset($a);
 	}
 
-	echo "¾÷Åé±M¥Î¤Æ¤u³õ - °ò¥»§ï³y¤uµ{<hr>";
+	echo "æ©Ÿé«”å°ˆç”¨åŒ–å·¥å ´ - åŸºæœ¬æ”¹é€ å·¥ç¨‹<hr>";
 	echo "<form action=ms_custom.php method=post name=mainform target=$SecTarget>";
 	echo "<input type=hidden value='ms_custom' name=action>";
 	echo "<input type=hidden value='Process' name=actionb>";
 	echo "<input type=hidden value='none' name=actionc>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 
 //Start Table -- User's Information
 echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"style=\"font-size: 12pt\"border-collapse: collapse\" bordercolor=\"#111111\" width=\"400\" id=\"AutoNumber1\">";
-echo "<tr><td width=400 colspan=2><b>»¡©ú</b></td></tr>";
-echo "<tr><td width=400 colspan=2>·í±z¦³¤@©wªº¸êª÷¡B¸ê·½©M³Ó§Q¿n¤À®É¡A´N¥i¥H¬°±zªº¾÷Åé¶i¦æ°ò¥»§ï³y¤uµ{¡A¥H´£¤É¾÷Åéªº¯à¤O­È¡C";
-echo "<br>§ï³yªº¤è¦¡»P³W­­¦p¤U:<br>";
-echo "&nbsp;- §ï³y´T«×©M¦¨¥\²v·|ÀHµÛ¾÷Åéµ¥¯Å¤U­°¡C<br>";
-echo "&nbsp;- ¨C³¡¾÷Åé¥u¯à¶i¦æ¤@¦¸§ï³y¡C<br>";
-echo "&nbsp;- §ó§ï¾÷Åé¦WºÙ®É¡A½Ğ·V­«¥Î¦r¡A¥H§K³Q§R°£¾÷Åé¡C<br>";
-echo "&nbsp;- §ï³y·|®ø¯Ó­ì®Æ(§Y§ï³yÂI¼Æ), ¸êª÷©M³Ó§Q¿n¤À¡C<br>";
-echo "&nbsp;- °ò¥»¦¨¥\²v¬° ".$Mod_MS_base_success."% ¡C<br>";
-echo "&nbsp;- ¨C¼W¥[¤@ÂI¡u§ï³y«×¡v, ·|:<br>";
-echo "&nbsp;¡@&nbsp;- ®ø¯Ó $".number_format($Mod_MS_cpt_cost)." ¸êª÷,<br>";
-echo "&nbsp;¡@&nbsp;- ®ø¯Ó ".number_format($Mod_MS_vpt_cost)."ÂI ³Ó§QÁZ¤À,<br>";
-echo "&nbsp;¡@&nbsp;- ¦¨¥\²v¤U­° $Mod_MS_cpt_penalty%¡C<br>";
-echo "&nbsp;- ¨C¨Ï¥Î¦h¤@ÂI¡u§ï³yÂI¼Æ¡v, ¦¨¥\²v¤W¤É $Mod_MS_cpt_bonus%¡C<br>";
-echo "&nbsp;- §ï³y¥¢±Ñªº¸Ü, ­ì®Æ(§Y§ï³yÂI¼Æ)©M¾÷Åé³£·|·´±¼, ³Ó§Q¿n¤À·|«O¯d¡C<br>";
-echo "&nbsp;- ¥i¥H¦b§L¾¹»s³y¤u³õ¸m©ñ­ì®Æ¡AÂà¤Æ¬°§ï³yÂI¼Æ¡C<br>±zªº§ï³yÂI¼Æ: ".number_format($TactFactory['c_point'])."ÂI <br>§Aªº³Ó§QÁZ¤À: ".number_format($Game['v_points'])."ÂI <br>±zªº²{ª÷: $".number_format($Gen['cash']);
+echo "<tr><td width=400 colspan=2><b>èªªæ˜</b></td></tr>";
+echo "<tr><td width=400 colspan=2>ç•¶æ‚¨æœ‰ä¸€å®šçš„è³‡é‡‘ã€è³‡æºå’Œå‹åˆ©ç©åˆ†æ™‚ï¼Œå°±å¯ä»¥ç‚ºæ‚¨çš„æ©Ÿé«”é€²è¡ŒåŸºæœ¬æ”¹é€ å·¥ç¨‹ï¼Œä»¥æå‡æ©Ÿé«”çš„èƒ½åŠ›å€¼ã€‚";
+echo "<br>æ”¹é€ çš„æ–¹å¼èˆ‡è¦é™å¦‚ä¸‹:<br>";
+echo "&nbsp;- æ”¹é€ å¹…åº¦å’ŒæˆåŠŸç‡æœƒéš¨è‘—æ©Ÿé«”ç­‰ç´šä¸‹é™ã€‚<br>";
+echo "&nbsp;- æ¯éƒ¨æ©Ÿé«”åªèƒ½é€²è¡Œä¸€æ¬¡æ”¹é€ ã€‚<br>";
+echo "&nbsp;- æ›´æ”¹æ©Ÿé«”åç¨±æ™‚ï¼Œè«‹æ…é‡ç”¨å­—ï¼Œä»¥å…è¢«åˆªé™¤æ©Ÿé«”ã€‚<br>";
+echo "&nbsp;- æ”¹é€ æœƒæ¶ˆè€—åŸæ–™(å³æ”¹é€ é»æ•¸), è³‡é‡‘å’Œå‹åˆ©ç©åˆ†ã€‚<br>";
+echo "&nbsp;- åŸºæœ¬æˆåŠŸç‡ç‚º ".$Mod_MS_base_success."% ã€‚<br>";
+echo "&nbsp;- æ¯å¢åŠ ä¸€é»ã€Œæ”¹é€ åº¦ã€, æœƒ:<br>";
+echo "&nbsp;ã€€&nbsp;- æ¶ˆè€— $".number_format($Mod_MS_cpt_cost)." è³‡é‡‘,<br>";
+echo "&nbsp;ã€€&nbsp;- æ¶ˆè€— ".number_format($Mod_MS_vpt_cost)."é» å‹åˆ©ç©åˆ†,<br>";
+echo "&nbsp;ã€€&nbsp;- æˆåŠŸç‡ä¸‹é™ $Mod_MS_cpt_penalty%ã€‚<br>";
+echo "&nbsp;- æ¯ä½¿ç”¨å¤šä¸€é»ã€Œæ”¹é€ é»æ•¸ã€, æˆåŠŸç‡ä¸Šå‡ $Mod_MS_cpt_bonus%ã€‚<br>";
+echo "&nbsp;- æ”¹é€ å¤±æ•—çš„è©±, åŸæ–™(å³æ”¹é€ é»æ•¸)å’Œæ©Ÿé«”éƒ½æœƒæ¯€æ‰, å‹åˆ©ç©åˆ†æœƒä¿ç•™ã€‚<br>";
+echo "&nbsp;- å¯ä»¥åœ¨å…µå™¨è£½é€ å·¥å ´ç½®æ”¾åŸæ–™ï¼Œè½‰åŒ–ç‚ºæ”¹é€ é»æ•¸ã€‚<br>æ‚¨çš„æ”¹é€ é»æ•¸: ".number_format($TactFactory['c_point'])."é» <br>ä½ çš„å‹åˆ©ç©åˆ†: ".number_format($Game['v_points'])."é» <br>æ‚¨çš„ç¾é‡‘: $".number_format($Gen['cash']);
 echo "<hr></td></tr>";
 
 echo "<tr><td colspan=6>";
 echo "<table align=center border=\"0\" width=\"100%\">";
 echo "<tr>";
 echo "<td width=50%>";
-echo "<b>¤w¨Ï¥Îªº§ï³yÂI¼Æ: </b><span style=\"color: blue\" id=pt_left>0</span> / $TactFactory[c_point]";
-echo "</td><td><b>§ï³y¦¨¥\\²v: </b><span id=successpc>$Mod_MS_base_success</span>%";
+echo "<b>å·²ä½¿ç”¨çš„æ”¹é€ é»æ•¸: </b><span style=\"color: blue\" id=pt_left>0</span> / $TactFactory[c_point]";
+echo "</td><td><b>æ”¹é€ æˆåŠŸç‡: </b><span id=successpc>$Mod_MS_base_success</span>%";
 echo "</td></tr><tr>";
 echo "<td width=50%>";
-echo "<b>¤w¨Ï¥Îªº³Ó§Q¿n¤À: </b><span style=\"color: blue\" id=vp_left>0</span> / $Game[v_points]";
-echo "</td><td><b>§ï³y»ù®æ: </b>$<span id=custom_price>0</span>";
+echo "<b>å·²ä½¿ç”¨çš„å‹åˆ©ç©åˆ†: </b><span style=\"color: blue\" id=vp_left>0</span> / $Game[v_points]";
+echo "</td><td><b>æ”¹é€ åƒ¹æ ¼: </b>$<span id=custom_price>0</span>";
 echo "</td></tr><tr>";
 echo "<script language=\"JavaScript\">
 function useC_pt(val){
@@ -169,11 +169,11 @@ function ModName(val){
 }
 
 function confirmCustom(){
-	if (pt_left.innerHTML > $TactFactory[c_point]){alert('§ï³yÂI¼Æ¤£¨¬¡I\\nµLªk¶i¦æ§ï³y¡C');return false;}
-	else if (vp_left.innerHTML > $Game[v_points]){alert('³Ó§Q¿n¤À¤£¨¬¡I\\nµLªk¶i¦æ§ï³y¡C');return false;}
-	else if (custom_price.innerHTML > $Gen[cash]){alert('©Ò«ùª÷¤£¨¬¡I\\nµLªk¶i¦æ§ï³y¡C');return false;}
+	if (pt_left.innerHTML > $TactFactory[c_point]){alert('æ”¹é€ é»æ•¸ä¸è¶³ï¼\\nç„¡æ³•é€²è¡Œæ”¹é€ ã€‚');return false;}
+	else if (vp_left.innerHTML > $Game[v_points]){alert('å‹åˆ©ç©åˆ†ä¸è¶³ï¼\\nç„¡æ³•é€²è¡Œæ”¹é€ ã€‚');return false;}
+	else if (custom_price.innerHTML > $Gen[cash]){alert('æ‰€æŒé‡‘ä¸è¶³ï¼\\nç„¡æ³•é€²è¡Œæ”¹é€ ã€‚');return false;}
 	else {
-		if (confirm('§Y±N¶i¦æ§ï³y¡A½Ğ½T«O©Ò¦³¸ê®Æ¥¿½T¡C\\n¥i¥H¶}©l§ï³y¶Ü¡H')==true){return true;}
+		if (confirm('å³å°‡é€²è¡Œæ”¹é€ ï¼Œè«‹ç¢ºä¿æ‰€æœ‰è³‡æ–™æ­£ç¢ºã€‚\\nå¯ä»¥é–‹å§‹æ”¹é€ å—ï¼Ÿ')==true){return true;}
 		else {return false;}
 	}
 }
@@ -181,39 +181,39 @@ function confirmCustom(){
 </script>";
 
 echo "<td width=50%>";
-echo "¨Ï¥Î§ï³yÂI¼Æ<input type=text name=c_pt value=0  size=3 maxlength=5 onChange=\"useC_pt(this.value);custom('c_pt');\" style=\"font-size: 10pt; color: #ffffff; background-color: #000000;text-align: center\">ÂI";
-echo "</td><td><b>§ï³y­È: </b><span id=c_pt_total>0</span>";
+echo "ä½¿ç”¨æ”¹é€ é»æ•¸<input type=text name=c_pt value=0  size=3 maxlength=5 onChange=\"useC_pt(this.value);custom('c_pt');\" style=\"font-size: 10pt; color: #ffffff; background-color: #000000;text-align: center\">é»";
+echo "</td><td><b>æ”¹é€ å€¼: </b><span id=c_pt_total>0</span>";
 echo "</td></tr><tr><td>";
 
 $AtMax = round($Pl_Ms['atf']*(((150-$Pl_Ms['needlv'])/100)+1));
-echo "<b style=\"color: yellow\">§ğÀ»¤O±j¤Æ: </b><br>$Pl_Ms[atf] => <b style=\"color: blue\" id=atc>$Pl_Ms[atf]</b> (¤W­­: $AtMax)<br>§ï³y«×: <select name=\"atc_pt\" onchange=\"custom('at');\" style=\"font-size: 10pt; color: #ffffff; background-color: #000000;\">";
+echo "<b style=\"color: yellow\">æ”»æ“ŠåŠ›å¼·åŒ–: </b><br>$Pl_Ms[atf] => <b style=\"color: blue\" id=atc>$Pl_Ms[atf]</b> (ä¸Šé™: $AtMax)<br>æ”¹é€ åº¦: <select name=\"atc_pt\" onchange=\"custom('at');\" style=\"font-size: 10pt; color: #ffffff; background-color: #000000;\">";
 for($PtUse_At=0;$PtUse_At <= (150-$Pl_Ms['needlv']);$PtUse_At++){
 echo "<option value=$PtUse_At>$PtUse_At";}
-echo "</select>ÂI";
+echo "</select>é»";
 echo "</td><td>";
 $DeMax = round($Pl_Ms['def']*(((150-$Pl_Ms['needlv'])/100)+1));
-echo "<b style=\"color: yellow\">¨¾¿m¤O±j¤Æ: </b><br>$Pl_Ms[def] => <b style=\"color: blue\" id=dec>$Pl_Ms[def]</b> (¤W­­: $DeMax)<br>§ï³y«×: <select name=\"dec_pt\" onchange=\"custom('de');\" style=\"font-size: 10pt; color: #ffffff; background-color: #000000;\">";
+echo "<b style=\"color: yellow\">é˜²ç¦¦åŠ›å¼·åŒ–: </b><br>$Pl_Ms[def] => <b style=\"color: blue\" id=dec>$Pl_Ms[def]</b> (ä¸Šé™: $DeMax)<br>æ”¹é€ åº¦: <select name=\"dec_pt\" onchange=\"custom('de');\" style=\"font-size: 10pt; color: #ffffff; background-color: #000000;\">";
 for($PtUse_De=0;$PtUse_De <= (150-$Pl_Ms['needlv']);$PtUse_De++){
 echo "<option value=$PtUse_De>$PtUse_De";}
-echo "</select>ÂI";
+echo "</select>é»";
 echo "</td></tr><tr><td>";
 $ReMax = round($Pl_Ms['ref']*(((150-$Pl_Ms['needlv'])/100)+1));
-echo "<b style=\"color: yellow\">¹B°Ê©Ê±j¤Æ: </b><br>$Pl_Ms[ref] => <b style=\"color: blue\" id=rec>$Pl_Ms[ref]</b> (¤W­­: $ReMax)<br>§ï³y«×: <select name=\"rec_pt\" onchange=\"custom('re');\" style=\"font-size: 10pt; color: #ffffff; background-color: #000000;\">";
+echo "<b style=\"color: yellow\">é‹å‹•æ€§å¼·åŒ–: </b><br>$Pl_Ms[ref] => <b style=\"color: blue\" id=rec>$Pl_Ms[ref]</b> (ä¸Šé™: $ReMax)<br>æ”¹é€ åº¦: <select name=\"rec_pt\" onchange=\"custom('re');\" style=\"font-size: 10pt; color: #ffffff; background-color: #000000;\">";
 for($PtUse_Re=0;$PtUse_Re <= (150-$Pl_Ms['needlv']);$PtUse_Re++){
 echo "<option value=$PtUse_Re>$PtUse_Re";}
-echo "</select>ÂI";
+echo "</select>é»";
 echo "</td><td>";
 $TaMax = round($Pl_Ms['taf']*(((150-$Pl_Ms['needlv'])/100)+1));
-echo "<b style=\"color: yellow\">©R¤¤¤O±j¤Æ: </b><br>$Pl_Ms[taf] => <b style=\"color: blue\" id=tac>$Pl_Ms[taf]</b> (¤W­­: $TaMax)<br>§ï³y«×: <select name=\"tac_pt\" onchange=\"custom('ta');\" style=\"font-size: 10pt; color: #ffffff; background-color: #000000;\">";
+echo "<b style=\"color: yellow\">å‘½ä¸­åŠ›å¼·åŒ–: </b><br>$Pl_Ms[taf] => <b style=\"color: blue\" id=tac>$Pl_Ms[taf]</b> (ä¸Šé™: $TaMax)<br>æ”¹é€ åº¦: <select name=\"tac_pt\" onchange=\"custom('ta');\" style=\"font-size: 10pt; color: #ffffff; background-color: #000000;\">";
 for($PtUse_Ta=0;$PtUse_Ta <= (150-$Pl_Ms['needlv']);$PtUse_Ta++){
 echo "<option value=$PtUse_Ta>$PtUse_Ta";}
-echo "</select>ÂI";
+echo "</select>é»";
 echo "</td></tr><tr><td>";
-echo "¾÷Åé¦WºÙ§óÅÜ: <input type=text value=\"$Pl_Ms[msname]\" name=fixedname maxlength=32 onChange=\"ModName(this.value);\" style=\"font-size: 10pt; color: #ffffff; background-color: #000000;\">";
-echo "</td><td>¦WºÙ¹wÄı:<br><span id=mscname>$Pl_Ms[msname]</span><sub>&copy;</sub>";
+echo "æ©Ÿé«”åç¨±æ›´è®Š: <input type=text value=\"$Pl_Ms[msname]\" name=fixedname maxlength=32 onChange=\"ModName(this.value);\" style=\"font-size: 10pt; color: #ffffff; background-color: #000000;\">";
+echo "</td><td>åç¨±é è¦½:<br><span id=mscname>$Pl_Ms[msname]</span><sub>&copy;</sub>";
 echo "</td></tr><tr>";
-echo "<td>«OÀI¾÷¨î: <input type=checkbox name=secureCustom onClick=custom() value=true> (®ø¯Ó ".($Pl_Ms['needlv']*2)." ÂI§ï³yÂI¼Æ)</td><td>®ø¯Ó¤@©wªº§ï³yÂI©ó¥¢±Ñ«á«O¯d¾÷Åé¡C</td>";
-echo "</tr><td colspan=2 align=center><input type=submit value='½T»{§ï³y' onClick='return confirmCustom()'>";
+echo "<td>ä¿éšªæ©Ÿåˆ¶: <input type=checkbox name=secureCustom onClick=custom() value=true> (æ¶ˆè€— ".($Pl_Ms['needlv']*2)." é»æ”¹é€ é»æ•¸)</td><td>æ¶ˆè€—ä¸€å®šçš„æ”¹é€ é»æ–¼å¤±æ•—å¾Œä¿ç•™æ©Ÿé«”ã€‚</td>";
+echo "</tr><td colspan=2 align=center><input type=submit value='ç¢ºèªæ”¹é€ ' onClick='return confirmCustom()'>";
 echo "</td></tr></table>";
 echo "</td></tr>";
 
@@ -222,7 +222,7 @@ echo "</table></form><hr><br><br><br><br>";
 
 
 elseif ($mode=='ms_custom' && $actionb == 'Process'){
-if ($Game['ms_custom']){echo "¤w¸g¶i¦æ¹L°ò¥»§ï³y¤uµ{¡I";postFooter();exit;}
+if ($Game['ms_custom']){echo "å·²ç¶“é€²è¡ŒéåŸºæœ¬æ”¹é€ å·¥ç¨‹ï¼";postFooter();exit;}
 if (!$Game['p_equip']) $Game['p_equip'] = '0<!>0';
 $Pl_EqWep = explode('<!>',$Game['p_equip']);
 GetWeaponDetails("$Pl_EqWep[0]",'Pl_SyEqWep');
@@ -239,16 +239,16 @@ $rec_pt = intval($rec_pt); if ($rec_pt < 0) $rec_pt = 0; if ($rec_pt > $Lv_Limit
 $tac_pt = intval($tac_pt); if ($tac_pt < 0) $tac_pt = 0; if ($tac_pt > $Lv_Limitation) $tac_pt = $Lv_Limitation;
 $c_pt = intval($c_pt); if ($c_pt < 0) $c_pt = 0;
 
-if ($c_pt > $TactFactory['c_point']){echo "§ï³yÂI¼Æ¤£¨¬¡I";postFooter();exit;}
+if ($c_pt > $TactFactory['c_point']){echo "æ”¹é€ é»æ•¸ä¸è¶³ï¼";postFooter();exit;}
 
 if (isset($secureCustom)){
 	$secureCustom = 1;
-	if ($c_pt+($Pl_Ms['needlv']*2) > $TactFactory['c_point']){echo "§ï³yÂI¼Æ¤£¨¬¡I";postFooter();exit;}
+	if ($c_pt+($Pl_Ms['needlv']*2) > $TactFactory['c_point']){echo "æ”¹é€ é»æ•¸ä¸è¶³ï¼";postFooter();exit;}
 }
 else $secureCustom = 0;
 
 $fixedname = preg_replace('/([!@#$%^&*()[\]\\{}\'",./<>?|]|--)+/','',$fixedname);
-if(strlen($fixedname) > 32){echo "±M¥Î¦WºÙ¹Lªø¡I";postFooter();exit;}
+if(strlen($fixedname) > 32){echo "å°ˆç”¨åç¨±éé•·ï¼";postFooter();exit;}
 
 $AtF = Round($Pl_Ms['atf']*$atc_pt*0.01);
 $DeF = Round($Pl_Ms['def']*$dec_pt*0.01);
@@ -285,8 +285,8 @@ $CriticalPenalty = $CriticalSuccess = $SuccessPc = 0;
 	if ($SuccessPc < 0) $SuccessPc = 0;
 	elseif ($SuccessPc > (10000-$CriticalSuccess)) $SuccessPc = (10000-$CriticalSuccess);
 	
-	if ($vp_cost > $Game['v_points'] || $vp_cost < 0) {echo "³Ó§Q¿n¤À¤£¨¬©Î¥X¿ù¡I";postFooter();exit;}
-	if ($custom_price > $Gen['cash'] || $custom_price < 0){echo "©Ò«ùª÷¤£¨¬©Î¶O¥Î¥X¿ù¡I";postFooter();exit;}
+	if ($vp_cost > $Game['v_points'] || $vp_cost < 0) {echo "å‹åˆ©ç©åˆ†ä¸è¶³æˆ–å‡ºéŒ¯ï¼";postFooter();exit;}
+	if ($custom_price > $Gen['cash'] || $custom_price < 0){echo "æ‰€æŒé‡‘ä¸è¶³æˆ–è²»ç”¨å‡ºéŒ¯ï¼";postFooter();exit;}
 
 
 
@@ -299,11 +299,11 @@ if($Result_Success <= $SuccessPc){
 	$Result_Custom .= $DeF.'<!>';
 	$Result_Custom .= $ReF.'<!>';
 	$Result_Custom .= $TaF;
-	$Message = "¦¨¥\\§ï³y¤F¡I<br>®ÄªG­È: ".($Result_Success/100)."% < ¦¨¥\\²v: ".($SuccessPc/100)."%";
+	$Message = "æˆåŠŸæ”¹é€ äº†ï¼<br>æ•ˆæœå€¼: ".($Result_Success/100)."% < æˆåŠŸç‡: ".($SuccessPc/100)."%";
 	$MS_ResultG = "`v_points` = `v_points`-$vp_cost, ";
 }
 else {
-	$Message = "§ï³y¥¢±Ñ¤F¡C<br>®ÄªG­È: ".($Result_Success/100)."% > ¦¨¥\\²v: ".($SuccessPc/100)."%";
+	$Message = "æ”¹é€ å¤±æ•—äº†ã€‚<br>æ•ˆæœå€¼: ".($Result_Success/100)."% > æˆåŠŸç‡: ".($SuccessPc/100)."%";
 	$HP_Sub = $EN_Sub = 0;
 	if(isset($a)) unset($a);
 	if (preg_match('/ExtHP<([0-9]+)>/',$Pl_SyEqWep['spec'],$a)) {$HP_Sub = $a[1];unset($a);}
@@ -325,83 +325,83 @@ else {
 	if (!$secureCustom){
 	$MS_Result = "`msuit` = '0', ".$hypmd_sql_gen;
 	$MS_ResultG = "`hpmax` = `hpmax`-$Pl_Ms[hpfix]-$HP_Sub, `enmax` = `enmax`-$Pl_Ms[enfix]-$EN_Sub, `p_equip` = '0<!>0', ".$hypmd_sql;
-	}else $Message .= "<br>¤uµ{®v­Ì¦¨¥\\­×¦n·lÃa¤Fªº¾÷Åé";
+	}else $Message .= "<br>å·¥ç¨‹å¸«å€‘æˆåŠŸä¿®å¥½æå£äº†çš„æ©Ÿé«”";
 }
 
 if($secureCustom)
 $c_pt += ($Pl_Ms['needlv']*2);
 
-$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET $MS_ResultG `ms_custom` = '$Result_Custom' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET $MS_ResultG `ms_custom` = '$Result_Custom' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 $sql = preg_replace('/(--)+/','',$sql);
 mysql_query($sql);
-$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` SET `time` = '$CFU_Time', `c_point`=`c_point`-$c_pt WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` SET `time` = '$CFU_Time', `c_point`=`c_point`-$c_pt WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 mysql_query($sql) or die(mysql_error());
-$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET $MS_Result `cash` = `cash`-$custom_price WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET $MS_Result `cash` = `cash`-$custom_price WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 mysql_query($sql) or die(mysql_error());
 unset($sql);
 
-echo "¾÷Åé±M¥Î¤Æ¤u³õ - °ò¥»§ï³y¤uµ{<hr>";
+echo "æ©Ÿé«”å°ˆç”¨åŒ–å·¥å ´ - åŸºæœ¬æ”¹é€ å·¥ç¨‹<hr>";
 echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-echo "<p align=center style=\"font-size: 16pt\">$Message<br><input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
-echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+echo "<p align=center style=\"font-size: 16pt\">$Message<br><input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
+
+
 echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 echo "</form>";	
 
 }
 elseif ($mode=='ms_pequip' && $actionb == 'GUI'){
-if ($Game['p_equip'] != '0<!>0'){echo "¤w¸g¶i¦æ¹L¾÷Åé¸Ë³Æ¦X¦¨¤uµ{¡I";postFooter();exit;}
-elseif ($Game['eqwep'] == '0<!>0' || !$Game['eqwep']){echo "½Ğ¥ı¸Ë³Æ»²§U¸Ë³Æ¡I";postFooter();exit;}
+if ($Game['p_equip'] != '0<!>0'){echo "å·²ç¶“é€²è¡Œéæ©Ÿé«”è£å‚™åˆæˆå·¥ç¨‹ï¼";postFooter();exit;}
+elseif ($Game['eqwep'] == '0<!>0' || !$Game['eqwep']){echo "è«‹å…ˆè£å‚™è¼”åŠ©è£å‚™ï¼";postFooter();exit;}
 else{
 	$Pl_EqWep = explode('<!>',$Game['eqwep']);
 	GetWeaponDetails("$Pl_EqWep[0]",'Pl_SyEqWep');
 }
-	echo "¾÷Åé±M¥Î¤Æ¤u³õ - ¾÷Åé¸Ë³Æ¦X¦¨¤uµ{<hr>";
+	echo "æ©Ÿé«”å°ˆç”¨åŒ–å·¥å ´ - æ©Ÿé«”è£å‚™åˆæˆå·¥ç¨‹<hr>";
 	echo "<form action=ms_custom.php method=post name=mainform target=$SecTarget>";
 	echo "<input type=hidden value='ms_pequip' name=action>";
 	echo "<input type=hidden value='Process' name=actionb>";
 	echo "<input type=hidden value='none' name=actionc>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	//Start Table -- User's Information
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"style=\"font-size: 12pt\"border-collapse: collapse\" bordercolor=\"#111111\" width=\"400\" id=\"AutoNumber1\">";
-	echo "<tr><td width=400 colspan=2><b>»¡©ú</b></td></tr>";
-	echo "<tr><td width=400 colspan=2>·í±z·Q§â»²§U¸Ë³Æ¦X¦¨¦b¾÷Åéªº®É¡A±z¥i¥H¶i¦æ¾÷Åé¸Ë³Æ¦X¦¨¤uµ{¡C";
-	echo "<br>¦X¦¨ªº¤è¦¡»P³W­­¦p¤U:<br>";
-	echo "&nbsp;- ¦¨¥\²v·|ÀHµÛ¾÷Åéµ¥¯Å¤U­°¡C<br>";
+	echo "<tr><td width=400 colspan=2><b>èªªæ˜</b></td></tr>";
+	echo "<tr><td width=400 colspan=2>ç•¶æ‚¨æƒ³æŠŠè¼”åŠ©è£å‚™åˆæˆåœ¨æ©Ÿé«”çš„æ™‚ï¼Œæ‚¨å¯ä»¥é€²è¡Œæ©Ÿé«”è£å‚™åˆæˆå·¥ç¨‹ã€‚";
+	echo "<br>åˆæˆçš„æ–¹å¼èˆ‡è¦é™å¦‚ä¸‹:<br>";
+	echo "&nbsp;- æˆåŠŸç‡æœƒéš¨è‘—æ©Ÿé«”ç­‰ç´šä¸‹é™ã€‚<br>";
 	$PercentageDisplay = ((150-$Pl_Ms['needlv'])*$Mod_MS_pequip_c);
 	if ($PercentageDisplay > 100) $PercentageDisplay = 100;
 	elseif ($PercentageDisplay < 0) $PercentageDisplay = 0;
-	echo "&nbsp;- ±zªº¾÷Åéªº¦¨¥\²v¬° ".$PercentageDisplay."% ¡C<br>";
-	echo "&nbsp;- ¦X¦¨¥¢±Ñªº¸Ü, »²§U¸Ë³Æ©M¾÷Åé³£·|·´±¼¡C<br>";
-	echo "&nbsp;- «OÀI¾÷¨î¡G®ø¯Ó¤@©wªº§ï³yÂI©ó¥¢±Ñ«á«O¯d¾÷Åé¡C";
-	echo "±zªº»²§U¸Ë³Æ: $Pl_SyEqWep[name]<br>±zªº§ï³yÂI¼Æ: $TactFactory[c_point]";
+	echo "&nbsp;- æ‚¨çš„æ©Ÿé«”çš„æˆåŠŸç‡ç‚º ".$PercentageDisplay."% ã€‚<br>";
+	echo "&nbsp;- åˆæˆå¤±æ•—çš„è©±, è¼”åŠ©è£å‚™å’Œæ©Ÿé«”éƒ½æœƒæ¯€æ‰ã€‚<br>";
+	echo "&nbsp;- ä¿éšªæ©Ÿåˆ¶ï¼šæ¶ˆè€—ä¸€å®šçš„æ”¹é€ é»æ–¼å¤±æ•—å¾Œä¿ç•™æ©Ÿé«”ã€‚";
+	echo "æ‚¨çš„è¼”åŠ©è£å‚™: $Pl_SyEqWep[name]<br>æ‚¨çš„æ”¹é€ é»æ•¸: $TactFactory[c_point]";
 	echo "<hr></td></tr>";
 	echo "<script language=\"JavaScript\">
 	function confirmCustom(){
-		if (confirm('§Y±N¶i¦æ¦X¡A¾÷²v¬°".$PercentageDisplay."%¡C\\n¥i¥H¶}©l§ï³y¶Ü¡H')==true){return true;}
+		if (confirm('å³å°‡é€²è¡Œåˆï¼Œæ©Ÿç‡ç‚º".$PercentageDisplay."%ã€‚\\nå¯ä»¥é–‹å§‹æ”¹é€ å—ï¼Ÿ')==true){return true;}
 		else {return false;}
 	}
 	</script>";
-	echo "<tr><td>«OÀI¾÷¨î: <input type=checkbox name=secureCustom value=true";
+	echo "<tr><td>ä¿éšªæ©Ÿåˆ¶: <input type=checkbox name=secureCustom value=true";
 	if (($Pl_SyEqWep['complexity']*10 + $Pl_Ms['needlv']*2) > $TactFactory['c_point'])echo " disabled";
-	echo "> (®ø¯Ó ".($Pl_SyEqWep['complexity']*10 + $Pl_Ms['needlv']*2)." ÂI§ï³yÂI¼Æ) ";
+	echo "> (æ¶ˆè€— ".($Pl_SyEqWep['complexity']*10 + $Pl_Ms['needlv']*2)." é»æ”¹é€ é»æ•¸) ";
 	echo "</td></tr>";
-	echo "<tr><td align=center><input type=submit value='¦X¦¨½T»{' onClick='return confirmCustom()'>";
+	echo "<tr><td align=center><input type=submit value='åˆæˆç¢ºèª' onClick='return confirmCustom()'>";
 	echo "</td></tr>";
 	echo "</table></form><hr><br><br><br><br>";
 }
 elseif ($mode=='ms_pequip' && $actionb == 'Process'){
-if ($Game['p_equip'] != '0<!>0'){echo "¤w¸g¶i¦æ¹L¾÷Åé¸Ë³Æ¦X¦¨¤uµ{¡I";postFooter();exit;}
-elseif ($Game['eqwep'] == '0<!>0' || !$Game['eqwep']){echo "½Ğ¥ı¸Ë³Æ»²§U¸Ë³Æ¡I";postFooter();exit;}
+if ($Game['p_equip'] != '0<!>0'){echo "å·²ç¶“é€²è¡Œéæ©Ÿé«”è£å‚™åˆæˆå·¥ç¨‹ï¼";postFooter();exit;}
+elseif ($Game['eqwep'] == '0<!>0' || !$Game['eqwep']){echo "è«‹å…ˆè£å‚™è¼”åŠ©è£å‚™ï¼";postFooter();exit;}
 else{
 	$Pl_EqWep = explode('<!>',$Game['eqwep']);
 	GetWeaponDetails("$Pl_EqWep[0]",'Pl_SyEqWep');
 }
 if (isset($secureCustom)){
 	$secureCustom = 1;
-	if (($Pl_SyEqWep['complexity']*10 + $Pl_Ms['needlv']*2) > $TactFactory['c_point']){echo "§ï³yÂI¼Æ¤£¨¬¡I";postFooter();exit;}
+	if (($Pl_SyEqWep['complexity']*10 + $Pl_Ms['needlv']*2) > $TactFactory['c_point']){echo "æ”¹é€ é»æ•¸ä¸è¶³ï¼";postFooter();exit;}
 }
 else $secureCustom = 0;
 
@@ -415,11 +415,11 @@ $Result_Success = mt_rand(0,10000);
 $MS_ResultG = (string) '';
 
 if($Result_Success <= $SuccessPc){
-	$Message = "¦¨¥\\§ï³y¤F¡I<br>®ÄªG­È: ".($Result_Success/100)."% < ¦¨¥\\²v: ".($SuccessPc/100)."%";
+	$Message = "æˆåŠŸæ”¹é€ äº†ï¼<br>æ•ˆæœå€¼: ".($Result_Success/100)."% < æˆåŠŸç‡: ".($SuccessPc/100)."%";
 	$MS_ResultG = "`p_equip` = '$Game[eqwep]', `eqwep` = '0<!>0' ";
 }
 else {
-	$Message = "§ï³y¥¢±Ñ¤F¡C<br>®ÄªG­È: ".($Result_Success/100)."% > ¦¨¥\\²v: ".($SuccessPc/100)."%";
+	$Message = "æ”¹é€ å¤±æ•—äº†ã€‚<br>æ•ˆæœå€¼: ".($Result_Success/100)."% > æˆåŠŸç‡: ".($SuccessPc/100)."%";
 	if (!$secureCustom){
 	$HP_Sub = $EN_Sub = 0;
 	if(isset($a)) unset($a);
@@ -440,31 +440,31 @@ else {
 	}
 	}
 	$MS_ResultG = "`hpmax` = `hpmax`-$Pl_Ms[hpfix]-$HP_Sub, `enmax` = `enmax`-$Pl_Ms[enfix]-$EN_Sub, `eqwep` = '0<!>0', `p_equip` = '0<!>0',$hypmd_sql `ms_custom` = '' ";
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `msuit` = '0' $hypmd_sql_gen WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `msuit` = '0' $hypmd_sql_gen WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 	mysql_query($sql) or die(mysql_error());
 	unset($sql);
-	}else {$Message .= '<br>¤uµ{®v­Ì¦¨¥\\­×¦n·lÃa¤Fªº¸Ë³Æ©M¾÷Åé¡C';$MS_ResultG = "`p_equip` = '0<!>0'";}
+	}else {$Message .= '<br>å·¥ç¨‹å¸«å€‘æˆåŠŸä¿®å¥½æå£äº†çš„è£å‚™å’Œæ©Ÿé«”ã€‚';$MS_ResultG = "`p_equip` = '0<!>0'";}
 }
 
 if ($secureCustom){
-$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` SET `time` = '$CFU_Time', `c_point`=`c_point`-".intval($Pl_SyEqWep['complexity']*10 + $Pl_Ms['needlv']*2)."  WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` SET `time` = '$CFU_Time', `c_point`=`c_point`-".intval($Pl_SyEqWep['complexity']*10 + $Pl_Ms['needlv']*2)."  WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 mysql_query($sql);
 }
 
-$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET $MS_ResultG WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET $MS_ResultG WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 $sql = preg_replace('/(--)+/','',$sql);
 mysql_query($sql);
 
-echo "¾÷Åé±M¥Î¤Æ¤u³õ - ¾÷Åé¸Ë³Æ¦X¦¨¤uµ{<hr>";
+echo "æ©Ÿé«”å°ˆç”¨åŒ–å·¥å ´ - æ©Ÿé«”è£å‚™åˆæˆå·¥ç¨‹<hr>";
 echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-echo "<p align=center style=\"font-size: 16pt\">$Message<br><input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
-echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+echo "<p align=center style=\"font-size: 16pt\">$Message<br><input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
+
+
 echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 echo "</form>";	
 
 }
-else {echo "¥¼©w¸q°Ê§@¡I";}
+else {echo "æœªå®šç¾©å‹•ä½œï¼";}
 postFooter();
 echo "</body>";
 echo "</html>";

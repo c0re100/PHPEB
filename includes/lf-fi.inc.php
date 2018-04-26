@@ -21,11 +21,11 @@ function GetUsrDetails($username,$AssignedforGen,$AssignedforGame=''){
 	global $$AssignedforGen;global $$AssignedforGame;
 	if ($AssignedforGen){
 	$sqlgen = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` WHERE username='". $username ."'");
-	$query_gen = mysql_query($sqlgen) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+	$query_gen = mysql_query($sqlgen) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 	$$AssignedforGen = mysql_fetch_array($query_gen);}
 	if ($AssignedforGame){
 	$sqlgame = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE username='". $username ."'");
-	$query_game = mysql_query($sqlgame) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+	$query_game = mysql_query($sqlgame) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 	$$AssignedforGame = mysql_fetch_array($query_game);}
 }
 

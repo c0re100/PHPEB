@@ -4,25 +4,25 @@
 //------- phpbb Version-------//
 //----------------------------//
 global $DBPrefix;
-$PHPEB_LOCATION = 'index2.php';			//¶}±Òphp-ebªº¦ì¸m, ¤@¯ë¤£¥Î­×§ï
-$RegLocation = 'http://localhost/php-eb/';	//µù¥U¦ì¸m, ½Ğ¿é¤Jphp-ebªº¥Ø¿ı
-$DBHost = 'localhost';				//¸ê®Æ®w¦ì¸m, ¦p localhost, 127.0.0.1, www.yourdomain.com, ½Ğ»Pcfu.php¬Û¦P!!
-$DBUser = 'root';				//¸ê®Æ®w¨Ï¥ÎªÌ¦WºÙ, ½Ğ»Pcfu.php¬Û¦P!!
-$DBPass = '';					//¸ê®Æ®w±K½X, ½Ğ»Pcfu.php¬Û¦P!!
-$DBName = '';					//¸ê®Æ®w¦WºÙ, ½Ğ»Pcfu.php¬Û¦P!!
-$DBPrefix = 'vsqa_';				//¸ê®Æªí«eºó¦W, ½Ğ»Pcfu.php¬Û¦P!!
-$Forum_DBHost = 'localhost';			//½×¾Â¸ê®Æ®w¦ì¸m, ¦p localhost, 127.0.0.1, www.yourdomain.com, ½Ğ»P½×¾Â¬Û¦P!!
-$Forum_DBUser = 'root';				//½×¾Â¸ê®Æ®w¨Ï¥ÎªÌ¦WºÙ, ½Ğ»P½×¾Â¬Û¦P!!
-$Forum_DBPass = '';				//½×¾Â¸ê®Æ®w±K½X, ½Ğ»P½×¾Â¬Û¦P!!
-$Forum_DBName = '';				//½×¾Â¸ê®Æ®w¦WºÙ, ½Ğ»P½×¾Â¬Û¦P!!
-$Forum_DBPrefix = 'phpbb_';			//½×¾Â¸ê®Æªí«eºó¦W, ½Ğ»P½×¾Â¬Û¦P!!
+$PHPEB_LOCATION = 'index2.php';			//é–‹å•Ÿphp-ebçš„ä½ç½®, ä¸€èˆ¬ä¸ç”¨ä¿®æ”¹
+$RegLocation = 'http://localhost/php-eb/';	//è¨»å†Šä½ç½®, è«‹è¼¸å…¥php-ebçš„ç›®éŒ„
+$DBHost = 'localhost';				//è³‡æ–™åº«ä½ç½®, å¦‚ localhost, 127.0.0.1, www.yourdomain.com, è«‹èˆ‡cfu.phpç›¸åŒ!!
+$DBUser = 'root';				//è³‡æ–™åº«ä½¿ç”¨è€…åç¨±, è«‹èˆ‡cfu.phpç›¸åŒ!!
+$DBPass = '';					//è³‡æ–™åº«å¯†ç¢¼, è«‹èˆ‡cfu.phpç›¸åŒ!!
+$DBName = '';					//è³‡æ–™åº«åç¨±, è«‹èˆ‡cfu.phpç›¸åŒ!!
+$DBPrefix = 'vsqa_';				//è³‡æ–™è¡¨å‰ç¶´å, è«‹èˆ‡cfu.phpç›¸åŒ!!
+$Forum_DBHost = 'localhost';			//è«–å£‡è³‡æ–™åº«ä½ç½®, å¦‚ localhost, 127.0.0.1, www.yourdomain.com, è«‹èˆ‡è«–å£‡ç›¸åŒ!!
+$Forum_DBUser = 'root';				//è«–å£‡è³‡æ–™åº«ä½¿ç”¨è€…åç¨±, è«‹èˆ‡è«–å£‡ç›¸åŒ!!
+$Forum_DBPass = '';				//è«–å£‡è³‡æ–™åº«å¯†ç¢¼, è«‹èˆ‡è«–å£‡ç›¸åŒ!!
+$Forum_DBName = '';				//è«–å£‡è³‡æ–™åº«åç¨±, è«‹èˆ‡è«–å£‡ç›¸åŒ!!
+$Forum_DBPrefix = 'phpbb_';			//è«–å£‡è³‡æ–™è¡¨å‰ç¶´å, è«‹èˆ‡è«–å£‡ç›¸åŒ!!
 
 //----------------------------//
 
 	echo "<html>";
 	echo "<head>";		
 	echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">";
-	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=big5\">";
+	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">";
 	echo "<title>Endless Battle ~ php-eb</title>";
 	echo "</head>";
 	echo "<body bgcolor=\"#000000\" text=#dcdcdc link=#dcdcdc style=\"margin:0px 0px 0px 0px;\" oncontextmenu=\"return false;\" style=\"font-family: Arial\">";
@@ -38,7 +38,7 @@ style="font-size:70px;font-family: 'Monotype Corsiva';color:#505050;filter:alpha
 <div align=center style="color:#a0a0a0;font-size:12px;">Copyright <a href="http://vsqa.no-ip.com" target=_blank style="text-decoration:none;font-family:Monotype Corsiva;color:#a0a0a0;"> V2Alliance</font></a> All Right Reserved.</div>
 <hr width=80% style="filter:alpha(opacity=100,finishopacity=40,style=2)">
 
-<p align="center">The Portal to the world of php-eb<br>³q¦í php-eb ¥@¬Éªº¤J¤f</p>
+<p align="center">The Portal to the world of php-eb<br>é€šä½ php-eb ä¸–ç•Œçš„å…¥å£</p>
 
 <hr width=80% style="filter:alpha(opacity=100,finishopacity=40,style=2)">
 <br>
@@ -52,8 +52,8 @@ window.close();
 
 <center>
 <?php
-echo "<input type=button value=\"¶i¤J¹CÀ¸\" onClick=startgame('$PHPEB_LOCATION')><br>";
-echo "<input type=button value=\"¨ú±oµù¥U½X\" onClick=startgame('".$RegLocation."phpeb_portal.php?action=regkey')>";
+echo "<input type=button value=\"é€²å…¥éŠæˆ²\" onClick=startgame('$PHPEB_LOCATION')><br>";
+echo "<input type=button value=\"å–å¾—è¨»å†Šç¢¼\" onClick=startgame('".$RegLocation."phpeb_portal.php?action=regkey')>";
 }
 if($mode == 'regkey' && !$actionb){
 echo "
@@ -70,31 +70,31 @@ echo "
 ";
 /*
 <tr>
-<td width=50% align=right>©ÒÄİ½×¾Â:</td>
+<td width=50% align=right>æ‰€å±¬è«–å£‡:</td>
 <td width=50% align=left>
 <select name=forum>
-<option value='FORUMNAME'>½×¾Â¤@
-<option value='SECOND_FORUMNAME'>½×¾Â¤G
+<option value='FORUMNAME'>è«–å£‡ä¸€
+<option value='SECOND_FORUMNAME'>è«–å£‡äºŒ
 </td>
 </tr>
 */
 echo "
 <tr>
-<td width=50% align=right>½×¾Â©Ò¥Îªºµn¤J¦WºÙ:</td>
+<td width=50% align=right>è«–å£‡æ‰€ç”¨çš„ç™»å…¥åç¨±:</td>
 <td width=50% align=left><input type=text name=username size=16></td>
 </tr>
 <tr>
-<td width=50% align=right>±K½X:</td>
+<td width=50% align=right>å¯†ç¢¼:</td>
 <td width=50% align=left><input type=password name=password size=16></td>
 </tr>
 <tr>
-<td width=50% align=right>¹q¶l:</td>
+<td width=50% align=right>é›»éƒµ:</td>
 <td width=50% align=left><input type=text name=email size=16></td>
 </tr>
-</table><input type=submit value='¨ú±oµù¥U½X'>
+</table><input type=submit value='å–å¾—è¨»å†Šç¢¼'>
 </center>
 </div>
-<p align=center>&#12288;</td>
+<p align=center>ã€€</td>
 </tr>
 </table>
 </form>
@@ -115,10 +115,10 @@ $RegKeyQuery = mysql_query($sql) or die(mysql_error());
 $RegKeyData = mysql_fetch_array($RegKeyQuery);
 		$password = md5($password);
 		if (!$RegKeyData[user_active] || !$username || !$RegKeyData[username] || $RegKeyData[user_password] != $password || $RegKeyData[username] != $username){
-		echo "<center><br><br>¨Ï¥ÎªÌ¦WºÙ©Î±K½X¿ù»~¡C<br>";
+		echo "<center><br><br>ä½¿ç”¨è€…åç¨±æˆ–å¯†ç¢¼éŒ¯èª¤ã€‚<br>";
 		exit;}
 		if (!$RegKeyData[user_email] || $RegKeyData[user_email] != $email){
-		echo "<center><br><br>¹q¶l¦a§}¿ù»~¡C<br><br>";
+		echo "<center><br><br>é›»éƒµåœ°å€éŒ¯èª¤ã€‚<br><br>";
 		exit;
 
 //}
@@ -139,7 +139,7 @@ mysql_select_db ("");
 mysql_close();
 //End
 }
-else{echo "<center><br><br>¿ù»~¡C<br>¥¼¯à¨ú±o½×¾Â¸ê°T¡C<br><br>";exit;}
+else{echo "<center><br><br>éŒ¯èª¤ã€‚<br>æœªèƒ½å–å¾—è«–å£‡è³‡è¨Šã€‚<br><br>";exit;}
 //END of SECOND FORUM
 */
 
@@ -156,18 +156,18 @@ mysql_select_db ("$DBName");
 //if($forum == 'dw'){	//FIRST FORUM
 	
 $sql = ("INSERT INTO ".$GLOBALS[DBPrefix]."phpeb_regkeys (regkey,username,id,email) VALUES('$RegKeyCache','$forum-$RegKeyData[user_id]','$forum-$RegKeyData[user_id]','$RegKeyData[user_email]')");
-mysql_query($sql) or die ('<br><center>¥¼¯à§¹¦¨µù¥U (Location ID: Portal01-1)<br>­ì¦]:' . mysql_error() . '<br>'."¥i¯à¬O¦]¬°±z¤w¥Ó½Ğ¹L©ÎE-Mail¤w³Q¨Ï¥Î¡C$RegKeyData[user_id]','$RegKeyData[user_email]");
+mysql_query($sql) or die ('<br><center>æœªèƒ½å®Œæˆè¨»å†Š (Location ID: Portal01-1)<br>åŸå› :' . mysql_error() . '<br>'."å¯èƒ½æ˜¯å› ç‚ºæ‚¨å·²ç”³è«‹éæˆ–E-Mailå·²è¢«ä½¿ç”¨ã€‚$RegKeyData[user_id]','$RegKeyData[user_email]");
 
 /*
 }
 else{	//SECOND FORUM
 $sql = ("INSERT INTO ".$GLOBALS[DBPrefix]."phpeb_regkeys (regkey,username,id,email) VALUES('$RegKeyCache','$forum-$RegKeyData[uid]','$forum-$RegKeyData[uid]','$RegKeyData[email]')");
-mysql_query($sql) or die ('<br><center>¥¼¯à§¹¦¨µù¥U (Location ID: Portal01-2)<br>­ì¦]:' . mysql_error() . '<br>'."¥i¯à¬O¦]¬°±z¤w¥Ó½Ğ¹L©ÎE-Mail¤w³Q¨Ï¥Î¡C$RegKeyData[uid]','$RegKeyData[email]");
+mysql_query($sql) or die ('<br><center>æœªèƒ½å®Œæˆè¨»å†Š (Location ID: Portal01-2)<br>åŸå› :' . mysql_error() . '<br>'."å¯èƒ½æ˜¯å› ç‚ºæ‚¨å·²ç”³è«‹éæˆ–E-Mailå·²è¢«ä½¿ç”¨ã€‚$RegKeyData[uid]','$RegKeyData[email]");
 }
 */
 
 echo "<div align=center><form action=gmscrn_main.php?action=proc method=post name=frmreturn target=Alpha>";
-echo "<p align=center style=\"font-size: 16pt\"><br><br><br><br><br>«Ø¥ßµù¥U½X§¹¦¨¡I<br>±zªºµù¥U½X¬O $RegKeyCache <br>½Ğ§A°O¤U¦¹µù¥U½X¡I<input type=text value=\"$RegKeyCache\"><br><input type=button value=\"Ä~Äò\" onClick=\"location.replace('$PHPEB_LOCATION')\"></p>";
+echo "<p align=center style=\"font-size: 16pt\"><br><br><br><br><br>å»ºç«‹è¨»å†Šç¢¼å®Œæˆï¼<br>æ‚¨çš„è¨»å†Šç¢¼æ˜¯ $RegKeyCache <br>è«‹ä½ è¨˜ä¸‹æ­¤è¨»å†Šç¢¼ï¼<input type=text value=\"$RegKeyCache\"><br><input type=button value=\"ç¹¼çºŒ\" onClick=\"location.replace('$PHPEB_LOCATION')\"></p>";
 echo "</form></div>";
 mysql_close();
 

@@ -5,10 +5,10 @@
 
 // Activate Program
 // Turn this on (set to true) or delete this file when not using!!
-// ¤£¨Ï¥Î®É, °O±o³]©w¬°¡uTrue¡v ©Î §R°£³o­ÓÀÉ®×!!
+// ä¸ä½¿ç”¨æ™‚, è¨˜å¾—è¨­å®šç‚ºã€ŒTrueã€ æˆ– åˆªé™¤é€™å€‹æª”æ¡ˆ!!
 $UseAuth = false;
 $Script_Name = 'tactAdder.php';
-include('../../cfu.php');
+include('cfu.php');
 
 		// Header:
 		// Date in the past
@@ -23,9 +23,9 @@ include('../../cfu.php');
 		echo "<html>";
 		echo "<head>";
 		echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">";
-		echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=big5\">";
+		echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">";
 		echo "<title>Endless Battle ~ php-eb - &copy; 2005-2010 v2Alliance</title>";
-		echo "<style type=\"text/css\">BODY {FONT-SIZE: 10px; FONT-FAMILY: \"Arial\",  \"·s²Ó©úÅé\"; cursor:default}TD {FONT-SIZE: 9pt; FONT-FAMILY: \"Arial\", \"·s²Ó©úÅé\"}A:visited {COLOR: #FFFFFF;}</style>";
+		echo "<style type=\"text/css\">BODY {FONT-SIZE: 10px; FONT-FAMILY: \"Arial\",  \"æ–°ç´°æ˜é«”\"; cursor:default}TD {FONT-SIZE: 9pt; FONT-FAMILY: \"Arial\", \"æ–°ç´°æ˜é«”\"}A:visited {COLOR: #FFFFFF;}</style>";
 
 
 $mode = ( isset($_POST['action']) ) ? $_POST['action'] : '';
@@ -139,7 +139,7 @@ if($mode == 'process'){
 
 	function processDirections($str){
 		$from = array('  ', "\t", "\n");
-		$to = array('¡@', "¡@ ¡@", "\n<br />");
+		$to = array('ã€€', "ã€€ ã€€", "\n<br />");
 		$str = str_replace($from, $to, $str);
 		return addslashes($str);
 	}
@@ -177,7 +177,7 @@ echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 			<br />
 			WepID: <input name="WepID" type="text" id="WepID" size="5" />:
 			<select name="Select1" id="Select1" style="width: 130px">
-			<option value=''>¨ú®ø</option>
+			<option value=''>å–æ¶ˆ</option>
 			</select><br />
 			<br />
 			Grade: <input name="Grade" type="text" /><br />
@@ -187,115 +187,115 @@ echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 				<tr>
 					<td style="width: 50%">1:<input id="M1" name="M[1]" size="5" type="text" />
 					<select name="Select2" id="Select2" style="width: 180px">
-					<option value=''>¨S¦³</option>
+					<option value=''>æ²’æœ‰</option>
 					</select></td>
 					<td style="width: 50%">11:<input id="M11" name="M[11]" size="5" type="text" />
 					<select name="Select12" id="Select12" style="width: 180px">
-					<option value=''>¨S¦³</option>
+					<option value=''>æ²’æœ‰</option>
 					</select></td>
 				</tr>
 				<tr>
 					<td style="width: 50%">2:<input id="M2" name="M[2]" size="5" type="text" />
 					<select name="Select3" id="Select3" style="width: 180px">
-					<option value=''>¨S¦³</option>
+					<option value=''>æ²’æœ‰</option>
 					</select></td>
 					<td style="width: 50%">12:<input id="M12" name="M[12]" size="5" type="text" />
 					<select name="Select13" id="Select13" style="width: 180px">
-					<option value=''>¨S¦³</option>
+					<option value=''>æ²’æœ‰</option>
 					</select></td>
 				</tr>
 				<tr>
 					<td style="width: 50%">3:<input id="M3" name="M[3]" size="5" type="text" />
 					<select name="Select4" id="Select4" style="width: 180px">
-					<option value=''>¨S¦³</option>
+					<option value=''>æ²’æœ‰</option>
 					</select></td>
 					<td style="width: 50%">13:<input id="M13" name="M[13]" size="5" type="text" />
 					<select name="Select14" id="Select14" style="width: 180px">
-					<option value=''>¨S¦³</option>
+					<option value=''>æ²’æœ‰</option>
 					</select></td>
 				</tr>
 				<tr>
 					<td style="width: 50%">4:<input id="M4" name="M[4]" size="5" type="text" />
 					<select name="Select5" id="Select5" style="width: 180px">
-					<option value=''>¨S¦³</option>
+					<option value=''>æ²’æœ‰</option>
 					</select></td>
 					<td style="width: 50%">14:<input id="M14" name="M[14]" size="5" type="text" />
 					<select name="Select15" id="Select15" style="width: 180px">
-					<option value=''>¨S¦³</option>
+					<option value=''>æ²’æœ‰</option>
 					</select></td>
 				</tr>
 				<tr>
 					<td style="width: 50%">5:<input id="M5" name="M[5]" size="5" type="text" />
 					<select name="Select6" id="Select6" style="width: 180px">
-					<option value=''>¨S¦³</option>
+					<option value=''>æ²’æœ‰</option>
 					</select></td>
 					<td style="width: 50%">15:<input id="M15" name="M[15]" size="5" type="text" />
 					<select name="Select16" id="Select16" style="width: 180px">
-					<option value=''>¨S¦³</option>
+					<option value=''>æ²’æœ‰</option>
 					</select></td>
 				</tr>
 				<tr>
 					<td style="width: 50%">6:<input id="M6" name="M[6]" size="5" type="text" />
 					<select name="Select7" id="Select7" style="width: 180px">
-					<option value=''>¨S¦³</option>
+					<option value=''>æ²’æœ‰</option>
 					</select></td>
 					<td style="width: 50%">16:<input id="M16" name="M[16]" size="5" type="text" />
 					<select name="Select17" id="Select17" style="width: 180px">
-					<option value=''>¨S¦³</option>
+					<option value=''>æ²’æœ‰</option>
 					</select></td>
 				</tr>
 				<tr>
 					<td style="width: 50%">7:<input id="M7" name="M[7]" size="5" type="text" />
 					<select name="Select8" id="Select8" style="width: 180px">
-					<option value=''>¨S¦³</option>
+					<option value=''>æ²’æœ‰</option>
 					</select></td>
 					<td style="width: 50%">17:<input id="M17" name="M[17]" size="5" type="text" />
 					<select name="Select18" id="Select18" style="width: 180px">
-					<option value=''>¨S¦³</option>
+					<option value=''>æ²’æœ‰</option>
 					</select></td>
 				</tr>
 				<tr>
 					<td style="width: 50%">8:<input id="M8" name="M[8]" size="5" type="text" />
 					<select name="Select9" id="Select9" style="width: 180px">
-					<option value=''>¨S¦³</option>
+					<option value=''>æ²’æœ‰</option>
 					</select></td>
 					<td style="width: 50%">18:<input id="M18" name="M[18]" size="5" type="text" />
 					<select name="Select19" id="Select19" style="width: 180px">
-					<option value=''>¨S¦³</option>
+					<option value=''>æ²’æœ‰</option>
 					</select></td>
 				</tr>
 				<tr>
 					<td style="width: 50%">9:<input id="M9" name="M[9]" size="5" type="text" />
 					<select name="Select10" id="Select10" style="width: 180px">
-					<option value=''>¨S¦³</option>
+					<option value=''>æ²’æœ‰</option>
 					</select></td>
 					<td style="width: 50%">19:<input id="M19" name="M[19]" size="5" type="text" />
 					<select name="Select20" id="Select20" style="width: 180px">
-					<option value=''>¨S¦³</option>
+					<option value=''>æ²’æœ‰</option>
 					</select></td>
 				</tr>
 				<tr>
 					<td style="width: 50%">10:<input id="M10" name="M[10]" size="5" type="text" />
 					<select name="Select11" id="Select11" style="width: 180px">
-					<option value=''>¨S¦³</option>
+					<option value=''>æ²’æœ‰</option>
 					</select></td>
 					<td style="width: 50%">20:<input id="M20" name="M[20]" size="5" type="text" />
 					<select name="Select21" id="Select21" style="width: 180px">
-					<option value=''>¨S¦³</option>
+					<option value=''>æ²’æœ‰</option>
 					</select></td>
 				</tr>
 			</table>
 			</td>
 			<td>
-				­ì®Æ:
-				<br /> ºë¿û <input type=text name="raw[1]" size=3>
-				<br /> ­ìªo <input type=text name="raw[2]" size=3>
-				<br /> ½Æ¦X¾T <input type=text name="raw[3]" size=3>
-				<br /> ¯Â»È <input type=text name="raw[4]" size=3>
-				<br /> ¤ëÜg <input type=text name="raw[5]" size=3>
-				<br /> ¶W¾ÉÅé <input type=text name="raw[6]" size=3>
-				<br /> ºÒÅÖ <input type=text name="raw[7]" size=3>
-				<br /> ­«²B <input type=text name="raw[8]" size=3>
+				åŸæ–™:
+				<br /> ç²¾é‹¼ <input type=text name="raw[1]" size=3>
+				<br /> åŸæ²¹ <input type=text name="raw[2]" size=3>
+				<br /> è¤‡åˆé‹ <input type=text name="raw[3]" size=3>
+				<br /> ç´”éŠ€ <input type=text name="raw[4]" size=3>
+				<br /> æœˆéˆ¦ <input type=text name="raw[5]" size=3>
+				<br /> è¶…å°é«” <input type=text name="raw[6]" size=3>
+				<br /> ç¢³çº– <input type=text name="raw[7]" size=3>
+				<br /> é‡æ°« <input type=text name="raw[8]" size=3>
 			</td>
 		</tr>
 		<tr>

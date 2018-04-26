@@ -3,20 +3,20 @@
 // 9902 of Set Spec Class
 // Requirements: sfo.class, spc.superclass <some may require obattle.ext.php>
 // Modifications Required: 
-// 1. §â "sSpc_9902" §ó¦W¬° "sSpc_<½s¸¹>", <½s¸¹> ¦Û©w, ¤£¯à­«ÂĞ; ¦@4³B»İ§ó§ï (Class Name x2, Constructor x2)
-// 2. ¦]»İ­n§ó§ï¦U Phase ¤ºªº Code
-//     - ¥i¥H¨Ï¥Î©Ò¦³ sfo.class ªº variables, ¤Î¦]»İ­n®M¨ú obattle.ext ªº variables
+// 1. æŠŠ "sSpc_9902" æ›´åç‚º "sSpc_<ç·¨è™Ÿ>", <ç·¨è™Ÿ> è‡ªå®š, ä¸èƒ½é‡è¦†; å…±4è™•éœ€æ›´æ”¹ (Class Name x2, Constructor x2)
+// 2. å› éœ€è¦æ›´æ”¹å„ Phase å…§çš„ Code
+//     - å¯ä»¥ä½¿ç”¨æ‰€æœ‰ sfo.class çš„ variables, åŠå› éœ€è¦å¥—å– obattle.ext çš„ variables
 //
 
 class sSpc_9902 extends setSpecSuperClass{
 	
 	const cName = 'sSpc_9902';
 
-	// Class Variables - ¨Ï¥ÎªÌÅÜ¼Æ
+	// Class Variables - ä½¿ç”¨è€…è®Šæ•¸
 	var $Rq_MS;
 	var $Rq_Wep;
 
-	// System Variables - sfo.class/obattle.ext ªºÅÜ¼Æ
+	// System Variables - sfo.class/obattle.ext çš„è®Šæ•¸
 	var $Pl;
 	var $Op;
 
@@ -27,16 +27,16 @@ class sSpc_9902 extends setSpecSuperClass{
 	
 	function sSpc_9902($Pl, $Op){
 		$this->Activated = false;
-		$this->Rq_MS = '9902';        // »İ­nMS ID
-		$this->Rq_Wep['A'] = '';  // »İ­n¥DªZ¾¹ ID, ³]¬° false «h¤£­­¨î
-		$this->Rq_Wep['B'] = '';  // »İ­n³Æ¥Î 1 ID, ¦P¤W
-		$this->Rq_Wep['C'] = '';  // »İ­n³Æ¥Î 2 ID, ¦P¤W
-		$this->Rq_Wep['D'] = '';  // »İ­n»²§U¸Ë³Æ ID, ¦P¤W
+		$this->Rq_MS = '9902';        // éœ€è¦MS ID
+		$this->Rq_Wep['A'] = '';  // éœ€è¦ä¸»æ­¦å™¨ ID, è¨­ç‚º false å‰‡ä¸é™åˆ¶
+		$this->Rq_Wep['B'] = '';  // éœ€è¦å‚™ç”¨ 1 ID, åŒä¸Š
+		$this->Rq_Wep['C'] = '';  // éœ€è¦å‚™ç”¨ 2 ID, åŒä¸Š
+		$this->Rq_Wep['D'] = '';  // éœ€è¦è¼”åŠ©è£å‚™ ID, åŒä¸Š
 		$this->Pl = $Pl;
 		$this->Op = $Op;
 	}
 
-	// Check Set Activation - °ò¥»±ø¥óÀË´ú
+	// Check Set Activation - åŸºæœ¬æ¢ä»¶æª¢æ¸¬
 	// Checks whether MS and Equipment match required.
 	public function checkSetActivation(){
 		$this->Activated = true;

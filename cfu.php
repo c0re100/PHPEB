@@ -6,39 +6,40 @@
 //-------------------------//-------------------------//-------------------------//
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_//
 //Detection of Process Time                             //                       //
-global $gmcfu_time, $cfu_stime;                         //    ³o³¡¥÷µL»İ³]©w.    //
-$gmcfu_time = explode(' ', microtime());                //    ­×§ï«e½Ğ¤p¤ß,      //
-$cfu_stime = $gmcfu_time[1] + $gmcfu_time[0];           //    ¦]¬°¿ù»~ªº§ó§ï,    //
-if (!ini_get('register_globals'))                       //    ¥i¯à·|¨Ï¾ã­Óµ{¦¡,  //
-{extract($_POST);extract($_GET);extract($_SERVER);      //    µLªk¥¿±`¹B§@!      //
+global $gmcfu_time, $cfu_stime;                         //    é€™éƒ¨ä»½ç„¡éœ€è¨­å®š.    //
+$gmcfu_time = explode(' ', microtime());                //    ä¿®æ”¹å‰è«‹å°å¿ƒ,      //
+$cfu_stime = $gmcfu_time[1] + $gmcfu_time[0];           //    å› ç‚ºéŒ¯èª¤çš„æ›´æ”¹,    //
+if (!ini_get('register_globals'))                       //    å¯èƒ½æœƒä½¿æ•´å€‹ç¨‹å¼,  //
+{extract($_POST);extract($_GET);extract($_SERVER);      //    ç„¡æ³•æ­£å¸¸é‹ä½œ!      //
 if (isset($_SESSION)){extract($_SESSION);}}             //                       //
-error_reporting(0);  //Ãö³¬³¡¥÷¿ù»~¦^³ø: PHP5 «ØÄ³¿ï¶µ  //                       //
+error_reporting(1);  //é—œé–‰éƒ¨ä»½éŒ¯èª¤å›å ±: PHP5 å»ºè­°é¸é …  //                       //
 //-------------------------//-------------------------//-------------------------//
-//Configs - ¹CÀ¸¤Î¨t²Î³]©w
+//Configs - éŠæˆ²åŠç³»çµ±è¨­å®š
 
-//ª©¥»¸ê°T
-global $cSpec, $vBdNum;
-$cSpec = '0.50';                                         //ª©¥»¦WºÙ
-$vBdNum = 'RC1';                                         //­×­qª©¥»
+//ç‰ˆæœ¬è³‡è¨Š
+global $cSpec, $vBdNum, $LVersion;
+$cSpec = '0.50';                                         //ç‰ˆæœ¬åç¨±
+$vBdNum = '20160211';                                    //ä¿®è¨‚ç‰ˆæœ¬
+$LVersion = 'v0.3b';
 
 include('config.php');
 
 //Anti Unauthorized Connection Settings
-$disabled_AUC = 1;                  //¨¾¤îµs³s¨t²ÎªºµL®Ä¤Æ°Ñ¼Æ: 0¬°¶}±Ò¨¾¤îµs³s¨t²Î, 1¬OÃö³¬¨¾¤îµs³s¨t²Î
-$AUC_Log = "unauthorizedlog.php";   //¨¾¤îµs³s¨t²Îªº¬ö¿ıÀÉ¦WºÙ, «ØÄ³¨Ï¥Î¡u.php¡vµ²§À
+$disabled_AUC = 1;                  //é˜²æ­¢ç›œé€£ç³»çµ±çš„ç„¡æ•ˆåŒ–åƒæ•¸: 0ç‚ºé–‹å•Ÿé˜²æ­¢ç›œé€£ç³»çµ±, 1æ˜¯é—œé–‰é˜²æ­¢ç›œé€£ç³»çµ±
+$AUC_Log = "unauthorizedlog.php";   //é˜²æ­¢ç›œé€£ç³»çµ±çš„ç´€éŒ„æª”åç¨±, å»ºè­°ä½¿ç”¨ã€Œ.phpã€çµå°¾
 
-$Allow_AUC = "/(vsqa.no\-ip.com|v2alliance.net|php-eb.v2alliance.net)+/";
-//¦¹¬°¥¿±`³s½u¦ì¸m
-//½Ğ¨ì index2.php ­×§ï $HTTP_REFERER °Ñ¼Æ
-//¥HRegular Expressionªí¹F, ¤@¯ë©ó¡u(¡v»P¡u)+¡v¤§¶¡¿é¤Jphp-ebªº¥Ø¿ı¦ì¸m«K¥i
-//¦p:	(vsqa.no\-ip.com)+
+$Allow_AUC = "";
+//æ­¤ç‚ºæ­£å¸¸é€£ç·šä½ç½®
+//è«‹åˆ° index.php ä¿®æ”¹ $HTTP_REFERER åƒæ•¸
+//ä»¥Regular Expressionè¡¨é”, ä¸€èˆ¬æ–¼ã€Œ(ã€èˆ‡ã€Œ)+ã€ä¹‹é–“è¼¸å…¥php-ebçš„ç›®éŒ„ä½ç½®ä¾¿å¯
+//å¦‚:	(vsqa.no\-ip.com)+
 //	(dai\-ngai.net)+
 //	(phpebs.frwonline.com)+
 //
-//¦p·Q¦h©ó¤@­Ó¦a¤è, ½Ğ¦p¦¹¿é¤J:
+//å¦‚æƒ³å¤šæ–¼ä¸€å€‹åœ°æ–¹, è«‹å¦‚æ­¤è¼¸å…¥:
 //	(vsqa.no\-ip.com|dai\-ngai.net|phpebs.frwonline.com)+
-//¦bºô§}©Î¥Ø¿ı¤§¶¡¥[¡u|¡v«K¥i¥H
-//½Ğ¦b¡u-¡v«e¥[¤J¡u\¡v, §_«h·|¥X¿ù
+//åœ¨ç¶²å€æˆ–ç›®éŒ„ä¹‹é–“åŠ ã€Œ|ã€ä¾¿å¯ä»¥
+//è«‹åœ¨ã€Œ-ã€å‰åŠ å…¥ã€Œ\ã€, å¦å‰‡æœƒå‡ºéŒ¯
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_//
 /*
 Account Status:
@@ -58,7 +59,7 @@ if(empty($NoConnect)){
 mysql_connect ($GLOBALS['DBHost'], $GLOBALS['DBUser'], $GLOBALS['DBPass']) or die ('Could not access database because: ' . mysql_error());
 if(mysql_get_server_info() > '4.1') {
 	global $charset;
-	$charset = 'big5'; //¦øªA¾¹¤å¦r®Õ¹ï - ÁcÅéª© php-eb µL»İ§ó§ï
+	$charset = 'utf8'; //ä¼ºæœå™¨æ–‡å­—æ ¡å° - ç¹é«”ç‰ˆ php-eb ç„¡éœ€æ›´æ”¹
 	if(!$dbcharset && in_array(strtolower($charset), array('gbk', 'big5', 'utf-8'))) {
 		$dbcharset = str_replace('-', '', $charset);
 	}
@@ -68,6 +69,7 @@ if(mysql_get_server_info() > '4.1') {
 }
 if(mysql_get_server_info() > '5.0.1') {
 	mysql_query("SET sql_mode=''");
+	mysql_query("SET NAMES 'utf8'");
 }
 
 //-------------------------//
@@ -114,15 +116,15 @@ $MainColors = array(                                            //Rainbow Swatch
 
 global $MainRanks;
 $MainRanks = array(
-'§ÓÄ@§L','¤Gµ¥§L','¤@µ¥§L','¤Wµ¥§L','§Lªø','¥îªø',
-'­x±ä','¤U¤h','¤¤¤h','¤W¤h','±äªø',
-'­ã±L','¤Ö±L','¤¤±L','¤W±L',
-'¤Ö®Õ','¤¤®Õ','¤W®Õ',
-'­ã±N','¤Ö±N','¤¤±N','¤W±N','¤@¯Å¤W±N',
-'¤¸«Ó','Á`¥q¥O');
+'å¿—é¡˜å…µ','äºŒç­‰å…µ','ä¸€ç­‰å…µ','ä¸Šç­‰å…µ','å…µé•·','ä¼é•·',
+'è»æ›¹','ä¸‹å£«','ä¸­å£«','ä¸Šå£«','æ›¹é•·',
+'å‡†å°‰','å°‘å°‰','ä¸­å°‰','ä¸Šå°‰',
+'å°‘æ ¡','ä¸­æ ¡','ä¸Šæ ¡',
+'å‡†å°‡','å°‘å°‡','ä¸­å°‡','ä¸Šå°‡','ä¸€ç´šä¸Šå°‡',
+'å…ƒå¸¥','ç¸½å¸ä»¤');
 
 global $RightsClass;
-$RightsClass = array("Major" => '¥D®u',"Leader" => '°Æ¥D®u');
+$RightsClass = array("Major" => 'ä¸»å¸­',"Leader" => 'å‰¯ä¸»å¸­');
 
 global $CFU_Time;
 $CFU_Time = time() + $Time_Fix;
@@ -130,19 +132,19 @@ $CFU_Time = time() + $Time_Fix;
 function cfu_time_convert($The_Time){
 	$DateTime = getdate($The_Time);
 	switch($DateTime['wday']){
-		case 0: $DateTime['wday']='¤é';break;
-		case 1: $DateTime['wday']='¤@';break;case 2: $DateTime['wday']='¤G';break;
-		case 3: $DateTime['wday']='¤T';break;case 4: $DateTime['wday']='¥|';break;
-		case 5: $DateTime['wday']='¤­';break;case 6: $DateTime['wday']='¤»';break;
+		case 0: $DateTime['wday']='æ—¥';break;
+		case 1: $DateTime['wday']='ä¸€';break;case 2: $DateTime['wday']='äºŒ';break;
+		case 3: $DateTime['wday']='ä¸‰';break;case 4: $DateTime['wday']='å››';break;
+		case 5: $DateTime['wday']='äº”';break;case 6: $DateTime['wday']='å…­';break;
 	}
 	if (strlen($DateTime['minutes']) == 1){$DateTime['minutes']='0'.$DateTime['minutes'];}
 	if (strlen($DateTime['seconds']) == 1){$DateTime['seconds']='0'.$DateTime['seconds'];}
-	if($DateTime['hours'] > 12){$DateTime['period'] = '¤U¤È';$DateTime['hours']-=12;}
-	elseif($DateTime['hours'] == 12){$DateTime['period'] = '¤¤¤È';}
-	elseif($DateTime['hours'] == 0){$DateTime['period'] = '¹s±á';}
-	else $DateTime['period'] = '¤W¤È';
+	if($DateTime['hours'] > 12){$DateTime['period'] = 'ä¸‹åˆ';$DateTime['hours']-=12;}
+	elseif($DateTime['hours'] == 12){$DateTime['period'] = 'ä¸­åˆ';}
+	elseif($DateTime['hours'] == 0){$DateTime['period'] = 'å‡Œæ™¨';}
+	else $DateTime['period'] = 'ä¸Šåˆ';
 	if($DateTime['hours'] == 0){$DateTime['hours']=12;}
-	$FormatDate = "$DateTime[year]¦~$DateTime[mon]¤ë$DateTime[mday]¤é, ¬P´Á$DateTime[wday], $DateTime[period] $DateTime[hours]:$DateTime[minutes]:$DateTime[seconds]";
+	$FormatDate = "$DateTime[year]å¹´$DateTime[mon]æœˆ$DateTime[mday]æ—¥, æ˜ŸæœŸ$DateTime[wday], $DateTime[period] $DateTime[hours]:$DateTime[minutes]:$DateTime[seconds]";
 	return $FormatDate;
 }
 //End Time Convert Function
@@ -157,7 +159,7 @@ if (!$disabled_AUC) include("includes/auc.inc.php");
 //Update Time
 $CFU_TIME_USER = 0;
 if (isset($session_un)) $CFU_TIME_USER = "$session_un";
-elseif (isset($Pl_Value['USERNAME']))$CFU_TIME_USER="$Pl_Value[USERNAME]";
+elseif (isset($_SESSION['username']))$CFU_TIME_USER="$_SESSION[username]";
 if ($CFU_TIME_USER){
 	$CFU_Time_UpDate_Q = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `time2` = '$CFU_Time' WHERE `username` = '$CFU_TIME_USER' LIMIT 1;");
 	mysql_query($CFU_Time_UpDate_Q);
@@ -169,9 +171,18 @@ if ($CFU_TIME_USER){
 function postFooter(){
 	$mcfu_time = explode(' ', microtime());
 	$cfu_ptime = number_format(($mcfu_time[1] + $mcfu_time[0] - $GLOBALS['cfu_stime']), 6);
-	echo "<p align=center style=\"font-size: 10pt\">&copy; 2005-2010 v2Alliance. All Rights Reserved.¡@ª©Åv©Ò¦³ ¤£±oÂà¸ü<br>";
 	if ($GLOBALS['Show_ptime'])
-	echo "<font style=\"font-size: 7pt\">Processed in ".$cfu_ptime." second(s).</font></p>";
+	echo "<p align=center><font style=\"font-size: 8pt;color: red\">Processed in ".$cfu_ptime." second(s).</font></p>";
+		echo "<script type=\"text/javascript\">";
+		echo "google_ad_client = \"ca-pub-9445991336012823\";";
+		echo "google_ad_slot = \"6729631992\";";
+		echo "google_ad_width = 728;";
+		echo "google_ad_height = 90;";
+		echo "</script>";
+		echo "<!-- Ads -->";
+		echo "<script type=\"text/javascript\"";
+		echo "src=\"//pagead2.googlesyndication.com/pagead/show_ads.js\">";
+		echo "</script>";
 }
 function postHead($withoutbody='',$session_dir='phpeb_session_dir',$additionalHeadings=''){
 		// Date in the past
@@ -183,163 +194,175 @@ function postHead($withoutbody='',$session_dir='phpeb_session_dir',$additionalHe
 		header("Cache-Control: post-check=0, pre-check=0", false);
 		// HTTP/1.0
 		header("Pragma: no-cache");
-		session_name("php-eb_Session");
-		session_set_cookie_params(0,mktime(0,0,0,12,31,2015),"/","php-eb_Gen_Session_lv89ina");
-		session_save_path($session_dir);
-		session_start();
-		session_register("session_un");
-		session_register("session_pwd");
-		session_destroy();
+		header('Content-Type: text/html; charset=utf-8');
 		echo "<html>";
 		echo "<head>";
+		echo "<link rel=\"icon\" type=\"image/png\" href=\"favicon.png\"/>";
 		echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">";
-		echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=big5\">";
-		echo "<title>Endless Battle ~ php-eb - &copy; 2005-2010 v2Alliance</title>";
-		echo "<style type=\"text/css\">BODY {FONT-SIZE: 10px; FONT-FAMILY: \"Arial\",  \"·s²Ó©úÅé\"; cursor:default}TD {FONT-SIZE: 9pt; FONT-FAMILY: \"Arial\", \"·s²Ó©úÅé\"}A:visited {COLOR: #FFFFFF;}</style>";
+		echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">";
+		echo "<title>ç„¡ç›¡çš„æˆ°é¬¥</title>";
+		echo "<style type=\"text/css\">BODY {FONT-SIZE: 10px; FONT-FAMILY: \"Arial\",  \"æ–°ç´°æ˜é«”\"; cursor:default}TD {FONT-SIZE: 9pt; FONT-FAMILY: \"Arial\", \"æ–°ç´°æ˜é«”\"}A:visited {COLOR: #FFFFFF;}</style>";
 		echo $additionalHeadings;
 		echo "</head>";
+		echo "<link href=\"https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css\" rel=\"stylesheet\">";
+		echo "<script src=\"https://code.jquery.com/jquery-1.10.2.js\"></script>";
+		echo "<script src=\"https://code.jquery.com/ui/1.10.4/jquery-ui.js\"></script>";
+		echo '<script>$(function() {$( ".draggable" ).draggable({ stack: ".draggable" });});</script>';
+		echo "<script>";
+		echo "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){";
+		echo "(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),";
+		echo "m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)";
+		echo "})(window,document,'script','//www.google-analytics.com/analytics.js','ga');";
+		echo "ga('create', 'UA-72123692-1', 'auto');";
+		echo "ga('send', 'pageview');";
+		echo "</script>";
 		if (!$withoutbody) echo "<body bgcolor=\"#000000\" text=#dcdcdc link=#dcdcdc style=\"margin:0px 0px 0px 0px;\" oncontextmenu=\"return true;\">";
 }
-function AuthUser($U,$P){
+function AuthUser(){
+		session_start();
+		$U = $_SESSION['username'];
+		$P = $_SESSION['password'];
+		$U = mysql_real_escape_string($U);
+		$P = mysql_real_escape_string($P);
 		$sql_ugnrli = ("SELECT username, password, acc_status FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` WHERE username='". $U ."'");
-		$UsrGenrl_Qr = mysql_query ($sql_ugnrli) or die ('¿ù»~¡I<br>¥¼¯à³s±µ¨ìSQL¸ê®Æ®w(PHPEB_ERROR: 001)'.$GLOBALS['DBPrefix'].':' . mysql_error());
+		$UsrGenrl_Qr = mysql_query ($sql_ugnrli) or die ('éŒ¯èª¤ï¼<br>æœªèƒ½é€£æ¥åˆ°SQLè³‡æ–™åº«(PHPEB_ERROR: 001)'.$GLOBALS['DBPrefix'].':' . mysql_error());
 		$UsrGenrl = mysql_fetch_array($UsrGenrl_Qr);
 		if (!$UsrGenrl['username'] || ($UsrGenrl['password'] != md5($P) && $UsrGenrl['password'] != $P) || $UsrGenrl['username'] != $U){
-		echo "<center><br><br>¨Ï¥ÎªÌ¦WºÙ©Î±K½X¿ù»~¡C<br><br><a href=\"index2.php\" target='_top' style=\"text-decoration: none\">¦^¨ì­º­¶</a>";
+		echo "<center><br><br>ä½¿ç”¨è€…åç¨±æˆ–å¯†ç¢¼éŒ¯èª¤ã€‚<br><br><a href=\"index.php\" target='_top' style=\"text-decoration: none\">å›åˆ°é¦–é </a>";
 		postFooter();
 		exit;}
 		if ($UsrGenrl['acc_status'] == 2){
-		echo "<center><br><br>±b¸¹³QÂê¡A½Ğ»PºŞ²z­ûÁpµ¸¡I<br><br><a href=\"index2.php\" target='_top' style=\"text-decoration: none\">¦^¨ì­º­¶</a>";
+		echo "<center><br><br>å¸³è™Ÿè¢«é–ï¼Œè«‹èˆ‡ç®¡ç†å“¡è¯çµ¡ï¼<br><br><a href=\"index.php\" target='_top' style=\"text-decoration: none\">å›åˆ°é¦–é </a>";
 		postFooter();
 		exit;}
 }
 function ReturnSpecs($Specs){$SpecsTag='';
-if (!$Specs)$SpecsTag='¨S¦³';
+if (!$Specs)$SpecsTag='æ²’æœ‰';
 else{
 //Weapon Specs
-if( strpos($Specs,'DamA') !== false ) $SpecsTag .='¾÷Åé·lÃa<br>';
-if( strpos($Specs,'DamB') !== false ) $SpecsTag .='¾Ô°«¤£¯à<br>';
+if( strpos($Specs,'DamA') !== false ) $SpecsTag .='æ©Ÿé«”æå£<br>';
+if( strpos($Specs,'DamB') !== false ) $SpecsTag .='æˆ°é¬¥ä¸èƒ½<br>';
 if( strpos($Specs,'Mob') !== false ){
-	if( strpos($Specs,'MobA') !== false ) $SpecsTag .='¥[³t<br>';
-	if( strpos($Specs,'MobB') !== false ) $SpecsTag .='¶W«e<br>';
-	if( strpos($Specs,'MobC') !== false ) $SpecsTag .='°{Á×<br>';
-	if( strpos($Specs,'MobD') !== false ) $SpecsTag .='°kÂ÷<br>';
-	if( strpos($Specs,'Moba') !== false ) $SpecsTag .='Â²³æ±À¶i<br>';
-	if( strpos($Specs,'Mobb') !== false ) $SpecsTag .='±j¤O±À¶i<br>';
-	if( strpos($Specs,'Mobc') !== false ) $SpecsTag .='³Ì¨Î¤Æ±À¶i<br>';
-	if( strpos($Specs,'Mobd') !== false ) $SpecsTag .='°ª¯Å±À¶i<br>';
-	if( strpos($Specs,'Mobe') !== false ) $SpecsTag .='·¥¯Å±À¶i<br>';
+	if( strpos($Specs,'MobA') !== false ) $SpecsTag .='åŠ é€Ÿ<br>';
+	if( strpos($Specs,'MobB') !== false ) $SpecsTag .='è¶…å‰<br>';
+	if( strpos($Specs,'MobC') !== false ) $SpecsTag .='é–ƒé¿<br>';
+	if( strpos($Specs,'MobD') !== false ) $SpecsTag .='é€ƒé›¢<br>';
+	if( strpos($Specs,'Moba') !== false ) $SpecsTag .='ç°¡å–®æ¨é€²<br>';
+	if( strpos($Specs,'Mobb') !== false ) $SpecsTag .='å¼·åŠ›æ¨é€²<br>';
+	if( strpos($Specs,'Mobc') !== false ) $SpecsTag .='æœ€ä½³åŒ–æ¨é€²<br>';
+	if( strpos($Specs,'Mobd') !== false ) $SpecsTag .='é«˜ç´šæ¨é€²<br>';
+	if( strpos($Specs,'Mobe') !== false ) $SpecsTag .='æ¥µç´šæ¨é€²<br>';
 }
 if( strpos($Specs,'Tar') !== false ){
-	if( strpos($Specs,'TarA') !== false ) $SpecsTag .='®Õ·Ç<br>';
-	if( strpos($Specs,'TarB') !== false ) $SpecsTag .='ºË·Ç<br>';
-	if( strpos($Specs,'TarC') !== false ) $SpecsTag .='¶°¤¤<br>';
-	if( strpos($Specs,'TarD') !== false ) $SpecsTag .='¹w´ú<br>';
-	if( strpos($Specs,'Tara') !== false ) $SpecsTag .='¦Û°ÊÂê©w<br>';
-	if( strpos($Specs,'Tarb') !== false ) $SpecsTag .='°ª¯Å®Õ·Ç<br>';
-	if( strpos($Specs,'Tarc') !== false ) $SpecsTag .='µL»~®Õ·Ç<br>';
-	if( strpos($Specs,'Tard') !== false ) $SpecsTag .='¦h­«Âê©w<br>';
-	if( strpos($Specs,'Tare') !== false ) $SpecsTag .='§¹¬üÂê©w<br>';
+	if( strpos($Specs,'TarA') !== false ) $SpecsTag .='æ ¡æº–<br>';
+	if( strpos($Specs,'TarB') !== false ) $SpecsTag .='ç„æº–<br>';
+	if( strpos($Specs,'TarC') !== false ) $SpecsTag .='é›†ä¸­<br>';
+	if( strpos($Specs,'TarD') !== false ) $SpecsTag .='é æ¸¬<br>';
+	if( strpos($Specs,'Tara') !== false ) $SpecsTag .='è‡ªå‹•é–å®š<br>';
+	if( strpos($Specs,'Tarb') !== false ) $SpecsTag .='é«˜ç´šæ ¡æº–<br>';
+	if( strpos($Specs,'Tarc') !== false ) $SpecsTag .='ç„¡èª¤æ ¡æº–<br>';
+	if( strpos($Specs,'Tard') !== false ) $SpecsTag .='å¤šé‡é–å®š<br>';
+	if( strpos($Specs,'Tare') !== false ) $SpecsTag .='å®Œç¾é–å®š<br>';
 }
 if( strpos($Specs,'Def') !== false ){
-	if( strpos($Specs,'DefA') !== false ) $SpecsTag .='Â²³æ¨¾¿m<br>';
-	if( strpos($Specs,'DefB') !== false ) $SpecsTag .='¥¿±`¨¾¿m<br>';
-	if( strpos($Specs,'DefC') !== false ) $SpecsTag .='±j¤Æ¨¾¿m<br>';
-	if( strpos($Specs,'DefD') !== false ) $SpecsTag .='°ª¯Å¨¾¿m<br>';
-	if( strpos($Specs,'DefE') !== false ) $SpecsTag .='³Ì²×¨¾¿m<br>';
-	if( strpos($Specs,'Defa') !== false ) $SpecsTag .='®æ¾×<br>';
-	if( strpos($Specs,'Defb') !== false ) $SpecsTag .='§Ü¿Å<br>';
-	if( strpos($Specs,'Defc') !== false ) $SpecsTag .='¤z¯A<br>';
-	if( strpos($Specs,'Defd') !== false ) $SpecsTag .='°í¾À<br>';
-	if( strpos($Specs,'Defe') !== false ) $SpecsTag .='ªÅ¶¡¬Û¹ï¦ì²¾<br>';
-	if( strpos($Specs,'PerfDef') !== false ) $SpecsTag .='§¹¥ş¨¾¿m<br>';
+	if( strpos($Specs,'DefA') !== false ) $SpecsTag .='ç°¡å–®é˜²ç¦¦<br>';
+	if( strpos($Specs,'DefB') !== false ) $SpecsTag .='æ­£å¸¸é˜²ç¦¦<br>';
+	if( strpos($Specs,'DefC') !== false ) $SpecsTag .='å¼·åŒ–é˜²ç¦¦<br>';
+	if( strpos($Specs,'DefD') !== false ) $SpecsTag .='é«˜ç´šé˜²ç¦¦<br>';
+	if( strpos($Specs,'DefE') !== false ) $SpecsTag .='æœ€çµ‚é˜²ç¦¦<br>';
+	if( strpos($Specs,'Defa') !== false ) $SpecsTag .='æ ¼æ“‹<br>';
+	if( strpos($Specs,'Defb') !== false ) $SpecsTag .='æŠ—è¡¡<br>';
+	if( strpos($Specs,'Defc') !== false ) $SpecsTag .='å¹²æ¶‰<br>';
+	if( strpos($Specs,'Defd') !== false ) $SpecsTag .='å …å£<br>';
+	if( strpos($Specs,'Defe') !== false ) $SpecsTag .='ç©ºé–“ç›¸å°ä½ç§»<br>';
+	if( strpos($Specs,'PerfDef') !== false ) $SpecsTag .='å®Œå…¨é˜²ç¦¦<br>';
 }
 if( strpos($Specs,'Pv') !== false ){
 	if( strpos($Specs,'PvPhy') !== false ){
-		if( strpos($Specs,'PvPhyA') !== false ) $SpecsTag .='«p¥Ò<br>';
-		if( strpos($Specs,'PvPhyB') !== false ) $SpecsTag .='§Ü½ÄÀ»<br>';
-		if( strpos($Specs,'PvPhyC') !== false ) $SpecsTag .='¼u¶}<br>';
+		if( strpos($Specs,'PvPhyA') !== false ) $SpecsTag .='åšç”²<br>';
+		if( strpos($Specs,'PvPhyB') !== false ) $SpecsTag .='æŠ—è¡æ“Š<br>';
+		if( strpos($Specs,'PvPhyC') !== false ) $SpecsTag .='å½ˆé–‹<br>';
 		if( strpos($Specs,'PvPhyD') !== false ) $SpecsTag .='Phase Shift<br>';
 		if( strpos($Specs,'PvPhyE') !== false ) $SpecsTag .='V. P. S.<br>';
 	}
 	if( strpos($Specs,'PvBeam') !== false ){
-		if( strpos($Specs,'PvBeamA') !== false ) $SpecsTag .='­@¼ö<br>';
-		if( strpos($Specs,'PvBeamB') !== false ) $SpecsTag .='¼öÂà²¾<br>';
-		if( strpos($Specs,'PvBeamC') !== false ) $SpecsTag .='§á¦±<br>';
-		if( strpos($Specs,'PvBeamD') !== false ) $SpecsTag .='§é®g<br>';
-		if( strpos($Specs,'PvBeamE') !== false ) $SpecsTag .='®ø´²<br>';
+		if( strpos($Specs,'PvBeamA') !== false ) $SpecsTag .='è€ç†±<br>';
+		if( strpos($Specs,'PvBeamB') !== false ) $SpecsTag .='ç†±è½‰ç§»<br>';
+		if( strpos($Specs,'PvBeamC') !== false ) $SpecsTag .='æ‰­æ›²<br>';
+		if( strpos($Specs,'PvBeamD') !== false ) $SpecsTag .='æŠ˜å°„<br>';
+		if( strpos($Specs,'PvBeamE') !== false ) $SpecsTag .='æ¶ˆæ•£<br>';
 	}
 	if( strpos($Specs,'PvUni') !== false ){
-		if( strpos($Specs,'PvUniA') !== false ) $SpecsTag .='©À°Ê¤zÂZ<br>';
-		if( strpos($Specs,'PvUniB') !== false ) $SpecsTag .='­«¤O¾ŞÁa<br>';
-		if( strpos($Specs,'PvUniC') !== false ) $SpecsTag .='ªÅ¶¡¤zÂZ<br>';
-		if( strpos($Specs,'PvUniD') !== false ) $SpecsTag .='®ÉªÅÂZ¶Ã<br>';
-		if( strpos($Specs,'PvUniE') !== false ) $SpecsTag .='¦¸¤¸³sµ²<br>';
+		if( strpos($Specs,'PvUniA') !== false ) $SpecsTag .='å¿µå‹•å¹²æ“¾<br>';
+		if( strpos($Specs,'PvUniB') !== false ) $SpecsTag .='é‡åŠ›æ“ç¸±<br>';
+		if( strpos($Specs,'PvUniC') !== false ) $SpecsTag .='ç©ºé–“å¹²æ“¾<br>';
+		if( strpos($Specs,'PvUniD') !== false ) $SpecsTag .='æ™‚ç©ºæ“¾äº‚<br>';
+		if( strpos($Specs,'PvUniE') !== false ) $SpecsTag .='æ¬¡å…ƒé€£çµ<br>';
 	}
 }
 
-if( strpos($Specs,'ShootDown') !== false ) $SpecsTag .='¹ê¼uÀ»¸¨<br>';
-if( strpos($Specs,'DenseShot') !== false ) $SpecsTag .='±K¶°®gÀ»<br>';
+if( strpos($Specs,'ShootDown') !== false ) $SpecsTag .='å¯¦å½ˆæ“Šè½<br>';
+if( strpos($Specs,'DenseShot') !== false ) $SpecsTag .='å¯†é›†å°„æ“Š<br>';
 
-if( strpos($Specs,'AntiDam')   !== false ) $SpecsTag .='¦Û°Ê­×´_<br>';
-if( strpos($Specs,'DoubleExp') !== false ) $SpecsTag .='¸gÅçÂù­¿<br>';
-if( strpos($Specs,'DoubleMon') !== false ) $SpecsTag .='ª÷¿úÂù­¿<br>';
-if( strpos($Specs,'DefX')      !== false ) $SpecsTag .='©³¤O<br>';
-if( strpos($Specs,'AtkA')      !== false ) $SpecsTag .='¿³¾Ä<br>';
-if( strpos($Specs,'MeltA')     !== false ) $SpecsTag .='°ª¼ö¯à<br>';
-if( strpos($Specs,'MeltB')     !== false ) $SpecsTag .='º²¸Ñ<br>';
-if( strpos($Specs,'Cease')     !== false ) $SpecsTag .='¸TÀD<br>';
-if( strpos($Specs,'AntiPDef')  !== false ) $SpecsTag .='³e¬ï<br>';
-if( strpos($Specs,'Sniping')   !== false ) $SpecsTag .='ª®À»<br>';
-if( strpos($Specs,'ChargeUp')  !== false ) $SpecsTag .='¯à¶q¶ñ¥R¥²­n<br>';
-if( strpos($Specs,'NTCustom')  !== false ) $SpecsTag .='·s¤HÃş±M¥Î<br>';
-if( strpos($Specs,'NTRequired')  !== false ) $SpecsTag .='»İ­n·s¤HÃş¤O¶q<br>';
-if( strpos($Specs,'COCustom')    !== false ) $SpecsTag .='Coordinator±M¥Î<br>';
-if( strpos($Specs,'PsyRequired') !== false ) $SpecsTag .='©À°Ê¤O±M¥Î<br>';
+if( strpos($Specs,'AntiDam')   !== false ) $SpecsTag .='è‡ªå‹•ä¿®å¾©<br>';
+if( strpos($Specs,'DoubleExp') !== false ) $SpecsTag .='ç¶“é©—é›™å€<br>';
+if( strpos($Specs,'DoubleMon') !== false ) $SpecsTag .='é‡‘éŒ¢é›™å€<br>';
+if( strpos($Specs,'DefX')      !== false ) $SpecsTag .='åº•åŠ›<br>';
+if( strpos($Specs,'AtkA')      !== false ) $SpecsTag .='èˆˆå¥®<br>';
+if( strpos($Specs,'MeltA')     !== false ) $SpecsTag .='é«˜ç†±èƒ½<br>';
+if( strpos($Specs,'MeltB')     !== false ) $SpecsTag .='ç†”è§£<br>';
+if( strpos($Specs,'Cease')     !== false ) $SpecsTag .='ç¦éŒ®<br>';
+if( strpos($Specs,'AntiPDef')  !== false ) $SpecsTag .='è²«ç©¿<br>';
+if( strpos($Specs,'Sniping')   !== false ) $SpecsTag .='ç‹™æ“Š<br>';
+if( strpos($Specs,'ChargeUp')  !== false ) $SpecsTag .='èƒ½é‡å¡«å……å¿…è¦<br>';
+if( strpos($Specs,'NTCustom')  !== false ) $SpecsTag .='æ–°äººé¡å°ˆç”¨<br>';
+if( strpos($Specs,'NTRequired')  !== false ) $SpecsTag .='éœ€è¦æ–°äººé¡åŠ›é‡<br>';
+if( strpos($Specs,'COCustom')    !== false ) $SpecsTag .='Coordinatorå°ˆç”¨<br>';
+if( strpos($Specs,'PsyRequired') !== false ) $SpecsTag .='å¿µå‹•åŠ›å°ˆç”¨<br>';
 if( strpos($Specs,'SeedMode')   !== false ) $SpecsTag .='SEED Mode<br>';
-if( strpos($Specs,'EXAMSystem') !== false ) $SpecsTag .='EXAM¨t²Î±Ò°Ê¥i¯à<br>';
+if( strpos($Specs,'EXAMSystem') !== false ) $SpecsTag .='EXAMç³»çµ±å•Ÿå‹•å¯èƒ½<br>';
 // Specified Value Specs
-if(preg_match('/CostSP<([0-9]+)>/',$Specs,$a))      $SpecsTag .= '®ø¯ÓSP('.$a[1].')<br>';
+if(preg_match('/CostSP<([0-9]+)>/',$Specs,$a))      $SpecsTag .= 'æ¶ˆè€—SP('.$a[1].')<br>';
 if(preg_match('/CostEN<([0-9.]+)>/',$Specs,$a)){
 	if($a[1] < 1) $a[1] = (floor($a[1]*10000)/100).'%';
-	$SpecsTag .= '®ø¯ÓEN('.$a[1].')<br>';
+	$SpecsTag .= 'æ¶ˆè€—EN('.$a[1].')<br>';
 }
-if(preg_match('/ReqStat<At><([0-9]+)>/',$Specs,$a)) $SpecsTag .= '»İ­nAttacking('.$a[1].')<br>';
-if(preg_match('/ReqStat<De><([0-9]+)>/',$Specs,$a)) $SpecsTag .= '»İ­nDefending('.$a[1].')<br>';
-if(preg_match('/ReqStat<Re><([0-9]+)>/',$Specs,$a)) $SpecsTag .= '»İ­nReacting('.$a[1].')<br>';
-if(preg_match('/ReqStat<Ta><([0-9]+)>/',$Specs,$a)) $SpecsTag .= '»İ­nTargeting('.$a[1].')<br>';
+if(preg_match('/ReqStat<At><([0-9]+)>/',$Specs,$a)) $SpecsTag .= 'éœ€è¦æ”»æ“Š('.$a[1].')<br>';
+if(preg_match('/ReqStat<De><([0-9]+)>/',$Specs,$a)) $SpecsTag .= 'éœ€è¦é˜²ç¦¦('.$a[1].')<br>';
+if(preg_match('/ReqStat<Re><([0-9]+)>/',$Specs,$a)) $SpecsTag .= 'éœ€è¦è¿´é¿('.$a[1].')<br>';
+if(preg_match('/ReqStat<Ta><([0-9]+)>/',$Specs,$a)) $SpecsTag .= 'éœ€è¦å‘½ä¸­('.$a[1].')<br>';
 if(preg_match('/ReqEqCond<([0-9]+)>/',$Specs,$a)){
 	if ($a[1] > 0) $dXp = '+'.($a[1]/100).'%';
 	elseif ($a[1] < 0) $dXp = ($a[1]/100).'%';
-	else $dXp = '¡Ó0%';
-	$SpecsTag .= '»İ­nª¬ºA­È('.$dXp.')<br>';
+	else $dXp = 'Â±0%';
+	$SpecsTag .= 'éœ€è¦ç‹€æ…‹å€¼('.$dXp.')<br>';
 }
-if(strpos($Specs,'GNWeapon') !== false) $SpecsTag .="GN²É¤lªZ¾¹<br>";
-// TransAM En, Ex, No ª¬ºA
+if(strpos($Specs,'GNWeapon') !== false) $SpecsTag .="GNç²’å­æ­¦å™¨<br>";
+// TransAM En, Ex, No ç‹€æ…‹
 if(preg_match('/TransAM<([EnxNo]{2})><([0-9]+)>/',$Specs,$a)){
-	if($a[1] == 'En') $SpecsTag .= 'TransAM ¶i¤J¥i¯à<br>';
-	elseif($a[1] == 'Ex') $SpecsTag .= 'TransAM µo°Ê¤¤<br>';
-	else $SpecsTag .= 'TransAM ¯à¤O¤U­°ª¬ºA<br>';
+	if($a[1] == 'En') $SpecsTag .= 'TransAM é€²å…¥å¯èƒ½<br>';
+	elseif($a[1] == 'Ex') $SpecsTag .= 'TransAM ç™¼å‹•ä¸­<br>';
+	else $SpecsTag .= 'TransAM èƒ½åŠ›ä¸‹é™ç‹€æ…‹<br>';
 }
-//»²§U¸Ë³Æ±M¥Îªº¯S®í®ÄªG
-if(strpos($Specs,'GNParticles') !== false) $SpecsTag .="GN²É¤l²£¥Í<br>";
-if(strpos($Specs,'HPPcRecA') !== false) $SpecsTag .='HP¦^´_<br>';
-if(strpos($Specs,'ENPcRecA') !== false) $SpecsTag .='EN¦^´_(¤p)<br>';
-if(strpos($Specs,'ENPcRecB') !== false) $SpecsTag .='EN¦^´_(¤j)<br>';
-if(preg_match('/ExtHP<([0-9]+)>/',$Specs,$a)) $SpecsTag .="HPªş¥[($a[1])<br>";
-if(preg_match('/ExtEN<([0-9]+)>/',$Specs,$a)) $SpecsTag .="ENªş¥[($a[1])<br>";
+//è¼”åŠ©è£å‚™å°ˆç”¨çš„ç‰¹æ®Šæ•ˆæœ
+if(strpos($Specs,'GNParticles') !== false) $SpecsTag .="GNç²’å­ç”¢ç”Ÿ<br>";
+if(strpos($Specs,'HPPcRecA') !== false) $SpecsTag .='HPå›å¾©<br>';
+if(strpos($Specs,'ENPcRecA') !== false) $SpecsTag .='ENå›å¾©(å°)<br>';
+if(strpos($Specs,'ENPcRecB') !== false) $SpecsTag .='ENå›å¾©(å¤§)<br>';
+if(preg_match('/ExtHP<([0-9]+)>/',$Specs,$a)) $SpecsTag .="HPé™„åŠ ($a[1])<br>";
+if(preg_match('/ExtEN<([0-9]+)>/',$Specs,$a)) $SpecsTag .="ENé™„åŠ ($a[1])<br>";
 //Others
-if(strpos($Specs,'FortressOnly') !== false) $SpecsTag .='­n¶ë±M¥Î<br>';
-if(strpos($Specs,'RawMaterials') !== false) $SpecsTag .='­ì®Æ<br>';
-if(strpos($Specs,'Blueprint') !== false)    $SpecsTag .='³]­pÂÅ¹Ï<br>';
-if(strpos($Specs,'CannotEquip') !== false)  $SpecsTag .='µLªk¸Ë³Æ<br>';
+if(strpos($Specs,'FortressOnly') !== false) $SpecsTag .='è¦å¡å°ˆç”¨<br>';
+if(strpos($Specs,'RawMaterials') !== false) $SpecsTag .='åŸæ–™<br>';
+if(strpos($Specs,'Blueprint') !== false)    $SpecsTag .='è¨­è¨ˆè—åœ–<br>';
+if(strpos($Specs,'CannotEquip') !== false)  $SpecsTag .='ç„¡æ³•è£å‚™<br>';
 //Attacking Type
-if(strpos($Specs,'DoubleStrike') !== false)   $SpecsTag .='¤G³sÀ»<br>';
-if(strpos($Specs,'TripleStrike') !== false)   $SpecsTag .='¤T³sÀ»<br>';
-if(strpos($Specs,'AllWepStirke') !== false)   $SpecsTag .='¥ş¼uµo®g<br>';
-if(strpos($Specs,'CounterStrike') !== false)  $SpecsTag .='¤ÏÀ»<br>';
-if(strpos($Specs,'FirstStrike') !== false)    $SpecsTag .='¥ı¨î§ğÀ»<br>';
-if(strpos($Specs,'PrecisionStrike') !== false)$SpecsTag .='ºë½T§ğÀ»<br>';
+if(strpos($Specs,'DoubleStrike') !== false)   $SpecsTag .='äºŒé€£æ“Š<br>';
+if(strpos($Specs,'TripleStrike') !== false)   $SpecsTag .='ä¸‰é€£æ“Š<br>';
+if(strpos($Specs,'AllWepStirke') !== false)   $SpecsTag .='å…¨å½ˆç™¼å°„<br>';
+if(strpos($Specs,'CounterStrike') !== false)  $SpecsTag .='åæ“Š<br>';
+if(strpos($Specs,'FirstStrike') !== false)    $SpecsTag .='å…ˆåˆ¶æ”»æ“Š<br>';
+if(strpos($Specs,'PrecisionStrike') !== false)$SpecsTag .='ç²¾ç¢ºæ”»æ“Š<br>';
 }
 return $SpecsTag;
 }
@@ -356,5 +379,13 @@ if($IncludeLFFI == true) include("includes/lf-fi.inc.php");
 $IncludeCVFI = ( isset($IncludeCVFI) ) ? $IncludeCVFI : true;
 if($IncludeCVFI == true) include("includes/cv-fi.inc.php");
 
+
+global $MsExp;
+$MsExp=array(
+	"62", "1054", "6073", "21937", "60667", "140977", "289761", "543581", "950151", "1569828", 
+	"2477097", "3762059", "5531919", "7912470", "11049584", "15110699", "20286303", "26791424", "34867117", "44781949", 
+	"56833488", "71349793", "88690895", "109250290", "133456422", "161774172", "194706348", "232795165", "276623740", "326817575", 
+	"366476901", "406136228", "445795554", "485454880", "525114207", "564773533", "604432859", "644092185", "683751512", "723410839", 
+	"763070165", "802729491", "842388818", "882048144", "921707470", "961366797", "1001026123", "1040685450", "1080344776", "1104239520");
 
 ?>

@@ -8,7 +8,7 @@ class sSpc_9906 extends setSpecSuperClass{
 	
 	const cName = 'sSpc_9906';
 
-	// User Variables - ¨Ï¥ÎªÌÅÜ¼Æ
+	// User Variables - ä½¿ç”¨è€…è®Šæ•¸
 	var $Rq_MS;
 	var $Rq_Wep;
 	var $Pl;
@@ -20,15 +20,15 @@ class sSpc_9906 extends setSpecSuperClass{
 	
 	function sSpc_9906($Pl){
 		$this->Activated = false;
-		$this->Rq_MS = '9906';        // »İ­nMS ID
-		$this->Rq_Wep['A'] = '';  // »İ­n¥DªZ¾¹ ID
-		$this->Rq_Wep['B'] = '';  // »İ­n³Æ¥Î 1 ID
-		$this->Rq_Wep['C'] = '';  // »İ­n³Æ¥Î 2 ID
-		$this->Rq_Wep['D'] = false;  // »İ­n»²§U¸Ë³Æ ID
+		$this->Rq_MS = '9906';        // éœ€è¦MS ID
+		$this->Rq_Wep['A'] = '';  // éœ€è¦ä¸»æ­¦å™¨ ID
+		$this->Rq_Wep['B'] = '';  // éœ€è¦å‚™ç”¨ 1 ID
+		$this->Rq_Wep['C'] = '';  // éœ€è¦å‚™ç”¨ 2 ID
+		$this->Rq_Wep['D'] = false;  // éœ€è¦è¼”åŠ©è£å‚™ ID
 		$this->Pl = $Pl;
 	}
 
-	// Check Set Activation - °ò¥»±ø¥óÀË´ú
+	// Check Set Activation - åŸºæœ¬æ¢ä»¶æª¢æ¸¬
 	public function checkSetActivation(){
 		$this->Activated = true;
 		if($this->Pl->MS['id'] != $this->Rq_MS) $this->Activated = false;

@@ -3,9 +3,13 @@
 if ($mode == 'proc'){
 	postHead(1);
 	//Assign Variables
-	$User = $Pl_Value['USERNAME'];
-	$Password = $Pl_Value['PASSWORD'];
-
+	$User = $_SESSION['username'];
+	$Password = $_SESSION['password'];
+	
+	$onlineip = $_SERVER['REMOTE_ADDR'];
+    $sql_iplog = ('UPDATE `'.$GLOBALS['DBPrefix']."phpeb_user_general_info` SET lastip='$onlineip', lastlogin='$CFU_Time' WHERE username='".$_SESSION['username']."'");
+    mysql_query($sql_iplog);
+	
 	//Fetch Player Information
 	include_once('includes/sfo.class.php');
 	$Pl = new player_stats;
@@ -13,7 +17,8 @@ if ($mode == 'proc'){
 	$Pl->FetchPlayer(true,false,', `request`');
 	
 	$Player = &$Pl->Player;
-
+	GetUsrDetails("$_SESSION[username]",'Gen','Game');
+	
 	//Adjust to user's setting
 	if ($Player['gen_img_dir'])
 	$General_Image_Dir = $Player['gen_img_dir'];
@@ -143,14 +148,14 @@ if ($mode == 'proc'){
 			$TimetS['hours'] = floor($TimeTSSec/3600);
 			$TimetS['minutes'] = floor(($TimeTSSec - ($TimetS['hours']*3600))/60);
 			$TimetS['seconds'] = floor($TimeTSSec - ($TimetS['hours']*3600) - ($TimetS['minutes']*60));
-			$Otp_TellTime = "ÁÙ¦³$TimetS[hours]¤p®É$TimetS[minutes]¤ÀÄÁ$TimetS[seconds]¬í¶}©l¾Ôª§¡C";
+			$Otp_TellTime = "é‚„æœ‰$TimetS[hours]å°æ™‚$TimetS[minutes]åˆ†é˜$TimetS[seconds]ç§’é–‹å§‹æˆ°çˆ­ã€‚";
 			}
 			else{
 			$TimeTSSec = $Otp_A_ITar['t_end'] - $CFU_Time;
 			$TimetS['hours'] = floor($TimeTSSec/3600);
 			$TimetS['minutes'] = floor(($TimeTSSec - ($TimetS['hours']*3600))/60);
 			$TimetS['seconds'] = floor($TimeTSSec - ($TimetS['hours']*3600) - ($TimetS['minutes']*60));
-			$Otp_TellTime = "ÁÙ¦³$TimetS[hours]¤p®É$TimetS[minutes]¤ÀÄÁ$TimetS[seconds]¬í¾Ôª§«Å§i²×¤F¡C";}
+			$Otp_TellTime = "é‚„æœ‰$TimetS[hours]å°æ™‚$TimetS[minutes]åˆ†é˜$TimetS[seconds]ç§’æˆ°çˆ­å®£å‘Šçµ‚äº†ã€‚";}
 		}
 
 	//
@@ -181,15 +186,14 @@ if ($mode == 'proc'){
 	echo "else if(elm == 'btnlog' && active_L == 1){active_L = 0;}";
 	echo "}";
 	echo "function menuOver(elm,tbl){";
-	echo "var num=0;switch(elm){case 'btn1': num=125;break;case 'btn2': num=140;break;case 'btn3': num=165;case 'btnlog': num=180;break;}";
-	echo "highlightSS(elm);document.getElementById(tbl).style.right = num;";
+	echo "highlightSS(elm);document.getElementById(tbl).style.display = 'block';";
 	echo "}";
 	echo "function menuOut(elm,tbl){";
 	echo "if(elm == 'btn1' && active_A == 1){return false;}";
 	echo "else if(elm == 'btn2' && active_B == 1){return false;}";
 	echo "else if(elm == 'btn3' && active_C == 1){return false;}";
 	echo "else if(elm == 'btnlog' && active_L == 1){return false;}";
-	echo "else {lowlightSS(elm);document.getElementById(tbl).style.right = -1250;}";
+	echo "else {lowlightSS(elm);document.getElementById(tbl).style.display = 'none';}";
 	echo "}";
 	echo "function focusZ(elm){";
 	echo "document.getElementById(elm).style.zIndex = 2;";
@@ -239,12 +243,12 @@ if ($mode == 'proc'){
 	echo "}";
 	echo "function cfmAddSP(iGrowth, bChk){";
 	echo "	if(bChk) return true;";
-	echo "	return confirm('§A²{¦b¦³ '+iGrowth+' ¦¨ªøÂI¼Æ¡C\\n­n¥[ 10ÂI SP ªº¸Ü»İ­n $SP_Stat_Req ÂI¼Æ¡C\\n½T©w¶Ü?');";
+	echo "	return confirm('ä½ ç¾åœ¨æœ‰ '+iGrowth+' æˆé•·é»æ•¸ã€‚\\nè¦åŠ  10é» SP çš„è©±éœ€è¦ $SP_Stat_Req é»æ•¸ã€‚\\nç¢ºå®šå—?');";
 	echo "}";
 	echo "function cfmAddStat(iGrowth, sStat, targetStat, rqStat, bChk){";
 	echo "	if(bChk) return true;";
 	echo "	targetStat = (parseInt(targetStat) + 1);";
-	echo "	return confirm('§A²{¦b¦³ '+ iGrowth +' ¦¨ªøÂI¼Æ¡C\\n­n§â'+ sStat +'¥[¨ì '+ targetStat +' ªº¸Ü»İ­n '+ rqStat +' ÂI¼Æ¡C\\n½T©w¶Ü?');";
+	echo "	return confirm('ä½ ç¾åœ¨æœ‰ '+ iGrowth +' æˆé•·é»æ•¸ã€‚\\nè¦æŠŠ'+ sStat +'åŠ åˆ° '+ targetStat +' çš„è©±éœ€è¦ '+ rqStat +' é»æ•¸ã€‚\\nç¢ºå®šå—?');";
 	echo "}";
 	echo "function add_stat(type){";
 	echo "	var iPlGrowth = parseInt(document.getElementById('pl_growth').innerHTML);";
@@ -263,31 +267,31 @@ if ($mode == 'proc'){
 	echo "	var oSPLnkStyle  = document.getElementById('spmax_addlink').style;";
 	echo "	var chkCfm = document.getElementById('cbDisableCfm').checked;";
 	echo "	if (type == 'at'){";
-	echo "	if (iPlAtk >= 150){return failAddStat(oAtkLnkStyle,'¤w¹F¨ì¤W­­¡I');}";
-	echo "	if (iPlGrowth < iRAt || iPlGrowth == '0'){return failAddStat(oAtkLnkStyle,'§Aªº¦¨ªøÂI¼Æ¤£¨¬°÷¡I');}";
+	echo "	if (iPlAtk >= 150){return failAddStat(oAtkLnkStyle,'å·²é”åˆ°ä¸Šé™ï¼');}";
+	echo "	if (iPlGrowth < iRAt || iPlGrowth == '0'){return failAddStat(oAtkLnkStyle,'ä½ çš„æˆé•·é»æ•¸ä¸è¶³å¤ ï¼');}";
 	echo "	if (cfmAddStat(iPlGrowth,'Attacking',iPlAtk,iRAt,chkCfm) == true){proceedAddStat('at');}";
 	echo "	else{return failAddStat(oAtkLnkStyle,'');}";
 	echo "	}";
 	echo "	if (type == 'de'){";
-	echo "	if (iPlDef >= 150){return failAddStat(oDefLnkStyle,'¤w¹F¨ì¤W­­¡I');}";
-	echo "	if (iPlGrowth < iRDe || iPlGrowth == '0'){return failAddStat(oDefLnkStyle,'§Aªº¦¨ªøÂI¼Æ¤£¨¬°÷¡I');}";
+	echo "	if (iPlDef >= 150){return failAddStat(oDefLnkStyle,'å·²é”åˆ°ä¸Šé™ï¼');}";
+	echo "	if (iPlGrowth < iRDe || iPlGrowth == '0'){return failAddStat(oDefLnkStyle,'ä½ çš„æˆé•·é»æ•¸ä¸è¶³å¤ ï¼');}";
 	echo "	if (cfmAddStat(iPlGrowth,'Defending',iPlDef,iRDe,chkCfm) == true){proceedAddStat('de');}";
 	echo "	else{return failAddStat(oDefLnkStyle,'');}";
 	echo "	}";
 	echo "	if (type == 're'){";
-	echo "	if (iPlRef >= 150){return failAddStat(oRefLnkStyle,'¤w¹F¨ì¤W­­¡I');}";
-	echo "	if (iPlGrowth < iRRe || iPlGrowth == '0'){return failAddStat(oRefLnkStyle,'§Aªº¦¨ªøÂI¼Æ¤£¨¬°÷¡I');}";
+	echo "	if (iPlRef >= 150){return failAddStat(oRefLnkStyle,'å·²é”åˆ°ä¸Šé™ï¼');}";
+	echo "	if (iPlGrowth < iRRe || iPlGrowth == '0'){return failAddStat(oRefLnkStyle,'ä½ çš„æˆé•·é»æ•¸ä¸è¶³å¤ ï¼');}";
 	echo "	if (cfmAddStat(iPlGrowth,'Reacting',iPlRef,iRRe,chkCfm) == true){proceedAddStat('re');}";
 	echo "	else{return failAddStat(oRefLnkStyle,'');}";
 	echo "	}";
 	echo "	if (type == 'ta'){";
-	echo "	if (iPlTar >= 150){return failAddStat(oTarLnkStyle,'¤w¹F¨ì¤W­­¡I');}";
-	echo "	if (iPlGrowth < iRTa || iPlGrowth == '0'){return failAddStat(oTarLnkStyle,'§Aªº¦¨ªøÂI¼Æ¤£¨¬°÷¡I');}";
+	echo "	if (iPlTar >= 150){return failAddStat(oTarLnkStyle,'å·²é”åˆ°ä¸Šé™ï¼');}";
+	echo "	if (iPlGrowth < iRTa || iPlGrowth == '0'){return failAddStat(oTarLnkStyle,'ä½ çš„æˆé•·é»æ•¸ä¸è¶³å¤ ï¼');}";
 	echo "	if (cfmAddStat(iPlGrowth,'Targeting',iPlTar,iRTa,chkCfm) == true){proceedAddStat('ta');}";
 	echo "	else{return failAddStat(oTarLnkStyle,'');}";
 	echo "	}";
 	echo "	if (type == 'sp'){";
-	echo "	if (iPlGrowth < $SP_Stat_Req || iPlGrowth == '0'){return failAddStat(oSPLnkStyle,'§Aªº¦¨ªøÂI¼Æ¤£¨¬°÷¡I');}";
+	echo "	if (iPlGrowth < $SP_Stat_Req || iPlGrowth == '0'){return failAddStat(oSPLnkStyle,'ä½ çš„æˆé•·é»æ•¸ä¸è¶³å¤ ï¼');}";
 	echo "	if (cfmAddSP(iPlGrowth,chkCfm) == true){proceedAddStat('sp');}";
 	echo "	else{return failAddStat(oSPLnkStyle,'');}";
 	echo "	}}";
@@ -309,13 +313,14 @@ if ($mode == 'proc'){
 	echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" width=200>";
 	echo "<tr height=109 style=\"padding-left: 12px;padding-top: 8px;\" valign=top>";
 	echo "<td style=\"background-image: url('$General_Image_Dir/neo/rt_tab_bg.jpg')\" colspan=3 width=200>";
-	echo "<font style=\"font-weight: Bold; font-size: 8pt\">¾÷®v¦WºÙ:</font><br><span style=\"background-color: black; color: $Player[color]; font-weight: Bold; width: 95%;\">&nbsp; $Player[gamename] &nbsp;</span>";
-	echo "<br><font style=\"font-weight: Bold; font-size: 8pt\">©ÒÄİ²ÕÂ´:</font><br><span style=\"background-color: black;width: 95%\"><font style=\"color: $Pl_Org[color]; font-weight: Bold;\">&nbsp; $Pl_Org[name]</font>";
+	echo "<font style=\"font-weight: Bold; font-size: 8pt\">ç©å®¶åç¨±:</font><br><span style=\"color: $Player[color]; font-weight: Bold; width: 95%;\">&nbsp; $Player[gamename] &nbsp;</span>";
+	echo "<br><font style=\"font-weight: Bold; font-size: 8pt\">æ‰€å±¬çµ„ç¹”:</font><br><span style=\"width: 95%\"><font style=\"color: $Pl_Org[color]; font-weight: Bold;\">&nbsp; $Pl_Org[name]</font>";
 	if ($RightsTitle)
 	echo "<font style=\"color: yellow;font-weight: Bold;\"> &nbsp;$RightsTitle</font>";
 	echo "&nbsp;($Pl_Rank) &nbsp;";
 	echo "</span>";
-	echo "<br><font style=\"font-weight: Bold; font-size: 8pt\">©Ò¦b¦a°Ï:</font><br><span style=\"background-color: black;width: 95%;$WarColor\"><font style=\"font-weight: Bold;\">&nbsp; $Player[coordinates] ($AreaLandForm)</font> (<font style=\"color: $AreaOrg[color]\">".$AreaOrg['name']."</font>) &nbsp;</span>";
+	echo "<br><font style=\"font-weight: Bold; font-size: 8pt\">çµ„ç¹”å®£è¨€:</font><br><span style=\"width: 95%\"><font style=\"color: $Pl_Org[color]; font-weight: Bold;word-break:break-all\">&nbsp; $Pl_Org[pose]</font></span>";
+	echo "<br><font style=\"font-weight: Bold; font-size: 8pt\">æ‰€åœ¨åœ°å€:</font><br><span style=\"width: 95%;$WarColor\"><font style=\"font-weight: Bold;\">&nbsp; $Player[coordinates] ($AreaLandForm)</font> (<font style=\"color: $AreaOrg[color]\">".$AreaOrg['name']."</font>) &nbsp;</span>";
 	echo "</td>";
 	echo "</tr>";
 
@@ -358,25 +363,36 @@ if ($mode == 'proc'){
 	echo "<img src='$General_Image_Dir/neo/blue_bar.gif' width=1 height=5>";
 	echo "</td><td width=13 style=\"background-image: url('$General_Image_Dir/neo/btn_neo_r.gif');\">&nbsp;</td></tr>";
 	}
+	
+	//Bar 4: Ms Exp
+	$Show_MsExp = $UserNextMsLvExp = $Show_MsExp_Style = '';
+	if ($Player['mslv'] >= 30) {$UserNextMsLvExp = false;$Show_MsExp = '0';} //Hide upon 150Lv
+	else {CalcMsExp("$Player[mslv]");$Show_MsExp = number_format($Player['msexp'])." / ".number_format($UserNextMsLvExp);$Show_MsExp_Style = ($UserNextMsLvExp > 10000000) ? "font-size: 8pt;font-weight: Bold" : "";
+	echo "<tr><td colspan=3 height=10 style=\"font-size: 1px\">&nbsp;</td></tr>";
+	echo "<tr><td style=\"background-image: url('$General_Image_Dir/neo/btn_neo_l.gif');\" width=12>&nbsp;</td><td style=\"background-image: url('$General_Image_Dir/neo/btn_neo_m.gif');background-color: $Player[color];padding-left: 18px;\" height=30 width=175>";
+	echo "<b color=FEFEFE>Ms EXP: &nbsp;</b><span id=pl_msexp style=\"$Show_MsExp_Style\">$Show_MsExp</span>";
+	echo "<br><img id=pl_msexp_l src='$General_Image_Dir/neo/blue_bar.gif' width=".ceil(($Player['msexp']/$UserNextMsLvExp)*124)." height=5>";
+	echo "<img id=pl_msexp_r src='$General_Image_Dir/neo/empty_bar.gif' width=".(124-ceil(($Player['msexp']/$UserNexMstLvExp)*124))." height=5>";
+	echo "<img src='$General_Image_Dir/neo/blue_bar.gif' width=1 height=5>";
+	echo "</td><td width=13 style=\"background-image: url('$General_Image_Dir/neo/btn_neo_r.gif');\">&nbsp;</td></tr>";
+	}
 
 	//Include Left Menu
 	include_once('gmscrn_left_menu.php');
 
 	//Bar 8: Request
-	if ($Player['request']){
+	if ($Gen['request']){
 	echo "<tr><td colspan=3 height=10 style=\"font-size: 1px\">&nbsp;</td></tr>";
 	echo "<form action=organization.php?action=Employ method=post name=requestOrg>";
 	echo "<input type=hidden value='C' name=actionb>";
 	echo "<input type=hidden name=actionc value=''>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "<tr height=109 style=\"padding-left: 10px;padding-top: 3px\" valign=top>";
 	echo "<td style=\"background-image: url('$General_Image_Dir/neo/rt_tab_bg.jpg');\" colspan=3 width=200>";
-	echo "<span style=\"background-color:  ". $Player['color'] ."\">&nbsp;<b>ÁÜ½Ğ«H</b>&nbsp;</span><br>";
-	echo "$Player[request]";
-	echo "<input type=submit onClick=\"actionc.value='Accept'\" style=\"$BStyleA\" $BStyleB value='µªÀ³'>";
-	echo "<input type=submit onClick=\"actionc.value='Refuse'\" style=\"$BStyleA\" $BStyleB value='©Úµ´'>";
+	echo "<span style=\"background-color:  ". $Gen['color'] ."\">&nbsp;<b>é‚€è«‹ä¿¡</b>&nbsp;</span><br>";
+	echo "$Gen[request]";
+	echo "<input type=submit onClick=\"actionc.value='Accept'\" style=\"$BStyleA\" $BStyleB value='ç­”æ‡‰'>";
+	echo "<input type=submit onClick=\"actionc.value='Refuse'\" style=\"$BStyleA\" $BStyleB value='æ‹’çµ•'>";
 	echo "</form></td></tr>";
 	}
 
@@ -412,12 +428,12 @@ if ($mode == 'proc'){
 			if($Opt_Area["User"]["occupied"] == $Area["User"]["occupied"])	$Opt_Org = $AreaOrg;
 			elseif($Opt_Area["User"]["occupied"] == $Player['organization'])$Opt_Org = $Pl_Org;
 			else $Opt_Org = ReturnOrg($Opt_Area["User"]["occupied"]);
-			$Operation_Details .= "<font style=\"font-size: 8pt;color: white\">[¥ô°È]</font><br><font style=\"font-size: 8pt;\">¦æ°Ê¥N¸¹: $Pl_Org[operation]</font><br>";
-			$Operation_Details .= "<font style=\"font-size: 10pt;color: white\">[¤º®e] °Ï°ì§ğ¨¾¾Ô</font><br>§â <font color=$Opt_Org[color]>$Pl_Show_Mission[1]°Ï°ì</font> ªº <font color=$Opt_Org[color]>¼Ä¤è­n¶ë</font> À»¯}<br>©Î<br>Äè·À <font color=$Opt_Org[color]>$Pl_Show_Mission[1]°Ï°ì</font> ¤¤ªº<font color=$Opt_Org[color]>$Opt_Org[name]</font>­x¤O";
+			$Operation_Details .= "<font style=\"font-size: 8pt;color: white\">[ä»»å‹™]</font><br><font style=\"font-size: 8pt;\">è¡Œå‹•ä»£è™Ÿ: $Pl_Org[operation]</font><br>";
+			$Operation_Details .= "<font style=\"font-size: 10pt;color: white\">[å…§å®¹] å€åŸŸæ”»é˜²æˆ°</font><br>æŠŠ <font color=$Opt_Org[color]>$Pl_Show_Mission[1]å€åŸŸ</font> çš„ <font color=$Opt_Org[color]>æ•µæ–¹è¦å¡</font> æ“Šç ´<br>æˆ–<br>æ®²æ»… <font color=$Opt_Org[color]>$Pl_Show_Mission[1]å€åŸŸ</font> ä¸­çš„<font color=$Opt_Org[color]>$Opt_Org[name]</font>è»åŠ›";
 			$Operation_Details .= "</td></tr><tr height=109 style=\"padding-left: 10px;padding-top: 3px\" valign=top><td style=\"background-image: url('$General_Image_Dir/neo/rt_tab_bg.jpg');\" colspan=3 width=200>";
-			$StartAtk = preg_replace('/¬P´Á(.*), /','¬P´Á\\1<br>',cfu_time_convert($Pl_Mission['t_start']));
-			$TimeEnd = preg_replace('/¬P´Á(.*), /','¬P´Á\\1<br>',cfu_time_convert($Pl_Mission['t_end']));
-			$Operation_Details .=  "<font style=\"font-size: 10pt;color: white\">[¶}©l®É¶¡]</font><br> $StartAtk <br><font style=\"font-size: 10pt;color: white\">[§¹µ²®É¶¡]</font><br> $TimeEnd ";
+			$StartAtk = preg_replace('/æ˜ŸæœŸ(.*), /','æ˜ŸæœŸ\\1<br>',cfu_time_convert($Pl_Mission['t_start']));
+			$TimeEnd = preg_replace('/æ˜ŸæœŸ(.*), /','æ˜ŸæœŸ\\1<br>',cfu_time_convert($Pl_Mission['t_end']));
+			$Operation_Details .=  "<font style=\"font-size: 10pt;color: white\">[é–‹å§‹æ™‚é–“]</font><br> $StartAtk <br><font style=\"font-size: 10pt;color: white\">[å®Œçµæ™‚é–“]</font><br> $TimeEnd ";
 			$Tickets = $Pl_Mission['ticket_a'];
 			$atkMissionFlag = 1;
 		}
@@ -443,16 +459,16 @@ if ($mode == 'proc'){
 		}
 		if($Defend_War){
 			$A_Org = ReturnOrg($Defend_War['a_org']);
-			$Operation_Details .= "<font style=\"font-size: 10pt;color: white\">[¤º®e] °Ï°ì¨¾¿m¾Ô</font><br>Äè·À <font color=$Pl_Org[color]>".$Def_Area_Id."°Ï°ì</font> ¤¤ªº<font color=$A_Org[color]>$A_Org[name]</font>­x¤O";
-			$Operation_Details .= "<br>©Î<br>¨¾¤î <font color=$Pl_Org[color]>".$Def_Area_Id."°Ï°ì­n¶ë</font>,<br>©ó¾Ôª§µ²§ô«e³Q§ğ³´";
+			$Operation_Details .= "<font style=\"font-size: 10pt;color: white\">[å…§å®¹] å€åŸŸé˜²ç¦¦æˆ°</font><br>æ®²æ»… <font color=$Pl_Org[color]>".$Def_Area_Id."å€åŸŸ</font> ä¸­çš„<font color=$A_Org[color]>$A_Org[name]</font>è»åŠ›";
+			$Operation_Details .= "<br>æˆ–<br>é˜²æ­¢ <font color=$Pl_Org[color]>".$Def_Area_Id."å€åŸŸè¦å¡</font>,<br>æ–¼æˆ°çˆ­çµæŸå‰è¢«æ”»é™·";
 
 			if($Def_Area_Id == $Player['coordinates'] && $Player['rights'] == '1' && $Defend_War['t_start'] > $CFU_Time && $Defend_War['ticket_b'] == 1)
-				$Operation_Details .= "<br><b style=\"cursor: pointer\" onmouseover=\"this.style.color='yellow'\" onmouseout=\"this.style.color='white'\" onClick=\"SetiFT('\'½Õ°Ê§L¤OªïÀ»\'');act.action='city.php?action=Reinforcement';act.actionb.value='C';act.target='$SecTarget';act.submit();\"><u>½Õ°Ê§L¤OªïÀ»</u></b>";
+				$Operation_Details .= "<br><b style=\"cursor: pointer\" onmouseover=\"this.style.color='yellow'\" onmouseout=\"this.style.color='white'\" onClick=\"SetiFT('\'èª¿å‹•å…µåŠ›è¿æ“Š\'');act.action='city.php?action=Reinforcement';act.actionb.value='C';act.target='$SecTarget';act.submit();\"><u>èª¿å‹•å…µåŠ›è¿æ“Š</u></b>";
 
 			$Operation_Details .= "</td></tr><tr height=109 style=\"padding-left: 10px;padding-top: 3px\" valign=top><td style=\"background-image: url('$General_Image_Dir/neo/rt_tab_bg.jpg');\" colspan=3 width=200>";
-			$StartAtk = preg_replace('/¬P´Á(.*), /','¬P´Á\\1<br>',cfu_time_convert($Defend_War['t_start']));
-			$TimeEnd = preg_replace('/¬P´Á(.*), /','¬P´Á\\1<br>',cfu_time_convert($Defend_War['t_end']));
-			$Operation_Details .=  "<font style=\"font-size: 10pt;color: white\">[¶}©l®É¶¡]</font><br> $StartAtk <br><font style=\"font-size: 10pt;color: white\">[§¹µ²®É¶¡]</font><br> $TimeEnd ";
+			$StartAtk = preg_replace('/æ˜ŸæœŸ(.*), /','æ˜ŸæœŸ\\1<br>',cfu_time_convert($Defend_War['t_start']));
+			$TimeEnd = preg_replace('/æ˜ŸæœŸ(.*), /','æ˜ŸæœŸ\\1<br>',cfu_time_convert($Defend_War['t_end']));
+			$Operation_Details .=  "<font style=\"font-size: 10pt;color: white\">[é–‹å§‹æ™‚é–“]</font><br> $StartAtk <br><font style=\"font-size: 10pt;color: white\">[å®Œçµæ™‚é–“]</font><br> $TimeEnd ";
 			$Tickets = $Defend_War['ticket_b'];
 		}
 	}
@@ -460,13 +476,13 @@ if ($mode == 'proc'){
 	if ($Tickets){
 		echo "<tr><td colspan=3 height=10 style=\"font-size: 1px\">&nbsp;</td></tr>";
 		echo "<tr><td style=\"background-image: url('$General_Image_Dir/neo/btn_neo_l.gif');\" width=12>&nbsp;</td><td style=\"background-image: url('$General_Image_Dir/neo/btn_neo_m.gif');background-color: $Player[color];padding-left: 18px;\" height=30 width=175>";
-		echo "<b color=FEFEFE>²{­x¤O: &nbsp;</b><span id=pl_active_tickets>".number_format($Tickets);
+		echo "<b color=FEFEFE>ç¾è»åŠ›: &nbsp;</b><span id=pl_active_tickets>".number_format($Tickets);
 		echo "</spam></td><td width=13 style=\"background-image: url('$General_Image_Dir/neo/btn_neo_r.gif');\">&nbsp;</td></tr>";
 	}
 	if($Operation_Details){
 		echo "<tr><td colspan=3 height=10 style=\"font-size: 1px\">&nbsp;</td></tr>";
 		echo "<tr><td style=\"background-image: url('$General_Image_Dir/neo/btn_neo_l.gif');\" width=12>&nbsp;</td><td style=\"background-image: url('$General_Image_Dir/neo/btn_neo_m.gif');background-color: $Pl_Org[color];padding-left: 18px;\" height=30 width=175>";
-		echo "<b color=FEFEFE>¥XÀ»³qª¾®Ñ</span>";
+		echo "<b color=FEFEFE>å‡ºæ“Šé€šçŸ¥æ›¸ - çµ„ç¹”æœ‰ä»»å‹™äº¤çµ¦æ‚¨äº†</span>";
 		echo "</td><td width=13 style=\"background-image: url('$General_Image_Dir/neo/btn_neo_r.gif');\">&nbsp;</td></tr>";
 		echo "<tr height=109 style=\"padding-left: 10px;padding-top: 3px\" valign=top>";
 		echo "<td style=\"background-image: url('$General_Image_Dir/neo/rt_tab_bg.jpg');\" colspan=3 width=200>";
@@ -490,32 +506,32 @@ if ($mode == 'proc'){
 	echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" width=200>";
 
 	//Bar 1: Title
-	echo "<tr><td colspan=2 onClick=\"window.open('http://v2alliance.no-ip.org')\" style=\"cursor: pointer;background-image: url('$General_Image_Dir/neo/btn_s_neo.gif');\" width=200 height=30 align=center>";
-	echo "<b style=\"font-size: 8pt;\">php-eb &copy; 2005-2010 v2Alliance.</b>";
+	echo "<tr><td colspan=2 onClick=\"window.open('http://ext4.me')\" style=\"cursor: pointer;background-image: url('$General_Image_Dir/neo/btn_s_neo.gif');\" width=200 height=30 align=center>";
+	echo "<b style=\"font-size: 8pt;\">PHPEB v0.3 @ 2015-2016 Ext4!.</b>";
 	echo "</td></tr>";
 
 	//Button 1: Pilot Status
 	echo "<tr><td colspan=2 height=5 style=\"font-size: 1px\" align=right>&nbsp;</td></tr>";
 	echo "<tr><td width=100></td><td class='lowLight' id=btn1 onClick=\"SetStill('btn1');\" onMouseOver=menuOver('btn1','PilotStat') onMouseOut=menuOut('btn1','PilotStat') onDrag='return false;'>";
-	echo "<b style=\"font-size: 8pt;\">¾÷®vª¬ºA</b>";
+	echo "<b style=\"font-size: 8pt;\">æ©Ÿå¸«ç‹€æ…‹</b>";
 	echo "</td></tr>";
 
 	//Button 2: MS Status
 	echo "<tr><td colspan=2 height=3 style=\"font-size: 1px\" align=right>&nbsp;</td></tr>";
 	echo "<tr><td width=100></td><td class='lowLight' id=btn2 onClick=\"SetStill('btn2');\" onMouseOver=menuOver('btn2','MSStat') onMouseOut=menuOut('btn2','MSStat') onDrag='return false;'>";
-	echo "<b style=\"font-size: 8pt;\">¾÷Åéª¬ºA</b>";
+	echo "<b style=\"font-size: 8pt;\">æ©Ÿé«”ç‹€æ…‹</b>";
 	echo "</td></tr>";
 
 	//Button 3: Equipment Status
 	echo "<tr><td colspan=2 height=3 style=\"font-size: 1px\" align=right>&nbsp;</td></tr>";
 	echo "<tr><td width=100></td><td class='lowLight' id=btn3 onClick=\"SetStill('btn3');\" onMouseOver=menuOver('btn3','EqStat') onMouseOut=menuOut('btn3','EqStat') onDrag='return false;'>";
-	echo "<b style=\"font-size: 8pt;\">¸Ë³Æª¬ºA</b>";
+	echo "<b style=\"font-size: 8pt;\">è£å‚™ç‹€æ…‹</b>";
 	echo "</td></tr>";
 
 	//Button Log: Log Display
 	echo "<tr><td colspan=2 height=3 style=\"font-size: 1px\" align=right>&nbsp;</td></tr>";
 	echo "<tr><td width=100></td><td class='lowLight' id=btnlog onClick=\"SetStill('btnlog');\" onMouseOver=menuOver('btnlog','LogDis') onMouseOut=menuOut('btnlog','LogDis') onDrag='return false;'>";
-	echo "<b style=\"font-size: 8pt;\">¾Ô°«¬ö¿ı</b>";
+	echo "<b style=\"font-size: 8pt;\">æˆ°é¬¥ç´€éŒ„</b>";
 	echo "</td></tr>";
 
 	//Commands - Submission Form
@@ -523,8 +539,6 @@ if ($mode == 'proc'){
 	echo "<input type=hidden value='none' name=actionb>";
 	$OpenChat = !(( isset($_POST['noopenchat']) ) ? $_POST['noopenchat'] : 0);
 	echo "<input type=hidden value=".($OpenChat ? 0 : 1)." name=noopenchat>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 
@@ -534,16 +548,23 @@ if ($mode == 'proc'){
 	echo "<script language=\"JavaScript\">",
 	"setTimeout(\"enablerf();\",2000);",
 	"function ShowSTiF(){",
-		"document.getElementById('STiF').style.left = 150;}",
+		"document.getElementById('STiF').style.left = 200;document.getElementById('STiF').style.display = 'block';}",
 	"function HideSTiF(){",
-		"document.getElementById('STiF').style.left = -1150;}",
+		"document.getElementById('STiF').style.left = -1150;document.getElementById('STiF').style.display = 'none';}",
 	"function SetiFT(msgText){",
 		"ShowSTiF();tmpTxt = eval(msgText);",
 		"document.getElementById(\"iFT\").innerHTML = tmpTxt;}",
+	"function ShowCTiF(){",
+		"document.getElementById('CTiF').style.left = 1000;document.getElementById('CTiF').style.display = 'block';}",
+	"function HideCTiF(){",
+		"document.getElementById('CTiF').style.left = -1150;document.getElementById('CTiF').style.display = 'none';}",
+	"function SetCiFT(msgText){",
+		"ShowCTiF();tmpTxt = eval(msgText);",
+		"document.getElementById(\"CiFT\").innerHTML = tmpTxt;}",
 	"function movebattle(){",
-		"if (document.getElementById('status_now').innerHTML=='­×²z¶i¦æ¤¤'){alert('­×²z¤¤¡I'); return false;}",
+		"if (document.getElementById('status_now').innerHTML=='ä¿®ç†é€²è¡Œä¸­'){alert('ä¿®ç†ä¸­ï¼'); return false;}",
 		"var enc = parseInt(eval(\"document.getElementById('EqmEnc_A').innerHTML;\"))+parseInt(eval(\"document.getElementById('EqmEnc_D').innerHTML;\"))+parseInt(eval(\"document.getElementById('EqmEnc_E').innerHTML;\"));",
-		"if(enc > parseInt(document.getElementById('current_en').innerHTML)) {alert('ENÁÙ¥¼¨¬°÷¡I'); return false;}",		
+		"if(enc > parseInt(document.getElementById('current_en').innerHTML)) {alert('ENé‚„æœªè¶³å¤ ï¼'); return false;}",		
 		"act.action='battle.php?action=battle_sel';",
 		"act.actionb.value='battle_sel';",
 		"act.target='$SecTarget';",
@@ -569,13 +590,13 @@ if ($mode == 'proc'){
 	if ($Player['show_log_num'] > $LogEntries)
 	$Pl_LEnt = $LogEntries;
 	else $Pl_LEnt = $Player['show_log_num'];
-	echo "<div id=LogDis style=\"position:absolute; right: -945px; top: 100px; width: 320px;z-index: 1;\" onMouseOver=focusZ(this.id) onMouseOut=blurZ(this.id)> ";
+	echo "<div id=LogDis style=\"display: none;position:absolute; right: 140px; top: 100px; width: 320px;z-index: 1;\" onMouseOver=focusZ(this.id) onMouseOut=blurZ(this.id)> ";
 	echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" width=\"100%\"><tr height=114>";
 	echo "<td width=26 style=\"background-Image: url('$General_Image_Dir/neo/table_log_l.png');\">&nbsp;</td>";
 	echo "<td width=294 style=\"background-color: $Player[color];\"><img src='$General_Image_Dir/neo/table_log_r.png'></td>";
 	echo "</tr><tr><td colspan=2 style=\"background-Image: url('$General_Image_Dir/neo/table_bg.gif'); border:solid #707070 1px; border-top: 0px;\" valign=top>";
 		echo "<table align=center border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" width=\"300\">";
-			$Pl_Log=GetUsrLog($User) or die ('µLªk¨ú±o¬ö¿ı¸ê°T¡I¡I<br>½ĞÁpµ¸ºŞ²z­û¡I<br>¿ù»~¥N¸¹: GB-001');
+			$Pl_Log=GetUsrLog($User) or die ('ç„¡æ³•å–å¾—ç´€éŒ„è³‡è¨Šï¼ï¼<br>è«‹è¯çµ¡ç®¡ç†å“¡ï¼<br>éŒ¯èª¤ä»£è™Ÿ: GB-001');
 			for($LogShowNum=1;$LogShowNum<=$Pl_LEnt;$LogShowNum++){
 				$i = 'time'.$LogShowNum;
 				$j = 'log'.$LogShowNum;
@@ -592,7 +613,7 @@ if ($mode == 'proc'){
 	echo "</div>";
 
 	//Equipment Status Screen
-	echo "<div id=EqStat style=\"position:absolute; right: -960px; top: 85px; width: 320px;z-index: 1;\" onMouseOver=focusZ(this.id) onMouseOut=blurZ(this.id)> ";
+	echo "<div id=EqStat style=\"display: none;position:absolute; right: 140px; top: 85px; width: 320px;z-index: 1;\" onMouseOver=focusZ(this.id) onMouseOut=blurZ(this.id)> ";
 	echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" width=\"100%\"><tr height=114>";
 	echo "<td width=26 style=\"background-Image: url('$General_Image_Dir/neo/table_eq_l.png');\">&nbsp;</td>";
 	echo "<td width=294 style=\"background-color: $Player[color];\"><img src='$General_Image_Dir/neo/table_eq_r.png'></td>";
@@ -629,15 +650,15 @@ if ($mode == 'proc'){
 		if($I == 'B' || $I == 'C'){
 			echo "<br>";
 			$tmpBool = ($Pl->Eq[$I]['id'] != '0' && canEquipAsWep($Pl->Eq[$I]));
-			printQuickEquipSpanTag($V,$I,'W','E','equip', $tmpBool, '(¸Ë³Æ¦¹ªZ¾¹)');
+			printQuickEquipSpanTag($V,$I,'W','E','equip', $tmpBool, '(è£å‚™æ­¤æ­¦å™¨)');
 			echo "&nbsp;";
 			$tmpBool = ($Pl->Eq[$I]['id'] != '0' && $Pl->Eq[$I]['equip']);
-			printQuickEquipSpanTag($V,$I,'E','W','equipdef', $tmpBool, '(¸Ë¤W»²§U¸Ë³Æ)');
+			printQuickEquipSpanTag($V,$I,'E','W','equipdef', $tmpBool, '(è£ä¸Šè¼”åŠ©è£å‚™)');
 		}
 		elseif ($I == 'D'){
 			echo "<br>";
 			$tmpBool = ($Pl->Eq[$I]['id'] != '0' && ($Pl->Eq['B']['id'] == '0' || $Pl->Eq['C']['id'] == '0'));
-			printQuickEquipSpanTag('eqwep','D','R',false,'equipdef', $tmpBool, '(¨ø¤U¦¹¸Ë³Æ)');
+			printQuickEquipSpanTag('eqwep','D','R',false,'equipdef', $tmpBool, '(å¸ä¸‹æ­¤è£å‚™)');
 		}
 
 		// End Div Tag
@@ -645,7 +666,7 @@ if ($mode == 'proc'){
 
 		$Count_Eq++;
 	}
-	if (!$Count_Eq) echo "¨S¦³¥ô¦ó¸Ë³Æ";
+	if (!$Count_Eq) echo "æ²’æœ‰ä»»ä½•è£å‚™";
 
 	echo "<br></td></tr></table>";
 
@@ -658,38 +679,48 @@ if ($mode == 'proc'){
 	echo "</div>";
 
 	//MS Status Screen
-	echo "<div id=MSStat style=\"position:absolute; right: -985px; top: 70px; width: 320px;z-index: 1;\" onMouseOver=focusZ(this.id) onMouseOut=blurZ(this.id)> ";
+	echo "<div id=MSStat style=\"display: none;position:absolute; right: 140px; top: 70px; width: 320px;z-index: 1;\" onMouseOver=focusZ(this.id) onMouseOut=blurZ(this.id)> ";
 	echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" width=\"100%\"><tr height=114>";
 	echo "<td width=26 style=\"background-Image: url('$General_Image_Dir/neo/table_ms_l.png');\">&nbsp;</td>";
 	echo "<td width=294 style=\"background-color: $Player[color];\"><img src='$General_Image_Dir/neo/table_ms_r.png'></td>";
 	echo "</tr><tr><td colspan=2 style=\"background-Image: url('$General_Image_Dir/neo/table_bg.gif'); border:solid #707070 1px; border-top: 0px;\" valign=top>";
+		
 		$Ms_At_Mod = $Ms['atf']-$Ms['base']['atf'];
 		$Ms_De_Mod = $Ms['def']-$Ms['base']['def'];
 		$Ms_Re_Mod = $Ms['ref']-$Ms['base']['ref'];
 		$Ms_Ta_Mod = $Ms['taf']-$Ms['base']['taf'];
+		
+		//Ms Level
+			$A_AvgMs = floor(($Ms['atf'] + $Ms['taf']) / 2);
+			$B_AvgMs = floor(($Ms['def'] + $Ms['ref']) / 2);
+			$Ms_At_Mod += ceil($Player['mslv'] * $Ms['atf'] / $A_AvgMs);
+			$Ms_Ta_Mod += ceil($Player['mslv'] * $Ms['def'] / $A_AvgMs);
+			$Ms_De_Mod += ceil($Player['mslv'] * $Ms['ref'] / $B_AvgMs);
+			$Ms_Re_Mod += ceil($Player['mslv'] * $Ms['taf'] / $B_AvgMs);
+		
 		echo "<table align=center border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;\" width=\"300\">";
-		echo "<tr style=\"font-weight: Bold;\"><td colspan=4>$Ms[msname]</td></tr>";
+		echo "<tr style=\"font-weight: Bold;\"><td colspan=4>$Ms[msname]ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€æ©Ÿé«”ç­‰ç´š: $Player[mslv]</td></tr>";
 		echo "<tr><td colspan=4 align=center><img src=\"".$Unit_Image_Dir."/$Ms[image]\" name=ms_img></td></tr>";
 		echo "<tr><td colspan=4 align=center><img src='$General_Image_Dir/neo/dot_rule.gif'></td></tr>";
 		echo "<tr style=\"font-weight: Bold;\">";
-		echo "<td width=60 align=center>Attacking</td>";
+		echo "<td width=60 align=center>æ”»æ“Š</td>";
 		echo "<td width=30 align=right style=\"color: ".colorConvert($Ms['atf'],65)."\" id=ms_at>".$Ms['atf']."</td>";
 		echo "<td width=30 style=\"color: yellow\">&nbsp;(+<span id=ms_c_at>$Ms_At_Mod</span>)</td>";
-		echo "<td valign=top rowspan=4 width=180 style=\"font-size: 8pt;padding-left: 5px\"><font style=\"font-size: 10pt\">¯S®í®ÄªG:</font><br><div style=\"margin-left: 10px; padding-left: 10px;\">";
+		echo "<td valign=top rowspan=4 width=180 style=\"font-size: 8pt;padding-left: 5px\"><font style=\"font-size: 10pt\">ç‰¹æ®Šæ•ˆæœ:</font><br><div style=\"margin-left: 10px; padding-left: 10px;\">";
 		echo ReturnSpecs($Ms['spec']);
 		echo "</span></td></tr>";
 		echo "<tr style=\"font-weight: Bold;\">";
-		echo "<td width=60 align=center>Defending</td>";
+		echo "<td width=60 align=center>é˜²ç¦¦</td>";
 		echo "<td width=30 align=right style=\"color: ".colorConvert($Ms['def'],75)."\" id=ms_de>".$Ms['def']."</td>";
 		echo "<td width=30 style=\"color: yellow\">&nbsp;(+<span id=ms_c_de>$Ms_De_Mod</span>)</td>";
 		echo "</tr>";
 		echo "<tr style=\"font-weight: Bold;\">";
-		echo "<td width=60 align=center>Mobility</td>";
+		echo "<td width=60 align=center>è¿´é¿</td>";
 		echo "<td width=30 align=right style=\"color: ".colorConvert($Ms['ref'],75)."\" id=ms_re>".$Ms['ref']."</td>";
 		echo "<td width=30 style=\"color: yellow\">&nbsp;(+<span id=ms_c_re>$Ms_Re_Mod</span>)</td>";
 		echo "</tr>";
 		echo "<tr style=\"font-weight: Bold;\">";
-		echo "<td width=60 align=center>Targeting</td>";
+		echo "<td width=60 align=center>å‘½ä¸­</td>";
 		echo "<td width=30 align=right style=\"color: ".colorConvert($Ms['taf'],75)."\" id=ms_ta>".$Ms['taf']."</td>";
 		echo "<td width=30 style=\"color: yellow\">&nbsp;(+<span id=ms_c_ta>$Ms_Ta_Mod</span>)</td>";
 		echo "</tr>";
@@ -700,7 +731,7 @@ if ($mode == 'proc'){
 	echo "</div>";
 
 	//Pilot Status Screen
-	echo "<div id=PilotStat style=\"position:absolute; right: -1125px; top: 55px; height: 294px; width: 320px;z-index: 1;\" onMouseOver=focusZ(this.id) onMouseOut=blurZ(this.id) > ";
+	echo "<div id=PilotStat style=\"display: none;position:absolute; right: 125px; top: 55px; height: 294px; width: 320px;z-index: 1;\" onMouseOver=focusZ(this.id) onMouseOut=blurZ(this.id) > ";
 	echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" width=\"100%\"><tr height=114>";
 	echo "<td width=26 style=\"background-Image: url('$General_Image_Dir/neo/table_pilot_l.png');\">&nbsp;</td>";
 	echo "<td width=294 style=\"background-color: $Player[color];\"><img src='$General_Image_Dir/neo/table_pilot_r.png'></td>";
@@ -708,10 +739,10 @@ if ($mode == 'proc'){
 		echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;\" width=\"100%\">";
 		echo "<tr style=\"font-weight: Bold;\">";
 
-		echo "<td width=50>Level:</td>";
-		echo "<td width=100>Type:</td>";
-		echo "<td width=70>¦¨ªøÂI¼Æ:</td>";
-		echo "<td width=100>³Ó§Q:</td>";
+		echo "<td width=50>ç­‰ç´š:</td>";
+		echo "<td width=100>ç¨®æ—:</td>";
+		echo "<td width=70>æˆé•·é»æ•¸:</td>";
+		echo "<td width=100>å‹åˆ©:</td>";
 		echo "</tr>";
 
 		echo "<tr height=50 align=center valign=top>";
@@ -727,8 +758,11 @@ if ($mode == 'proc'){
 			echo "<br><span id=examTxt style=\"color: FF0000;font-weight: bold\">EXAM Activated</span>";
 		else	echo "<br><span id=examTxt>&nbsp;</span>";
 		echo "</b></td>";
-		echo "<td id=pl_growth>$Player[growth]</td>";
-		echo "<td align=left>ÁZ¤À:<span id=pl_vpoints>$Player[v_points]</span> <br> ¦¸¼Æ:<span id=pl_victories>$Player[victory]</span></td>";
+		echo "<td id=pl_growth>$Player[growth]<br><br>";
+		if(!$Game['reset']){
+			echo "<font style=\"color: red\" onclick=\"act.action='reset.php?action=stats';act.actionb.value='A';act.target='$SecTarget';act.submit();\">é‡ç½®é»æ•¸<font></td>";
+		}
+		echo "<td align=left>ç©åˆ†:<span id=pl_vpoints>$Player[v_points]</span> <br> æ¬¡æ•¸:<span id=pl_victories>$Player[victory]</span></td>";
 		echo "</tr>";
 
 		echo "<tr><td colspan=4 align=center>";
@@ -737,47 +771,47 @@ if ($mode == 'proc'){
 		echo "<tr><td colspan=4 align=center>";
 			echo "<table align=center border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" width=\"300\">";
 			echo "<tr style=\"font-weight: Bold;\">";
-			echo "<td width=75 align=center>Attacking</td>";
+			echo "<td width=75 align=center>æ”»æ“Š</td>";
 			echo "<td width=35 align=right><span id=pl_attacking style=\"color: $AtClr;\">$Player[attacking]</span>&nbsp;</td>";
 			echo "<td width=35>+ <span id=pl_attackingf>".$Pl->PiFix['attacking']."</span></td>";
 			echo "<td width=20 align=center><img src='{$Stat_Add[at][Image]}' style=\"{$Stat_Add[at][Style]}\" onClick=\"this.style.visibility='hidden';add_stat('at')\" id = 'attacking_addlink'></td>";
 			$At_Show_Stat_Req = "$At_Stat_Req";
 			if($Player['attacking'] >= 150) $At_Show_Stat_Req = 'N/A';
 			echo "<td width=30 align=center id=attacking_stat_req>$At_Show_Stat_Req</td>";
-			echo "<td width=75 align=center>§ğÀ»­È</td>";
+			echo "<td width=75 align=center>æ”»æ“Šå€¼</td>";
 			echo "<td width=30 id=pl_attacking_sum>".($Player['attacking'] + $Pl->PiFix['attacking'])."</td>";
 			echo "</tr>";
 			echo "<tr style=\"font-weight: Bold;\">";
-			echo "<td width=75 align=center>Defending</td>";
+			echo "<td width=75 align=center>é˜²ç¦¦</td>";
 			echo "<td width=35 align=right><span id=pl_defending style=\"color: $DeClr;\">$Player[defending]</span>&nbsp;</td>";
 			echo "<td width=35>+ <span id=pl_defendingf>".$Pl->PiFix['defending']."</span></td>";
 			echo "<td width=20 align=center><img src='{$Stat_Add[de][Image]}' style=\"{$Stat_Add[de][Style]}\" onClick=\"this.style.visibility='hidden';add_stat('de')\" id = 'defending_addlink'></td>";
 			$De_Show_Stat_Req = "$De_Stat_Req";
 			if($Player['defending'] >= 150) $De_Show_Stat_Req = 'N/A';
 			echo "<td width=30 align=center id=defending_stat_req>$De_Show_Stat_Req</td>";
-			echo "<td width=75 align=center>¨¾¿m­È</td>";
+			echo "<td width=75 align=center>é˜²ç¦¦å€¼</td>";
 			echo "<td width=30 id=pl_defending_sum>".($Player['defending'] + $Pl->PiFix['defending'])."</td>";
 			echo "</tr>";
 			echo "<tr style=\"font-weight: Bold;\">";
-			echo "<td width=75 align=center>Reacting</td>";
+			echo "<td width=75 align=center>è¿´é¿</td>";
 			echo "<td width=35 align=right><span id=pl_reacting style=\"color: $ReClr;\">$Player[reacting]</span>&nbsp;</td>";
 			echo "<td width=35>+ <span id=pl_reactingf>".$Pl->PiFix['reacting']."</span></td>";
 			echo "<td width=20 align=center><img src='{$Stat_Add[re][Image]}' style=\"{$Stat_Add[re][Style]}\" onClick=\"this.style.visibility='hidden';add_stat('re')\" id = 'reacting_addlink'></td>";
 			$Re_Show_Stat_Req = "$Re_Stat_Req";
 			if($Player['reacting'] >= 150) $Re_Show_Stat_Req = 'N/A';
 			echo "<td width=30 align=center id=reacting_stat_req>$Re_Show_Stat_Req</td>";
-			echo "<td width=75 align=center>¦^Á×­È</td>";
+			echo "<td width=75 align=center>å›é¿å€¼</td>";
 			echo "<td width=30 id=pl_reacting_sum>".($Player['reacting'] + $Pl->PiFix['reacting'])."</td>";
 			echo "</tr>";
 			echo "<tr style=\"font-weight: Bold;\">";
-			echo "<td width=75 align=center>Targeting</td>";
+			echo "<td width=75 align=center>å‘½ä¸­</td>";
 			echo "<td width=35 align=right><span id=pl_targeting style=\"color: $TaClr;\">$Player[targeting]</span>&nbsp;</td>";
 			echo "<td width=35>+ <span id=pl_targetingf>".$Pl->PiFix['targeting']."</span></td>";
 			echo "<td width=20 align=center><img src='{$Stat_Add[ta][Image]}' style=\"{$Stat_Add[ta][Style]}\" onClick=\"this.style.visibility='hidden';add_stat('ta')\" id = 'targeting_addlink'></td>";
 			$Ta_Show_Stat_Req = "$Ta_Stat_Req";
 			if($Player['targeting'] >= 150) $Ta_Show_Stat_Req = 'N/A';
 			echo "<td width=30 align=center id=targeting_stat_req>$Ta_Show_Stat_Req</td>";
-			echo "<td width=75 align=center>©R¤¤­È</td>";
+			echo "<td width=75 align=center>å‘½ä¸­å€¼</td>";
 			echo "<td width=30 id=pl_targeting_sum>".($Player['targeting'] + $Pl->PiFix['targeting'])."</td>";
 			echo "</tr>";
 			echo "<tr style=\"font-weight: Bold;\">";
@@ -787,7 +821,7 @@ if ($mode == 'proc'){
 			echo "<td width=20 align=center><img src='{$Stat_Add[sp][Image]}' style=\"{$Stat_Add[sp][Style]}\" onClick=\"this.style.visibility='hidden';add_stat('sp')\" id = 'spmax_addlink'></td>";
 			$SP_Show_Stat_Req = "$SP_Stat_Req";
 			echo "<td width=30 align=center id=sp_stat_req>$SP_Show_Stat_Req</td>";
-			echo "<td width=105 align=center colspan=2><input type=\"checkbox\" name=\"disableCfm\" id=\"cbDisableCfm\"> ¤£­n½T»{</td>";
+			echo "<td width=105 align=center colspan=2><input type=\"checkbox\" name=\"disableCfm\" id=\"cbDisableCfm\"> ä¸è¦ç¢ºèª</td>";
 			echo "</tr>";
 			echo "</table>";
 		echo "</td></tr>";
@@ -796,22 +830,12 @@ if ($mode == 'proc'){
 	echo "</table>";
 	echo "<form action=nil method=post name=addstat target='$SecTarget'>";
 	echo "<input type=hidden value='none' name=actionb>";
-	echo "<input type=hidden value='$User' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Password' name=Pl_Value[PASSWORD]>";
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 	echo "<form action=nil method=post name=proc_tar target='$ProcTarget'>";
 	echo "<input type=hidden value='none' name=actionb>";
 	echo "<input type=hidden value='validcode' name=actionc>";
 	echo "<input type=hidden value='validcode2' name=slot_sw>";
-	echo "<input type=hidden value='$User' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Password' name=Pl_Value[PASSWORD]>";
-	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
-	echo "</form>";
-	//iChat Form
-	echo "<form action=$iChatScript method=post name=iChatForm target='$iChatTarget'>";
-	echo "<input type=hidden value='$User' name=username>";
-	echo "<input type=hidden value='$Password' name=password>";
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 	echo "</div>";
@@ -820,12 +844,24 @@ if ($mode == 'proc'){
 	echo "<div id=wepinfo style=\"position:absolute; z-index:3;color: black;\" align=left></div>";
 
 	//Secondary Target Window
-	echo "<div id=STiF style=\"position:absolute; left: 2150px; top: 20px; height: 650px; width: 800px;\"> ";
-	echo "<table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" width=\"100%\"><tr bgcolor=black>";
-	echo "<td height=20 width=780 id=iFT style=\"padding-left: 8px\">¾Ô°«µe­±</td>";
+	echo "<div id=STiF class=\"draggable\" style=\"position:absolute; left: 2150px; top: 20px; height: 650px; width: 800px; display: none;\"> ";
+	echo "<table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;\" width=\"100%\"><tr bgcolor=black>";
+	echo "<td height=20 width=780 id=iFT style=\"padding-left: 8px\">æˆ°é¬¥ç•«é¢</td>";
 	echo "<td width=20 align=center onClick=\"HideSTiF();\" style=\"cursor: pointer\">x</td>";
 	echo "</tr><tr><td height=630 colspan=2>";
 		echo "<iframe name=\"$SecTarget\" ";
+		echo " src=\"about:blank\" marginheight=0 marginwidth=0 frameborder=0 height=630 width=800></iframe>";
+	echo "</td></tr>";
+	echo "</table>";
+	echo "</div>";
+	
+	//Chat Window
+	echo "<div id=CTiF class=\"draggable\" style=\"position:absolute; left: 2150px; top: 20px; height: 650px; width: 800px; display: none;\"> ";
+	echo "<table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;\" width=\"100%\"><tr bgcolor=black>";
+	echo "<td height=20 width=780 id=CiFT style=\"padding-left: 8px\">èŠå¤©å®¤</td>";
+	echo "<td width=20 align=center onClick=\"HideCTiF();\" style=\"cursor: pointer\">x</td>";
+	echo "</tr><tr><td height=630 colspan=2>";
+		echo "<iframe name=\"$ThrTarget\" ";
 		echo " src=\"about:blank\" marginheight=0 marginwidth=0 frameborder=0 height=630 width=800></iframe>";
 	echo "</td></tr>";
 	echo "</table>";
@@ -905,8 +941,8 @@ if ($mode == 'proc'){
 	echo "	if (h < m_h){h = i_h + r_h;}else{h = m_h;i_h = m_h;mh_time = n_time;}";
 	echo "	if (e < m_e){e = i_e + r_e;}else{e = m_e;i_e = m_e;me_time = n_time;}";
 	echo "	if (s < m_s){s = i_s + r_s;}else{s = m_s;i_s = m_s;ms_time = n_time;}";
-	echo "	if (h >= m_h && document.getElementById('status_now').innerHTML=='­×²z¶i¦æ¤¤')";
-	echo "	{document.getElementById('status_now').innerHTML='µo¶iµn¿ı¥i¯à';document.getElementById('status_now').style.color='#016CFE';}";
+	echo "	if (h >= m_h && document.getElementById('status_now').innerHTML=='ä¿®ç†ä¸­')";
+	echo "	{document.getElementById('status_now').innerHTML='å¯æˆ°é¬¥';document.getElementById('status_now').style.color='#016CFE';}";
 	echo "	document.getElementById('current_hp').innerHTML=Math.round (h);";
 	echo "	document.getElementById('current_en').innerHTML=Math.round (e);";
 	echo "	document.getElementById('current_sp').innerHTML=Math.round (s);";
@@ -943,48 +979,43 @@ if ($mode == 'proc'){
 		echo "	opt_wh = Math.floor(opt_t/3600);";
 		echo "	opt_wm = Math.floor((opt_t - (opt_wh*3600))/60);";
 		echo "	opt_ws = Math.floor(opt_t - (opt_wh*3600) - (opt_wm*60));";
-		echo "	document.getElementById('opt_time_display').innerHTML = 'ÁÙ¦³'+opt_wh+'¤p®É'+opt_wm+'¤ÀÄÁ'+opt_ws+'¬í¶}©l¾Ôª§¡C';";
+		echo "	document.getElementById('opt_time_display').innerHTML = 'é‚„æœ‰'+opt_wh+'å°æ™‚'+opt_wm+'åˆ†é˜'+opt_ws+'ç§’é–‹å§‹æˆ°çˆ­ã€‚';";
 		echo "	}";
 		echo "	else if(opt_time > cfu_time) {";
 		echo "	opt_t = opt_time - cfu_time;";
 		echo "	opt_wh = Math.floor(opt_t/3600);";
 		echo "	opt_wm = Math.floor((opt_t - (opt_wh*3600))/60);";
 		echo "	opt_ws = Math.floor(opt_t - (opt_wh*3600) - (opt_wm*60));";
-		echo "	document.getElementById('opt_time_display').innerHTML = 'ÁÙ¦³'+opt_wh+'¤p®É'+opt_wm+'¤ÀÄÁ'+opt_ws+'¬íµ²§ô¾Ôª§¡C';";
+		echo "	document.getElementById('opt_time_display').innerHTML = 'é‚„æœ‰'+opt_wh+'å°æ™‚'+opt_wm+'åˆ†é˜'+opt_ws+'ç§’çµæŸæˆ°çˆ­ã€‚';";
 		echo "	document.getElementById('opt_time_display').style.color = 'FFFF00';";
 		echo "	}";
 		echo "	else {";
-		echo "	document.getElementById('opt_time_display').innerHTML = '¾Ôª§¤w«Å§i²×¤F¡C';";
+		echo "	document.getElementById('opt_time_display').innerHTML = 'æˆ°çˆ­å·²å®£å‘Šçµ‚äº†ã€‚';";
 		echo "	document.getElementById('opt_time_display').style.color = '';";
 		echo "	}}";
 	}
-	
-	echo "var ".$iChatTarget."_ref = null;";
 
 	echo "function refreshWindow(){";
-	echo "document.act.action='gmscrn_main.php?action=proc&';"
+	echo "document.act.action='gmscrn_main.php?action=proc';"
 		. "document.act.target='$PriTarget';"
 		. "document.act.noopenchat.value = 1;"
 		. "document.act.submit();";
 	echo "}";
-	echo "function openChatWindow(){
-		if(document.act.noopenchat.value == 0){
-			try{
-				".$iChatTarget."_ref = window.open('','$iChatTarget','location=1,menubar=0,toolbar=0,resizable=1,scrollbars=0,status=0,width=755,height=225');
-				document.iChatForm.submit();
-			}
-			catch(e){}
-			document.act.noopenchat.value = 1;
-		}
-		else if(".$iChatTarget."_ref != null) {
-			try{
-				".$iChatTarget."_ref.focus();
-			}
-			catch(e){}
-		}
-	}";
+	echo "function openHistory(){";
+	echo "document.act.action='gen_info.php?action=history';"
+		. "document.act.target='$SecTarget';"
+		. "document.act.submit();"
+		. "document.getElementById(\"iFT\").innerHTML = 'æ­·å²';";
+	echo "}";
+	echo "function openChat(){";
+	echo "document.act.action='chat.php';"
+		. "document.act.target='$ThrTarget';"
+		. "document.act.submit();"
+		. "document.getElementById(\"CiFT\").innerHTML = 'èŠå¤©å®¤';";
+	echo "}";
 	
-	if($OpenChat)	echo " openChatWindow();";
+	echo " openHistory();ShowSTiF();";
+	echo " openChat();ShowCTiF();";
 	echo "	</script>";
 	
 	//Behaviour Check
@@ -1005,6 +1036,13 @@ else echo "<br><br><br>Invalid Action<br><br><br>";
 function drawButton($rSpacing,$Caption,$wTitle,$actions){
 	echo "<tr><td colspan=2 height=$rSpacing style=\"font-size: 1px\" align=right>&nbsp;</td></tr>";
 	echo "<tr><td width=100></td><td class='lowLight' onClick=\"SetiFT('\'$wTitle\'');$actions\" onMouseOver=\"this.className = 'highLight';\" onMouseOut=\"this.className = 'lowLight';\" onDrag='return false;'>";
+	echo "<b style=\"font-size: 8pt;\">$Caption</b>";
+	echo "</td></tr>";
+}
+
+function drawCButton($rSpacing,$Caption,$wTitle,$actions){
+	echo "<tr><td colspan=2 height=$rSpacing style=\"font-size: 1px\" align=right>&nbsp;</td></tr>";
+	echo "<tr><td width=100></td><td class='lowLight' onClick=\"SetCiFT('\'$wTitle\'');$actions\" onMouseOver=\"this.className = 'highLight';\" onMouseOut=\"this.className = 'lowLight';\" onDrag='return false;'>";
 	echo "<b style=\"font-size: 8pt;\">$Caption</b>";
 	echo "</td></tr>";
 }

@@ -4,9 +4,9 @@ include('cfu.php');
 if (empty($PriTarget)) $PriTarget = 'Alpha';
 if (empty($SecTarget)) $SecTarget = 'Beta';
 postHead('');
-AuthUser("$Pl_Value[USERNAME]","$Pl_Value[PASSWORD]");
-if ($CFU_Time >= $TIMEAUTH+$TIME_OUT_TIME || $TIMEAUTH <= $CFU_Time-$TIME_OUT_TIME){echo "³s½u¹O®É¡I<br>½Ğ­«·sµn¤J¡I";exit;}
-GetUsrDetails("$Pl_Value[USERNAME]",'Gen','Game');
+AuthUser();
+if ($CFU_Time >= $_SESSION['timeauth']+$TIME_OUT_TIME || $_SESSION['timeauth'] <= $CFU_Time-$TIME_OUT_TIME){echo "é€£ç·šé€¾æ™‚ï¼<br>è«‹é‡æ–°ç™»å…¥ï¼";exit;}
+GetUsrDetails("$_SESSION[username]",'Gen','Game');
 if ($Game['organization'])
 $Pl_Org = ReturnOrg("$Game[organization]");
 
@@ -17,7 +17,7 @@ $Ar_Org = ReturnOrg($Area["User"]["occupied"]);
 //Special Commands GUI
 if ($mode=='ModFort'){
 	if ($Area["User"]["occupied"] != $Game['organization'] || !$Game['rights']){
-		echo "¥X¿ù¡C";
+		echo "å‡ºéŒ¯ã€‚";
 		postFooter();
 		exit;
 	}
@@ -51,7 +51,7 @@ if ($mode=='ModFort'){
 	$At_Cost = getModFortPrice($Area["User"]["at"], $Area["Sys"]["max_at"]);
 	$De_Cost = getModFortPrice($Area["User"]["de"], $Area["Sys"]["max_de"]);
 	$Ta_Cost = getModFortPrice($Area["User"]["ta"], $Area["Sys"]["max_ta"]);
-	$HpMax_Cost = ($Area["User"]["hpmax"]+1000) * 25;
+	$HpMax_Cost = Floor(($Area["User"]["hpmax"]+10000) * 2);
 	
 	$FortRecHpCost = floor($RepairHPCost*2);
 	$eRecCost = 2*$FortRecHpCost;
@@ -61,10 +61,11 @@ if ($mode=='ModFort'){
 
 	$Otp_Area_Sql = ("SELECT `war_id` FROM `".$GLOBALS['DBPrefix']."phpeb_user_war` WHERE `mission` = 'Atk<$Gen[coordinates]>' AND `t_start` >= '$CFU_Time' AND `t_end` < '$CFU_Time' ORDER BY `t_start` ASC LIMIT 1");
 	$Otp_Area_Q = mysql_query($Otp_Area_Sql) or die(mysql_error());
-	$Otp_A_I_W = mysql_num_rows($Otp_Area_Q);
-	$Otp_A_ITar = ($Otp_A_I_W > 0) ? 1 : 0;
+	/*$Otp_A_I_W = mysql_num_rows($Otp_Area_Q);
+	$Otp_A_ITar = ($Otp_A_I_W > 0) ? 1 : 0;*/
+	$Otp_A_ITar = mysql_fetch_array($Otp_Area_Q);
 
-	echo "<font style=\"font-size: 12pt\">±j¤Æ«°¶ë</font>";
+	echo "<font style=\"font-size: 12pt\">å¼·åŒ–åŸå¡</font>";
 	printTHR();
 
 	//Selection of Modification
@@ -72,35 +73,33 @@ if ($mode=='ModFort'){
 		echo "<form action=city.php?action=ModFort method=post name=mainform>";
 		echo "<input type=hidden value='B' name=actionb>";
 		echo "<input type=hidden value='C' name=actionc>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	
 		echo "<script language=\"Javascript\">";
 		echo "function cfmModFort(type){";
-		echo "if (type == 'at' && (".$At_Cost." > $Pl_Org[funds])){alert('²ÕÂ´¸êª÷¤£¨¬¡C');return false;}";
-		echo "else if (type == 'de' && (".$De_Cost." > $Pl_Org[funds])){alert('²ÕÂ´¸êª÷¤£¨¬¡C');return false;}";
-		echo "else if (type == 'ta' && (".$Ta_Cost." > $Pl_Org[funds])){alert('²ÕÂ´¸êª÷¤£¨¬¡C');return false;}";
-		echo "else if (type == 'hpmax' && (".$HpMax_Cost." > $Pl_Org[funds])){alert('²ÕÂ´¸êª÷¤£¨¬¡C');return false;}";
-		echo "else if (type == 'ehp' && (".($eRecCost*$eRec)." > $Pl_Org[funds])){alert('²ÕÂ´¸êª÷¤£¨¬¡C');return false;}";
-		echo "else if (type == 'shp' && (".($FortRecHpCost*$sRec)." > $Pl_Org[funds])){alert('²ÕÂ´¸êª÷¤£¨¬¡C');return false;}";
-		echo "else if (type == 'lhp' && (".($FortRecHpCost*$lRec)." > $Pl_Org[funds])){alert('²ÕÂ´¸êª÷¤£¨¬¡C');return false;}";
-		echo "else {if (confirm('½T©w­n±j¤Æ«°¶ë¶Ü¡H')==true){mainform.actionc.value=type;return true;}";
+		echo "if (type == 'at' && (".$At_Cost." > $Pl_Org[funds])){alert('çµ„ç¹”è³‡é‡‘ä¸è¶³ã€‚');return false;}";
+		echo "else if (type == 'de' && (".$De_Cost." > $Pl_Org[funds])){alert('çµ„ç¹”è³‡é‡‘ä¸è¶³ã€‚');return false;}";
+		echo "else if (type == 'ta' && (".$Ta_Cost." > $Pl_Org[funds])){alert('çµ„ç¹”è³‡é‡‘ä¸è¶³ã€‚');return false;}";
+		echo "else if (type == 'hpmax' && (".$HpMax_Cost." > $Pl_Org[funds])){alert('çµ„ç¹”è³‡é‡‘ä¸è¶³ã€‚');return false;}";
+		echo "else if (type == 'ehp' && (".($eRecCost*$eRec)." > $Pl_Org[funds])){alert('çµ„ç¹”è³‡é‡‘ä¸è¶³ã€‚');return false;}";
+		echo "else if (type == 'shp' && (".($FortRecHpCost*$sRec)." > $Pl_Org[funds])){alert('çµ„ç¹”è³‡é‡‘ä¸è¶³ã€‚');return false;}";
+		echo "else if (type == 'lhp' && (".($FortRecHpCost*$lRec)." > $Pl_Org[funds])){alert('çµ„ç¹”è³‡é‡‘ä¸è¶³ã€‚');return false;}";
+		echo "else {if (confirm('ç¢ºå®šè¦å¼·åŒ–åŸå¡å—ï¼Ÿ')==true){mainform.actionc.value=type;return true;}";
 		echo "else {return false;}}";
 		echo "}</script>";
 	
 		echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-		echo "<tr><td align=left width=280><b style=\"font-size: 10pt;\">±j¤Æ $Gen[coordinates]°Ï°ì ªº«°¶ë: </b></td></tr>";
-		echo "<tr><td>²ÕÂ´¸êª÷: ".number_format($Pl_Org['funds'])."¤¸";
-		if ($Area["User"]["at"] < $Area["Sys"]["max_at"]) echo "<br>±j¤Æ­n¶ë§ğÀ»¤O: <input type=submit value=\"±j¤Æ1ÂIAT\" onClick=\"return cfmModFort('at');\"> ©Ò»İª÷¿ú: $". number_format($At_Cost);
-		if ($Area["User"]["de"] < $Area["Sys"]["max_de"]) echo "<br>±j¤Æ­n¶ë¨¾¿m¤O: <input type=submit value=\"±j¤Æ1ÂIDE\" onClick=\"return cfmModFort('de');\"> ©Ò»İª÷¿ú: $". number_format($De_Cost);
-		if ($Area["User"]["ta"] < $Area["Sys"]["max_ta"]) echo "<br>±j¤Æ­n¶ë©R¤¤¯à¤O: <input type=submit value=\"±j¤Æ1ÂITA\" onClick=\"return cfmModFort('ta');\"> ©Ò»İª÷¿ú: $". number_format($Ta_Cost);
-		if ($Area["User"]["hpmax"] + 1000 <= $Area["Sys"]["hpmax"]*2.5) echo "<br>±j¤Æ­n¶ë¸Ë¥Ò­@¤[«×: <input type=submit value=\"¼W¥[1000HP\" onClick=\"return cfmModFort('hpmax');\"> ©Ò»İª÷¿ú: $". number_format($HpMax_Cost);
+		echo "<tr><td align=left width=280><b style=\"font-size: 10pt;\">å¼·åŒ– $Gen[coordinates]å€åŸŸ çš„åŸå¡: </b></td></tr>";
+		echo "<tr><td>çµ„ç¹”è³‡é‡‘: ".number_format($Pl_Org['funds'])."å…ƒ";
+		if ($Area["User"]["at"] < $Area["Sys"]["max_at"]) echo "<br>å¼·åŒ–è¦å¡æ”»æ“ŠåŠ›: <input type=submit value=\"å¼·åŒ–1é»AT\" onClick=\"return cfmModFort('at');\"> æ‰€éœ€é‡‘éŒ¢: $". number_format($At_Cost);
+		if ($Area["User"]["de"] < $Area["Sys"]["max_de"]) echo "<br>å¼·åŒ–è¦å¡é˜²ç¦¦åŠ›: <input type=submit value=\"å¼·åŒ–1é»DE\" onClick=\"return cfmModFort('de');\"> æ‰€éœ€é‡‘éŒ¢: $". number_format($De_Cost);
+		if ($Area["User"]["ta"] < $Area["Sys"]["max_ta"]) echo "<br>å¼·åŒ–è¦å¡å‘½ä¸­èƒ½åŠ›: <input type=submit value=\"å¼·åŒ–1é»TA\" onClick=\"return cfmModFort('ta');\"> æ‰€éœ€é‡‘éŒ¢: $". number_format($Ta_Cost);
+		if ($Area["User"]["hpmax"] + 10000 <= $Area["Sys"]["hpmax"]*10) echo "<br>å¼·åŒ–è¦å¡è£ç”²è€ä¹…åº¦: <input type=submit value=\"å¢åŠ 10000HP\" onClick=\"return cfmModFort('hpmax');\"> æ‰€éœ€é‡‘éŒ¢: $". number_format($HpMax_Cost);
 	
-		if ($Otp_A_ITar) echo "<br>ºò«æºû­×: <input type=submit value=\"¦^´_".$eRec."ÂIHP\" onClick=\"return cfmModFort('ehp');\"> ©Ò»İª÷¿ú: $".number_format($eRecCost*$eRec);
+		if ($Otp_A_ITar) echo "<br>ç·Šæ€¥ç¶­ä¿®: <input type=submit value=\"å›å¾©".$eRec."é»HP\" onClick=\"return cfmModFort('ehp');\"> æ‰€éœ€é‡‘éŒ¢: $".number_format(25000);
 		else{
-			echo "<br>¦^´_³¡¥÷HP: <input type=submit value=\"¦^´_".$sRec."ÂI\" onClick=\"return cfmModFort('shp');\"> ©Ò»İª÷¿ú: $".number_format($FortRecHpCost*$sRec);
-			echo "<br>¦^´_¤j¶qHP: <input type=submit value=\"¦^´_".$lRec."ÂI\" onClick=\"return cfmModFort('lhp');\"> ©Ò»İª÷¿ú: $".number_format($FortRecHpCost*$lRec);
+			echo "<br>å›å¾©éƒ¨ä»½HP: <input type=submit value=\"å›å¾©".$sRec."é»\" onClick=\"return cfmModFort('shp');\"> æ‰€éœ€é‡‘éŒ¢: $".number_format($FortRecHpCost*$sRec);
+			echo "<br>å›å¾©å¤§é‡HP: <input type=submit value=\"å›å¾©".$lRec."é»\" onClick=\"return cfmModFort('lhp');\"> æ‰€éœ€é‡‘éŒ¢: $".number_format($FortRecHpCost*$lRec);
 		}
 	
 		echo "</tr></td>";
@@ -139,12 +138,12 @@ if ($mode=='ModFort'){
 			case 'hpmax':
 				$bCost = $HpMax_Cost;
 				$statMod = $Area["User"]["hpmax"];
-				$statLim = $Area["Sys"]["hpmax"] * 2.5;
-				$statDeg = 1000;
+				$statLim = $Area["Sys"]["hpmax"] * 10;
+				$statDeg = 10000;
 				$sqlSet = ("`hpmax` = `hpmax` + ".$statDeg.", `hp` = `hp` + ".$statDeg);
 				break;
 			case 'ehp':
-				$bCost = $eRecCost * $eRec;
+				$bCost = 250000;
 				$statDeg = $eRec;
 				$emergencyFlag = $recoverHPFlag = 1;
 				break;
@@ -160,7 +159,7 @@ if ($mode=='ModFort'){
 				break;
 			case 'wep':
 				if (!$FortWep){
-					echo "<center>½Ğ¥ı¿ï¾Ü­n´«¦¨ªºªZ¾¹¡C";
+					echo "<center>è«‹å…ˆé¸æ“‡è¦æ›æˆçš„æ­¦å™¨ã€‚";
 					postFooter();
 					exit;
 				}
@@ -170,8 +169,8 @@ if ($mode=='ModFort'){
 					GetWeaponDetails($Area["User"]["wepa"],'Ar_Wep');
 					$ExchangePrice = ceil($Ex_Wep['price'] - $Ar_Wep['price']/2);
 					if ($ExchangePrice < 0) $ExchangePrice = 0;
-					if (strpos($Ex_Wep['spec'],'FortressOnly') === false){echo "³o¤£¬O­n¶ë±M¥ÎªZ¾¹¡C";postFooter();exit;}
-					elseif($ExchangePrice > $Pl_Org['funds']){echo "<center>²ÕÂ´¸êª÷¤£¨¬¡C";postFooter();exit;}
+					if (strpos($Ex_Wep['spec'],'FortressOnly') === false){echo "é€™ä¸æ˜¯è¦å¡å°ˆç”¨æ­¦å™¨ã€‚";postFooter();exit;}
+					elseif($ExchangePrice > $Pl_Org['funds']){echo "<center>çµ„ç¹”è³‡é‡‘ä¸è¶³ã€‚";postFooter();exit;}
 					else{
 						$bCost = $ExchangePrice;
 						$sqlSet = "`wepa` = '$Ex_Wep[id]'";
@@ -184,16 +183,16 @@ if ($mode=='ModFort'){
 				exit;
 		}
 	
-		if ($bCost > $Pl_Org['funds'] || $bCost < 0){echo "<center>²ÕÂ´¸êª÷¤£¨¬¡C";postFooter();exit;}
+		if ($bCost > $Pl_Org['funds'] || $bCost < 0){echo "<center>çµ„ç¹”è³‡é‡‘ä¸è¶³ã€‚";postFooter();exit;}
 
 		
 		if($statMod + $statDeg > $statLim && !$recoverHPFlag && $actionc != 'wep'){
-			echo "<center>«ü©wªº¯à¤O¤w¹F¤W­­¡C";
+			echo "<center>æŒ‡å®šçš„èƒ½åŠ›å·²é”ä¸Šé™ã€‚";
 			postFooter();
 			exit;
 		}elseif($Otp_A_ITar && ($Area["User"]["hp"] <= 0 || !$emergencyFlag)){
 			echo "<center>";
-			echo ($Area["User"]["hp"] > 0) ? "¾Ô²¤¶i¦æ¤¤¡A¥¼¯à±j¤Æ­n¶ë¡I<br>¥u¯à¶i¦æºò«æ­×²z" : "­n¶ë¤w²_³´¡I";
+			echo ($Area["User"]["hp"] > 0) ? "æˆ°ç•¥é€²è¡Œä¸­ï¼Œæœªèƒ½å¼·åŒ–è¦å¡ï¼<br>åªèƒ½é€²è¡Œç·Šæ€¥ä¿®ç†" : "è¦å¡å·²æ·ªé™·ï¼";
 			postFooter();
 			exit;
 		}
@@ -210,25 +209,23 @@ if ($mode=='ModFort'){
 			exit;
 		}
 	
-		//§ó·s Map Info
+		//æ›´æ–° Map Info
 		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_map` SET $sqlSet WHERE `occupied` = '".$Game['organization']."' AND `map_id` = '".$Gen['coordinates']."'");
 		$query = mysql_query($sql) or die ('MYSQL Error at city.php Line 237');
 
-		//§ó·s Org Info
+		//æ›´æ–° Org Info
 		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_organization` SET `funds` = `funds` - ".intval($bCost)." WHERE `id` = '".$Game['organization']."' LIMIT 1");
 		$query = mysql_query($sql) or die ('MYSQL Error at city.php Line 241');
 	
 		echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-		echo "<p align=center style=\"font-size: 16pt\">«°¶ë±j¤Æ§¹¦¨¤F¡I<input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		echo "<p align=center style=\"font-size: 16pt\">åŸå¡å¼·åŒ–å®Œæˆäº†ï¼<input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 		echo "</form>";
 	}
 }
 elseif ($mode=='Reinforcement'){
 	if ($Area["User"]["occupied"] != $Game['organization'] || !$Game['rights'])
-	{echo "¥X¿ù¡C";postFooter();exit;}
+	{echo "å‡ºéŒ¯ã€‚";postFooter();exit;}
 
 	function analyseDay($time){
 		$DateNow = getdate($GLOBALS['CFU_Time']);
@@ -239,7 +236,7 @@ elseif ($mode=='Reinforcement'){
 		else return false;
 	}
 
-	echo "<font style=\"font-size: 12pt\">­x¨Æ¤O¶q§ë¸ê</font>";
+	echo "<font style=\"font-size: 12pt\">è»äº‹åŠ›é‡æŠ•è³‡</font>";
 	printTHR();
 
 
@@ -247,8 +244,6 @@ elseif ($mode=='Reinforcement'){
 	echo "<form action=city.php?action=Reinforcement method=post name=mainform onSubmit=\"return confirmReinforcement();\">";
 	echo "<input type=hidden value='B' name=actionb>";
 	echo "<input type=hidden value='C' name=actionc>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 
 	echo "<script language=\"Javascript\">";
@@ -260,7 +255,7 @@ elseif ($mode=='Reinforcement'){
 	echo "}</script>";
 
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr><td align=left width=600 colspan=2><b style=\"font-size: 10pt;\">­x¨Æ¤O¶q§ë¸ê: </b></td></tr>";
+	echo "<tr><td align=left width=600 colspan=2><b style=\"font-size: 10pt;\">è»äº‹åŠ›é‡æŠ•è³‡: </b></td></tr>";
 
 		$sql = ("SELECT `map_id`, `aname`, `development`, `tickets` FROM `".$GLOBALS['DBPrefix']."phpeb_user_map` WHERE `occupied` = '$Game[organization]' ORDER BY `map_id`");
 		$query = mysql_query($sql);
@@ -272,17 +267,17 @@ elseif ($mode=='Reinforcement'){
 
 		echo "<tr>";
 		echo "<td width=200 valign=top>";
-		echo "²ÕÂ´¸êª÷: ".number_format($Pl_Org['funds'])."¤¸<br>";
-		echo "°ê®a©Ò±±¨î»â¦a¤@Äı:<br>";
+		echo "çµ„ç¹”è³‡é‡‘: ".number_format($Pl_Org['funds'])."å…ƒ<br>";
+		echo "åœ‹å®¶æ‰€æ§åˆ¶é ˜åœ°ä¸€è¦½:<br>";
 
 		$j = 0;
 		foreach($O_Area as $a)	{echo "&nbsp;- ".$a['map_id'].' ('.$a['aname'].')<br>';$j++;}
-		if(!$j) echo "¨S¦³»â¦a¡C";
+		if(!$j) echo "æ²’æœ‰é ˜åœ°ã€‚";
 		echo "</td>";
 		echo "<td width=400 valign=top>";
-		echo "¦UºŞÁÒ°Ïªº­x¨Æ¤O¶q:";
+		echo "å„ç®¡è½„å€çš„è»äº‹åŠ›é‡:";
 			echo "<table align=center border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 12pt;\" bordercolor=\"#FFFFFF\">";
-			echo "<tr align=center><td width=50>°Ï°ì</td><td width=150>°Ï°ì¦WºÙ</td><td width=75>²{¦³­x¤O</td><td width=75>¼W±j­x¤O</td></tr>";
+			echo "<tr align=center><td width=50>å€åŸŸ</td><td width=150>å€åŸŸåç¨±</td><td width=75>ç¾æœ‰è»åŠ›</td><td width=75>å¢å¼·è»åŠ›</td></tr>";
 				$i = 0;
 				foreach($O_Area as $a){
 				echo "<tr align=center>";
@@ -291,12 +286,12 @@ elseif ($mode=='Reinforcement'){
 					if(analyseDay($a['development']) && $a['tickets'] < $ticketMax){
 						echo "<input type=text $BStyleB style=\"$BStyleA;text-align: center;\" size=4 maxlength=4 ";
 						echo "onChange=\"this.value=makeVal(this.value);if(makeVal(tkt_".$a['map_id'].".innerHTML,1) + parseInt(this.value) > $ticketMax) {this.value = $ticketMax - makeVal(tkt_".$a['map_id'].".innerHTML,1);}c_".$i.".innerHTML=this.value;changeCost();\" ";
-						echo "name=\"reinforce[".$a['map_id']."]\">ÂI";
+						echo "name=\"reinforce[".$a['map_id']."]\">é»";
 						echo "<span style=\"visibility: hidden;position: absolute;\" id=c_".$i.">0</span>";
 						$i++;
 					}
-					elseif($a['tickets'] >= $ticketMax) echo "¤w¹F¤W­­";
-					elseif(!analyseDay($a['development'])) echo "¤µ¤Ñ¤w§ë¸ê";
+					elseif($a['tickets'] >= $ticketMax) echo "å·²é”ä¸Šé™";
+					elseif(!analyseDay($a['development'])) echo "ä»Šå¤©å·²æŠ•è³‡";
 					echo "</td>";
 				echo "</tr>";
 				}
@@ -327,12 +322,12 @@ elseif ($mode=='Reinforcement'){
 					echo "c_cost = numberFormat(c_cost);";
 					echo "cost.innerHTML = c_cost;";
 					echo "}function confirmReinforcement(){";
-					echo "if (parseInt(cost.innerHTML) > $Pl_Org[funds]){alert('²ÕÂ´¸êª÷¤£¨¬¡C');return false;}";
-					echo "else {if (confirm('½T©w­n¼W±j­x¤O¶Ü¡H')==true){return true;} else {return false}}";
+					echo "if (parseInt(cost.innerHTML) > $Pl_Org[funds]){alert('çµ„ç¹”è³‡é‡‘ä¸è¶³ã€‚');return false;}";
+					echo "else {if (confirm('ç¢ºå®šè¦å¢å¼·è»åŠ›å—ï¼Ÿ')==true){return true;} else {return false}}";
 					echo "}</script>";
-					echo "<tr><td colspan=4><hr width=80%>©Ò»İ²ÕÂ´¸êª÷: $<span id=cost>0</span><span id=cost_n style=\"visibility: hidden; position: absolute;\">0</span></td></tr>";
-					echo "<tr><td colspan=4 align=center><input type=submit name=rnf_submit value=½T©w $BStyleB style=\"$BStyleA;\"></td></tr>";
-				}else	echo "<tr><td colspan=4 align=center>¨S¦³¥i¥H§ë¸êªº»â¦a¡C</td></tr>";
+					echo "<tr><td colspan=4><hr width=80%>æ‰€éœ€çµ„ç¹”è³‡é‡‘: $<span id=cost>0</span><span id=cost_n style=\"visibility: hidden; position: absolute;\">0</span></td></tr>";
+					echo "<tr><td colspan=4 align=center><input type=submit name=rnf_submit value=ç¢ºå®š $BStyleB style=\"$BStyleA;\"></td></tr>";
+				}else	echo "<tr><td colspan=4 align=center>æ²’æœ‰å¯ä»¥æŠ•è³‡çš„é ˜åœ°ã€‚</td></tr>";
 			echo "</table>";
 		echo "</td>";
 		echo "</tr>";
@@ -357,8 +352,8 @@ elseif ($mode=='Reinforcement'){
 		foreach($reinforce as $Id => $t){
 			if(!$t) continue;
 			$j++;
-			if(empty($A[$Id])){echo "<center>»â¦a¥DÅv¥X¿ù¡C";postFooter();exit;}
-			if(!analyseDay($D[$Id])) {echo "¤µ¤Ñ¤w§ë¸ê";postFooter();exit;}
+			if(empty($A[$Id])){echo "<center>é ˜åœ°ä¸»æ¬Šå‡ºéŒ¯ã€‚";postFooter();exit;}
+			if(!analyseDay($D[$Id])) {echo "ä»Šå¤©å·²æŠ•è³‡";postFooter();exit;}
 			$t = intval($t);
 			if($t > $dailyTicketLim) $t = $dailyTicketLim;
 			elseif($t < 0) $t = 0;
@@ -368,9 +363,9 @@ elseif ($mode=='Reinforcement'){
 			$sql_m[$Id] = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_map` SET `tickets` = ".($A[$Id] + $t).", `development` = ".$CFU_Time." WHERE `occupied` = '".$Game['organization']."' AND `map_id` = '".$Id."' LIMIT 1;");
 		}
 
-		if($j <= 0) {echo "<center>¨Ã¨S¦³¶i¦æ¥ô¦ó§ë¸ê¡C";postFooter();exit;}
+		if($j <= 0) {echo "<center>ä¸¦æ²’æœ‰é€²è¡Œä»»ä½•æŠ•è³‡ã€‚";postFooter();exit;}
 
-		if($Cost > $Pl_Org['funds']) {echo "<center>²ÕÂ´¸êª÷¤£¨¬¡C";postFooter();exit;}
+		if($Cost > $Pl_Org['funds']) {echo "<center>çµ„ç¹”è³‡é‡‘ä¸è¶³ã€‚";postFooter();exit;}
 
 		//Org Info SQL
 		$sql_o = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_organization` SET `funds` = `funds`-$Cost WHERE `id` = '".$Game['organization']."' LIMIT 1");
@@ -381,17 +376,17 @@ elseif ($mode=='Reinforcement'){
 		foreach($sql_m as $sql)	$query = mysql_query($sql);
 
 		echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-		echo "<p align=center style=\"font-size: 16pt\">­x¤O¼W±j¤F¡I<br><input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('about:blank')\"></p>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		echo "<p align=center style=\"font-size: 16pt\">è»åŠ›å¢å¼·äº†ï¼<br><input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('about:blank')\"></p>";
+		
+		
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 		echo "</form>";
 	}
 	elseif ($actionb == 'C'){
 	echo "<form action=city.php?action=Reinforcement method=post name=mainform onSubmit=\"return confirmReinforcement();\">";
 	echo "<input type=hidden value='D' name=actionb>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 
 	echo "<script language=\"Javascript\">";
@@ -406,7 +401,7 @@ elseif ($mode=='Reinforcement'){
 	echo "}</script>";
 
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr><td align=left width=650 colspan=2><b style=\"font-size: 10pt;\">ªïÀ»·Ç³Æ: </b></td></tr>";
+	echo "<tr><td align=left width=650 colspan=2><b style=\"font-size: 10pt;\">è¿æ“Šæº–å‚™: </b></td></tr>";
 
 	$sql = ("SELECT `t_start`,`t_end`,`a_org`,`name`,`mission`,`ticket_b`,`map_id`, `aname`, `development`, `tickets` FROM `".$GLOBALS['DBPrefix']."phpeb_user_map`, `".$GLOBALS['DBPrefix']."phpeb_user_war`, `".$GLOBALS['DBPrefix']."phpeb_user_organization` WHERE `b_org` = `occupied` AND `occupied` = '$Pl_Org[id]' AND `mission` REGEXP `map_id` AND `a_org` = `id` AND `t_end` > '$CFU_Time' ORDER BY `t_start`;");
 	$query = mysql_query($sql);
@@ -424,25 +419,25 @@ elseif ($mode=='Reinforcement'){
 
 	echo "<tr>";
 	echo "<td width=250 valign=top>";
-	echo "²ÕÂ´¸êª÷: ".number_format($Pl_Org['funds'])."¤¸<br>";
-	echo "³B©ó¾Ôª§©Î³Æ¾Ôª¬ºA»â¦a¤@Äı:<br>";
+	echo "çµ„ç¹”è³‡é‡‘: ".number_format($Pl_Org['funds'])."å…ƒ<br>";
+	echo "è™•æ–¼æˆ°çˆ­æˆ–å‚™æˆ°ç‹€æ…‹é ˜åœ°ä¸€è¦½:<br>";
 
 	$j = 0;
 	foreach($O_Area as $a)	{
 		foreach($a as $o) echo "&nbsp;- ".$o['map_id'].' ('.$o['aname'].')<br>';
 		$j++;
 	}
-	if(!$j) echo "¨S¦³»â¦a³B©ó¾Ôª§©Î³Æ¾Ôª¬ºA¡C";
+	if(!$j) echo "æ²’æœ‰é ˜åœ°è™•æ–¼æˆ°çˆ­æˆ–å‚™æˆ°ç‹€æ…‹ã€‚";
 
-	$helpString = '<b>»¡©ú:</b><div style="padding-left: 5pt;">- ·í¦³¼Ä¹ï²ÕÂ´¦V¤v¤è»â¦a«Å¾Ô®É, ¤w¤è²ÕÂ´¥²¶·<b>½Õ¬£­x¤O</b>§@¦nªïÀ»·Ç³Æ¡C<br>';
-	$helpString .= '- <b>½Õ¬£­x¤O</b>¥²¶·©ó¾Ô§Ğ<u>¶}©l«e§¹¦¨</u>, ¨Ã¥B<u>¥u¯à½Õ¬£<b>¤@¦¸</b></u>;<br>©Ò½Õ­x¬£ªº­x¤O, ¦P®É¤]¥u¹ï<u><b>¤@­Ó</b>§ğ¤è²ÕÂ´</u>¦³®Ä<br>';
-	$helpString .= '- ¦p¦³¦h©ó¤@­Ó²ÕÂ´¦V¤v¤è»â¦a«Å¾Ô, ¤£½×¬O§_¬Û¦Pªº»â¦a,<br>¤]¥²¶·¤À§O<b>½Õ°Ê­x¤O</b>¤@¦¸¡C</div>';
+	$helpString = '<b>èªªæ˜:</b><div style="padding-left: 5pt;">- ç•¶æœ‰æ•µå°çµ„ç¹”å‘å·±æ–¹é ˜åœ°å®£æˆ°æ™‚, å·²æ–¹çµ„ç¹”å¿…é ˆ<b>èª¿æ´¾è»åŠ›</b>ä½œå¥½è¿æ“Šæº–å‚™ã€‚<br>';
+	$helpString .= '- <b>èª¿æ´¾è»åŠ›</b>å¿…é ˆæ–¼æˆ°å½¹<u>é–‹å§‹å‰å®Œæˆ</u>, ä¸¦ä¸”<u>åªèƒ½èª¿æ´¾<b>ä¸€æ¬¡</b></u>;<br>æ‰€èª¿è»æ´¾çš„è»åŠ›, åŒæ™‚ä¹Ÿåªå°<u><b>ä¸€å€‹</b>æ”»æ–¹çµ„ç¹”</u>æœ‰æ•ˆ<br>';
+	$helpString .= '- å¦‚æœ‰å¤šæ–¼ä¸€å€‹çµ„ç¹”å‘å·±æ–¹é ˜åœ°å®£æˆ°, ä¸è«–æ˜¯å¦ç›¸åŒçš„é ˜åœ°,<br>ä¹Ÿå¿…é ˆåˆ†åˆ¥<b>èª¿å‹•è»åŠ›</b>ä¸€æ¬¡ã€‚</div>';
 
 	printf ("</td><td width=400 valign=top>%s</td></tr><tr>",$helpString);
 	echo "<td valign=top colspan=2>";
-	echo "­x¨Æ¤O¶q:";
+	echo "è»äº‹åŠ›é‡:";
 		echo "<table align=center border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 12pt;\" bordercolor=\"#FFFFFF\">";
-		echo "<tr align=center><td width=50>°Ï°ì</td><td width=150>°Ï°ì¦WºÙ</td><td width=100>§ğ¤è²ÕÂ´</td><td width=75>²{¦³­x¤O</td><td width=75>¤w½Õ°Ê­x¤O</td><td width=75>½Õ°Ê­x¤O</td><td width=75>ºò«æ¼x¥l</td></tr>";
+		echo "<tr align=center><td width=50>å€åŸŸ</td><td width=150>å€åŸŸåç¨±</td><td width=100>æ”»æ–¹çµ„ç¹”</td><td width=75>ç¾æœ‰è»åŠ›</td><td width=75>å·²èª¿å‹•è»åŠ›</td><td width=75>èª¿å‹•è»åŠ›</td><td width=75>ç·Šæ€¥å¾µå¬</td></tr>";
 			$i = 0;
 			foreach($O_Area as $a){
 				foreach($a as $o){
@@ -450,20 +445,20 @@ elseif ($mode=='Reinforcement'){
 						if($o['ticket_b'] == 1 && $o['t_start'] > $CFU_Time){
 							$j .= "<input type=text $BStyleB style=\"$BStyleA;text-align: center;\" size=5 maxlength=5 ";
 							$j .= "onChange=\"this.value=makeVal(this.value,".($o['tickets']-1).",1);c_".$i.".innerHTML=this.value;changeCost();\" ";
-							$j .= "name=\"reinforce[".$o['map_id']."][".$o['a_org']."]\" value=1>ÂI";
+							$j .= "name=\"reinforce[".$o['map_id']."][".$o['a_org']."]\" value=1>é»";
 							$j .= "<span style=\"visibility: hidden;position: absolute;\" id=c_".$i.">0</span>";
 							$exTickets = $ticketMax - $o['tickets'] + 1;
 							if($exTickets > 0){
 								if($exTickets > $dailyTicketLim*2) $exTickets = $dailyTicketLim*2;
 								$k .= "<input type=text $BStyleB style=\"$BStyleA;text-align: center;\" size=5 maxlength=5 ";
 								$k .= "onChange=\"this.value=makeVal(this.value,$exTickets,0);cx_".$i.".innerHTML=this.value;changeCost();\" ";
-								$k .= "name=\"xreinforce[".$o['map_id']."][".$o['a_org']."]\" value=0>ÂI";
+								$k .= "name=\"xreinforce[".$o['map_id']."][".$o['a_org']."]\" value=0>é»";
 								$k .= "<span style=\"visibility: hidden;position: absolute;\" id=cx_".$i.">0</span>";
 							}
 							$i++;
 						}
-						elseif($o['ticket_b'] > 1) {$j .= "¤w½Õ°Ê"; $k .= '¤£¾A¥Î';}
-						elseif($o['t_start'] <= $CFU_Time) {$j .= "¾Ôª§¶i¦æ¤¤"; $k .= '¤£¾A¥Î';}
+						elseif($o['ticket_b'] > 1) {$j .= "å·²èª¿å‹•"; $k .= 'ä¸é©ç”¨';}
+						elseif($o['t_start'] <= $CFU_Time) {$j .= "æˆ°çˆ­é€²è¡Œä¸­"; $k .= 'ä¸é©ç”¨';}
 
 					printf ('<tr align=center><td>%s</td><td>%s</td><td>%s</td><td id=tkt_%1$s_%s>%s</td><td id=act_%1$s>%s</td><td>%s</td><td>%s</td></tr>',$o['map_id'],$o['aname'],$o['name'],$o['a_org'],$o['tickets'],$o['ticket_b'],$j,$k);
 				}
@@ -498,12 +493,12 @@ elseif ($mode=='Reinforcement'){
 				echo "c_cost = numberFormat(c_cost);";
 				echo "cost.innerHTML = c_cost;";
 				echo "}function confirmReinforcement(){";
-				echo "if (parseInt(cost_n.innerHTML) > $Pl_Org[funds]){alert('²ÕÂ´¸êª÷¤£¨¬¡C');return false;}";
-				echo "else {if (confirm('½T©w­n½Õ°Ê­x¤O¶Ü¡H')==true){return true;} else {return false}}";
+				echo "if (parseInt(cost_n.innerHTML) > $Pl_Org[funds]){alert('çµ„ç¹”è³‡é‡‘ä¸è¶³ã€‚');return false;}";
+				echo "else {if (confirm('ç¢ºå®šè¦èª¿å‹•è»åŠ›å—ï¼Ÿ')==true){return true;} else {return false}}";
 				echo "}</script>";
-				echo "<tr><td colspan=7><hr width=80%>©Ò»İ²ÕÂ´¸êª÷: $<span id=cost>0</span><span id=cost_n style=\"visibility: hidden; position: absolute;\">0</span></td></tr>";
-				echo "<tr><td colspan=7 align=center><input type=submit name=rnf_submit value=½T©w $BStyleB style=\"$BStyleA;\"></td></tr>";
-			}else	echo "<tr><td colspan=7 align=center>¨S¦³¥i¥H½Õ°Ê­x¤Oªº»â¦a¡C</td></tr>";
+				echo "<tr><td colspan=7><hr width=80%>æ‰€éœ€çµ„ç¹”è³‡é‡‘: $<span id=cost>0</span><span id=cost_n style=\"visibility: hidden; position: absolute;\">0</span></td></tr>";
+				echo "<tr><td colspan=7 align=center><input type=submit name=rnf_submit value=ç¢ºå®š $BStyleB style=\"$BStyleA;\"></td></tr>";
+			}else	echo "<tr><td colspan=7 align=center>æ²’æœ‰å¯ä»¥èª¿å‹•è»åŠ›çš„é ˜åœ°ã€‚</td></tr>";
 		echo "</table>";
 	echo "</td>";
 	echo "</tr>";
@@ -516,7 +511,7 @@ elseif ($mode=='Reinforcement'){
 		$sql = ("SELECT `a_org`,`name`,`color`,`mission`,`ticket_b`,`map_id`, `war_id`, `tickets` FROM `".$GLOBALS['DBPrefix']."phpeb_user_map`, `".$GLOBALS['DBPrefix']."phpeb_user_war`, `".$GLOBALS['DBPrefix']."phpeb_user_organization` WHERE `b_org` = `occupied` AND `occupied` = '$Pl_Org[id]' AND `mission` REGEXP `map_id` AND `a_org` = `id` AND `t_end` > '$CFU_Time' ORDER BY `t_start`;");
 		$query = mysql_query($sql);
 		$j = 0;
-		$HistoryWrite = "¬°¤F«OÅ@°ê¤g, <font color=\"$Pl_Org[color]\">$Pl_Org[name]</font> ¶i¦æ¤F­x¨Æ½Õ°Ê¡I<br>";
+		$HistoryWrite = "ç‚ºäº†ä¿è­·åœ‹åœŸ, <font color=\"$Pl_Org[color]\">$Pl_Org[name]</font> é€²è¡Œäº†è»äº‹èª¿å‹•ï¼<br>";
 
 		while($i = mysql_fetch_array($query)){
 			if($i['tickets'] <= 0) $i['tickets'] = 1;
@@ -529,8 +524,8 @@ elseif ($mode=='Reinforcement'){
 
 		foreach($reinforce as $M_Id => $c){
 			foreach($c as $o_id => $o_c){
-				if(empty($A[$M_Id])){echo "<center>»â¦a¥DÅv¥X¿ù¡C";postFooter();exit;}
-				if(empty($A[$M_Id][$o_id])){echo "<center>§ä¤£¨ì¬ÛÃö²ÕÂ´¸ê®Æ¡C";postFooter();exit;}
+				if(empty($A[$M_Id])){echo "<center>é ˜åœ°ä¸»æ¬Šå‡ºéŒ¯ã€‚";postFooter();exit;}
+				if(empty($A[$M_Id][$o_id])){echo "<center>æ‰¾ä¸åˆ°ç›¸é—œçµ„ç¹”è³‡æ–™ã€‚";postFooter();exit;}
 				if($A[$M_Id][$o_id]['ticket_b'] > 1) continue;
 				$o_c = intval($o_c);
 				$xreinforce[$M_Id][$o_id] = intval($xreinforce[$M_Id][$o_id]);
@@ -538,7 +533,7 @@ elseif ($mode=='Reinforcement'){
 				if($o_c > $A[$M_Id]['t_area'] - 1) $o_c = $A[$M_Id]['t_area'] - 1;
 				if($o_c + $xreinforce[$M_Id][$o_id] > $ticketMax) $xreinforce[$M_Id][$o_id] = $ticketMax - $o_c;
 				if($xreinforce[$M_Id][$o_id] > $dailyTicketLim * 2) $xreinforce[$M_Id][$o_id] = $dailyTicketLim * 2;
-				if($xreinforce[$M_Id][$o_id] < 0 || $o_c < 0){echo "<center>­x¤O½Õ°Ê¼Æ¶q¥X¿ù¡C";postFooter();exit;}
+				if($xreinforce[$M_Id][$o_id] < 0 || $o_c < 0){echo "<center>è»åŠ›èª¿å‹•æ•¸é‡å‡ºéŒ¯ã€‚";postFooter();exit;}
 
 				$t = $o_c + $xreinforce[$M_Id][$o_id];
 				$Cost += $xreinforce[$M_Id][$o_id] * $ticketCost * 5;
@@ -546,7 +541,7 @@ elseif ($mode=='Reinforcement'){
 				$A[$M_Id]['t_area'] -= $o_c;
 
 				if($xreinforce[$M_Id][$o_id] || $o_c){
-					$HistoryWrite .= "¤v½Õ°Ê <b style=\"color: $Pl_Org[color]\">".$t."ÂI</b> ­x¤O«e©¹ ".$M_Id." ¹ï§Ü <b style=\"color: ".$A[$M_Id][$o_id]['color'].";\">".$A[$M_Id][$o_id]['name']."</b>¡I<br>";
+					$HistoryWrite .= "å·±èª¿å‹• <b style=\"color: $Pl_Org[color]\">".$t."é»</b> è»åŠ›å‰å¾€ ".$M_Id." å°æŠ— <b style=\"color: ".$A[$M_Id][$o_id]['color'].";\">".$A[$M_Id][$o_id]['name']."</b>ï¼<br>";
 					//Map Info SQL
 					$sql_m[$M_Id] = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_map` SET `tickets` = ".($A[$M_Id]['t_area'])." WHERE `occupied` = '".$Game['organization']."' AND `map_id` = '".$M_Id."' LIMIT 1;");
 					//War Info SQL
@@ -556,7 +551,7 @@ elseif ($mode=='Reinforcement'){
 			}
 		}
 
-		if($Cost > $Pl_Org['funds']) {echo "<center>²ÕÂ´¸êª÷¤£¨¬¡C";postFooter();exit;}
+		if($Cost > $Pl_Org['funds']) {echo "<center>çµ„ç¹”è³‡é‡‘ä¸è¶³ã€‚";postFooter();exit;}
 
 		//Org Info SQL
 		$sql_o = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_organization` SET `funds` = `funds`-$Cost WHERE `id` = '".$Game['organization']."' LIMIT 1");
@@ -573,28 +568,28 @@ elseif ($mode=='Reinforcement'){
 		}
 
 		echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-		echo "<p align=center style=\"font-size: 16pt\">­x¤O½Õ°Ê§¹¦¨¤F¡I<br><input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('about:blank')\"></p>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		echo "<p align=center style=\"font-size: 16pt\">è»åŠ›èª¿å‹•å®Œæˆäº†ï¼<br><input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('about:blank')\"></p>";
+		
+		
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 		echo "</form>";
-	}else{echo "¥¼©w¸q°Ê§@¡I";}
+	}else{echo "æœªå®šç¾©å‹•ä½œï¼";}
 }
 elseif ($mode=='AssignDefender'){
-	if ($Area["User"]["occupied"] != $Game['organization'] || !$Game['rights']){echo "¥X¿ù¡C";postFooter();exit;}
+	if ($Area["User"]["occupied"] != $Game['organization'] || !$Game['rights']){echo "å‡ºéŒ¯ã€‚";postFooter();exit;}
 
-	echo "<font style=\"font-size: 12pt\">©e¬£¦u½Ã</font>";
+	echo "<font style=\"font-size: 12pt\">å§”æ´¾å®ˆè¡›</font>";
 	printTHR();
 
 	if ($actionb == 'A'){
 		echo "<form action=city.php?action=AssignDefender method=post name=mainform onSubmit=\"return confirmAssignment();\">";
 		echo "<input type=hidden value='B' name=actionb>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		
+		
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 
 		echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-		echo "<tr><td align=left width=780><b style=\"font-size: 10pt;\">©e¬£¦u½Ã: </b></td></tr>";
+		echo "<tr><td align=left width=780><b style=\"font-size: 10pt;\">å§”æ´¾å®ˆè¡›: </b></td></tr>";
 
 			$sql = ("SELECT `map_id`, `aname`, `defenders` FROM `".$GLOBALS['DBPrefix']."phpeb_user_map` WHERE `occupied` = '$Game[organization]' ORDER BY `map_id`");
 			$query = mysql_query($sql);
@@ -615,9 +610,9 @@ elseif ($mode=='AssignDefender'){
 			echo "<tr>";
 
 			echo "<td width=780 valign=top>";
-			echo "¦UºŞÁÒ°Ïªº¦u½Ã:";
+			echo "å„ç®¡è½„å€çš„å®ˆè¡›:";
 				echo "<table align=center border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 12pt;\" bordercolor=\"#FFFFFF\">";
-				echo "<tr align=center><td width=40>°Ï°ì</td><td width=185>¦u½Ã¤@</td><td width=185>¦u½Ã¤G</td><td width=185>¦u½Ã¤T</td><td width=185>¦u½Ã¥|</td></tr>";
+				echo "<tr align=center><td width=40>å€åŸŸ</td><td width=185>å®ˆè¡›ä¸€</td><td width=185>å®ˆè¡›äºŒ</td><td width=185>å®ˆè¡›ä¸‰</td><td width=185>å®ˆè¡›å››</td></tr>";
 					$j = 0;
 					foreach($O_Area as $a){
 						$j++;
@@ -628,7 +623,7 @@ elseif ($mode=='AssignDefender'){
 							for($k=0;$k < 4;$k++){
 								if(empty($Defender[$k])) $Defender[$k] = '';
 								echo "<td><select name=Defender[".$a['map_id']."][$k] $BStyleB style=\"$BStyleA;width: 185px;\">";
-								echo "<option value=''>¡Ğ¡Ğ¡Ğ¡Ğ ¨S¦³¦u½Ã ¡Ğ¡Ğ¡Ğ¡Ğ";
+								echo "<option value=''>ï¼ï¼ï¼ï¼ æ²’æœ‰å®ˆè¡› ï¼ï¼ï¼ï¼";
 								foreach($Members as $u => $g){
 									if($Defender[$k] == $u) $selected = "selected";
 									else $selected = '';
@@ -641,10 +636,10 @@ elseif ($mode=='AssignDefender'){
 					if($j > 0){
 						echo "<script language=\"Javascript\">";
 						echo "function confirmAssignment(){";
-						echo "if (confirm('½T©w­n¥Î³o­Ó¦u½Ã°t¸m¶Ü¡H')==true){return true;} else {return false}";
+						echo "if (confirm('ç¢ºå®šè¦ç”¨é€™å€‹å®ˆè¡›é…ç½®å—ï¼Ÿ')==true){return true;} else {return false}";
 						echo "}</script>";
-						echo "<tr><td colspan=5 align=center><input type=submit name=asgndfnr_submit value=½T©w $BStyleB style=\"$BStyleA;\"></td></tr>";
-					}else	echo "<tr><td colspan=5 align=center>¨S¦³¥i¥H©e¬£¦u½Ãªº»â¦a¡C</td></tr>";
+						echo "<tr><td colspan=5 align=center><input type=submit name=asgndfnr_submit value=ç¢ºå®š $BStyleB style=\"$BStyleA;\"></td></tr>";
+					}else	echo "<tr><td colspan=5 align=center>æ²’æœ‰å¯ä»¥å§”æ´¾å®ˆè¡›çš„é ˜åœ°ã€‚</td></tr>";
 				echo "</table>";
 			echo "</td>";
 			echo "</tr>";
@@ -669,16 +664,17 @@ elseif ($mode=='AssignDefender'){
 		unset($j);
 
 		foreach($Defender as $M_Id => $d){
-			if(empty($A[$M_Id])){echo "<center>»â¦a¥DÅv¥X¿ù¡C";postFooter();exit;}
+			if(empty($A[$M_Id])){echo "<center>é ˜åœ°ä¸»æ¬Šå‡ºéŒ¯ã€‚";postFooter();exit;}
 			$d = array_unique($d);
 			if(count($d) > 4) $d = array($d[0],$d[1],$d[2],$d[3]);
 			$c = 0;
 			foreach($d as $dr){
-				if(!array_key_exists($dr, $Members) && $dr){echo "<center>¥Ø¼Ğ¤Hª««D¤v¤è²ÕÂ´ªº¤H­û¡C";postFooter();exit;}
+				if(!array_key_exists($dr, $Members) && $dr){echo "<center>ç›®æ¨™äººç‰©éå·±æ–¹çµ„ç¹”çš„äººå“¡ã€‚";postFooter();exit;}
 				elseif(!$dr) unset($d[$c]);
 				$c++;
 			}
 			if(empty($d[0])) $d[0] = '';
+			$setDefender = mysql_real_escape_string($setDefender);
 			$setDefender = (count($d) > 1) ? implode(',',$d) : $d[0];
 
 			//Map Info SQL
@@ -689,15 +685,15 @@ elseif ($mode=='AssignDefender'){
 		foreach($sql_sd as $sql)	$query = mysql_query($sql);
 
 		echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-		echo "<p align=center style=\"font-size: 16pt\">¦u½Ã°t¸m§¹¦¨¡I<br><input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('about:blank')\"></p>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		echo "<p align=center style=\"font-size: 16pt\">å®ˆè¡›é…ç½®å®Œæˆï¼<br><input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('about:blank')\"></p>";
+		
+		
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 		echo "</form>";
-	}else{echo "¥¼©w¸q°Ê§@¡I";}
+	}else{echo "æœªå®šç¾©å‹•ä½œï¼";}
 
 }
-else {echo "¥¼©w¸q°Ê§@¡I";}
+else {echo "æœªå®šç¾©å‹•ä½œï¼";}
 postFooter();
 echo "</body>";
 echo "</html>";

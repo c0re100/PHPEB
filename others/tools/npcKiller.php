@@ -5,11 +5,11 @@
 
 // Activate Program
 // Turn this on (set to true) or delete this file when not using!!
-// ¤£¨Ï¥Î®É, °O±o³]©w¬°¡uTrue¡v ©Î §R°£³o­ÓÀÉ®×!!
+// ä¸ä½¿ç”¨æ™‚, è¨˜å¾—è¨­å®šç‚ºã€ŒTrueã€ æˆ– åˆªé™¤é€™å€‹æª”æ¡ˆ!!
 $UseAuth = false;
 $Script_Name = 'npcKiller.php';
-include('../../cfu.php');
-postHead('','../../phpeb_session_dir');
+include('cfu.php');
+postHead('');
 mt_srand ((double) microtime()*1000000);
 
 $mode = ( isset($_POST['action']) ) ? $_POST['action'] : '';

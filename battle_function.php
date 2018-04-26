@@ -4,7 +4,7 @@
 //Copyright v2Alliance 2005-2010
 if (!$cSpec) {
 	include('cfu.php');
-	AuthUser("$Pl_Value[USERNAME]","$Pl_Value[PASSWORD]");
+	AuthUser();
 }
 function selectOpponentTactic($Tact){
 	//$Tact is $Op->Player['tactics']
@@ -62,7 +62,7 @@ function actDeacPresage(&$Usr,$NTPresage){
 
 function tryCounterStrike($A_Spec, $B_Spec, $A_Lv, $B_Lv, &$Spec_Event_Tag, $isActive=true){
 	if(strpos($A_Spec,'CounterStrike') !== false && strpos($B_Spec,'CounterStrike') === false && mt_rand(0,100) <= (50+$A_Lv-$B_Lv) ){
-		$Spec_Event_Tag .= ( $isActive ) ? "<br>§A¦¨¥\¤ÏÀ»¹ï¤èªº§ğÀ»¡I" : "<br>¹ï¤è¦¨¥\¤ÏÀ»§Aªº§ğÀ»¡I";
+		$Spec_Event_Tag .= ( $isActive ) ? "<br>ä½ æˆåŠŸåæ“Šå°æ–¹çš„æ”»æ“Šï¼" : "<br>å°æ–¹æˆåŠŸåæ“Šä½ çš„æ”»æ“Šï¼";
 		return 1;
 	}
 	else return 0;
@@ -84,32 +84,39 @@ function getEqStatChange($Usr, $Eqm){
 	if($change == 0) return;
 	if($change < 0){
 		$clr = "ForestGreen";
-		$text = '¡ô';
+		$text = 'â†‘';
 	}
 	elseif($change > 0){
 		$clr = "Red";
-		$text = '¡õ';
+		$text = 'â†“';
 	}
 	$change = abs($change)/100;
 	return " <font style=\"font-size: 8pt; font-weight: 700; color: $clr;\"> (".$text.$change."%)</font>";
 }
 function GetWAtkL($Atk, $Tar, $Re){
-	//§ğ¤è§ğÀ»­È, §ğ¤èTargeting, ¦u¤è¦^Á×­È
+	//æ”»æ–¹æ”»æ“Šå€¼, æ”»æ–¹Targeting, å®ˆæ–¹å›é¿å€¼
 	if ($Tar < $Re/3) $AtkL = $Atk/5;
 	else
 	$AtkL=$Atk * (floor($Tar-$Re/3) * 0.01);
 	if ($AtkL < $Atk/5) $AtkL = $Atk/5;
 	if ($AtkL > $Atk) $AtkL = $Atk;
 	$AtkL = round($AtkL);
-	return $AtkL; //§ğ¤è§ğÀ»­È­pºâ¤U­­
+	return $AtkL; //æ”»æ–¹æ”»æ“Šå€¼è¨ˆç®—ä¸‹é™
 }
 
-function ReturnHitDam($W_Atk,$Rds,$W_Hit,$Atf,$Def,$Ref,$Taf,$At,$De,$Re,$Ta,$A_Spec,$B_Spec,$A_Range,$B_Range,$A_Attrb,$B_Attrb){
-	// §ğ¤èªZ¾¹§ğÀ»¤O, ¦^¼Æ, ªZ¾¹©R¤¤²v, §ğ¤èTargeting, §ğ¤è©R¤¤­È, ¦u¤è¦^Á×¤O, §ğ¤è§ğÀ»­È, ¦u¤è¨¾¿m­È,
-	// §ğ¤è¯S®Ä, ¦u¤è¯S®Ä, §ğ¤è¶ZÂ÷, ¦u¤è¶ZÂ÷, §ğ¤èÄİ©Ê, ¦u¤èÄİ©Ê
+function ReturnHitDam($W_Atk,$Rds,$W_Hit,$Atf,$Def,$Ref,$Taf,$At,$De,$Re,$Ta,$A_Spec,$B_Spec,$A_Range,$B_Range,$A_Attrb,$B_Attrb,$A_MsLv,$B_MsLv){
+	// æ”»æ–¹æ­¦å™¨æ”»æ“ŠåŠ›, å›æ•¸, æ­¦å™¨å‘½ä¸­ç‡, æ”»æ–¹Targeting, æ”»æ–¹å‘½ä¸­å€¼, å®ˆæ–¹å›é¿åŠ›, æ”»æ–¹æ”»æ“Šå€¼, å®ˆæ–¹é˜²ç¦¦å€¼,
+	// æ”»æ–¹ç‰¹æ•ˆ, å®ˆæ–¹ç‰¹æ•ˆ, æ”»æ–¹è·é›¢, å®ˆæ–¹è·é›¢, æ”»æ–¹å±¬æ€§, å®ˆæ–¹å±¬æ€§
 
 	global $Damage_MS_Bias, $Damage_MS_Sense, $Damage_Pi_Bias, $Damage_Pi_Sense, $Acc_MS_Bias, $Acc_MS_Sense, $Acc_Pi_Bias, $Acc_Pi_Sense;
 	mt_srand ((double) microtime()*1000000);
+	
+	$A_AvgMs = floor(($Atf + $Taf) / 2);
+	$B_AvgMs = floor(($Def + $Ref) / 2);
+	$Atf += ceil($A_MsLv * $Atf / $A_AvgMs);
+	$Taf += ceil($A_MsLv * $Taf / $A_AvgMs);
+	$Def += ceil($B_MsLv * $Def / $B_AvgMs);
+	$Ref += ceil($B_MsLv * $Ref / $B_AvgMs);
 	
 	$AtkByMS = $Damage_MS_Bias + ( ( $Atf - $Def ) / $Damage_MS_Sense );
 	$AtkByPi = $Damage_Pi_Bias + ( $At - $De ) / $Damage_Pi_Sense ;
@@ -137,7 +144,14 @@ function ReturnHitDam($W_Atk,$Rds,$W_Hit,$Atf,$Def,$Ref,$Taf,$At,$De,$Re,$Ta,$A_
 			elseif(strpos($B_Spec,'Defc') !== false) $DamagePrevent = 2000;
 			elseif(strpos($B_Spec,'Defb') !== false) $DamagePrevent = 1000;
 			elseif(strpos($B_Spec,'Defa') !== false) $DamagePrevent = 400;
+			
+			if(strpos($B_Spec,'DefE') !== false) 		$DamagePrevent = 6000;
+			elseif(strpos($B_Spec,'DefD') !== false) $DamagePrevent = 4500;
+			elseif(strpos($B_Spec,'DefC') !== false) $DamagePrevent = 3000;
+			elseif(strpos($B_Spec,'DefB') !== false) $DamagePrevent = 2000;
+			elseif(strpos($B_Spec,'DefA') !== false) $DamagePrevent = 1400;
 		}
+		
 		if(strpos($B_Spec,'Pv') !== false){
 			$DamAvg = ($Damage_prd_Max + $Damage_prd_Min) / 2 * $T_Rds;
 			$DamagePrevent += tryGetPv($DamAvg, $B_Spec, $A_Attrb, 0, 'PvBeam');
@@ -151,12 +165,12 @@ function ReturnHitDam($W_Atk,$Rds,$W_Hit,$Atf,$Def,$Ref,$Taf,$At,$De,$Re,$Ta,$A_
 		$Damage_prd_Min -= $DamagePrevent/$T_Rds;
 	}
 
+	$Damage_prd_Max = floor($Damage_prd_Max+10);
+	$Damage_prd_Min = floor($Damage_prd_Min-10);
+	
 	if($Damage_prd_Max < 0) $Damage_prd_Max = 0;
 	if($Damage_prd_Min < 0) $Damage_prd_Min = 0;
-
-	$Damage_prd_Max = floor($Damage_prd_Max);
-	$Damage_prd_Min = floor($Damage_prd_Min);
-
+	
 	$MobS_Fix = 1;$i=array();
 	if(preg_match('/MobS<([0-9]+)>/',$B_Spec,$i)) $MobS_Fix = 1 - intval($i[1])/10000;
 	if ($MobS_Fix > 1) $MobS_Fix = 1;
@@ -175,7 +189,11 @@ function ReturnHitDam($W_Atk,$Rds,$W_Hit,$Atf,$Def,$Ref,$Taf,$At,$De,$Re,$Ta,$A_
 	$Dealt = $Strike = array();
 	for($i=0;$i < $T_Rds;$i++){
 		if(mt_rand(0,100) <= $Accuracy){
-		$Dealt[$i] = mt_rand($Damage_prd_Min,$Damage_prd_Max);
+			if($Damage_prd_Max==$Damage_prd_Min){
+				$Dealt[$i] = $Damage_prd_Max;
+			}else{
+				$Dealt[$i] = mt_rand($Damage_prd_Min,$Damage_prd_Max);
+			}
 		$Strike[$i] = 1;
 		}else $Dealt[$i]=$Strike[$i]=0;
 	}

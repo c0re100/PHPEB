@@ -4,11 +4,11 @@ include('cfu.php');
 if (empty($PriTarget)) $PriTarget = 'Alpha';
 if (empty($SecTarget)) $SecTarget = 'Beta';
 postHead('');
-AuthUser("$Pl_Value[USERNAME]","$Pl_Value[PASSWORD]");
-if ($CFU_Time >= $TIMEAUTH+$TIME_OUT_TIME || $TIMEAUTH <= $CFU_Time-$TIME_OUT_TIME){echo "³s½u¹O®É¡I<br>½Ğ­«·sµn¤J¡I";exit;}
-GetUsrDetails("$Pl_Value[USERNAME]",'Gen','Game');
+AuthUser();
+if ($CFU_Time >= $_SESSION['timeauth']+$TIME_OUT_TIME || $_SESSION['timeauth'] <= $CFU_Time-$TIME_OUT_TIME){echo "é€£ç·šé€¾æ™‚ï¼<br>è«‹é‡æ–°ç™»å…¥ï¼";exit;}
+GetUsrDetails("$_SESSION[username]",'Gen','Game');
 $t_now = time();
-if ($Gen['btltime'] == $t_now){echo "°Ê§@¹L§Ö¡C";postFooter();mysql_query("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `btltime` = ".intval($t_now+10)." WHERE `username` = '$Gen[username]' LIMIT 1;");exit;}
+if ($Gen['btltime'] == $t_now){echo "å‹•ä½œéå¿«ã€‚";postFooter();mysql_query("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `btltime` = ".intval($t_now+10)." WHERE `username` = '$Gen[username]' LIMIT 1;");exit;}
 
 $UsrWepA = explode('<!>',$Game['wepa']);
 $UsrWepB = explode('<!>',$Game['wepb']);
@@ -47,36 +47,36 @@ $UsWep_C['enc'] = $UsrWepC[7];
 }
 $UsWepSpec_C = ReturnSpecs("$UsWep_C[spec]");
 //Set DataTable
-$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` WHERE username='". $Pl_Value['USERNAME'] ."'");
+$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` WHERE username='". $_SESSION['username'] ."'");
 $query_whr = mysql_query($sql);$defineuserc = 0;
 $defineuserc = mysql_num_rows($query_whr);
 if ($defineuserc == 0){
-	$sqldfwh = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` (username) VALUES('$Pl_Value[USERNAME]')");
-	mysql_query($sqldfwh) or die ('<br><center>¥¼¯à«Ø¥ß­Ü®w¸ê®Æ<br>­ì¦]:' . mysql_error() . '<br>');
-	$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` WHERE username='". $Pl_Value['USERNAME'] ."'");
-	$query_whr = mysql_query($sql) or die ('<br><center>¥¼¯à¨ú±o­Ü®w¸ê®Æ<br>­ì¦]:' . mysql_error() . '<br>');
-}elseif ($defineuserc > 1){echo "¥Î¤á¦WºÙ¥X²{°İÃD¡A½ĞÁpµ¸ºŞ²z­û¡C";exit;}
+	$sqldfwh = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` (username) VALUES('$_SESSION[username]')");
+	mysql_query($sqldfwh) or die ('<br><center>æœªèƒ½å»ºç«‹å€‰åº«è³‡æ–™<br>åŸå› :' . mysql_error() . '<br>');
+	$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` WHERE username='". $_SESSION['username'] ."'");
+	$query_whr = mysql_query($sql) or die ('<br><center>æœªèƒ½å–å¾—å€‰åº«è³‡æ–™<br>åŸå› :' . mysql_error() . '<br>');
+}elseif ($defineuserc > 1){echo "ç”¨æˆ¶åç¨±å‡ºç¾å•é¡Œï¼Œè«‹è¯çµ¡ç®¡ç†å“¡ã€‚";exit;}
 $Warehouse = mysql_fetch_row($query_whr);
 $WarehseWeps = explode("\n",$Warehouse[1]);
 $Countnumwhwp = count($WarehseWeps);
-if (($CFU_Time - $Warehouse[2]) <= 1){echo "§A¹ê¦b«öªº¤Ó§Ö¤F¡C½Ğ©ó¨â¬í«á¦A«ö¡C<br>¦hÁÂ¦X§@¡I";exit;}
+if (($CFU_Time - $Warehouse[2]) <= 1){echo "ä½ å¯¦åœ¨æŒ‰çš„å¤ªå¿«äº†ã€‚è«‹æ–¼å…©ç§’å¾Œå†æŒ‰ã€‚<br>å¤šè¬åˆä½œï¼";exit;}
 
 if ($mode == 'selection'){
-	echo "<font style=\"font-size: 12pt\">­Ü®w</font>";
+	echo "<font style=\"font-size: 12pt\">å€‰åº«</font>";
 	printTHR();
 
 	echo "<form action=warehouse.php?action=main method=post name=mainform>";
 	echo "<input type=hidden value='none' name=actionb>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr><td align=center width=250><b style=\"font-size: 10pt;\">­Ü®w</b></td></tr>";
+	echo "<tr><td align=center width=250><b style=\"font-size: 10pt;\">å€‰åº«</b></td></tr>";
 	echo "<tr><td align=left>";
-	echo "ªZ¾¹®w<Br>¡@- §K¶O´£¨ÑªZ¾¹¡B¸Ë³Æªº±H¦sªA°È<br>¡@- ¾Ôª§´Á¶¡¤]¯à¨Ï¥Î<br>¡@- ¨S¾÷Åéªº±¡ªp¤U¥i¥H±H¦s¨Ï¥Î¤¤ªZ¾¹<br>";
-	echo "®æ¯Ç®w<Br>¡@- ´£¨Ñ¦¬¶Oªº¾÷Åéªº±H¦sªA°È<br>¡@- »ù®æ¬° $".number_format($Hangar_Price)."<br>¡@- ¾Ôª§´Á¶¡¤£¯à¨Ï¥Î<br>¡@- ¨­¤W¦³¸Ë³Æ¡BªZ¾¹¤£¯à»â¦^¾÷Åé<br>";
-	echo "<center><input type=\"submit\" value='ªZ¾¹®w'><input type=\"submit\" value='®æ¯Ç®w' onClick=\"mainform.action='hangar.php?action=main';\">";
+	echo "æ­¦å™¨åº«<Br>ã€€- å…è²»æä¾›æ­¦å™¨ã€è£å‚™çš„å¯„å­˜æœå‹™<br>ã€€- æˆ°çˆ­æœŸé–“ä¹Ÿèƒ½ä½¿ç”¨<br>ã€€- æ²’æ©Ÿé«”çš„æƒ…æ³ä¸‹å¯ä»¥å¯„å­˜ä½¿ç”¨ä¸­æ­¦å™¨<br>";
+	echo "æ ¼ç´åº«<Br>ã€€- æä¾›æ”¶è²»çš„æ©Ÿé«”çš„å¯„å­˜æœå‹™<br>ã€€- åƒ¹æ ¼ç‚º $".number_format($Hangar_Price)."<br>ã€€- æˆ°çˆ­æœŸé–“ä¸èƒ½ä½¿ç”¨<br>ã€€- èº«ä¸Šæœ‰è£å‚™ã€æ­¦å™¨ä¸èƒ½é ˜å›æ©Ÿé«”<br>";
+	echo "<center><input type=\"submit\" value='æ­¦å™¨åº«'><input type=\"submit\" value='æ ¼ç´åº«' onClick=\"mainform.action='hangar.php?action=main';\">";
 	echo "</center></tr></td></form></table>";
 }
 
@@ -86,8 +86,8 @@ elseif ($mode=='main'){
 $actionb = ( isset($_POST['actionb']) ) ? $_POST['actionb'] : '';
 
 if ($mode=='main' && $actionb == 'procget'){
-	if ($UsrWepB[0] && $UsrWepC[0]){$ErrorMsg = '§A¨S¦³ªÅ¦ì¸Ë³Æ¡I';}
-	elseif ($getwep == 'none'){$ErrorMsg = '½Ğ«ü©w­n¨ú¥Xªº¸Ë³Æ¡C';}
+	if ($UsrWepB[0] && $UsrWepC[0]){$ErrorMsg = 'ä½ æ²’æœ‰ç©ºä½è£å‚™ï¼';}
+	elseif ($getwep == 'none'){$ErrorMsg = 'è«‹æŒ‡å®šè¦å–å‡ºçš„è£å‚™ã€‚';}
 	else {
 	
 	$WChacheArrays = explode("\n",$Warehouse[1]);
@@ -100,36 +100,36 @@ if ($mode=='main' && $actionb == 'procget'){
 	unset($sql,$dest);
 	if (!$UsrWepB[0]){$dest='wepb';unset($UsWep_B,$UsrWepB);}
 	elseif (!$UsrWepC[0]){$dest='wepc';unset($UsWep_C,$UsrWepC);}	
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `$dest` = '$GetWarehseWeps[$getwep]' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `$dest` = '$GetWarehseWeps[$getwep]' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 	mysql_query($sql);unset($sql);
 	unset($GetWarehseWeps[$getwep]);
 	sort($GetWarehseWeps);
 	$Warehouse[1] = implode("\n",$GetWarehseWeps);
 	$Warehouse[1] = trim($Warehouse[1]);
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` SET `warehouse` = '$Warehouse[1]', `timelast` = '$CFU_Time' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` SET `warehouse` = '$Warehouse[1]', `timelast` = '$CFU_Time' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 	mysql_query($sql);
 	unset($sql,$dest,$GetWepDe,$Gen,$Game,$UsrWepB,$UsrWepC,$UsWep_B,$UsWep_C,$UsWepSpec_B,$UsWepSpec_C);}
-	$ErrorMsg= (isset($ErrorMsg)) ? $ErrorMsg : '¦¨¥\\¨ú¥X¸Ë³Æ¤F¡I';
+	$ErrorMsg= (isset($ErrorMsg)) ? $ErrorMsg : 'æˆåŠŸå–å‡ºè£å‚™äº†ï¼';
 	echo "<form action=warehouse.php?action=main method=post name=frmct target=$SecTarget>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 	echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-	echo "<p align=center style=\"font-size: 16pt\">$ErrorMsg<br><input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"><input type=button value=\"Ä~Äò¨Ï¥ÎªZ¾¹®w\" onClick=\"frmct.submit()\"></p>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	echo "<p align=center style=\"font-size: 16pt\">$ErrorMsg<br><input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"><input type=button value=\"ç¹¼çºŒä½¿ç”¨æ­¦å™¨åº«\" onClick=\"frmct.submit()\"></p>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 	
 	postFooter();exit;
 }
 if ($mode=='main' && $actionb == 'prockeep'){
-	if (!$UsrWepB[0] && $keepwep=='wepb'){$ErrorMsg = '§ä¤£¨ì§Aªº¸Ë³Æ!!';}
-	elseif (!$UsrWepC[0] && $keepwep=='wepc'){$ErrorMsg = '§ä¤£¨ì§Aªº¸Ë³Æ!!';}
-	elseif ($keepwep=='wepa' && $Gen['msuit']){$ErrorMsg = '¤£¯à§â¨Ï¥Î¤¤ªZ¾¹©ñ¤J­Ü®w¡I';}
-	elseif (!$keepwep){$ErrorMsg = '§ä¤£¨ì§Aªº¸Ë³Æ!!';}
-	elseif ($Countnumwhwp > 100){$ErrorMsg = '­Ü®w¤Ó¦hªZ¾¹¤F¡I';}
+	if (!$UsrWepB[0] && $keepwep=='wepb'){$ErrorMsg = 'æ‰¾ä¸åˆ°ä½ çš„è£å‚™!!';}
+	elseif (!$UsrWepC[0] && $keepwep=='wepc'){$ErrorMsg = 'æ‰¾ä¸åˆ°ä½ çš„è£å‚™!!';}
+	elseif ($keepwep=='wepa' && $Gen['msuit']){$ErrorMsg = 'ä¸èƒ½æŠŠä½¿ç”¨ä¸­æ­¦å™¨æ”¾å…¥å€‰åº«ï¼';}
+	elseif (!$keepwep){$ErrorMsg = 'æ‰¾ä¸åˆ°ä½ çš„è£å‚™!!';}
+	elseif ($Countnumwhwp > 100){$ErrorMsg = 'å€‰åº«å¤ªå¤šæ­¦å™¨äº†ï¼';}
 	else {
 		$Warehouse[1] .="\n$Game[$keepwep]";
 		$WChacheArrays = explode("\n",$Warehouse[1]);
@@ -137,22 +137,22 @@ if ($mode=='main' && $actionb == 'prockeep'){
 		$Warehouse[1] = implode("\n",$WChacheArrays);
 		$Warehouse[1] = trim($Warehouse[1]);
 		unset($sql);
-		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` SET `warehouse` = '$Warehouse[1]', `timelast` = '$CFU_Time' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` SET `warehouse` = '$Warehouse[1]', `timelast` = '$CFU_Time' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 		mysql_query($sql);unset($sql);
-		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `$keepwep` = '0<!>0' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `$keepwep` = '0<!>0' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 		mysql_query($sql);
 		unset($Gen,$Game,$UsrWepB,$UsrWepC,$UsWep_B,$UsWep_C);
 	$ErrorMsg= (isset($ErrorMsg)) ? $ErrorMsg : 0;
-	if (!$ErrorMsg)$ErrorMsg ='¦¨¥\\¦s¤J¸Ë³Æ¤F¡I';
+	if (!$ErrorMsg)$ErrorMsg ='æˆåŠŸå­˜å…¥è£å‚™äº†ï¼';
 	echo "<form action=warehouse.php?action=main method=post name=frmct target=$SecTarget>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 	echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-	echo "<p align=center style=\"font-size: 16pt\">$ErrorMsg<br><input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"><input type=button value=\"Ä~Äò¨Ï¥ÎªZ¾¹®w\" onClick=\"frmct.submit()\"></p>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	echo "<p align=center style=\"font-size: 16pt\">$ErrorMsg<br><input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"><input type=button value=\"ç¹¼çºŒä½¿ç”¨æ­¦å™¨åº«\" onClick=\"frmct.submit()\"></p>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 	
@@ -162,36 +162,36 @@ if ($mode=='main' && $actionb == 'prockeep'){
 
 $a_sel = $b_sel = $c_sel = '';
 
-echo "ªZ¾¹®w<hr>";
+echo "æ­¦å™¨åº«<hr>";
 echo "<br>";
 echo "<form action=warehouse.php?action=main method=post name=whmainform>";
 echo "<input type=hidden value='' name=actionb>";
 echo "<input type=hidden value='' name=actionc>";
-echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+
+
 echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#FFFFFF\" width=\"650\">";
-	echo "<tr align=center><td colspan=10><b>¸Ë³ÆªZ¾¹¦Cªí: </b></td></tr>";
+	echo "<tr align=center><td colspan=10><b>è£å‚™æ­¦å™¨åˆ—è¡¨: </b></td></tr>";
 	echo "<tr align=center>";
 	echo "<td width=\"20\">No.</td>";
-	echo "<td width=\"195\">ªZ¾¹¦WºÙ</td>";
-	echo "<td width=\"80\">§ğÀ»¤O</td>";
-	echo "<td width=\"30\">©R¤¤</td>";
-	echo "<td width=\"30\">¦^¼Æ</td>";
-	echo "<td width=\"40\">EN®ø¶O</td>";
-	echo "<td width=\"80\">¶ZÂ÷/Äİ©Ê</td>";
-	echo "<td width=\"120\">¯S®í®ÄªG</td>";
-	echo "<td width=\"85\">»ù¿ú</td>";
-	echo "<td width=\"50\">ª¬ºA­È</td>";
+	echo "<td width=\"195\">æ­¦å™¨åç¨±</td>";
+	echo "<td width=\"80\">æ”»æ“ŠåŠ›</td>";
+	echo "<td width=\"30\">å‘½ä¸­</td>";
+	echo "<td width=\"30\">å›æ•¸</td>";
+	echo "<td width=\"40\">ENæ¶ˆè²»</td>";
+	echo "<td width=\"80\">è·é›¢/å±¬æ€§</td>";
+	echo "<td width=\"120\">ç‰¹æ®Šæ•ˆæœ</td>";
+	echo "<td width=\"85\">åƒ¹éŒ¢</td>";
+	echo "<td width=\"50\">ç‹€æ…‹å€¼</td>";
 	echo "</tr>";
 	
 	if ($UsrWepA[0]){
 	if ($UsrWepA[1] > 0) $UsrWepA['displayXp'] = '+'.($UsrWepA[1]/100).'%';
 	elseif ($UsrWepA[1] < 0) $UsrWepA['displayXp'] = ($UsrWepA[1]/100).'%';
-	else $UsrWepA['displayXp'] = '¡Ó0%';
+	else $UsrWepA['displayXp'] = 'Â±0%';
 	echo "<tr align=center>";
-	echo "<td width=\"20\">²{</td>";
+	echo "<td width=\"20\">ç¾</td>";
 	echo "<td width=\"195\">$UsWep_A[name]</td>";
 	echo "<td width=\"80\">". number_format($UsWep_A['atk']) ."</td>";
 	echo "<td width=\"30\">$UsWep_A[hit]</td>";
@@ -201,15 +201,15 @@ echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "<td width=\"120\">$UsWepSpec_A</td>";
 	echo "<td width=\"85\">". number_format($UsWep_A['price']) ."</td>";
 	echo "<td width=\"50\">$UsrWepA[displayXp]</td>";
-	if(!$Gen['msuit']) $a_sel = "<option value='wepa'>³Æ¥Î¤@: $UsWep_A[name]";
+	if(!$Gen['msuit']) $a_sel = "<option value='wepa'>å‚™ç”¨ä¸€: $UsWep_A[name]";
 	else $a_sel = '';
 	echo "</tr>";}
 	if ($UsrWepB[0]){
 	if ($UsrWepB[1] > 0) $UsrWepB['displayXp'] = '+'.($UsrWepB[1]/100).'%';
 	elseif ($UsrWepB[1] < 0) $UsrWepB['displayXp'] = ($UsrWepB[1]/100).'%';
-	else $UsrWepB['displayXp'] = '¡Ó0%';
+	else $UsrWepB['displayXp'] = 'Â±0%';
 	echo "<tr align=center>";
-	echo "<td width=\"20\">¤@</td>";
+	echo "<td width=\"20\">ä¸€</td>";
 	echo "<td width=\"195\">$UsWep_B[name]</td>";
 	echo "<td width=\"80\">". number_format($UsWep_B['atk']) ."</td>";
 	echo "<td width=\"30\">$UsWep_B[hit]</td>";
@@ -219,14 +219,14 @@ echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "<td width=\"120\">$UsWepSpec_B</td>";
 	echo "<td width=\"85\">". number_format($UsWep_B['price']) ."</td>";
 	echo "<td width=\"50\">$UsrWepB[displayXp]</td>";
-	$b_sel = "<option value='wepb'>³Æ¥Î¤@: $UsWep_B[name]";
+	$b_sel = "<option value='wepb'>å‚™ç”¨ä¸€: $UsWep_B[name]";
 	echo "</tr>";}
 	if ($UsrWepC[0]){
 	if ($UsrWepC[1] > 0) $UsrWepC['displayXp'] = '+'.($UsrWepC[1]/100).'%';
 	elseif ($UsrWepC[1] < 0) $UsrWepC['displayXp'] = ($UsrWepC[1]/100).'%';
-	else $UsrWepC['displayXp'] = '¡Ó0%';
+	else $UsrWepC['displayXp'] = 'Â±0%';
 	echo "<tr align=center>";
-	echo "<td width=\"20\">¤G</td>";
+	echo "<td width=\"20\">äºŒ</td>";
 	echo "<td width=\"195\">$UsWep_C[name]</td>";
 	echo "<td width=\"80\">". number_format($UsWep_C['atk']) ."</td>";
 	echo "<td width=\"30\">$UsWep_C[hit]</td>";
@@ -236,39 +236,39 @@ echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "<td width=\"120\">$UsWepSpec_C</td>";
 	echo "<td width=\"85\">". number_format($UsWep_C['price']) ."</td>";
 	echo "<td width=\"50\">$UsrWepC[displayXp]</td>";
-	$c_sel = "<option value='wepc'>³Æ¥Î¤G: $UsWep_C[name]";
+	$c_sel = "<option value='wepc'>å‚™ç”¨äºŒ: $UsWep_C[name]";
 	echo "</tr>";}
 	echo "</table>";
 	printTHR('85%');
 	$Disable_Keep_Msg = '';
 	if (!$UsrWepB[0] && !$UsrWepC[0]){
-		if (!$Gen['msuit'] && !$UsrWepA[0]) $Disable_Keep_Msg .= '<center>§A¨S¦³¸Ë³Æ¯à¦s¤J­Ü®w¡C</center>';
-		elseif ($Gen['msuit'] && !$UsrWepA[0]) $Disable_Keep_Msg .= '<center>§A¨S¦³¸Ë³Æ¯à¦s¤J­Ü®w¡C</center>';
-		elseif ($Gen['msuit'] && $UsrWepA[0]) $Disable_Keep_Msg .= '<center>§A¨S¦³¸Ë³Æ¯à¦s¤J­Ü®w¡C</center>';
+		if (!$Gen['msuit'] && !$UsrWepA[0]) $Disable_Keep_Msg .= '<center>ä½ æ²’æœ‰è£å‚™èƒ½å­˜å…¥å€‰åº«ã€‚</center>';
+		elseif ($Gen['msuit'] && !$UsrWepA[0]) $Disable_Keep_Msg .= '<center>ä½ æ²’æœ‰è£å‚™èƒ½å­˜å…¥å€‰åº«ã€‚</center>';
+		elseif ($Gen['msuit'] && $UsrWepA[0]) $Disable_Keep_Msg .= '<center>ä½ æ²’æœ‰è£å‚™èƒ½å­˜å…¥å€‰åº«ã€‚</center>';
 	}
-	if ($Countnumwhwp > 100){$Disable_Keep_Msg .= '<center>­Ü®w¤Ó¦hªZ¾¹¤F¡I¤£¯à¦A¦s¤J­Ü®w¡C</center><br>';}
+	if ($Countnumwhwp > 100){$Disable_Keep_Msg .= '<center>å€‰åº«å¤ªå¤šæ­¦å™¨äº†ï¼ä¸èƒ½å†å­˜å…¥å€‰åº«ã€‚</center><br>';}
 	if ($Disable_Keep_Msg) echo $Disable_Keep_Msg;
 	else {
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#FFFFFF\" width=\"300\">";
-	echo "<tr><td>¦s©ñªZ¾¹:";
-	echo "<center><select name='keepwep'><option value=0>¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡e½Ğ¿ï¾Ü¡f¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ $a_sel $b_sel $c_sel </select><br><input type=submit value=½T©w¦s©ñ onClick=\"whmainform.actionb.value='prockeep'\"></center></td></tr>";
+	echo "<tr><td>å­˜æ”¾æ­¦å™¨:";
+	echo "<center><select name='keepwep'><option value=0>ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ã€”è«‹é¸æ“‡ã€•ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ $a_sel $b_sel $c_sel </select><br><input type=submit value=ç¢ºå®šå­˜æ”¾ onClick=\"whmainform.actionb.value='prockeep'\"></center></td></tr>";
 	echo "</table>";}
 	printTHR('85%');
 //In Warehouse
 
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#FFFFFF\" width=\"650\">";
-	echo "<tr align=center><td colspan=10><b>­Ü®w¤ºªºªZ¾¹: </b></td></tr>";
+	echo "<tr align=center><td colspan=10><b>å€‰åº«å…§çš„æ­¦å™¨: </b></td></tr>";
 	echo "<tr align=center>";
 	echo "<td width=\"20\">No.</td>";
-	echo "<td width=\"195\">ªZ¾¹¦WºÙ</td>";
-	echo "<td width=\"80\">§ğÀ»¤O</td>";
-	echo "<td width=\"30\">©R¤¤</td>";
-	echo "<td width=\"30\">¦^¼Æ</td>";
-	echo "<td width=\"40\">EN®ø¶O</td>";
-	echo "<td width=\"80\">¶ZÂ÷/Äİ©Ê</td>";
-	echo "<td width=\"120\">¯S®í®ÄªG</td>";
-	echo "<td width=\"85\">»ù¿ú</td>";
-	echo "<td width=\"50\">ª¬ºA­È</td>";
+	echo "<td width=\"195\">æ­¦å™¨åç¨±</td>";
+	echo "<td width=\"80\">æ”»æ“ŠåŠ›</td>";
+	echo "<td width=\"30\">å‘½ä¸­</td>";
+	echo "<td width=\"30\">å›æ•¸</td>";
+	echo "<td width=\"40\">ENæ¶ˆè²»</td>";
+	echo "<td width=\"80\">è·é›¢/å±¬æ€§</td>";
+	echo "<td width=\"120\">ç‰¹æ®Šæ•ˆæœ</td>";
+	echo "<td width=\"85\">åƒ¹éŒ¢</td>";
+	echo "<td width=\"50\">ç‹€æ…‹å€¼</td>";
 	echo "</tr>";
 	$SelWepOpt = '';
 
@@ -290,9 +290,9 @@ echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	
 		if ($WhThisInfo[1] > 0) $WhThisInfo['displayXp'] = '+'.($WhThisInfo[1]/100).'%';
 		elseif ($WhThisInfo[1] < 0) $WhThisInfo['displayXp'] = ($WhThisInfo[1]/100).'%';
-		else $WhThisInfo['displayXp'] = '¡Ó0%';
+		else $WhThisInfo['displayXp'] = 'Â±0%';
 	
-		$SelWepOpt .= "<option value = $ctwp>(No. $ctwp) $WhThisInfoSys[name] (ª¬ºA­È: $WhThisInfo[displayXp])";
+		$SelWepOpt .= "<option value = $ctwp>(No. $ctwp) $WhThisInfoSys[name] (ç‹€æ…‹å€¼: $WhThisInfo[displayXp])";
 		echo "<tr align=center>";
 		echo "<td width=\"20\">$ctwp</td>";
 		echo "<td width=\"195\">$WhThisInfoSys[name]</td>";
@@ -307,11 +307,11 @@ echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 		echo "</tr>";unset($WhThisInfoSys,$WhThisInfo,$WhThisSpec);}
 		echo "</table>";
 		printTHR('85%');
-		if ($UsrWepB[0] && $UsrWepC[0]){echo '<center>§A¨S¦³ªÅ¦ì±q­Ü®w®³¥X¸Ë³Æ¡C';}
+		if ($UsrWepB[0] && $UsrWepC[0]){echo '<center>ä½ æ²’æœ‰ç©ºä½å¾å€‰åº«æ‹¿å‡ºè£å‚™ã€‚';}
 		else {
 			echo "<script language=\"JavaScript\">";
 			echo "function chkPut(){";
-			echo "if (confirm(\"¥ô¦ó¸m©ñ¦bº²¸ÑÄlªºª««~, ³£·|¥¢¥h©Ò¦³ª¬ºA­È!!\\n½T©w¶Ü¡H\") == true){";
+			echo "if (confirm(\"ä»»ä½•ç½®æ”¾åœ¨ç†”è§£çˆçš„ç‰©å“, éƒ½æœƒå¤±å»æ‰€æœ‰ç‹€æ…‹å€¼!!\\nç¢ºå®šå—ï¼Ÿ\") == true){";
 			echo "whmainform.action = \"tactfactory.php?action=main\";whmainform.actionb.value='put';whmainform.actionc.value='wh';";
 			echo "}else return false; }";
 			echo "function chkView(){";
@@ -319,18 +319,18 @@ echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 			echo "}";
 			echo "</script>";
 			echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#FFFFFF\" width=\"300\">";
-			echo "<tr><td>¨ú¥XªZ¾¹¡B¸m©ñ¤Jº²Äl¤ÎÀËµøÂÅ¹Ï:<br>";
-			echo "<center><select name='getwep'><option value='none'>¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡e½Ğ¿ï¾Ü¡f¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ $SelWepOpt </select><br>";
-			echo "<input type=submit value=½T©w¨ú¥X onClick=\"whmainform.actionb.value='procget'\">";
-			echo "<input type=submit value=¸m©ñ¤Jº²Äl onClick=\"return chkPut();\">";
-			echo "<input type=submit value=ÀËµøÂÅ¹Ï onClick=\"return chkView();\">";
+			echo "<tr><td>å–å‡ºæ­¦å™¨ã€ç½®æ”¾å…¥ç†”çˆåŠæª¢è¦–è—åœ–:<br>";
+			echo "<center><select name='getwep'><option value='none'>ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ã€”è«‹é¸æ“‡ã€•ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ $SelWepOpt </select><br>";
+			echo "<input type=submit value=ç¢ºå®šå–å‡º onClick=\"whmainform.actionb.value='procget'\">";
+			echo "<input type=submit value=ç½®æ”¾å…¥ç†”çˆ onClick=\"return chkPut();\">";
+			echo "<input type=submit value=æª¢è¦–è—åœ– onClick=\"return chkView();\">";
 			echo "</center></td></tr></table>";
 		}
-	}else {echo "<tr align=center><td colspan=9>­Ü®w¤¤¨S¦³ªZ¾¹</td></tr></table>";}
+	}else {echo "<tr align=center><td colspan=9>å€‰åº«ä¸­æ²’æœ‰æ­¦å™¨</td></tr></table>";}
 	printTHR('85%');
 echo "</form>";
 }//End GUI
 
-else {echo "¥¼©w¸q°Ê§@¡I";}
+else {echo "æœªå®šç¾©å‹•ä½œï¼";}
 postFooter();exit;
 ?>

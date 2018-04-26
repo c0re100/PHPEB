@@ -1,11 +1,11 @@
 <?php
 // Blueprint Generator
 // Automated Generation of blueprint for tactfactory
-include('../../cfu.php');
-postHead('','../../phpeb_session_dir');
+include('cfu.php');
+postHead('');
 
 // Turn this on (set to true) or delete this file when not using!!
-// ¤£¨Ï¥Î®É, °O±o³]©w¬°¡uTrue¡v ©Î §R°£³o­ÓÀÉ®×!!
+// ä¸ä½¿ç”¨æ™‚, è¨˜å¾—è¨­å®šç‚ºã€ŒTrueã€ æˆ– åˆªé™¤é€™å€‹æª”æ¡ˆ!!
 $UseAuth = false;
 
 $mode = ( isset($_POST['action']) ) ? $_POST['action'] : '';
@@ -35,7 +35,7 @@ if($UseAuth){
 		
 	if($Gen['acc_status'] >= 0){
 		
-		echo "¨S¦³Åv­­¦s¨ú¡C<br>¦p±z¬OºŞ²z­û, ½Ğ¥ı³]©wºŞ²z­û¨­¥÷¡C<BR>";
+		echo "æ²’æœ‰æ¬Šé™å­˜å–ã€‚<br>å¦‚æ‚¨æ˜¯ç®¡ç†å“¡, è«‹å…ˆè¨­å®šç®¡ç†å“¡èº«ä»½ã€‚<BR>";
 		postFooter();
 		exit;
 	
@@ -116,7 +116,7 @@ echo "This generator would not generate blueprints for entries that already have
 echo "IDs generated would not be checked for vacancy, so do ensure that the range of IDs is clear.<br>";
 echo "Begin ID (integer): <input type=text value='' name=beginID> leave blank for auto-detection, default to 901000<br>";
 echo "Text Prefix: <input type=text value='' name=txtPre><br>";
-echo "Text Suffix: <input type=text value='³]­pÂÅ¹Ï' name=txtSuf><br>";
+echo "Text Suffix: <input type=text value='è¨­è¨ˆè—åœ–' name=txtSuf><br>";
 echo "<input type=submit value='Generate and Link'>";
 	
 echo "</form>";

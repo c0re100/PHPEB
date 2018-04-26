@@ -66,8 +66,8 @@ while($Tactics = mysql_fetch_array($Query)){
 
 <html>
 	<head>
-		<title>PHP x JavaScript :: php-eb Ultimate Edition :: �����p�⾹ v3.0�\ ~ &copy; 2005-2010 v2Alliance</title>
-		<meta http-equiv="Content-Type" content="text/html; charset=Big5">
+		<title>PHP x JavaScript :: php-eb Ultimate Edition :: 模擬計算器 v3.0α ~ &copy; 2005-2010 v2Alliance</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<meta http-equiv="content-language" content="zh">
 	</head>
 <body>
@@ -104,15 +104,15 @@ while($Tactics = mysql_fetch_array($Query)){
 <tr><td>
 <form name=Main>
 
-��J����:<input type="text" name="Level"><br>
-<input type="button" onClick="document.getElementById('StatptG').innerHTML=CalcStatPt(document.Main.Level.value);" value='�p��i�o�������I��'><br>
-<input type="button" onClick="document.getElementById('TStatptG').innerHTML=CalcTotalStatPtsG(document.Main.Level.value);" value='�p��i�o���`�����I��''><br>
-<input type="button" onClick="document.getElementById('ExpR').innerHTML=numFormat(CalcExp(document.Main.Level.value));" value='�p��һݸg��'><br>
+輸入等級:<input type="text" name="Level"><br>
+<input type="button" onClick="document.getElementById('StatptG').innerHTML=CalcStatPt(document.Main.Level.value);" value='計算可得的成長點數'><br>
+<input type="button" onClick="document.getElementById('TStatptG').innerHTML=CalcTotalStatPtsG(document.Main.Level.value);" value='計算可得的總成長點數''><br>
+<input type="button" onClick="document.getElementById('ExpR').innerHTML=numFormat(CalcExp(document.Main.Level.value));" value='計算所需經驗'><br>
 
-��J�Q�p�⪺��O��:<input type="text" name="Status"><br>
-<input type="button" onClick="document.getElementById('StatptR').innerHTML=CalcStatReq(document.Main.Status.value);" value='�p��һݦ����I��'><br>
-<input type="button" onClick="document.getElementById('TStatptR').innerHTML=CalcTotalStatPtsR(document.Main.Status.value);" value='�p��һ��`�����I��'><br>
-<input type="button" onClick="document.getElementById('TLevelStR').innerHTML=CalcLevelRec(document.Main.Status.value);" value='�p��һݯż�'><br>
+輸入想計算的能力值:<input type="text" name="Status"><br>
+<input type="button" onClick="document.getElementById('StatptR').innerHTML=CalcStatReq(document.Main.Status.value);" value='計算所需成長點數'><br>
+<input type="button" onClick="document.getElementById('TStatptR').innerHTML=CalcTotalStatPtsR(document.Main.Status.value);" value='計算所需總成長點數'><br>
+<input type="button" onClick="document.getElementById('TLevelStR').innerHTML=CalcLevelRec(document.Main.Status.value);" value='計算所需級數'><br>
 <br>
 
 </form>
@@ -120,27 +120,27 @@ while($Tactics = mysql_fetch_array($Query)){
 <td>
 <table>
 	<tr>
-		<td align=right>�U�@�ťi�o�����I��:</td>
+		<td align=right>下一級可得成長點數:</td>
 		<td><span id=StatptG>&nbsp;</span></td>
 	</tr>
 	<tr>
-		<td align=right>(�ܥ�����)�`�����I��:</td>
+		<td align=right>(至本等級)總成長點數:</td>
 		<td><span id=TStatptG>&nbsp;</span></td>
 	</tr>
 	<tr>
-		<td align=right>������ȩһݦ����I��:</td>
+		<td align=right>本素質值所需成長點數:</td>
 		<td><span id=StatptR>&nbsp;</span></td>
 	</tr>
 	<tr>
-		<td align=right>(�ܥ������)�һ��`�����I��:</td>
+		<td align=right>(至本素質值)所需總成長點數:</td>
 		<td><span id=TStatptR>&nbsp;</span></td>
 	</tr>
 	<tr>
-		<td align=right>(�ܥ������)�һݯż�:</td>
+		<td align=right>(至本素質值)所需級數:</td>
 		<td><span id=TLevelStR>&nbsp;</span></td>
 	</tr>
 	<tr>
-		<td align=right>�U�@�ũһݸg��:</td>
+		<td align=right>下一級所需經驗:</td>
 		<td><span id=ExpR>&nbsp;</span></td>
 	</tr>
 </table>
@@ -148,7 +148,7 @@ while($Tactics = mysql_fetch_array($Query)){
 </tr>
 </table>
 <hr>
-��O���Ŧ����I�ƭp�⾹:
+能力等級成長點數計算器:
 <table align=center>
 	<tr><td>
 
@@ -172,15 +172,15 @@ while($Tactics = mysql_fetch_array($Query)){
 
 <table>
 	<tr>
-		<td align=right>����:</td>
+		<td align=right>等級:</td>
 		<td><span id="LevelR">1</span></td>
 	</tr>
 	<tr>
-		<td align=right>�һ��`�����I��:</td>
+		<td align=right>所需總成長點數:</td>
 		<td><span id="GrowR">&nbsp;</span></td>
 	</tr>
 	<tr>
-		<td align=right>�|�l�����I��:</td>
+		<td align=right>尚餘成長點數:</td>
 		<td><span id="PtLeft">&nbsp;</span></td>
 	</tr>
 </table>
@@ -188,37 +188,37 @@ while($Tactics = mysql_fetch_array($Query)){
 </tr>
 <tr>
 	<td align=center colspan=2>
-		��ʿ�J���� <input name="Pl_dis_spcflv" type=checkbox onClick="objPl.chk_dis_spcflv();objPl.statChanged();">: <input disabled onChange="numParse(this);objPl.statChanged();" style="text-align: center;" type="text" name="Pl_Calc_Level" value=1 size=3 maxlength=3>&nbsp;&nbsp;&nbsp;&nbsp;
-		�B�~�����I��: <input style="text-align: center;" type="text" name="Pl_Calc_xGrowth" size=3 maxlength=4 value=0 onChange="numParse(this);objPl.statChanged();"></td>
+		手動輸入等級 <input name="Pl_dis_spcflv" type=checkbox onClick="objPl.chk_dis_spcflv();objPl.statChanged();">: <input disabled onChange="numParse(this);objPl.statChanged();" style="text-align: center;" type="text" name="Pl_Calc_Level" value=1 size=3 maxlength=3>&nbsp;&nbsp;&nbsp;&nbsp;
+		額外成長點數: <input style="text-align: center;" type="text" name="Pl_Calc_xGrowth" size=3 maxlength=4 value=0 onChange="numParse(this);objPl.statChanged();"></td>
 </tr>
 <tr>
-	<td align=center colspan=2>�H������:<select name="pl_type" onChange="objPl.statChanged();">
-		<option value=nat selected>�@��H
+	<td align=center colspan=2>人種類型:<select name="pl_type" onChange="objPl.statChanged();">
+		<option value=nat selected>一般人
 		<option value=ext>Extended
-		<option value=enh>�j�ƤH
-		<option value=psy>���ʤO
+		<option value=enh>強化人
+		<option value=psy>念動力
 		<option value=nt>NT
 		<option value=co>Coordinator
-	</select> (<span id=pl_type_dis_name>�@��</span>)</td>
+	</select> (<span id=pl_type_dis_name>一般</span>)</td>
 </tr>
 <tr>
 	<td align=center>SEED Mode: <input name=pl_seed_mode type=checkbox onClick="objPl.statChanged();"></td>
 	<td align=left>EXAM System Activated: <input name=pl_exam_activate type=checkbox onClick="objPl.statChanged();"></td>
 </tr>
 <tr>
-	<td colspan=2><hr>Cookies �x�s/���J:
+	<td colspan=2><hr>Cookies 儲存/載入:
 		<select name="selSlotA">
-			<option value='1'>�O�� (1)</option>
-			<option value='2'>�O�� (2)</option>
-			<option value='3'>�O�� (3)</option>
-			<option value='4'>�O�� (4)</option>
-			<option value='5'>�O�� (5)</option>
+			<option value='1'>記錄 (1)</option>
+			<option value='2'>記錄 (2)</option>
+			<option value='3'>記錄 (3)</option>
+			<option value='4'>記錄 (4)</option>
+			<option value='5'>記錄 (5)</option>
 		</select>
-		<input type="button" value="�x�s" name="SaveBtn" onClick="objPl.saveToCookie(document.Calculator.selSlotA.value);alert('��Ƥw�x�s�I');">
-		<input type="button" value="���J" name="LoadBtn" onClick="objPl.LoadFromCookie(document.Calculator.selSlotA.value, objOp);">
-		&nbsp; &nbsp; &nbsp; �r��ץX/�פJ: 
-		<input type="button" value="�ץX" name="ExportStr" onClick="document.Calculator.dataString.value=objPl.dataToStr();alert('��Ƥw�ץX�I');">
-		<input type="button" value="�פJ" name="ImportStr" onClick="objPl.strToData(document.Calculator.dataString.value,objOp);">
+		<input type="button" value="儲存" name="SaveBtn" onClick="objPl.saveToCookie(document.Calculator.selSlotA.value);alert('資料已儲存！');">
+		<input type="button" value="載入" name="LoadBtn" onClick="objPl.LoadFromCookie(document.Calculator.selSlotA.value, objOp);">
+		&nbsp; &nbsp; &nbsp; 字串匯出/匯入: 
+		<input type="button" value="匯出" name="ExportStr" onClick="document.Calculator.dataString.value=objPl.dataToStr();alert('資料已匯出！');">
+		<input type="button" value="匯入" name="ImportStr" onClick="objPl.strToData(document.Calculator.dataString.value,objOp);">
 	</td>
 </tr>
 <tr>
@@ -230,43 +230,43 @@ while($Tactics = mysql_fetch_array($Query)){
 <form name=player_calc>
 <hr>
 
-�Z���B�˳ơB����D�ﾹ:
+武器、裝備、機體挑選器:
 
 <table border=0 width=100%>
 	<tr>
 		<td>
 			<table align=center width=800>
 				<tr valign=top>
-					<td align=right width=350>�Z��: <select name=wepa onChange="objPl.switchWep(objOp,'a');"> <?php echo $Wep_Selection; ?> </select>
-						<br>���U�˳�: <select name=eq_wep onChange="objPl.switchWep(objOp,'e');"><?php echo $Wep_Selection; ?></select>
-						<br>�`�W�˳�: <select name=p_equip onChange="objPl.switchWep(objOp,'p');"><?php echo $Wep_Selection; ?></select>
+					<td align=right width=350>武器: <select name=wepa onChange="objPl.switchWep(objOp,'a');"> <?php echo $Wep_Selection; ?> </select>
+						<br>輔助裝備: <select name=eq_wep onChange="objPl.switchWep(objOp,'e');"><?php echo $Wep_Selection; ?></select>
+						<br>常規裝備: <select name=p_equip onChange="objPl.switchWep(objOp,'p');"><?php echo $Wep_Selection; ?></select>
 						<hr>
 						<table width=100%>
 							<tr>
-								<td align=left>�S����O��:
+								<td align=left>特殊能力池:
 								<br><span id=pl_spec_pool></span>
-								<br>�Z��/�ݩ�:
+								<br>距離/屬性:
 								<br><span id=pl_range></span><span id=pl_attribute></span>
 								</td>
 							</tr>
 						</table>
 					</td>
-					<td align=left>�Z���򥻧����O: <span id=weapon_atk_raw>0</span> + ��y�[�� <input type=text name=weapon_atk_add value=0 style="text-align: center;" onChange="numParse(this);objPl.AdjustSt(objOp);" size=4>
-						<br>�Z�������O: <span id=weapon_atk>0</span>
-						<br>�Z���򥻦^��: <span id=weapon_rds_raw>0</span>+ ��y�[�� <input type=text name=weapon_rds_add value=0 style="text-align: center;" onChange="numParse(this);objPl.AdjustSt(objOp);" size=4>
-						<br>�Z���^��: <span id=weapon_rds>0</span>
-						<br>�Z���򥻩R��: <span id=weapon_hit_raw>0</span>+ ��y�[�� <input type=text name=weapon_hit_add value=0 style="text-align: center;" onChange="numParse(this);objPl.AdjustSt(objOp);" size=4>
-						<br>�Z���R��: <span id=weapon_hit>0</span>
-						<br>�Z���z���`�ˮ`�O: <span id=weapon_t_dam>0</span>
+					<td align=left>武器基本攻擊力: <span id=weapon_atk_raw>0</span> + 改造加成 <input type=text name=weapon_atk_add value=0 style="text-align: center;" onChange="numParse(this);objPl.AdjustSt(objOp);" size=4>
+						<br>武器攻擊力: <span id=weapon_atk>0</span>
+						<br>武器基本回數: <span id=weapon_rds_raw>0</span>+ 改造加成 <input type=text name=weapon_rds_add value=0 style="text-align: center;" onChange="numParse(this);objPl.AdjustSt(objOp);" size=4>
+						<br>武器回數: <span id=weapon_rds>0</span>
+						<br>武器基本命中: <span id=weapon_hit_raw>0</span>+ 改造加成 <input type=text name=weapon_hit_add value=0 style="text-align: center;" onChange="numParse(this);objPl.AdjustSt(objOp);" size=4>
+						<br>武器命中: <span id=weapon_hit>0</span>
+						<br>武器理論總傷害力: <span id=weapon_t_dam>0</span>
 					</td>
 				</tr>
 				<tr><td colspan=2><hr width=90%></td></tr>
 				<tr valign=top>
 					<td align=center valign=center width=350>
-						����: <select name=pl_ms onChange="objPl.switchWep(objOp,'ms');"> <?php echo $MS_Selection; ?> </select>
+						機體: <select name=pl_ms onChange="objPl.switchWep(objOp,'ms');"> <?php echo $MS_Selection; ?> </select>
 					</td>
 					<td align=left>
-						�����O:<br>
+						機體能力:<br>
 						<table align=center width=400>
 							<tr>
 								<td>Attacking: <span id="ms_atf">0</span> + <input type=text name="ms_atf_c" value=0 style="text-align: center;" onChange="numParse(this);objPl.AdjustSt(objOp);" size=2 maxlength=2> (<span id="ms_atf_t">0</span>)</td>
@@ -285,40 +285,40 @@ while($Tactics = mysql_fetch_array($Query)){
 </table>
 <hr>
 
-�ĤH�D�ﾹ:
+敵人挑選器:
 
 <table align=center width=800>
 	<tr valign=top>
-		<td align=right width=350>�Z��: <select name=op_wepa onChange="objOp.switchWep(objPl,'a');"> <?php echo $Wep_Selection; ?> </select>
-			<br>���U�˳�: <select name=op_eq_wep onChange="objOp.switchWep(objPl,'e');"><?php echo $Wep_Selection; ?></select>
-			<br>�`�W�˳�: <select name=op_p_equip onChange="objOp.switchWep(objPl,'p');"><?php echo $Wep_Selection; ?></select>
+		<td align=right width=350>武器: <select name=op_wepa onChange="objOp.switchWep(objPl,'a');"> <?php echo $Wep_Selection; ?> </select>
+			<br>輔助裝備: <select name=op_eq_wep onChange="objOp.switchWep(objPl,'e');"><?php echo $Wep_Selection; ?></select>
+			<br>常規裝備: <select name=op_p_equip onChange="objOp.switchWep(objPl,'p');"><?php echo $Wep_Selection; ?></select>
 			<hr><table width=100%>
 				<tr>
-					<td align=left>�S����O��:
+					<td align=left>特殊能力池:
 						<br><span id=op_spec_pool></span>
-						<br>�Z��/�ݩ�:
+						<br>距離/屬性:
 						<br><span id=op_range></span><span id=op_attribute></span>
 					</td>
 				</tr>
 			</table>
 		</td>
-		<td align=left>�Z���򥻧����O: <span id="op_weapon_atk_raw">0</span> + ��y�[�� <input type=text name="op_weapon_atk_add" style="text-align: center;" value=0 onChange="numParse(this);objOp.AdjustSt(objPl);" size=4>
-			<br>�Z�������O: <span id="op_weapon_atk">0</span>
-			<br>�Z���򥻦^��: <span id="op_weapon_rds_raw">0</span>+ ��y�[�� <input type=text name="op_weapon_rds_add" style="text-align: center;" value=0 onChange="numParse(this);objOp.AdjustSt(objPl);" size=4>
-			<br>�Z���^��: <span id="op_weapon_rds">0</span>
-			<br>�Z���򥻩R��: <span id="op_weapon_hit_raw">0</span>+ ��y�[�� <input type=text name="op_weapon_hit_add" style="text-align: center;" value=0 onChange="numParse(this);objOp.AdjustSt(objPl);" size=4>
-			<br>�Z���R��: <span id="op_weapon_hit">0</span>
-			<br>�Z���z���`�ˮ`�O: <span id="op_weapon_t_dam">0</span>
+		<td align=left>武器基本攻擊力: <span id="op_weapon_atk_raw">0</span> + 改造加成 <input type=text name="op_weapon_atk_add" style="text-align: center;" value=0 onChange="numParse(this);objOp.AdjustSt(objPl);" size=4>
+			<br>武器攻擊力: <span id="op_weapon_atk">0</span>
+			<br>武器基本回數: <span id="op_weapon_rds_raw">0</span>+ 改造加成 <input type=text name="op_weapon_rds_add" style="text-align: center;" value=0 onChange="numParse(this);objOp.AdjustSt(objPl);" size=4>
+			<br>武器回數: <span id="op_weapon_rds">0</span>
+			<br>武器基本命中: <span id="op_weapon_hit_raw">0</span>+ 改造加成 <input type=text name="op_weapon_hit_add" style="text-align: center;" value=0 onChange="numParse(this);objOp.AdjustSt(objPl);" size=4>
+			<br>武器命中: <span id="op_weapon_hit">0</span>
+			<br>武器理論總傷害力: <span id="op_weapon_t_dam">0</span>
 		</td>
 	</tr>
 	<tr><td colspan=2><hr width=90%></td></tr>
 	<tr>
-		<td width=350>����: <select name="op_ms" onChange="objOp.switchWep(objPl,'ms');">
+		<td width=350>機體: <select name="op_ms" onChange="objOp.switchWep(objPl,'ms');">
 			<?php echo $MS_Selection;?>
 			</select>
 		</td>
 		<td>
-			�����O:<br>
+			機體能力:<br>
 			<table align=center width=400>
 				<tr>
 					<td>Attacking: <span id="op_ms_atf">0</span> + <input type=text name="op_ms_atf_c" value=0 style="text-align: center;" onChange="numParse(this);objOp.AdjustSt(objPl);" size=2 maxlength=2> (<span id="op_ms_atf_t">0</span>)</td>
@@ -335,14 +335,14 @@ while($Tactics = mysql_fetch_array($Query)){
 		<td align=left colspan=2>
 			<table align=center>
 				<tr>
-					<td colspan=4 align=left>���v��O:</td>
+					<td colspan=4 align=left>機師能力:</td>
 				</tr>
 				<tr>
 					<td>Attacking:<select name="Op_At" style="text-align: center;" onChange="objOp.statChanged();"><script language="JavaScript">for(a=1;a<=150;a++){document.write('<option value='+a+'>'+a)}</script>
 					</select> + <span id="op_pi_atf">0</span> ( + <span id="op_pi_xat">0</span> )</td>
 					<td>Defending:<select name="Op_De" style="text-align: center;" onChange="objOp.statChanged();"><script language="JavaScript">for(a=1;a<=150;a++){document.write('<option value='+a+'>'+a)}</script>
 					</select> + <span id="op_pi_def">0</span> ( + <span id="op_pi_xde">0</span> )</td>
-					<td align=right>����:</td>
+					<td align=right>等級:</td>
 					<td width=50><span id="LevelR_Op">1</span></td>
 					</tr>
 				<tr>
@@ -350,46 +350,46 @@ while($Tactics = mysql_fetch_array($Query)){
 					</select> + <span id="op_pi_ref">0</span> ( + <span id="op_pi_xre">0</span> )</td>
 					<td>Targeting:<select name="Op_Ta" style="text-align: center;" onChange="objOp.statChanged();"><script language="JavaScript">for(a=1;a<=150;a++){document.write('<option value='+a+'>'+a)}</script>
 					</select> + <span id="op_pi_taf">0</span> ( + <span id="op_pi_xta">0</span> )</td>
-					<td align=right>�һ��`�����I��:</td>
+					<td align=right>所需總成長點數:</td>
 					<td><span id=GrowR_Op>&nbsp;</span></td>
 				</tr>
 				<tr>
-					<td align=right colspan=3>�|�l�����I��:</td>
+					<td align=right colspan=3>尚餘成長點數:</td>
 					<td><span id=PtLeft_Op>&nbsp;</span></td>
 				</tr>
 				<tr>
 					<td align=center colspan=2>
-						��ʿ�J���� <input name="Op_dis_spcflv" type=checkbox onClick="objOp.chk_dis_spcflv();objOp.statChanged();">: <input disabled onChange="numParse(this);objOp.statChanged();" style="text-align: center;" type="text" name="Op_Calc_Level" value=1 size=3 maxlength=3>&nbsp;&nbsp;&nbsp;&nbsp;
-						�B�~�����I��: <input style="text-align: center;" type="text" name="Op_Calc_xGrowth" size=3 maxlength=4 value=0 onChange="numParse(this);objOp.statChanged();"></td>
+						手動輸入等級 <input name="Op_dis_spcflv" type=checkbox onClick="objOp.chk_dis_spcflv();objOp.statChanged();">: <input disabled onChange="numParse(this);objOp.statChanged();" style="text-align: center;" type="text" name="Op_Calc_Level" value=1 size=3 maxlength=3>&nbsp;&nbsp;&nbsp;&nbsp;
+						額外成長點數: <input style="text-align: center;" type="text" name="Op_Calc_xGrowth" size=3 maxlength=4 value=0 onChange="numParse(this);objOp.statChanged();"></td>
 				</tr>
 				<tr>
-					<td align=center colspan=2>�H������:<select name="op_type" onChange="objOp.statChanged();">
-						<option value='nat' selected >�@��H</option>
+					<td align=center colspan=2>人種類型:<select name="op_type" onChange="objOp.statChanged();">
+						<option value='nat' selected >一般人</option>
 						<option value='ext'>Extended</option>
-						<option value='enh'>�j�ƤH</option>
-						<option value='psy'>���ʤO</option>
+						<option value='enh'>強化人</option>
+						<option value='psy'>念動力</option>
 						<option value='nt'>NT</option>
 						<option value='co'>Coordinator
-					</select> (<span id=op_type_dis_name>�@��</span>)</td>
+					</select> (<span id=op_type_dis_name>一般</span>)</td>
 				</tr>
 				<tr>
 					<td align=center>SEED Mode: <input name=op_seed_mode type=checkbox onClick="objOp.statChanged();"></td>
 					<td align=left>EXAM System Activated: <input name=op_exam_activate type=checkbox onClick="objOp.statChanged();"></td>
 				</tr>
 				<tr>
-					<td colspan=2>Cookies �x�s/���J:
+					<td colspan=2>Cookies 儲存/載入:
 						<select name="selSlotB">
-							<option value='1'>�O�� (1)</option>
-							<option value='2'>�O�� (2)</option>
-							<option value='3'>�O�� (3)</option>
-							<option value='4'>�O�� (4)</option>
-							<option value='5'>�O�� (5)</option>
+							<option value='1'>記錄 (1)</option>
+							<option value='2'>記錄 (2)</option>
+							<option value='3'>記錄 (3)</option>
+							<option value='4'>記錄 (4)</option>
+							<option value='5'>記錄 (5)</option>
 						</select>
-						<input type="button" value="�x�s" name="SaveBtn" onClick="objOp.saveToCookie(document.player_calc.selSlotB.value);alert('��Ƥw�x�s�I');">
-						<input type="button" value="���J" name="LoadBtn" onClick="objOp.LoadFromCookie(document.player_calc.selSlotB.value, objPl);">
-						&nbsp; &nbsp; &nbsp; �r��ץX/�פJ: 
-						<input type="button" value="�ץX" name="ExportStr" onClick="document.player_calc.OpdataString.value=objOp.dataToStr();alert('��Ƥw�ץX�I');">
-						<input type="button" value="�פJ" name="ImportStr" onClick="objOp.strToData(document.player_calc.OpdataString.value,objPl);">
+						<input type="button" value="儲存" name="SaveBtn" onClick="objOp.saveToCookie(document.player_calc.selSlotB.value);alert('資料已儲存！');">
+						<input type="button" value="載入" name="LoadBtn" onClick="objOp.LoadFromCookie(document.player_calc.selSlotB.value, objPl);">
+						&nbsp; &nbsp; &nbsp; 字串匯出/匯入: 
+						<input type="button" value="匯出" name="ExportStr" onClick="document.player_calc.OpdataString.value=objOp.dataToStr();alert('資料已匯出！');">
+						<input type="button" value="匯入" name="ImportStr" onClick="objOp.strToData(document.player_calc.OpdataString.value,objPl);">
 					</td>
 				</tr>
 				<tr>
@@ -401,57 +401,57 @@ while($Tactics = mysql_fetch_array($Query)){
 </table>
 </form>
 <hr>
-�w�p���G�p�⾹:
+預計結果計算器:
 
 
 <form name=prediction_calc>
 
-�v��Ԫk: <select name="pl_tactics" onChange="objPl.switchTactics(objOp);"> <?php echo $Tactics_Selection; ?> </select><br>
-�Ĥ�Ԫk: <select name="op_tactics" onChange="objOp.switchTactics(objPl);"> <?php echo $Tactics_Selection; ?> </select><br>
+己方戰法: <select name="pl_tactics" onChange="objPl.switchTactics(objOp);"> <?php echo $Tactics_Selection; ?> </select><br>
+敵方戰法: <select name="op_tactics" onChange="objOp.switchTactics(objPl);"> <?php echo $Tactics_Selection; ?> </select><br>
 <br>
-<input type=button onClick="pd_Calc(objPl, objOp);" value='�}�l�p��'>
+<input type=button onClick="pd_Calc(objPl, objOp);" value='開始計算'>
 
 <table align=center width=800 border=1 bordercolor=#111111 style="border-collapse: collapse">
 	<tr>
-		<td colspan=4>�v��:</td>
+		<td colspan=4>己方:</td>
 	</tr>
 	<tr>
-		<td width=200 align=right>�C�^�w�p�ˮ`�O:</td>
+		<td width=200 align=right>每回預計傷害力:</td>
 		<td width=200 align=center><span id="pl_dam_per_rd_min">0</span> ~ <span id="pl_dam_per_rd_max">0</span></td>
-		<td width=200 align=right>�C�^�����ˮ`�O:</td>
+		<td width=200 align=right>每回平均傷害力:</td>
 		<td width=200 align=center><span id="pl_dam_average">0</span></td>
 	</tr>
 	<tr>
-		<td width=200 align=right>�C�^�w�p�R���v:</td>
+		<td width=200 align=right>每回預計命中率:</td>
 		<td width=200 align=center><span id="pl_accuracy">0</span>%</td>
-		<td width=200 align=right>�w�p�R������:</td>
-		<td width=200 align=center><span id="pl_expected_hits">0</span>��</td>
+		<td width=200 align=right>預計命中次數:</td>
+		<td width=200 align=center><span id="pl_expected_hits">0</span>次</td>
 	</tr>
 	<tr>
-		<td width=200 align=right>�w�p�`�ˮ`�O:</td>
+		<td width=200 align=right>預計總傷害力:</td>
 		<td width=200 align=center><span id="pl_dam_min">0</span> ~ <span id="pl_dam_max">0</span></td>
-		<td width=200 align=right>�w�p�����`�ˮ`�O:</td>
+		<td width=200 align=right>預計平均總傷害力:</td>
 		<td width=200 align=center><span id="pl_expected_damage">0</span></td>
 	</tr>
 	<tr>
-		<td colspan=4>�Ĥ�:</td>
+		<td colspan=4>敵方:</td>
 	</tr>
 	<tr>
-		<td width=200 align=right>�C�^�w�p�ˮ`�O:</td>
+		<td width=200 align=right>每回預計傷害力:</td>
 		<td width=200 align=center><span id="op_dam_per_rd_min">0</span> ~ <span id="op_dam_per_rd_max">0</span></td>
-		<td width=200 align=right>�C�^�����ˮ`�O:</td>
+		<td width=200 align=right>每回平均傷害力:</td>
 		<td width=200 align=center><span id="op_dam_average">0</span></td>
 	</tr>
 	<tr>
-		<td width=200 align=right>�C�^�w�p�R���v:</td>
+		<td width=200 align=right>每回預計命中率:</td>
 		<td width=200 align=center><span id="op_accuracy">0</span>%</td>
-		<td width=200 align=right>�w�p�R������:</td>
-		<td width=200 align=center><span id="op_expected_hits">0</span>��</td>
+		<td width=200 align=right>預計命中次數:</td>
+		<td width=200 align=center><span id="op_expected_hits">0</span>次</td>
 	</tr>
 	<tr>
-		<td width=200 align=right>�w�p�`�ˮ`�O:</td>
+		<td width=200 align=right>預計總傷害力:</td>
 		<td width=200 align=center><span id="op_dam_min">0</span> ~ <span id="op_dam_max">0</span></td>
-		<td width=200 align=right>�w�p�����`�ˮ`�O:</td>
+		<td width=200 align=right>預計平均總傷害力:</td>
 		<td width=200 align=center><span id="op_expected_damage">0</span></td>
 	</tr>
 </table>
@@ -542,137 +542,137 @@ while($Tactics = mysql_fetch_array($Query)){
 
 <table align=center width=60% border=1 style="border-collapse: collapse;font-size: 12; font-family: Arial" bordercolor="#000000">
 	<tr>
-		<td colspan=2><B>��s��x</B></td>
+		<td colspan=2><B>更新日誌</B></td>
 	</tr>
-	<!-- �ĤE�h -->
+	<!-- 第九則 -->
 	<tr>
-		<td align=right width=30>���:</td>
-		<td >2010�~2��16��</td>
+		<td align=right width=30>日期:</td>
+		<td >2010年2月16日</td>
 	</tr>
 	<tr>
 		<td>&nbsp;</td>
-		<td>- v3.0�] ��
-			<br>�@ - php-eb �����䴩: v0.49 �԰��t��, �ݩʮĪG
-			<br>�@ �@ - SEED ���ĪG��s (�@��H�[�j)
-			<br>�@ �@ - �H�ص��� 11 - 16 (Debugged)
-			<br>�@ �@ - �I�ƥ[����s (�C15%��O +1%�ĪG)
-			<br>�@ - ���䴩�Z���ĪG�B�M��
+		<td>- v3.0β 版
+			<br>　 - php-eb 版本支援: v0.49 戰鬥系統, 屬性效果
+			<br>　 　 - SEED 的效果更新 (一般人加強)
+			<br>　 　 - 人種等級 11 - 16 (Debugged)
+			<br>　 　 - 點數加成更新 (每15%能力 +1%效果)
+			<br>　 - 不支援距離效果、套機
 		</td>
 	</tr>
-	<!-- �ĤK�h -->
+	<!-- 第八則 -->
 	<tr>
-		<td align=right width=30>���:</td>
-		<td >2010�~1��17��</td>
+		<td align=right width=30>日期:</td>
+		<td >2010年1月17日</td>
 	</tr>
 	<tr>
 		<td>&nbsp;</td>
-		<td>- v3.0�\ ��
-			<br>�@ - ��� Object-based ���c
-			<br>�@ - �s�����䴩: �����̷s���� Mozilla Firefox �� Google Chrome �s����, ���A���� Internet Explorer �F
-			<br>�@ - php-eb �����䴩: v0.47 �԰��t��, �X���t��
-			<br>�@ �@ - �w�L�o�U�ŹϪ��~
-			<br>�@ - �x�s�B���J�B�ץX�B�פJ�\��
+		<td>- v3.0α 版
+			<br>　 - 改用 Object-based 結構
+			<br>　 - 瀏覽器支援: 對應最新版本 Mozilla Firefox 及 Google Chrome 瀏覽器, 不再限於 Internet Explorer 了
+			<br>　 - php-eb 版本支援: v0.47 戰鬥系統, 合成系統
+			<br>　 　 - 已過濾各藍圖物品
+			<br>　 - 儲存、載入、匯出、匯入功能
 		</td>
 	</tr>
-	<!-- �ĤC�h -->
+	<!-- 第七則 -->
 	<tr>
-		<td align=right width=30>���:</td>
-		<td >2009�~1��3��</td>
+		<td align=right width=30>日期:</td>
+		<td >2009年1月3日</td>
 	</tr>
 	<tr>
 		<td>&nbsp;</td>
-		<td>- ��s�u�ˮ`��K�ĪG�v
-			<br>- ��K�q: 3500, 2500, 1500, 1000, 500
+		<td>- 更新「傷害減免效果」
+			<br>- 減免量: 3500, 2500, 1500, 1000, 500
 		</td>
 	</tr>
-	<!-- �Ĥ��h -->
+	<!-- 第六則 -->
 	<tr>
-		<td align=right width=30>���:</td>
-		<td >2008�~11��25��</td>
+		<td align=right width=30>日期:</td>
+		<td >2008年11月25日</td>
 	</tr>
 	<tr>
 		<td>&nbsp;</td>
-		<td>- �ĥΤF�s�g�礽��
-			<br>- �g��|�H�Ʀr�榡��X�F
+		<td>- 採用了新經驗公式
+			<br>- 經驗會以數字格式輸出了
 		</td>
 	</tr>
-	<!-- �Ĥ��h -->
+	<!-- 第五則 -->
 	<tr>
-		<td align=right width=30>���:</td>
-		<td >2008�~11��13��</td>
+		<td align=right width=30>日期:</td>
+		<td >2008年11月13日</td>
 	</tr>
 	<tr>
 		<td>&nbsp;</td>
-		<td>- ��O�W������
-			<br>�@- �{�b���ɨ� 150 �F
+		<td>- 能力上限提升
+			<br>　- 現在提升到 150 了
 		</td>
 	</tr>
-	<!-- �ĥ|�h -->
+	<!-- 第四則 -->
 	<tr>
-		<td align=right width=30>���:</td>
-		<td >2008�~05��10��</td>
+		<td align=right width=30>日期:</td>
+		<td >2008年05月10日</td>
 	</tr>
 	<tr>
 		<td>&nbsp;</td>
-		<td>- �[�J�Ԫk���䴩
-			<br>- �[�J�s���� SEED Mode �� EXAM System �䴩
-			<br>�[�J���Ԫk�S�Ĥ䴩:
-			<br>�@ - �G�s���B�T�s�� (*�u����Ԫk)
-			<br>���|�[�J�䴩���Ԫk�S��: (�Y�t��q���e�����|�[�J)
-			<br>�@- ���u�o�g, ����, �������
-			<br>- �b�o�̥[�J��s��x
+		<td>- 加入戰法的支援
+			<br>- 加入新版本 SEED Mode 及 EXAM System 支援
+			<br>加入的戰法特效支援:
+			<br>　 - 二連擊、三連擊 (*只限於戰法)
+			<br>不會加入支援的戰法特效: (即另行通知前都不會加入)
+			<br>　- 全彈發射, 反擊, 先制攻擊
+			<br>- 在這裡加入更新日誌
 		</td>
 	</tr>
-	<!-- �ĤT�h -->
+	<!-- 第三則 -->
 	<tr>
-		<td align=right width=30>���:</td>
-		<td >2008�~04��26��</td>
+		<td align=right width=30>日期:</td>
+		<td >2008年04月26日</td>
 	</tr>
 	<tr>
 		<td>&nbsp;</td>
-		<td>�[�J�S�Ĥ䴩:
-			<br>�@ - �������m, �e��
-			<br>�@ - �T�D
-			<br>�@ - �[�t, �W�e, �{��, �k��
-			<br>�@ - ²����i, �j�O���i, �̨ΤƱ��i, ���ű��i, ���ű��i
-			<br>�@ - �����z�Z, �p�F�z�Z
-			<br>�@ - �շ�, �˷�, ����, �w��
-			<br>�@ - �۰���w, ���Ůշ�, �L�~�շ�, �h����w, ������w
-			<br>�@ - ²�樾�m, ���`���m, �j�ƨ��m, ���Ũ��m, �̲ר��m
-			<br>�@ - ���, �ܿ�, �z�A, ����, �Ŷ��۹�첾
-			<br>�@ - ������(���Ѥ@�q���s�W��), ����
-			<br>- �򥻤W�w����, �i�@�԰��t�Υi��ʰѦҥ�
+		<td>加入特效支援:
+			<br>　 - 完全防禦, 貫穿
+			<br>　 - 禁錮
+			<br>　 - 加速, 超前, 閃避, 逃離
+			<br>　 - 簡單推進, 強力推進, 最佳化推進, 高級推進, 極級推進
+			<br>　 - 網絡干擾, 雷達干擾
+			<br>　 - 校準, 瞄準, 集中, 預測
+			<br>　 - 自動鎖定, 高級校準, 無誤校準, 多重鎖定, 完美鎖定
+			<br>　 - 簡單防禦, 正常防禦, 強化防禦, 高級防禦, 最終防禦
+			<br>　 - 格擋, 抗衡, 干涉, 堅壁, 空間相對位移
+			<br>　 - 高熱能(熔解一段的新名稱), 熔解
+			<br>- 基本上已完成, 可作戰鬥系統可行性參考用
 		</td>
 	</tr>
-	<!-- �ĤG�h -->
+	<!-- 第二則 -->
 	<tr>
-		<td align=right width=30>���:</td>
-		<td >2008�~04��24��</td>
+		<td align=right width=30>日期:</td>
+		<td >2008年04月24日</td>
 	</tr>
 	<tr>
 		<td>&nbsp;</td>
-		<td>�[�J�S�Ĥ䴩:
-			<br>�@ - ����
-			<br>�@ - ���O (�]�A���ʤO�����O)
-			<br>- �{�b�|��ܳ����p�⦳�Ī��S�ĤF
+		<td>加入特效支援:
+			<br>　 - 興奮
+			<br>　 - 底力 (包括念動力的底力)
+			<br>- 現在會顯示部份計算有效的特效了
 		</td>
 	</tr>
-	<!-- �Ĥ@�h -->
+	<!-- 第一則 -->
 	<tr>
-		<td align=right width=30>���:</td>
-		<td >2008�~04��23��</td>
+		<td align=right width=30>日期:</td>
+		<td >2008年04月23日</td>
 	</tr>
 	<tr>
 		<td>&nbsp;</td>
-		<td>- v2.0�\ ��
-			<br>�@ - �}�o�۰t�I�uphp-eb �t�I�p��u��v v1.1 �� v1.2 ��
-			<br>�@�@�@ - �ѩ�M�ΰt�I�p��u���, �~�H�� v1.1 �O�̷s��, �ҥH�D�n�� v1.1 ��y�Ӧ�
-			<br>�@�@�@ - �w�[�J�Ҧ� v1.2 ������, �έץ��쥻 v1.1 ���� Bug
-			<br>�@ - �۰ʮM���Z���B����B�H�إ[�����
-			<br>�@ - �i�H�s�Ĥ誺��Ƥ@���p��
-			<br>�@�@ - �۰ʭp������w�p�����O�B�R���v�B�̲׶ˮ`
-			<br>���[�J���\��:
-			<br>�@ - �٥��]�w����S��, �|�ɧ֥[�J
+		<td>- v2.0α 版
+			<br>　 - 開發自配點「php-eb 配點計算工具」 v1.1 及 v1.2 版
+			<br>　　　 - 由於套用配點計算工具時, 誤以為 v1.1 是最新版, 所以主要用 v1.1 改造而成
+			<br>　　　 - 已加入所有 v1.2 的公能, 及修正原本 v1.1 有的 Bug
+			<br>　 - 自動套取武器、機體、人種加成資料
+			<br>　 - 可以連敵方的資料一拼計算
+			<br>　　 - 自動計算雙方預計攻擊力、命中率、最終傷害
+			<br>未加入的功能:
+			<br>　 - 還未設定任何特效, 會盡快加入
 		</td>
 	</tr>
 </table>

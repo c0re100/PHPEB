@@ -9,31 +9,31 @@
 function expToStatus($xp){
 	if ($xp > 0) return '+'.($xp/100).'%';
 	elseif ($xp < 0) return ($xp/100).'%';
-	else return '¡Ó0%';
+	else return 'Â±0%';
 }
 function getRangeAttrb($range, $attrb, $equip, $colored = true){
 	$rStr = '';
 	$aStr = '';
 	$rClr = '';
 	$aClr = '';
-	if($equip == 2) return '¤£¾A¥Î';
+	if($equip == 2) return 'ä¸é©ç”¨';
 	switch($range){
-		case 0: $rStr = '»·'; $rClr= 'Yellow'; break;
-		case 1: $rStr = 'ªñ'; $rClr= 'DodgerBlue'; break;
-		case 2: if($colored){ $rStr = '¯S'; $rClr= 'Red';} break;
+		case 0: $rStr = 'é '; $rClr= 'Yellow'; break;
+		case 1: $rStr = 'è¿‘'; $rClr= 'DodgerBlue'; break;
+		case 2: if($colored){ $rStr = 'ç‰¹'; $rClr= 'Red';} break;
 	}
 	switch($attrb){
-		case 0: $aStr = 'Beam'; $aClr = 'Yellow'; break;
-		case 1: $aStr = '¹êÅé'; $aClr= 'DodgerBlue'; break;
-		case 2: $aStr = '­¸¼u'; $aClr= 'ForestGreen'; break;
-		case 3: $aStr = '¯S®í'; $aClr= 'Red'; break;
-		case 4: $aStr = '­n¶ëªZ¾¹'; $aClr= 'Blue'; break;
+		case 0: $aStr = 'å…‰æŸ'; $aClr = 'Yellow'; break;
+		case 1: $aStr = 'å¯¦é«”'; $aClr= 'DodgerBlue'; break;
+		case 2: $aStr = 'é£›å½ˆ'; $aClr= 'ForestGreen'; break;
+		case 3: $aStr = 'ç‰¹æ®Š'; $aClr= 'Red'; break;
+		case 4: $aStr = 'è¦å¡æ­¦å™¨'; $aClr= 'Blue'; break;
 	}
 	if($colored){
 		return sprintf('<font style="color: %s">[%s] </font><font style="color: %s">%s</font>',$rClr,$rStr,$aClr,$aStr);
 	}
 	else {
-		if($rStr) $rStr .= '¶ZÂ÷';
+		if($rStr) $rStr .= 'è·é›¢';
 		return sprintf('%s%s',$rStr,$aStr);
 	}
 }

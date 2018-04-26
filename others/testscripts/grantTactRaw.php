@@ -25,7 +25,7 @@ GetUsrDetails("$Pl_Value[USERNAME]",'Gen','Game');
 	
 if($Gen['acc_status'] >= 0){
 	
-	echo "¨S¦³Åv­­¦s¨ú¡C<br>¦p±z¬OºÞ²z­û, ½Ð¥ý³]©wºÞ²z­û¨­¥÷¡C<BR>";
+	echo "æ²’æœ‰æ¬Šé™å­˜å–ã€‚<br>å¦‚æ‚¨æ˜¯ç®¡ç†å“¡, è«‹å…ˆè¨­å®šç®¡ç†å“¡èº«ä»½ã€‚<BR>";
 	postFooter();
 	exit;
 

@@ -4,9 +4,9 @@ include('cfu.php');
 if (empty($PriTarget)) $PriTarget = 'Alpha';
 if (empty($SecTarget)) $SecTarget = 'Beta';
 postHead('');
-AuthUser("$Pl_Value[USERNAME]","$Pl_Value[PASSWORD]");
-if ($CFU_Time >= $TIMEAUTH+$TIME_OUT_TIME || $TIMEAUTH <= $CFU_Time-$TIME_OUT_TIME){echo "³s½u¹O®É¡I<br>½Ğ­«·sµn¤J¡I";exit;}
-GetUsrDetails("$Pl_Value[USERNAME]",'Gen','Game');
+AuthUser();
+if ($CFU_Time >= $_SESSION['timeauth']+$TIME_OUT_TIME || $_SESSION['timeauth'] <= $CFU_Time-$TIME_OUT_TIME){echo "é€£ç·šé€¾æ™‚ï¼<br>è«‹é‡æ–°ç™»å…¥ï¼";exit;}
+GetUsrDetails("$_SESSION[username]",'Gen','Game');
 $Pl_Settings_Query = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_settings` WHERE username='". $Gen['username'] ."'");
 $Pl_Settings = mysql_fetch_array(mysql_query ($Pl_Settings_Query));
 if ($Game['organization'])
@@ -17,145 +17,149 @@ $Ar_Org = ReturnOrg($Area["User"]["occupied"]);
 //Special Commands GUI
 if ($mode=='main'){
 	$SC_Prsn = $SC_Sys = $SC_Sys_Impt = $SC_Org = $SC_Org_Impt = $SC_Area = (string) ''; // Declare Variables
-	echo "<font style=\"font-size: 12pt\">¯S®í«ü¥O</font>";
+	echo "<font style=\"font-size: 12pt\">ç‰¹æ®ŠæŒ‡ä»¤</font>";
 	printTHR('');
 
 	echo "<form action=scommand.php?action=main method=post name=mainform>";
 	echo "<input type=hidden value='none' name=actionb>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 
 
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr><td align=left width=250><b style=\"font-size: 10pt;\">¯S®í«ü¥O¦Cªí: </b></td></tr>";
+	echo "<tr><td align=left width=250><b style=\"font-size: 10pt;\">ç‰¹æ®ŠæŒ‡ä»¤åˆ—è¡¨: </b></td></tr>";
 	echo "<tr><td align=center>";
 
-//²ÕÂ´«ü¥O
+//çµ„ç¹”æŒ‡ä»¤
 
 	if ($Gen['cash'] > $OrganizingCost && !$Game['organization'] && ($Gen['fame'] >= $OrganizingFame || $Gen['fame'] <= $OrganizingNotor))
-	$SC_Org .= "<input type=\"submit\" value=\"¦¨¥ß²ÕÂ´\" onClick=\"mainform.action='organization.php?action=Start';actionb.value='A';\">";
+	$SC_Org .= "<input type=\"submit\" value=\"æˆç«‹çµ„ç¹”\" onClick=\"mainform.action='organization.php?action=Start';actionb.value='A';\">";
 
 	if (!$Game['organization'])
-	$SC_Org .= "<input type=\"submit\" value=\"¥[¤J²ÕÂ´\" onClick=\"mainform.action='organization.php?action=JoinOrg';actionb.value='A';\">";
+	$SC_Org .= "<input type=\"submit\" value=\"åŠ å…¥çµ„ç¹”\" onClick=\"mainform.action='organization.php?action=JoinOrg';actionb.value='A';\">";
 
 	if ($Game['organization'] && $Game['rights']){
-		$SC_Org .= "<input type=\"submit\" value=\"©Û¶Ò¤H¤~\" onClick=\"mainform.action='organization.php?action=Employ';actionb.value='A';\">";
-		$SC_Org .= "<input type=\"submit\" value=\"°h¦ì\" onClick=\"mainform.action='organization.php?action=LeavePlace';actionb.value='A';\">";
-		$SC_Org .= "<input type=\"submit\" value=\"¸Ñ¶±\" onClick=\"mainform.action='organization.php?action=Dismiss';actionb.value='A';\">";
+		if($Pl_Org['cnum'] < 15){
+			$SC_Org .= "<input type=\"submit\" value=\"æ‹›å‹Ÿäººæ‰\" onClick=\"mainform.action='organization.php?action=Employ';actionb.value='A';\">";
+		}
+		$SC_Org .= "<input type=\"submit\" value=\"é€€ä½\" onClick=\"mainform.action='organization.php?action=LeavePlace';actionb.value='A';\">";
+		$SC_Org .= "<input type=\"submit\" value=\"è§£é›‡\" onClick=\"mainform.action='organization.php?action=Dismiss';actionb.value='A';\">";
 	}
-	if ($Game['organization'] && $Game['rights'] == '1'){
-		$SC_Org .= "<br><input type=\"submit\" value=\"¥ô©R°Æ¥D®u\" onClick=\"mainform.action='organization.php?action=Vice';actionb.value='A';\">";
-		$SC_Org .= "<input type=\"submit\" value=\"²ÕÂ´³]©w\" onClick=\"mainform.action='organization.php?action=Settings';actionb.value='A';\">";
-		$SC_Org .= "<input type=\"submit\" value=\"§ğ²¤­p¹º\" onClick=\"mainform.action='organization.php?action=CityAtk';actionb.value='A';\">";
+	if ($Game['organization'] && $Game['rights']){
+		if($Game['rights'] == '1'){
+			$SC_Org .= "<br><input type=\"submit\" value=\"ä»»å‘½\" onClick=\"mainform.action='organization.php?action=Vice';actionb.value='A';\">";
+			$SC_Org .= "<input type=\"submit\" value=\"çµ„ç¹”è¨­å®š\" onClick=\"mainform.action='organization.php?action=Settings';actionb.value='A';\">";
+		}
+		$SC_Org .= "<input type=\"submit\" value=\"æ”»ç•¥è¨ˆåŠƒ\" onClick=\"mainform.action='organization.php?action=CityAtk';actionb.value='A';\">";
 	}
 	if ($Game['organization'] && $Game['rights'] != 1 && $Pl_Org['license'] != 1 && $Pl_Org['license'] != 3){
 	echo "<script language=\"Javascript\">";
 	echo "function cfmLeaveOrg(){";
-	echo "if (confirm('¯uªº­nÂ÷¶}²ÕÂ´¶Ü¡H\\nªğ¦^¤¤¥ß²ÕÂ´·|³Q­°¤@­Ó­x¶¥¡C\\n±z¥u·|³Q°İ³o¤@¦¸¡A½Ğ¦Ò¼{²M·¡¡C\\n½T©w¶Ü¡H')==true){";
+	echo "if (confirm('çœŸçš„è¦é›¢é–‹çµ„ç¹”å—ï¼Ÿ\\nè¿”å›ä¸­ç«‹çµ„ç¹”æœƒè¢«é™ä¸€å€‹è»éšã€‚\\næ‚¨åªæœƒè¢«å•é€™ä¸€æ¬¡ï¼Œè«‹è€ƒæ…®æ¸…æ¥šã€‚\\nç¢ºå®šå—ï¼Ÿ')==true){";
 	echo "mainform.action='organization.php?action=LeaveOrg';mainform.actionb.value='A';return true;}";
 	echo "else {return false;}";
 	echo "}</script>";
-	$SC_Org_Impt .= "<input type=\"submit\" value=\"²æÂ÷²ÕÂ´\" onClick=\"return cfmLeaveOrg();\">";
+	$SC_Org_Impt .= "<input type=\"submit\" value=\"è„«é›¢çµ„ç¹”\" onClick=\"return cfmLeaveOrg();\">";
 	}
 	elseif ($Game['organization'] && $Game['rights'] != 1 && $Pl_Org['license'] != 0 && $Pl_Org['license'] != 2 && $Gen['fame'] >= 10){
 	echo "<script language=\"Javascript\">";
 	echo "function cfmLeaveOrg(){";
-	echo "if (confirm('°k¤`¦³·l±zªº¦WÁn\\n¯uªº­nÂ÷¶}²ÕÂ´¶Ü¡H\\n±z¥u·|³Q°İ³o¤@¦¸¡A½Ğ¦Ò¼{²M·¡¡C')==true){";
+	echo "if (confirm('é€ƒäº¡æœ‰ææ‚¨çš„åè²\\nçœŸçš„è¦é›¢é–‹çµ„ç¹”å—ï¼Ÿ\\næ‚¨åªæœƒè¢«å•é€™ä¸€æ¬¡ï¼Œè«‹è€ƒæ…®æ¸…æ¥šã€‚')==true){";
 	echo "mainform.action='organization.php?action=LeaveOrg';mainform.actionb.value='B';return true;}";
 	echo "else {return false;}";
 	echo "}</script>";
-	$SC_Org_Impt .= "<input type=\"submit\" value=\"°k¤`\" onClick=\"return cfmLeaveOrg();\">";
+	$SC_Org_Impt .= "<input type=\"submit\" value=\"é€ƒäº¡\" onClick=\"return cfmLeaveOrg();\">";
 	}
 	elseif ($Game['organization'] && !$Game['rights'] && $Pl_Org['license'] != 0 && $Pl_Org['license'] != 2 && $Gen['fame'] < 10){
 	echo "<script language=\"Javascript\">";
 	echo "function cfmLeaveOrg(){";
-	echo "if (confirm('°k¤`·|±ÑÃa§Aªº¦WÁn\\nªğ¦^¤¤¥ß²ÕÂ´·|³Q­° ¤T­Ó ­x¶¥¡C\\n¯uªº­n°k¤`Â÷¶}²ÕÂ´¶Ü¡H\\n±z¥u·|³Q°İ³o¤@¦¸¡A½Ğ¦Ò¼{²M·¡¡C\\n½T©w¶Ü¡H')==true){";
+	echo "if (confirm('é€ƒäº¡æœƒæ•—å£ä½ çš„åè²\\nè¿”å›ä¸­ç«‹çµ„ç¹”æœƒè¢«é™ ä¸‰å€‹ è»éšã€‚\\nçœŸçš„è¦é€ƒäº¡é›¢é–‹çµ„ç¹”å—ï¼Ÿ\\næ‚¨åªæœƒè¢«å•é€™ä¸€æ¬¡ï¼Œè«‹è€ƒæ…®æ¸…æ¥šã€‚\\nç¢ºå®šå—ï¼Ÿ')==true){";
 	echo "mainform.action='organization.php?action=LeaveOrg';mainform.actionb.value='C';return true;}";
 	echo "else {return false;}";
 	echo "}</script>";
-	$SC_Org_Impt .= "<input type=\"submit\" value=\"°k¤`\" onClick=\"return cfmLeaveOrg();\">";
+	$SC_Org_Impt .= "<input type=\"submit\" value=\"é€ƒäº¡\" onClick=\"return cfmLeaveOrg();\">";
 	}
 	if ($Game['organization'] && $Game['rights'] == '1'){
 	echo "<script language=\"Javascript\">";
 	echo "function cfmBreakOrg(){";
-	echo "if (confirm('¯uªº­n¸Ñ´²²ÕÂ´¶Ü¡H\\n±z¥u·|³Q°İ³o¤@¦¸¡A½Ğ¦Ò¼{²M·¡¡C')==true){";
+	echo "if (confirm('çœŸçš„è¦è§£æ•£çµ„ç¹”å—ï¼Ÿ\\næ‚¨åªæœƒè¢«å•é€™ä¸€æ¬¡ï¼Œè«‹è€ƒæ…®æ¸…æ¥šã€‚')==true){";
 	echo "mainform.action='organization.php?action=Break';mainform.actionb.value='A';return true;}";
 	echo "else {return false;}";
 	echo "}</script>";
-	$SC_Org_Impt .= "<input type=\"submit\" value=\"¸Ñ´²²ÕÂ´\" onClick=\"return cfmBreakOrg()\">";
+	$SC_Org_Impt .= "<input type=\"submit\" value=\"è§£æ•£çµ„ç¹”\" onClick=\"return cfmBreakOrg()\">";
 	}
 
-//°Ï°ì«ü¥O
+//å€åŸŸæŒ‡ä»¤
 	if ($Area["User"]["occupied"] == $Game['organization'] && $Game['rights']){
-		$SC_Area .= "<input type=\"submit\" value=\"±j¤Æ­n¶ë\" onClick=\"mainform.action='city.php?action=ModFort';actionb.value='A';\">";
-		$SC_Area .= "<input type=\"submit\" value=\"©e¬£¦u½Ã\" onClick=\"mainform.action='city.php?action=AssignDefender';actionb.value='A';\">";
-		$SC_Area .= "<br><input type=\"submit\" value=\"­x¨Æ¤O¶q§ë¸ê\" onClick=\"mainform.action='city.php?action=Reinforcement';actionb.value='A';\">";
-		$SC_Area .= "<input type=\"submit\" value=\"­x¨Æ½Õ°Ê\" onClick=\"mainform.action='city.php?action=Reinforcement';actionb.value='C';\">";
+		$SC_Area .= "<input type=\"submit\" value=\"å¼·åŒ–è¦å¡\" onClick=\"mainform.action='city.php?action=ModFort';actionb.value='A';\">";
+		$SC_Area .= "<input type=\"submit\" value=\"å§”æ´¾å®ˆè¡›\" onClick=\"mainform.action='city.php?action=AssignDefender';actionb.value='A';\">";
+		$SC_Area .= "<br><input type=\"submit\" value=\"è»äº‹åŠ›é‡æŠ•è³‡\" onClick=\"mainform.action='city.php?action=Reinforcement';actionb.value='A';\">";
+		$SC_Area .= "<input type=\"submit\" value=\"è»äº‹èª¿å‹•\" onClick=\"mainform.action='city.php?action=Reinforcement';actionb.value='C';\">";
 		
 	}
 
-//¨t²Î«ü¥O
-	$SC_Sys = "<input type=\"submit\" value=\"§ó§ï±K½X\" onClick=\"mainform.action='scommand.php?action=chpass';actionb.value='A';\">";
-	$SC_Sys .= "<input type=\"submit\" value=\"¹CÀ¸³]©w\" onClick=\"mainform.action='scommand.php?action=settings';actionb.value='A';\">";
+//ç³»çµ±æŒ‡ä»¤
+	$SC_Sys = "<input type=\"submit\" value=\"æ›´æ”¹å¯†ç¢¼\" onClick=\"mainform.action='scommand.php?action=chpass';actionb.value='A';\">";
+	$SC_Sys .= "<input type=\"submit\" value=\"éŠæˆ²è¨­å®š\" onClick=\"mainform.action='scommand.php?action=settings';actionb.value='A';\">";
 
-	//­«­n«ü¥O
-	$SC_Sys_Impt = "<input type=\"submit\" value=\"§R°£±b¤á\" onClick=\"mainform.action='scommand.php?action=delete_account';actionb.value='A';\">";
+	//é‡è¦æŒ‡ä»¤
+	$SC_Sys_Impt = "<input type=\"submit\" value=\"åˆªé™¤å¸³æˆ¶\" onClick=\"mainform.action='scommand.php?action=delete_account';actionb.value='A';\">";
 
-//­Ó¤H«ü¥O
+//å€‹äººæŒ‡ä»¤
 	if ($Gen['typech'] == 'nat' && $Gen['cash'] >= $ModChType_Cost)
-	$SC_Prsn .= "<input type=\"submit\" value=\"¤HºØ§ï³y\" onClick=\"mainform.action='statsmod.php?action=modtypech';actionb.value='A';\">";
+	$SC_Prsn .= "<input type=\"submit\" value=\"äººç¨®æ”¹é€ \" onClick=\"mainform.action='statsmod.php?action=modtypech';actionb.value='A';\">";
 	if ($Game['v_points'] >= $VPt2AlloyReq)
-	$SC_Prsn .= "<input type=\"submit\" value=\"§I´«¦Xª÷\" onClick=\"mainform.action='scommand.php?action=redeemAlloy';actionb.value='A';\">";
+	$SC_Prsn .= "<input type=\"submit\" value=\"å…Œæ›åˆé‡‘\" onClick=\"mainform.action='scommand.php?action=redeemAlloy';actionb.value='A';\">";
 
-//¦C¥X«ü¥O
+//åˆ—å‡ºæŒ‡ä»¤
 	if ($SC_Prsn){
-	echo "<div align=left><b>­Ó¤H«ü¥O:</b></div>";
+	echo "<div align=left><b>å€‹äººæŒ‡ä»¤:</b></div>";
 	echo "$SC_Prsn";}
 
 	if ($SC_Sys){
-	echo "<div align=left><b>¨t²Î«ü¥O:</b></div>";
+	echo "<div align=left><b>ç³»çµ±æŒ‡ä»¤:</b></div>";
 	echo "$SC_Sys";}
 	if ($SC_Sys_Impt)
-	echo sprintTHR('200px')."<b>­«­n«ü¥O:</b><br>$SC_Sys_Impt";
+	echo sprintTHR('200px')."<b>é‡è¦æŒ‡ä»¤:</b><br>$SC_Sys_Impt";
 
 	if ($SC_Org){
-	echo "<div align=left><b>²ÕÂ´¬ÛÃö«ü¥O:</b></div>";
+	echo "<div align=left><b>çµ„ç¹”ç›¸é—œæŒ‡ä»¤:</b></div>";
 	echo "$SC_Org";}
 	if ($SC_Org_Impt)
-	echo sprintTHR('200px')."<b>­«­n«ü¥O:</b><br>$SC_Org_Impt";
+	echo sprintTHR('200px')."<b>é‡è¦æŒ‡ä»¤:</b><br>$SC_Org_Impt";
 
 	if ($SC_Area){
-	echo "<div align=left><b>°Ï°ì¬ÛÃö«ü¥O:</b></div>";
+	echo "<div align=left><b>å€åŸŸç›¸é—œæŒ‡ä»¤:</b></div>";
 	echo "$SC_Area";}
 	echo "</tr></td></form></table>";
 }
 elseif ($mode=='chpass' && $actionb == 'A'){
 
-	echo "<font style=\"font-size: 12pt\">¯S®í«ü¥O</font>";
+	echo "<font style=\"font-size: 12pt\">ç‰¹æ®ŠæŒ‡ä»¤</font>";
 	printTHR();
 
 	echo "<form action=scommand.php?action=chpass method=post name=mainform target=_parent>";
 	echo "<input type=hidden value='B' name=actionb>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr><td align=left width=225><b style=\"font-size: 10pt;\">§ó§ï±K½X: </b></td></tr>";
+	echo "<tr><td align=left width=225><b style=\"font-size: 10pt;\">æ›´æ”¹å¯†ç¢¼: </b></td></tr>";
 	echo "<tr><td align=center>";
 
 	echo "<script language=\"JavaScript\">";
 	echo "function vldPass(){";
-	echo "if (document.getElementById('pwd').value != '$Pl_Value[PASSWORD]'){alert('±K½X¤£¥¿½T¡C');return false;}";
-	echo "else if(!mainform.new_password.value){alert('­«·s¿é¤J·s±K½X¡C');return false;}";
-	echo "else if(mainform.new_password.value != mainform.vld_password.value){alert('­«·s¿é¤Jªº±K½X»P·s±K½X¤£¬Û¦P¡A½Ğ­«·s¿é¤J¡C');return false;}";
+	echo "if (document.getElementById('pwd').value != '$_SESSION[password]'){alert('å¯†ç¢¼ä¸æ­£ç¢ºã€‚');return false;}";
+	echo "else if(!mainform.new_password.value){alert('é‡æ–°è¼¸å…¥æ–°å¯†ç¢¼ã€‚');return false;}";
+	echo "else if(mainform.new_password.value != mainform.vld_password.value){alert('é‡æ–°è¼¸å…¥çš„å¯†ç¢¼èˆ‡æ–°å¯†ç¢¼ä¸ç›¸åŒï¼Œè«‹é‡æ–°è¼¸å…¥ã€‚');return false;}";
 	echo "else {return true;}";
 	echo "}</script>";
 
-	echo "²{¦b±K½X: <input type=password name=Pl_Value[PASSWORD] id=pwd><br>";
-	echo "·sªº±K½X: <input type=password name=new_password value='' maxlength=16><br>";
-	echo "­«·s¿é¤J: <input type=password name=vld_password value='' maxlength=16><br>";
-	echo "<input type=submit value=\"½T©w\" onClick=\"return vldPass();\"><input type=reset value=\"­«·s³]©w\">";
+	echo "ç¾åœ¨å¯†ç¢¼: <input type=password name=Pl_Value[PASSWORD] id=pwd><br>";
+	echo "æ–°çš„å¯†ç¢¼: <input type=password name=new_password value='' maxlength=16><br>";
+	echo "é‡æ–°è¼¸å…¥: <input type=password name=vld_password value='' maxlength=16><br>";
+	echo "<input type=submit value=\"ç¢ºå®š\" onClick=\"return vldPass();\"><input type=reset value=\"é‡æ–°è¨­å®š\">";
 
 	echo "</tr></td></form></table>";
 
@@ -163,221 +167,223 @@ elseif ($mode=='chpass' && $actionb == 'A'){
 }
 elseif ($mode=='chpass' && $actionb == 'B'){
 if ($new_password) {
-	if ($new_password != $vld_password){echo "<center><br><br>¨â²Õ·s±K½X¤£¬Û²Å¡C<br><br>";postFooter();exit;}
-	mysql_query("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `password` = md5('".$new_password."') WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;") or die(mysql_error());
+	$_SESSION['password'] = $_POST['new_password'];
+	$new_password = mysql_real_escape_string($new_password);
+	if ($new_password != $vld_password){echo "<center><br><br>å…©çµ„æ–°å¯†ç¢¼ä¸ç›¸ç¬¦ã€‚<br><br>";postFooter();exit;}
+	mysql_query("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `password` = md5('".$new_password."') WHERE `username` = '$_SESSION[username]' LIMIT 1;") or die(mysql_error());
 	}
-	echo "<br><br><br><br><br><p align=center style=\"font-size: 16pt\">±K½X§ó·s§¹¦¨¡I<br>";
+	echo "<br><br><br><br><br><p align=center style=\"font-size: 16pt\">å¯†ç¢¼æ›´æ–°å®Œæˆï¼<br>";
 	echo "<form action=\"gmscrn_main.php?action=proc\" method=post name=login>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
+	
 	echo "<input type=hidden value='$new_password' name=Pl_Value[PASSWORD]>";
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
-	echo "<input type=submit value=\"ªğ¦^¹CÀ¸\">";
+	echo "<input type=submit value=\"è¿”å›éŠæˆ²\">";
 	echo "</form>";
 	echo "<br><br><br>";
 }
 elseif ($mode=='settings' && $actionb == 'A'){
-	echo "<font style=\"font-size: 12pt\">¯S®í«ü¥O</font>";
+	echo "<font style=\"font-size: 12pt\">ç‰¹æ®ŠæŒ‡ä»¤</font>";
 	printTHR();
 
 	echo "<form action=scommand.php?action=settings method=post name=mainform>";
 	echo "<input type=hidden value='B' name=actionb>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr><td align=left width=500><b style=\"font-size: 10pt;\">¹CÀ¸³]©w: ";
-	if (isset($ModifiedFlag)) echo "<br><font color=yellow>§ó·s§¹¦¨¡I</font>";
+	echo "<tr><td align=left width=500><b style=\"font-size: 10pt;\">éŠæˆ²è¨­å®š: ";
+	if (isset($ModifiedFlag)) echo "<br><font color=yellow>æ›´æ–°å®Œæˆï¼</font>";
 	echo "</b></td></tr>";
 	echo "<tr><td align=left>";
 
 	if ($LogEntries){
-	echo "Åã¥Ü¾Ô°«¾úµ{¬ö¿ı«h¼Æ: <select name=Pl_Set_LogNum>";
+	echo "é¡¯ç¤ºæˆ°é¬¥æ­·ç¨‹ç´€éŒ„å‰‡æ•¸: <select name=Pl_Set_LogNum>";
 	for ($i=0;$i<=$LogEntries;$i++) {echo "<option value='".$i."'"; if ($Pl_Settings['show_log_num'] == $i)echo " selected";echo ">".$i;}
 	echo "</select><br>";}
 
 
-	echo "§ğÀ»¦b½uª±®aÄµ§i: <input type=radio name=Pl_Set_AtkOnlineAlrt value=1";
+	echo "æ”»æ“Šåœ¨ç·šç©å®¶è­¦å‘Š: <input type=radio name=Pl_Set_AtkOnlineAlrt value=1";
 	if($Pl_Settings['atkonline_alert']) echo " checked";
-	echo "> ¶}±Ò <input type=radio name=Pl_Set_AtkOnlineAlrt value=0";
-	if(!$Pl_Settings['atkonline_alert']) echo " checked";echo "> Ãö³¬<br><br>";
+	echo "> é–‹å•Ÿ <input type=radio name=Pl_Set_AtkOnlineAlrt value=0";
+	if(!$Pl_Settings['atkonline_alert']) echo " checked";echo "> é—œé–‰<br><br>";
 
-	echo "<b>¹Ï¤ù¶°¦ì¸m³]©w</b><br>¥H¤U¤£³]©w(ªÅ¥Õ)«h·|¨Ï¥Î¦øªA¾¹¹w³]<br>½Ğ¤Å¨Ï¥Î¥ş«¬¦r¤¸(¥]¬A¤¤¤å¦r), ¥HÁ×§K¶Ã½X!<br>½Ğ¥Î¥H¤U¤è¦¡¿é¤J:<br>";
-	echo "¡@http://§Aªººô§}/¸ô®| &nbsp; &nbsp; &nbsp; &nbsp; (³o¨Ò¤l·|Åª¨ú§O¦øªA¾¹ªº¹Ï¤ùÀÉ)<br>";
-	echo "¡@file:///C:/¸ô®| &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; (³o¨Ò¤l·|Åª¨ú¦Û¤v¹q¸£¤Wªº¹Ï¤ùÀÉ)<br>";
-	echo "­I´º¹Ï¤ù: ";
+	echo "<b>åœ–ç‰‡é›†ä½ç½®è¨­å®š</b><br>ä»¥ä¸‹ä¸è¨­å®š(ç©ºç™½)å‰‡æœƒä½¿ç”¨ä¼ºæœå™¨é è¨­<br>è«‹å‹¿ä½¿ç”¨å…¨å‹å­—å…ƒ(åŒ…æ‹¬ä¸­æ–‡å­—), ä»¥é¿å…äº‚ç¢¼!<br>è«‹ç”¨ä»¥ä¸‹æ–¹å¼è¼¸å…¥:<br>";
+	echo "ã€€http://ä½ çš„ç¶²å€/è·¯å¾‘ &nbsp; &nbsp; &nbsp; &nbsp; (é€™ä¾‹å­æœƒè®€å–åˆ¥ä¼ºæœå™¨çš„åœ–ç‰‡æª”)<br>";
+	echo "ã€€file:///C:/è·¯å¾‘ &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; (é€™ä¾‹å­æœƒè®€å–è‡ªå·±é›»è…¦ä¸Šçš„åœ–ç‰‡æª”)<br>";
+	echo "èƒŒæ™¯åœ–ç‰‡: ";
 	echo "<input type=text name='gen_img_dir' size='32' maxlength=128 value='$Pl_Settings[gen_img_dir]'><br>";
-	echo "¾÷Åé¹Ï¤ù: ";
+	echo "æ©Ÿé«”åœ–ç‰‡: ";
 	echo "<input type=text name='unit_img_dir' size='32' maxlength=128 value='$Pl_Settings[unit_img_dir]'><br>";
-	echo "¨t²Î¹Ï¤ù: ";
+	echo "ç³»çµ±åœ–ç‰‡: ";
 	echo "<input type=text name='base_img_dir' size='32' maxlength=128 value='$Pl_Settings[base_img_dir]'><br><br>";
 
-	echo "<b>¾Ô°«¦Cªí¹LÂo¨t²Î³]©w</b><br>";
-	echo "¾Ô°«¦Cªí¹LÂo¨t²Î³]©w¯à¥[§Ö¹CÀ¸³t«×, §ó¥i¤è«Kª±®a½m¥\\<br>¦p­n¨Ï¥Îªº¸Ü, ½Ğ¥ı¿ï¨ú<b>¤£¨Ï¥Î</b>¹w³]³]©w<br><br>";
-	echo "½Ğª`·N¤£­nÅã¥Ü¤Ó¦hÄæ¦ì, §_«h·|<b>ÄY­«´îºC¹CÀ¸³t«×</b>!<br>¥t¥~½Ğª`·N: <b>¤£¨Ï¥Î¹w³]³]©w</b><u style=\"color: red\">µLªk§ğÀ»­n¶ë</u>¡I<br><br>";
-	echo "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <b>¨Ï¥Î¹w³]³]©w</b>: <input type=radio name=Pl_Set_BatDefFilter value=1";
+	echo "<b>æˆ°é¬¥åˆ—è¡¨éæ¿¾ç³»çµ±è¨­å®š</b><br>";
+	echo "æˆ°é¬¥åˆ—è¡¨éæ¿¾ç³»çµ±è¨­å®šèƒ½åŠ å¿«éŠæˆ²é€Ÿåº¦, æ›´å¯æ–¹ä¾¿ç©å®¶ç·´åŠŸ\<br>å¦‚è¦ä½¿ç”¨çš„è©±, è«‹å…ˆé¸å–<b>ä¸ä½¿ç”¨</b>é è¨­è¨­å®š<br><br>";
+	echo "è«‹æ³¨æ„ä¸è¦é¡¯ç¤ºå¤ªå¤šæ¬„ä½, å¦å‰‡æœƒ<b>åš´é‡æ¸›æ…¢éŠæˆ²é€Ÿåº¦</b>!<br>å¦å¤–è«‹æ³¨æ„: <b>ä¸ä½¿ç”¨é è¨­è¨­å®š</b><u style=\"color: red\">ç„¡æ³•æ”»æ“Šè¦å¡</u>ï¼<br><br>";
+	echo "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <b>ä½¿ç”¨é è¨­è¨­å®š</b>: <input type=radio name=Pl_Set_BatDefFilter value=1";
 	if($Pl_Settings['battle_def_filter']) echo " checked";
-	echo "> ¨Ï¥Î <input type=radio name=Pl_Set_BatDefFilter value=0";
-	if(!$Pl_Settings['battle_def_filter']) echo " checked";echo "> ¤£¨Ï¥Î<br><br>";
+	echo "> ä½¿ç”¨ <input type=radio name=Pl_Set_BatDefFilter value=0";
+	if(!$Pl_Settings['battle_def_filter']) echo " checked";echo "> ä¸ä½¿ç”¨<br><br>";
 
-	echo "¡@¡@<b>Äæ¦ìÅã¥Ü</b><br>";
+	echo "ã€€ã€€<b>æ¬„ä½é¡¯ç¤º</b><br>";
 	echo "<table width=50% border=0>";
 
 	echo "<tr>";
-	echo "<td align=right>Attacking ¯Å¼Æ:</td>";
+	echo "<td align=right>Attacking ç´šæ•¸:</td>";
 	echo "<td><input type=radio name=Pl_Set_fdis_at value=1";
 	if($Pl_Settings['fdis_at']) echo " checked";
-	echo "> Åã¥Ü <input type=radio name=Pl_Set_fdis_at value=0";
-	if(!$Pl_Settings['fdis_at']) echo " checked";echo "> ¤£Åã¥Ü<br>";
+	echo "> é¡¯ç¤º <input type=radio name=Pl_Set_fdis_at value=0";
+	if(!$Pl_Settings['fdis_at']) echo " checked";echo "> ä¸é¡¯ç¤º<br>";
 	echo "</td></tr>";
 
 	echo "<tr>";
-	echo "<td align=right>Defending ¯Å¼Æ:</td>";
+	echo "<td align=right>Defending ç´šæ•¸:</td>";
 	echo "<td><input type=radio name=Pl_Set_fdis_de value=1";
 	if($Pl_Settings['fdis_de']) echo " checked";
-	echo "> Åã¥Ü <input type=radio name=Pl_Set_fdis_de value=0";
-	if(!$Pl_Settings['fdis_de']) echo " checked";echo "> ¤£Åã¥Ü<br>";
+	echo "> é¡¯ç¤º <input type=radio name=Pl_Set_fdis_de value=0";
+	if(!$Pl_Settings['fdis_de']) echo " checked";echo "> ä¸é¡¯ç¤º<br>";
 	echo "</td></tr>";
 
 	echo "<tr>";
-	echo "<td align=right>Reacting ¯Å¼Æ:</td>";
+	echo "<td align=right>Reacting ç´šæ•¸:</td>";
 	echo "<td><input type=radio name=Pl_Set_fdis_re value=1";
 	if($Pl_Settings['fdis_re']) echo " checked";
-	echo "> Åã¥Ü <input type=radio name=Pl_Set_fdis_re value=0";
-	if(!$Pl_Settings['fdis_re']) echo " checked";echo "> ¤£Åã¥Ü<br>";
+	echo "> é¡¯ç¤º <input type=radio name=Pl_Set_fdis_re value=0";
+	if(!$Pl_Settings['fdis_re']) echo " checked";echo "> ä¸é¡¯ç¤º<br>";
 	echo "</td></tr>";
 
 	echo "<tr>";
-	echo "<td align=right>Targeting ¯Å¼Æ:</td>";
+	echo "<td align=right>Targeting ç´šæ•¸:</td>";
 	echo "<td><input type=radio name=Pl_Set_fdis_ta value=1";
 	if($Pl_Settings['fdis_ta']) echo " checked";
-	echo "> Åã¥Ü <input type=radio name=Pl_Set_fdis_ta value=0";
-	if(!$Pl_Settings['fdis_ta']) echo " checked";echo "> ¤£Åã¥Ü<br>";
+	echo "> é¡¯ç¤º <input type=radio name=Pl_Set_fdis_ta value=0";
+	if(!$Pl_Settings['fdis_ta']) echo " checked";echo "> ä¸é¡¯ç¤º<br>";
 	echo "</td></tr>";
 
 	echo "<tr>";
 	echo "<td align=right>Level:</td>";
 	echo "<td><input type=radio name=Pl_Set_fdis_lv value=1";
 	if($Pl_Settings['fdis_lv']) echo " checked";
-	echo "> Åã¥Ü <input type=radio name=Pl_Set_fdis_lv value=0";
-	if(!$Pl_Settings['fdis_lv']) echo " checked";echo "> ¤£Åã¥Ü<br>";
+	echo "> é¡¯ç¤º <input type=radio name=Pl_Set_fdis_lv value=0";
+	if(!$Pl_Settings['fdis_lv']) echo " checked";echo "> ä¸é¡¯ç¤º<br>";
 	echo "</td></tr>";
 
 	echo "<tr>";
 	echo "<td align=right>HP:</td>";
 	echo "<td><input type=radio name=Pl_Set_fdis_hp value=1";
 	if($Pl_Settings['fdis_hp']) echo " checked";
-	echo "> Åã¥Ü <input type=radio name=Pl_Set_fdis_hp value=0";
-	if(!$Pl_Settings['fdis_hp']) echo " checked";echo "> ¤£Åã¥Ü<br>";
+	echo "> é¡¯ç¤º <input type=radio name=Pl_Set_fdis_hp value=0";
+	if(!$Pl_Settings['fdis_hp']) echo " checked";echo "> ä¸é¡¯ç¤º<br>";
 	echo "</td></tr>";
 
 	echo "<tr>";
-	echo "<td align=right>¦WÁn¤Î´c¦W:</td>";
+	echo "<td align=right>åè²åŠæƒ¡å:</td>";
 	echo "<td><input type=radio name=Pl_Set_fdis_fame value=1";
 	if($Pl_Settings['fdis_fame']) echo " checked";
-	echo "> Åã¥Ü <input type=radio name=Pl_Set_fdis_fame value=0";
-	if(!$Pl_Settings['fdis_fame']) echo " checked";echo "> ¤£Åã¥Ü<br>";
+	echo "> é¡¯ç¤º <input type=radio name=Pl_Set_fdis_fame value=0";
+	if(!$Pl_Settings['fdis_fame']) echo " checked";echo "> ä¸é¡¯ç¤º<br>";
 	echo "</td></tr>";
 
 	echo "<tr>";
-	echo "<td align=right>Äa½àª÷:</td>";
+	echo "<td align=right>æ‡¸è³é‡‘:</td>";
 	echo "<td><input type=radio name=Pl_Set_fdis_bty value=1";
 	if($Pl_Settings['fdis_bty']) echo " checked";
-	echo "> Åã¥Ü <input type=radio name=Pl_Set_fdis_bty value=0";
-	if(!$Pl_Settings['fdis_bty']) echo " checked";echo "> ¤£Åã¥Ü<br>";
+	echo "> é¡¯ç¤º <input type=radio name=Pl_Set_fdis_bty value=0";
+	if(!$Pl_Settings['fdis_bty']) echo " checked";echo "> ä¸é¡¯ç¤º<br>";
 	echo "</td></tr>";
 
 	echo "<tr>";
-	echo "<td align=right>¨Ï¥ÎMS:</td>";
+	echo "<td align=right>ä½¿ç”¨MS:</td>";
 	echo "<td><input type=radio name=Pl_Set_fdis_ms value=1";
 	if($Pl_Settings['fdis_ms']) echo " checked";
-	echo "> Åã¥Ü <input type=radio name=Pl_Set_fdis_ms value=0";
-	if(!$Pl_Settings['fdis_ms']) echo " checked";echo "> ¤£Åã¥Ü<br>";
+	echo "> é¡¯ç¤º <input type=radio name=Pl_Set_fdis_ms value=0";
+	if(!$Pl_Settings['fdis_ms']) echo " checked";echo "> ä¸é¡¯ç¤º<br>";
 	echo "</td></tr>";
 
 	echo "<tr>";
-	echo "<td align=right>¤Hª«Type:</td>";
+	echo "<td align=right>äººç‰©Type:</td>";
 	echo "<td><input type=radio name=Pl_Set_fdis_tch value=1";
 	if($Pl_Settings['fdis_tch']) echo " checked";
-	echo "> Åã¥Ü <input type=radio name=Pl_Set_fdis_tch value=0";
-	if(!$Pl_Settings['fdis_tch']) echo " checked";echo "> ¤£Åã¥Ü<br>";
+	echo "> é¡¯ç¤º <input type=radio name=Pl_Set_fdis_tch value=0";
+	if(!$Pl_Settings['fdis_tch']) echo " checked";echo "> ä¸é¡¯ç¤º<br>";
 	echo "</td></tr>";
 
 	echo "<tr>";
-	echo "<td align=right>¤W½u¤Î¤U½uª¬ºA:</td>";
+	echo "<td align=right>ä¸Šç·šåŠä¸‹ç·šç‹€æ…‹:</td>";
 	echo "<td><input type=radio name=Pl_Set_fdis_con value=1";
 	if($Pl_Settings['fdis_con']) echo " checked";
-	echo "> Åã¥Ü <input type=radio name=Pl_Set_fdis_con value=0";
-	if(!$Pl_Settings['fdis_con']) echo " checked";echo "> ¤£Åã¥Ü<br>";
+	echo "> é¡¯ç¤º <input type=radio name=Pl_Set_fdis_con value=0";
+	if(!$Pl_Settings['fdis_con']) echo " checked";echo "> ä¸é¡¯ç¤º<br>";
 	echo "</td></tr>";
 	echo "</table>";
 
-	echo "<br>¡@¡@<b>¹LÂo¿ï¶µ</b><br>";
+	echo "<br>ã€€ã€€<b>éæ¿¾é¸é …</b><br>";
 	echo "<table width=60% border=0>";
 
 	echo "<tr>";
-	echo "<td align=right width=37.5%>Attacking ½d³ò:</td>";
-	echo "<td><input type=text value=$Pl_Settings[filter_at_min] name='Pl_Set_filter_at_min' size=2 maxlength=3>¦Ü";
+	echo "<td align=right width=37.5%>Attacking ç¯„åœ:</td>";
+	echo "<td><input type=text value=$Pl_Settings[filter_at_min] name='Pl_Set_filter_at_min' size=2 maxlength=3>è‡³";
 	echo "<input type=text value=$Pl_Settings[filter_at_max] name='Pl_Set_filter_at_max' size=2 maxlength=3>";
 	echo "</td></tr>";
 
 	echo "<tr>";
-	echo "<td align=right> Defending ½d³ò:</td>";
-	echo "<td><input type=text value=$Pl_Settings[filter_de_min] name='Pl_Set_filter_de_min' size=2 maxlength=3>¦Ü";
+	echo "<td align=right> Defending ç¯„åœ:</td>";
+	echo "<td><input type=text value=$Pl_Settings[filter_de_min] name='Pl_Set_filter_de_min' size=2 maxlength=3>è‡³";
 	echo "<input type=text value=$Pl_Settings[filter_de_max] name='Pl_Set_filter_de_max' size=2 maxlength=3>";
 	echo "</td></tr>";
 
 	echo "<tr>";
-	echo "<td align=right> Reacting ½d³ò:</td>";
-	echo "<td><input type=text value=$Pl_Settings[filter_re_min] name='Pl_Set_filter_re_min' size=2 maxlength=3>¦Ü";
+	echo "<td align=right> Reacting ç¯„åœ:</td>";
+	echo "<td><input type=text value=$Pl_Settings[filter_re_min] name='Pl_Set_filter_re_min' size=2 maxlength=3>è‡³";
 	echo "<input type=text value=$Pl_Settings[filter_re_max] name='Pl_Set_filter_re_max' size=2 maxlength=3>";
 	echo "</td></tr>";
 
 	echo "<tr>";
-	echo "<td align=right> Targeting ½d³ò:</td>";
-	echo "<td><input type=text value=$Pl_Settings[filter_ta_min] name='Pl_Set_filter_ta_min' size=2 maxlength=3>¦Ü";
+	echo "<td align=right> Targeting ç¯„åœ:</td>";
+	echo "<td><input type=text value=$Pl_Settings[filter_ta_min] name='Pl_Set_filter_ta_min' size=2 maxlength=3>è‡³";
 	echo "<input type=text value=$Pl_Settings[filter_ta_max] name='Pl_Set_filter_ta_max' size=2 maxlength=3>";
 	echo "</td></tr>";
 
 	echo "<tr>";
-	echo "<td align=right> Level ½d³ò:</td>";
-	echo "<td><input type=text value=$Pl_Settings[filter_lv_min] name='Pl_Set_filter_lv_min' size=2 maxlength=3>¦Ü";
+	echo "<td align=right> Level ç¯„åœ:</td>";
+	echo "<td><input type=text value=$Pl_Settings[filter_lv_min] name='Pl_Set_filter_lv_min' size=2 maxlength=3>è‡³";
 	echo "<input type=text value=$Pl_Settings[filter_lv_max] name='Pl_Set_filter_lv_max' size=2 maxlength=3>";
 	echo "</td></tr>";
 
 	echo "<tr>";
-	echo "<td align=right> HP¤W­­½d³ò:</td>";
-	echo "<td><input type=text value=$Pl_Settings[filter_hp_min] name='Pl_Set_filter_hp_min' size=5 maxlength=6>¦Ü";
+	echo "<td align=right> HPä¸Šé™ç¯„åœ:</td>";
+	echo "<td><input type=text value=$Pl_Settings[filter_hp_min] name='Pl_Set_filter_hp_min' size=5 maxlength=6>è‡³";
 	echo "<input type=text value=$Pl_Settings[filter_hp_max] name='Pl_Set_filter_hp_max' size=5 maxlength=6>";
 	echo "</td></tr>";
 
 	echo "<tr>";
-	echo "<td align=right> Äa½àª÷½d³ò:</td>";
-	echo "<td><input type=text value=$Pl_Settings[filter_bty_min] name='Pl_Set_filter_bty_min' size=8 maxlength=10>¦Ü";
+	echo "<td align=right> æ‡¸è³é‡‘ç¯„åœ:</td>";
+	echo "<td><input type=text value=$Pl_Settings[filter_bty_min] name='Pl_Set_filter_bty_min' size=8 maxlength=10>è‡³";
 	echo "<input type=text value=$Pl_Settings[filter_bty_max] name='Pl_Set_filter_bty_max' size=8 maxlength=10>";
 	echo "</td></tr>";
 
 	echo "<tr>";
-	echo "<td align=right> ¦WÁn¤Î´c¦W½d³ò:</td>";
-	echo "<td><input type=text value=$Pl_Settings[filter_fame_min] name='Pl_Set_filter_fame_min' size=8 maxlength=10>¦Ü";
+	echo "<td align=right> åè²åŠæƒ¡åç¯„åœ:</td>";
+	echo "<td><input type=text value=$Pl_Settings[filter_fame_min] name='Pl_Set_filter_fame_min' size=8 maxlength=10>è‡³";
 	echo "<input type=text value=$Pl_Settings[filter_fame_max] name='Pl_Set_filter_fame_max' size=8 maxlength=10>";
 	echo "</td></tr>";
 
 	echo "<tr>";
-	echo "<td align=right> ¤W½u©Î¤U½u:</td>";
+	echo "<td align=right> ä¸Šç·šæˆ–ä¸‹ç·š:</td>";
 	echo "<td><input type=radio name=Pl_Set_filter_con value=1";
 	if($Pl_Settings['filter_con'] == 1) echo " checked";
-	echo "> Åã¥Ü¤W½u <input type=radio name=Pl_Set_filter_con value=2";
+	echo "> é¡¯ç¤ºä¸Šç·š <input type=radio name=Pl_Set_filter_con value=2";
 	if($Pl_Settings['filter_con'] == 2) echo " checked";
-	echo "> Åã¥ÜÂ÷½u<br><input type=radio name=Pl_Set_filter_con value=0";
-	if(!$Pl_Settings['filter_con']) echo " checked";echo "> ¦P®ÉÅã¥Ü<br>";
+	echo "> é¡¯ç¤ºé›¢ç·š<br><input type=radio name=Pl_Set_filter_con value=0";
+	if(!$Pl_Settings['filter_con']) echo " checked";echo "> åŒæ™‚é¡¯ç¤º<br>";
 	echo "</td></tr>";
 
 	echo "<tr>";
-	echo "<td align=right> ±Æ¦C°Ñ·Ó:</td>";
+	echo "<td align=right> æ’åˆ—åƒç…§:</td>";
 	echo "<td><select name=filter_sort>";
 	unset($i,$e);
-	foreach(array('²ÕÂ´','§ğÀ»¯à¤O','¨¾¿m¯à¤O','¤ÏÀ³','©R¤¤','µ¥¯Å','HP','Äa½àª÷','®É¶¡') as $i => $e){
+	foreach(array('çµ„ç¹”','æ”»æ“Šèƒ½åŠ›','é˜²ç¦¦èƒ½åŠ›','åæ‡‰','å‘½ä¸­','ç­‰ç´š','HP','æ‡¸è³é‡‘','æ™‚é–“') as $i => $e){
 	echo "<option value=".$i;
 	if ($Pl_Settings['filter_sort'] == $i) echo " selected";
 	echo ">$e";
@@ -386,17 +392,17 @@ elseif ($mode=='settings' && $actionb == 'A'){
 	echo "</select></td></tr>";
 
 	echo "<tr>";
-	echo "<td align=right> ±Æ¦C¦¸§Ç:</td>";
+	echo "<td align=right> æ’åˆ—æ¬¡åº:</td>";
 	echo "<td><input type=radio name=filter_sort_asc value=1";
 	if($Pl_Settings['filter_sort_asc']) echo " checked";
-	echo "> ¤p¦Ü¤j <input type=radio name=filter_sort_asc value=0";
-	if(!$Pl_Settings['filter_sort_asc']) echo " checked";echo "> ¤j¦Ü¤p<br>";
+	echo "> å°è‡³å¤§ <input type=radio name=filter_sort_asc value=0";
+	if(!$Pl_Settings['filter_sort_asc']) echo " checked";echo "> å¤§è‡³å°<br>";
 	echo "</td></tr>";
 
 
 	echo "</table>";
 
-	echo "<input type=submit value=\"½T©w\"><input type=reset value=\"­«·s³]©w\">";
+	echo "<input type=submit value=\"ç¢ºå®š\"><input type=reset value=\"é‡æ–°è¨­å®š\">";
 
 	echo "</tr></td></form></table>";
 
@@ -566,42 +572,42 @@ foreach($Set as $k => $v){$l = $k + 1;
 }
 
 if ($SettingsQuery)
-mysql_query("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_settings` SET ".$SettingsQuery." WHERE `username` = '".$Pl_Value['USERNAME']."' LIMIT 1 ;") or die(mysql_error()."<br>$SettingsQuery");
+mysql_query("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_settings` SET ".$SettingsQuery." WHERE `username` = '".$_SESSION['username']."' LIMIT 1 ;") or die(mysql_error()."<br>$SettingsQuery");
 
 	echo "<form action=scommand.php?action=settings method=post name=mainform>";
 	echo "<input type=hidden value='A' name=actionb>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "<input type=hidden name=\"ModifiedFlag\" value=1></form>";
 	//echo "<script language=\"JavaScript\">setTimeout(\"mainform.submit();\",1000);</script>";
 
 	echo "<script language=\"JavaScript\">mainform.submit()</script>";
 }
-//¶}©l§R°£±b¤á¨t²Î
+//é–‹å§‹åˆªé™¤å¸³æˆ¶ç³»çµ±
 elseif ($mode == 'delete_account' && $actionb == 'A'){
 
-	echo "<font style=\"font-size: 12pt\">¯S®í«ü¥O</font>";
+	echo "<font style=\"font-size: 12pt\">ç‰¹æ®ŠæŒ‡ä»¤</font>";
 	printTHR();
 
 	echo "<form action=scommand.php?action=delete_account method=post name=mainform target=_parent>";
 	echo "<input type=hidden value='B' name=actionb>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr><td align=left width=225><b style=\"font-size: 10pt;\">§R°£±b¤á: </b></td></tr>";
+	echo "<tr><td align=left width=225><b style=\"font-size: 10pt;\">åˆªé™¤å¸³æˆ¶: </b></td></tr>";
 	echo "<tr><td align=left>";
-	echo "<b>Äµ§i</b><Br>±z¥i¥H¦b³o¸Ì§R°£³o­Ó±b¤á<br>¤£¹L²ÕÂ´»â¾É¤H»İ­n¥ı¦æ¸Ñ´²²ÕÂ´<br>¤@¸g§R°£¡A©Ò¦³¸ê®Æ¡A¥]¬A­Ü®w¤ºªº¸Ë³Æ<Br>³£·|³Q§R¥h¡A½Ğ»Õ¤U¦Ò¼{²M·¡¡I<Br>";
+	echo "<b>è­¦å‘Š</b><Br>æ‚¨å¯ä»¥åœ¨é€™è£¡åˆªé™¤é€™å€‹å¸³æˆ¶<br>ä¸éçµ„ç¹”é ˜å°äººéœ€è¦å…ˆè¡Œè§£æ•£çµ„ç¹”<br>ä¸€ç¶“åˆªé™¤ï¼Œæ‰€æœ‰è³‡æ–™ï¼ŒåŒ…æ‹¬å€‰åº«å…§çš„è£å‚™<Br>éƒ½æœƒè¢«åˆªå»ï¼Œè«‹é–£ä¸‹è€ƒæ…®æ¸…æ¥šï¼<Br>";
 	echo "<script language=\"JavaScript\">";
 	echo "function vldPass(){";
-		echo "if (document.getElementById('pwd').value != '$Pl_Value[PASSWORD]'){alert('±K½X¤£¥¿½T¡C');return false;}";
-		echo "else if (confirm('¯uªº­n§R°£±b¤á¶Ü¡H\\n±z¥u·|³Q°İ³o¤@¦¸¡A¤@¥¹§R°£¡A«K¤£¯à´_­ì¡A½Ğ¦Ò¼{²M·¡¡I') == true) {return true;}";
+		echo "if (document.getElementById('pwd').value != '$_SESSION[password]'){alert('å¯†ç¢¼ä¸æ­£ç¢ºã€‚');return false;}";
+		echo "else if (confirm('çœŸçš„è¦åˆªé™¤å¸³æˆ¶å—ï¼Ÿ\\næ‚¨åªæœƒè¢«å•é€™ä¸€æ¬¡ï¼Œä¸€æ—¦åˆªé™¤ï¼Œä¾¿ä¸èƒ½å¾©åŸï¼Œè«‹è€ƒæ…®æ¸…æ¥šï¼') == true) {return true;}";
 		echo "else {return false;}";
 	echo "}</script>";
-	echo "<hr>¿é¤J±K½X: <input type=password name=Pl_Value[PASSWORD] id=pwd><br>";
-	echo "½T©w§R°£: <input type=checkbox onClick=\"if (sbm_btn.disabled == true) sbm_btn.disabled = false; else sbm_btn.disabled = true;\"><br>";
-	echo "<center><input type=submit name=sbm_btn disabled value=\"§R°£±b¤á\" onClick=\"return vldPass();\">";
+	echo "<hr>è¼¸å…¥å¯†ç¢¼: <input type=password name=Pl_Value[PASSWORD] id=pwd><br>";
+	echo "ç¢ºå®šåˆªé™¤: <input type=checkbox onClick=\"if (sbm_btn.disabled == true) sbm_btn.disabled = false; else sbm_btn.disabled = true;\"><br>";
+	echo "<center><input type=submit name=sbm_btn disabled value=\"åˆªé™¤å¸³æˆ¶\" onClick=\"return vldPass();\">";
 
 	echo "</tr></td></form></table>";
 
@@ -609,98 +615,99 @@ elseif ($mode == 'delete_account' && $actionb == 'A'){
 elseif ($mode == 'delete_account' && $actionb == 'B'){
 
 	if ($Game['rights'] == '1'){
-	echo "<br><br><br><br><br><p align=center style=\"font-size: 16pt\">²ÕÂ´»â¾É¤H­n¥ı¦æ¸Ñ´²²ÕÂ´¡I<br>";
+	echo "<br><br><br><br><br><p align=center style=\"font-size: 16pt\">çµ„ç¹”é ˜å°äººè¦å…ˆè¡Œè§£æ•£çµ„ç¹”ï¼<br>";
 	echo "<form action=\"gmscrn_main.php?action=proc\" method=post name=login>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
-	echo "<input type=submit value=\"ªğ¦^¹CÀ¸\">";
+	echo "<input type=submit value=\"è¿”å›éŠæˆ²\">";
 	echo "</form>";
 	echo "<br><br><br>";
 	exit;
 	}
 
-	mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_mining_schedule` WHERE `mining_user` = '".$Pl_Value['USERNAME']."';");
-	mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_mining_sitem` WHERE `mining_user` = '".$Pl_Value['USERNAME']."';");
-	mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_mining_storage` WHERE `m_store_user` = '".$Pl_Value['USERNAME']."';");
+	mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_mining_schedule` WHERE `mining_user` = '".$_SESSION['username']."';");
+	mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_mining_sitem` WHERE `mining_user` = '".$_SESSION['username']."';");
+	mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_mining_storage` WHERE `m_store_user` = '".$_SESSION['username']."';");
 	
-	mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_bank` WHERE `username` = '".$Pl_Value['USERNAME']."' Limit 1;");
+	mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_bank` WHERE `username` = '".$_SESSION['username']."' Limit 1;");
 	
-	mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `username` = '".$Pl_Value['USERNAME']."' Limit 1;");
-	mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` WHERE `username` = '".$Pl_Value['USERNAME']."' Limit 1;");
+	mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `username` = '".$_SESSION['username']."' Limit 1;");
+	mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` WHERE `username` = '".$_SESSION['username']."' Limit 1;");
 	
-	mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_hangar` WHERE `h_user` = '".$Pl_Value['USERNAME']."' Limit 1;");
+	mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_hangar` WHERE `h_user` = '".$_SESSION['username']."' Limit 1;");
 	
-	mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_log` WHERE `username` = '".$Pl_Value['USERNAME']."' Limit 1;");
-	mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_settings` WHERE `username` = '".$Pl_Value['USERNAME']."' Limit 1;");
-	mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` WHERE `username` = '".$Pl_Value['USERNAME']."' Limit 1;");
+	mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_log` WHERE `username` = '".$_SESSION['username']."' Limit 1;");
+	mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_settings` WHERE `username` = '".$_SESSION['username']."' Limit 1;");
+	mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` WHERE `username` = '".$_SESSION['username']."' Limit 1;");
 	
-	mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` WHERE `username` = '".$Pl_Value['USERNAME']."' Limit 1;");
+	mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` WHERE `username` = '".$_SESSION['username']."' Limit 1;");
 
-	echo "<br><br><br><br><br><p align=center style=\"font-size: 16pt\">¤w¸g§R°£±b¤á <b style='color: red'>$Pl_Value[USERNAME]</b> ¡C¡C¡C<br>";
-	echo "<input type=button value=\"ªğ¦^¥D­¶\" onclick=\"location.replace('index2.php');\">";
+	echo "<br><br><br><br><br><p align=center style=\"font-size: 16pt\">å·²ç¶“åˆªé™¤å¸³æˆ¶ <b style='color: red'>$_SESSION[username]</b> ã€‚ã€‚ã€‚<br>";
+	echo "<input type=button value=\"è¿”å›ä¸»é \" onclick=\"location.replace('index.php');\">";
 	echo "<br><br><br>";
 }
-//§¹µ²§R°£±b¤á¨t²Î
-//¶}©l§I´«¦Xª÷¨t²Î
+//å®Œçµåˆªé™¤å¸³æˆ¶ç³»çµ±
+//é–‹å§‹å…Œæ›åˆé‡‘ç³»çµ±
 elseif ($mode == 'redeemAlloy' && $actionb == 'A'){
 
-	echo "<font style=\"font-size: 12pt\">¯S®í«ü¥O</font>";
+	echo "<font style=\"font-size: 12pt\">ç‰¹æ®ŠæŒ‡ä»¤</font>";
 	printTHR();
 
 	echo "<form action=scommand.php?action=redeemAlloy method=post name=mainform>";
 	echo "<input type=hidden value='B' name=actionb>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr><td align=left width=225><b style=\"font-size: 10pt;\">§I´«¦Xª÷: </b></td></tr>";
+	echo "<tr><td align=left width=225><b style=\"font-size: 10pt;\">å…Œæ›åˆé‡‘: </b></td></tr>";
 	echo "<tr><td align=left>";
-	echo "±z¥i¥H¦b³o¸Ì¥Î³Ó§QÁZ¤À§I´« ¡u·s°ª¹F¥§©i¦Xª÷¡v <br>§I´«¤ñ²v: <b>1 ¤ñ ".number_format($VPt2AlloyReq)."</b><Br>§Y¬O ".number_format($VPt2AlloyReq)."ÂI ³Ó§QÁZ¤À ¥i¥H´«¨ì 1 ­Ó¦Xª÷¡I<br>";
-	echo "©Ò§I´«ªº¦Xª÷¡A·|ª½±µ¦s¨ì»Õ¤Uªº­Ü®w¡A½Ğ¥ı½T©w­Ü®w¦³¨S¦³¦h¾lªÅ¶¡¡I<br>";
-	echo "±zªº³Ó§QÁZ¤À: $Game[v_points]<br>";
+	echo "æ‚¨å¯ä»¥åœ¨é€™è£¡ç”¨å‹åˆ©ç©åˆ†å…Œæ› ã€Œæ–°é«˜é”å°¼å§†åˆé‡‘ã€ <br>å…Œæ›æ¯”ç‡: <b>1 æ¯” ".number_format($VPt2AlloyReq)."</b><Br>å³æ˜¯ ".number_format($VPt2AlloyReq)."é» å‹åˆ©ç©åˆ† å¯ä»¥æ›åˆ° 1 å€‹åˆé‡‘ï¼<br>";
+	echo "æ‰€å…Œæ›çš„åˆé‡‘ï¼Œæœƒç›´æ¥å­˜åˆ°é–£ä¸‹çš„å€‰åº«ï¼Œè«‹å…ˆç¢ºå®šå€‰åº«æœ‰æ²’æœ‰å¤šé¤˜ç©ºé–“ï¼<br>";
+	echo "æ‚¨çš„å‹åˆ©ç©åˆ†: $Game[v_points]<br>";
 	echo "<script language=\"JavaScript\">";
 	echo "function vldPass(){";
-		echo "if (document.getElementById('pwd').value != '$Pl_Value[PASSWORD]'){alert('±K½X¤£¥¿½T¡C');return false;}";
-		echo "else if (confirm('¯uªº­n§I´«¦Xª÷¶Ü¡H\\n±z¥u·|³Q°İ³o¤@¦¸¡A¤@¥¹§I´«§¹¦¨¡A¦Xª÷¤£¯àÁÙ­ì¦¨³Ó§QÁZ¤À¡A½Ğ¦Ò¼{²M·¡¡I') == true) {return true;}";
+		echo "if (document.getElementById('pwd').value != '$_SESSION[password]'){alert('å¯†ç¢¼ä¸æ­£ç¢ºã€‚');return false;}";
+		echo "else if (confirm('çœŸçš„è¦å…Œæ›åˆé‡‘å—ï¼Ÿ\\næ‚¨åªæœƒè¢«å•é€™ä¸€æ¬¡ï¼Œä¸€æ—¦å…Œæ›å®Œæˆï¼Œåˆé‡‘ä¸èƒ½é‚„åŸæˆå‹åˆ©ç©åˆ†ï¼Œè«‹è€ƒæ…®æ¸…æ¥šï¼') == true) {return true;}";
 		echo "else {return false;}";
 	echo "}</script>";
-	echo "<hr><center>§I´«<select name=amountAlloy>";
+	echo "<hr><center>å…Œæ›<select name=amountAlloy>";
 	$MaxAmount = floor($Game['v_points']/$VPt2AlloyReq);
 	for($i=1;$i<=$MaxAmount;$i++) echo "<option value=$i>$i";
-	echo "</select>­Ó¦Xª÷</center>";
-	echo "<hr>½Ğ¿é¤J±K½X: <input type=password name=Pl_Value[PASSWORD] id=pwd><br>";
-	echo "½T©w§I´«: <input type=checkbox onClick=\"if (sbm_btn.disabled == true) sbm_btn.disabled = false; else sbm_btn.disabled = true;\"><br>";
-	echo "<center><input type=submit name=sbm_btn disabled value=\"§I´«¦Xª÷\" onClick=\"return vldPass();\">";
+	echo "</select>å€‹åˆé‡‘</center>";
+	echo "<hr>è«‹è¼¸å…¥å¯†ç¢¼: <input type=password name=Pl_Value[PASSWORD] id=pwd><br>";
+	echo "ç¢ºå®šå…Œæ›: <input type=checkbox onClick=\"if (sbm_btn.disabled == true) sbm_btn.disabled = false; else sbm_btn.disabled = true;\"><br>";
+	echo "<center><input type=submit name=sbm_btn disabled value=\"å…Œæ›åˆé‡‘\" onClick=\"return vldPass();\">";
 
 	echo "</tr></td></form></table>";
 
 }
 elseif ($mode == 'redeemAlloy' && $actionb == 'B'){
 
+$amountAlloy = mysql_real_escape_string($amountAlloy);
 $amountAlloy = intval($amountAlloy);
 $MaxAmount = floor($Game['v_points']/$VPt2AlloyReq);
-if ($amountAlloy > $MaxAmount || $amountAlloy <= 0){echo "§I´«¼Æ¶q¥X¿ù¡C<br>½ĞÀË¬d¤@¤U¡I";exit;}
+if ($amountAlloy > $MaxAmount || $amountAlloy <= 0){echo "å…Œæ›æ•¸é‡å‡ºéŒ¯ã€‚<br>è«‹æª¢æŸ¥ä¸€ä¸‹ï¼";exit;}
 
 //Get Warehouse Information
 	//Set DataTable
-	$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` WHERE username='". $Pl_Value['USERNAME'] ."'");
+	$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` WHERE username='". $_SESSION['username'] ."'");
 	$query_whr = mysql_query($sql);$defineuserc = 0;
 	$defineuserc = mysql_num_rows($query_whr);
 	if ($defineuserc == 0){
-		$sqldfwh = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` (username) VALUES('$Pl_Value[USERNAME]')");
-		mysql_query($sqldfwh) or die ('<br><center>¥¼¯à«Ø¥ß­Ü®w¸ê®Æ<br>­ì¦]:' . mysql_error() . '<br>');
-		$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` WHERE username='". $Pl_Value['USERNAME'] ."'");
-		$query_whr = mysql_query($sql) or die ('<br><center>¥¼¯à¨ú±o­Ü®w¸ê®Æ<br>­ì¦]:' . mysql_error() . '<br>');
+		$sqldfwh = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` (username) VALUES('$_SESSION[username]')");
+		mysql_query($sqldfwh) or die ('<br><center>æœªèƒ½å»ºç«‹å€‰åº«è³‡æ–™<br>åŸå› :' . mysql_error() . '<br>');
+		$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` WHERE username='". $_SESSION['username'] ."'");
+		$query_whr = mysql_query($sql) or die ('<br><center>æœªèƒ½å–å¾—å€‰åº«è³‡æ–™<br>åŸå› :' . mysql_error() . '<br>');
 	}
 	$Warehouse = mysql_fetch_row($query_whr);
 	$WarehseWeps = explode("\n",$Warehouse[1]);
 	$Countnumwhwp = count($WarehseWeps);
-	if (($CFU_Time - $Warehouse[2]) <= 1){echo "§A¹ê¦b«öªº¤Ó§Ö¤F¡C½Ğ©ó¨â¬í«á¦A«ö¡C<br>¦hÁÂ¦X§@¡I";exit;}
+	if (($CFU_Time - $Warehouse[2]) <= 1){echo "ä½ å¯¦åœ¨æŒ‰çš„å¤ªå¿«äº†ã€‚è«‹æ–¼å…©ç§’å¾Œå†æŒ‰ã€‚<br>å¤šè¬åˆä½œï¼";exit;}
 //End Getting Warehouse Information
 //Process
 	unset($i);
-	if ($Countnumwhwp+$amountAlloy > 100){echo "ªZ¾¹®wªÅ¶¡¤£¨¬¡C<br>½Ğ¥ı²M²z¤@¤U¡A¦hÁÂ¦X§@¡I";exit;}
+	if ($Countnumwhwp+$amountAlloy > 100){echo "æ­¦å™¨åº«ç©ºé–“ä¸è¶³ã€‚<br>è«‹å…ˆæ¸…ç†ä¸€ä¸‹ï¼Œå¤šè¬åˆä½œï¼";exit;}
 	else {
 		$AlloyEntry = "$AlloyID<!>0";
 		for($i=1;$i<=$amountAlloy;$i++) $Warehouse[1] .="\n".$AlloyEntry;
@@ -709,17 +716,17 @@ if ($amountAlloy > $MaxAmount || $amountAlloy <= 0){echo "§I´«¼Æ¶q¥X¿ù¡C<br>½ĞÀË
 			$Warehouse[1] = implode("\n",$WChacheArrays);
 			$Warehouse[1] = trim($Warehouse[1]);
 			$Game['v_points'] -= $amountAlloy * $VPt2AlloyReq;
-			if($Game['v_points'] < 0){echo "³Ó§QÁZ¤À¤£¨¬¡I";exit;}
+			if($Game['v_points'] < 0){echo "å‹åˆ©ç©åˆ†ä¸è¶³ï¼";exit;}
 			unset($sql);
-			$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` SET `warehouse` = '$Warehouse[1]', `timelast` = '$CFU_Time' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+			$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` SET `warehouse` = '$Warehouse[1]', `timelast` = '$CFU_Time' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 			mysql_query($sql);unset($sql);
-			$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `v_points` = '".$Game['v_points']."' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+			$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `v_points` = '".$Game['v_points']."' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 			mysql_query($sql);
 			unset($Gen,$Game,$UsrWepB,$UsrWepC,$UsWep_B,$UsWep_C);
 		echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-		echo "<p align=center style=\"font-size: 16pt\">§I´«§¹¦¨¡I<br><input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		echo "<p align=center style=\"font-size: 16pt\">å…Œæ›å®Œæˆï¼<br><input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
+		
+		
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 		echo "</form>";
 
@@ -727,8 +734,8 @@ if ($amountAlloy > $MaxAmount || $amountAlloy <= 0){echo "§I´«¼Æ¶q¥X¿ù¡C<br>½ĞÀË
 	}
 //End Process
 }
-//§¹¦¨§I´«¦Xª÷¨t²Î
-else {echo "¥¼©w¸q°Ê§@¡I";}
+//å®Œæˆå…Œæ›åˆé‡‘ç³»çµ±
+else {echo "æœªå®šç¾©å‹•ä½œï¼";}
 postFooter();
 echo "</body>";
 echo "</html>";

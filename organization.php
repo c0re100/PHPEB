@@ -5,129 +5,145 @@ if (empty($PriTarget)) $PriTarget = 'Alpha';
 if (empty($SecTarget)) $SecTarget = 'Beta';
 if (!isset($Game_Scrn_Type)) $Game_Scrn_Type = 1;
 postHead('');
-AuthUser("$Pl_Value[USERNAME]","$Pl_Value[PASSWORD]");
-if ($CFU_Time >= $TIMEAUTH+$TIME_OUT_TIME || $TIMEAUTH <= $CFU_Time-$TIME_OUT_TIME){echo "³s½u¹O®É¡I<br>½Ğ­«·sµn¤J¡I";exit;}
-GetUsrDetails("$Pl_Value[USERNAME]",'Gen','Game');
+AuthUser();
+$now=time();
+if ($CFU_Time >= $_SESSION['timeauth']+$TIME_OUT_TIME || $_SESSION['timeauth'] <= $CFU_Time-$TIME_OUT_TIME){echo "é€£ç·šé€¾æ™‚ï¼<br>è«‹é‡æ–°ç™»å…¥ï¼";exit;}
+GetUsrDetails("$_SESSION[username]",'Gen','Game');
 if ($Game['organization'])
 $Pl_Org = ReturnOrg("$Game[organization]");
 else $Pl_Org = false;
 //Special Commands GUI
 if ($mode=='Start'){
-	echo "<font style=\"font-size: 12pt\">¦¨¥ß²ÕÂ´</font>";
+	echo "<font style=\"font-size: 12pt\">æˆç«‹çµ„ç¹”</font>";
 	printTHR();
 	if ($actionb == 'A'){
+	if ($Gen['cash'] < $OrganizingCost && !$Game['organization']){echo "æ¢ä»¶ä¸ç¬¦";postFooter;exit;}
+	if ($CFU_Time - $Game['lastorg'] < 86400){echo "24å°æ™‚å…§åªèƒ½æˆç«‹åœ‹å®¶ä¸€æ¬¡ã€‚";postFooter();exit;}
+	
 	echo "<form action=organization.php?action=Start method=post name=mainform>";
 	echo "<input type=hidden value='B' name=actionb>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 
 	echo "<script language=\"Javascript\">";
 	echo "function cfmStartOrg(){";
-	echo "if ($OrganizingCost > $Gen[cash]){alert('ª÷¿ú¤£¨¬¡C');return false;}";
-	echo "else if (mainform.org_name.value == ''){alert('½Ğ¥ı¿é¤J²ÕÂ´¦WºÙ¡C');return false;}";
-	echo "else {if (confirm('¦¨¥ß²ÕÂ´»İ­n ". number_format($OrganizingCost) ." ¤¸¡A½T©w¶Ü¡H')==true){return true;}";
+	echo "if ($OrganizingCost > $Gen[cash]){alert('é‡‘éŒ¢ä¸è¶³ã€‚');return false;}";
+	echo "else if (mainform.org_pose.value == '' || mainform.org_pose.value.trim().length == 0){alert('è«‹å…ˆè¼¸å…¥çµ„ç¹”å®£è¨€ã€‚');return false;}";
+	echo "else if (mainform.org_name.value == '' || mainform.org_name.value.trim().length == 0){alert('è«‹å…ˆè¼¸å…¥çµ„ç¹”åç¨±ã€‚');return false;}";
+	echo "else {if (confirm('æˆç«‹çµ„ç¹”éœ€è¦ ". number_format($OrganizingCost) ." å…ƒåŠ100å‹åˆ©ç©åˆ†ï¼Œç¢ºå®šå—ï¼Ÿ')==true){return true;}";
 	echo "else {return false;}}";
 	echo "}</script>";
 
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr><td align=left width=280><b style=\"font-size: 10pt;\">¦¨¥ß²ÕÂ´©Ò»İ¸ê®Æ: </b></td></tr>";
-	echo "<tr><td align=left>¦¨¥ß²ÕÂ´»İ­n: ". number_format($OrganizingCost) ." ¤¸<br>";
-	echo "²ÕÂ´¦WºÙ: <input type=text name=org_name maxlength=32 size=27><br>(ª`·N¤£¯à»P²{¦³°ê®a¦WºÙ¤@¼Ë)<br>";
-	echo "¥NªíÃC¦â: <br><center>";
+	echo "<tr><td align=left width=280><b style=\"font-size: 10pt;\">æˆç«‹çµ„ç¹”æ‰€éœ€è³‡æ–™: </b></td></tr>";
+	echo "<tr><td align=left>æˆç«‹çµ„ç¹”éœ€è¦: ". number_format($OrganizingCost) ." å…ƒåŠ100å‹åˆ©ç©åˆ†<br>";
+	echo "çµ„ç¹”åç¨±: <input type=text name=org_name maxlength=32 size=27><br>(æ³¨æ„ä¸èƒ½èˆ‡ç¾æœ‰çµ„ç¹”åç¨±ä¸€æ¨£)<br>";
+	echo "çµ„ç¹”å®—æ—¨: <input type=text name=org_pose maxlength=90 size=27><br>(æ³¨æ„ï¼š30å€‹å­—å…§)<br>";
+	echo "ä»£è¡¨é¡è‰²: <br><center>";
 	$br=$ct_default=0;
 	foreach ($MainColors as $TheColor){$br++;$ct_default++;
 	echo "<input type=\"radio\" name=\"org_color\" value=#".$TheColor;
 	if ($ct_default==1) echo " checked";
-	echo "><font color=#".$TheColor.">¡»</font> &nbsp;&nbsp; ";
+	echo "><font color=#".$TheColor.">â—†</font> &nbsp;&nbsp; ";
 	if ($br==6){echo"<br>";$br=0;}	}
-	echo "<input type=submit value=\"½T©w¦¨¥ß²ÕÂ´\" onClick=\"return cfmStartOrg();\">";
+	echo "<input type=submit value=\"ç¢ºå®šæˆç«‹çµ„ç¹”\" onClick=\"return cfmStartOrg();\">";
 	echo "</tr></td></form></table>";
 	}
 
 	if ($actionb == 'B'){
-	if ($OrganizingCost > $Gen['cash']){echo "ª÷¿ú¤£¨¬¡C";postFooter();exit;}
-	if ($Gen['fame'] < $OrganizingFame && $Gen['fame'] > $OrganizingNotor){echo "¦WÁn¤£¨¬¡C";postFooter();exit;}
+		$org_name = mysql_real_escape_string($org_name);
+		$org_color = mysql_real_escape_string($org_color);
+		$org_pose = mysql_real_escape_string($org_pose);
+		if (!$org_name){echo "è«‹å…ˆè¼¸å…¥çµ„ç¹”åç¨±ï¼";postFooter();exit;}
+		if (!$org_pose){echo "è«‹å…ˆè¼¸å…¥çµ„ç¹”å®£è¨€ï¼";postFooter();exit;}
+		if ($Game['v_points'] < 100){echo "æ‚¨æ²’æœ‰è¶³å¤ å‹åˆ©ç©åˆ†ï¼";postFooter();exit;}
+		if ($org_name == "ä¸­ç«‹çµ„ç¹”"){echo "æ‚¨ä»¥ç‚ºæ‚¨çœŸçš„æ˜¯ä¸­ç«‹å—ï¼Ÿ";postFooter();exit;}
+        if ($OrganizingCost > $Gen['cash']){echo "é‡‘éŒ¢ä¸è¶³ã€‚";postFooter();exit;}
+        if ($Gen['fame'] < $OrganizingFame && $Gen['fame'] > $OrganizingNotor){echo "åè²ä¸è¶³ã€‚";postFooter();exit;}
+		
+		$points = ("UPDATE ".$GLOBALS['DBPrefix']."phpeb_user_game_info SET v_points = v_points-100 WHERE `username` = '".$_SESSION['username']."'");
+		$minpts = mysql_query($points);
 
 	$Gen['cash'] -= $OrganizingCost;
 	$Gen['fame'] += 1;
 	if( $Game['rank'] < 48000 ) $Game['rank'] = 48000;
 
-	$HistoryWrite = "<font color=\"$Gen[color]\">$Game[gamename]</font> ³Ğ¥ß <font color=\"$org_color\">$org_name</font> ²ÕÂ´¡A¨ÃÅwªï©Ò¦³¤H¦Û¥Ñ¥[¤J¤Î°h¥X¡C";
+	$HistoryWrite = "<font color=\"$Gen[color]\">$Game[gamename]</font> å‰µç«‹ <font color=\"$org_color\">$org_name</font> çµ„ç¹”ï¼Œä¸¦æ­¡è¿æ‰€æœ‰äººè‡ªç”±åŠ å…¥åŠé€€å‡ºã€‚<br>çµ„ç¹”å®—æ—¨: <font color=\"$org_color\">$org_pose</font>";
 	WriteHistory($HistoryWrite);
 	//Enter Organization Info
-	$sql = ("INSERT INTO ".$GLOBALS['DBPrefix']."phpeb_user_organization (id, name, color) VALUES('$CFU_Time','$org_name','$org_color')");
-	mysql_query($sql) or die ('<br><center>¥¼¯à§¹¦¨µù¥U<br>­ì¦]:' . mysql_error() . '<br>');
+	$sql = ("INSERT INTO ".$GLOBALS['DBPrefix']."phpeb_user_organization (id, name, color, pose) VALUES('$CFU_Time','$org_name','$org_color','$org_pose')");
+	mysql_query($sql) or die ('<br><center>æœªèƒ½å®Œæˆè¨»å†Š<br>åŸå› :' . mysql_error() . '<br>');
 
 	$restriction = array("|","`","'","--","\"","\\");
 	$org_name = str_replace($restriction,'',$org_name);
 	$org_name = preg_replace('/<[^<>]*>/','',$org_name);
 
 	$sql = ("SELECT id FROM `".$GLOBALS['DBPrefix']."phpeb_user_organization` WHERE name='". $org_name ."'");
-	$query = mysql_query($sql) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+	$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 	$New_Org = mysql_fetch_row($query);
 
-	//§ó·s Game Info
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `rank` = '".($Game['rank'])."', `rights` = '1', `organization` = '$New_Org[0]' WHERE `username` = '".$Pl_Value['USERNAME']."' LIMIT 1");
-	$query = mysql_query($sql) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+	//æ›´æ–° Game Info
+	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `rank` = '".($Game['rank'])."', `rights` = '1', `organization` = '$New_Org[0]' WHERE `username` = '".$_SESSION['username']."' LIMIT 1");
+	$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 
-	//§ó·s General Info
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = '$Gen[cash]', `fame` = '$Gen[fame]' WHERE `username` = '".$Pl_Value['USERNAME']."' LIMIT 1");
-	$query = mysql_query($sql) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+	//æ›´æ–° General Info
+	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = '$Gen[cash]', `fame` = '$Gen[fame]' WHERE `username` = '".$_SESSION['username']."' LIMIT 1");
+	$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 
 	echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-	echo "<p align=center style=\"font-size: 16pt\">¦¨¥ß²ÕÂ´§¹¦¨¤F¡I<br>»Õ¤Uªº¦WÁn¤W¤É1ÂI¡C<input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	echo "<p align=center style=\"font-size: 16pt\">æˆç«‹çµ„ç¹”å®Œæˆäº†ï¼<br>é–£ä¸‹çš„åè²ä¸Šå‡1é»ã€‚<input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 	}
 }
 elseif($mode == 'Employ'){
+	if ($CFU_Time - $Game['lastorg'] < 43200){echo "12å°æ™‚å…§åªèƒ½åŠ å…¥çµ„ç¹”ä¸€æ¬¡ã€‚";postFooter();exit;}
+	
 	if ($actionb == 'C'){
 		$CancelFlag = '';
-		if (!$Employer){echo "§A³Q½ÖÁÜ½Ğ§r¡H";postFooter();exit;}
-		elseif ($Game['rights']=='1'){echo "¥D®u¤£¯à³QÁÜ½Ğ¡C";postFooter();exit;}
+		if (!$Employer){echo "ä½ è¢«èª°é‚€è«‹å‘€ï¼Ÿ";postFooter();exit;}
+		elseif ($Game['rights']=='1'){echo "ç¸½å¸¥ä¸èƒ½è¢«é‚€è«‹ã€‚";postFooter();exit;}
 		else {$Og_Org=$Pl_Org;$Pl_Org = ReturnOrg($Employer);}if (!$Og_Org){$Og_Org =  ReturnOrg('0');}
 	
-		if(strpos($Pl_Org['request_list'],'!'.$Pl_Value['USERNAME'].',') === false){$EmployMsg = "¸Ó²ÕÂ´¨S¦³ÁÜ½Ğ±z¡C";$CancelFlag = '1';}
+		if(strpos($Pl_Org['request_list'],'!'.$_SESSION['username'].',') === false){$EmployMsg = "è©²çµ„ç¹”æ²’æœ‰é‚€è«‹æ‚¨ã€‚";$CancelFlag = '1';}
 		else{
-			$str = "/(!$Pl_Value[USERNAME], )+/";
+			$str = "/(!$_SESSION[username], )+/";
 			$Pl_Org['request_list'] = preg_replace($str,'',$Pl_Org['request_list']);
 		}
 	
-		//§ó·s Org Info
+		//æ›´æ–° Org Info
 		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_organization` SET `request_list` = '$Pl_Org[request_list]' WHERE `id` = '".$Pl_Org['id']."' LIMIT 1");
-		$query = mysql_query($sql) or die ('µLªk¨ú±o²ÕÂ´¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+		$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—çµ„ç¹”è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 	
-		//§ó·s General Info
-		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `request` = '' WHERE `username` = '".$Pl_Value['USERNAME']."' LIMIT 1");
-		$query = mysql_query($sql) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+		//æ›´æ–° General Info
+		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `request` = '' WHERE `username` = '".$_SESSION['username']."' LIMIT 1");
+		$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 	
 		if ($actionc == 'Accept' && !$CancelFlag){
 			if($Game['organization'] == 0)	$Game['rank'] += 2000;
 			if($Game['rank'] > 100000)	$Game['rank'] = 100000;
-			//§ó·s Game Info
-			$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `rank` = ".($Game['rank']).", `rights` = '0', `organization` = '$Pl_Org[id]' WHERE `username` = '".$Pl_Value['USERNAME']."' LIMIT 1");
-			$query = mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
-			$EmployMsg = "¦¨¥\¥[¤J²ÕÂ´¡I";
-			$HistoryWrite = "<font color=\"$Og_Org[color]\">$Og_Org[name]</font> ªº <font color=\"$Gen[color]\">$Game[gamename]</font> ¨üÁÜ½Ğ¥[¤J <font color=\"$Pl_Org[color]\">$Pl_Org[name]</font>¡C";
+			//æ›´æ–° Game Info
+			$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `rank` = ".($Game['rank']).", `rights` = '0', `organization` = '$Pl_Org[id]' WHERE `username` = '".$_SESSION['username']."' LIMIT 1");
+			$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
+			$EmployMsg = "æˆåŠŸåŠ å…¥çµ„ç¹”ï¼";
+			$HistoryWrite = "<font color=\"$Og_Org[color]\">$Og_Org[name]</font> çš„ <font color=\"$Gen[color]\">$Game[gamename]</font> å—é‚€è«‹åŠ å…¥ <font color=\"$Pl_Org[color]\">$Pl_Org[name]</font>ã€‚";
 			WriteHistory($HistoryWrite);
 		}
 	
 		elseif ($actionc == 'Refuse' && !$CancelFlag){
-			$EmployMsg = "¦¨¥\©Úµ´¥[¤J²ÕÂ´¡C";
-			$HistoryWrite = "<font color=\"$Og_Org[color]\">$Og_Org[name]</font> ªº <font color=\"$Gen[color]\">$Game[gamename]</font> ©Úµ´¤F¥[¤J <font color=\"$Pl_Org[color]\">$Pl_Org[name]</font>ªºÁÜ½Ğ¡C";
+			$EmployMsg = "æˆåŠŸæ‹’çµ•åŠ å…¥çµ„ç¹”ã€‚";
+			$HistoryWrite = "<font color=\"$Og_Org[color]\">$Og_Org[name]</font> çš„ <font color=\"$Gen[color]\">$Game[gamename]</font> æ‹’çµ•äº†åŠ å…¥ <font color=\"$Pl_Org[color]\">$Pl_Org[name]</font>çš„é‚€è«‹ã€‚";
 			WriteHistory($HistoryWrite);
 		}
 	
 		echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn>";
-		echo "<p align=center style=\"font-size: 16pt\"><br><br><br>$EmployMsg<input type=submit value=\"ªğ¦^\" ";
+		echo "<p align=center style=\"font-size: 16pt\"><br><br><br>$EmployMsg<input type=submit value=\"è¿”å›\" ";
 		if($Game_Scrn_Type == 1)
 		echo "onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"";
 		echo "></p>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		
+		
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 		echo "</form>";
 		postFooter();
@@ -140,64 +156,57 @@ elseif($mode == 'Employ'){
 	// End of Action C
 	//
 
-echo "<font style=\"font-size: 12pt\">©Û¶Ò¤H¤~</font>";
+echo "<font style=\"font-size: 12pt\">æ‹›å‹Ÿäººæ‰</font>";
 printTHR();
 
 if ($actionb == 'A'){
-		echo "<form action=organization.php?action=Employ method=post name=mainform>";
-		echo "<input type=hidden value='B' name=actionb>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
-		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
-	
-		echo "<script language=\"Javascript\">";
-		echo "function cfmEmploy(){";
-		echo "if (mainform.EmployTar.value == ''){alert('½Ğ¥ı¿é¤J­n©ÛÅóªº¤H¡C');return false;}";
-		echo "else {if (confirm('ÁÜ½Ğ¥Ø¼Ğ¥[¤J²ÕÂ´¡A½T©w¶Ü¡H')==true){return true;}";
-		echo "else {return false;}}";
-		echo "}</script>";
-	
-		echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-		echo "<tr><td align=left width=280><b style=\"font-size: 10pt;\">©Û¶Ò¤H¤~: </b></td></tr>";
-	
-		unset($sql,$query,$AvailPersons);
-		$sql = ("SELECT `username`,`gamename`,`organization` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `username` != '".$Pl_Value['USERNAME']."' AND `organization` != '$Game[organization]' AND !`rights` OR !`organization` ORDER BY `organization` ASC");
-		$query = mysql_query($sql) or die(mysql_error());
-		$AvailPersons = mysql_fetch_array($query);
-		$EmployOpt = '';
-		do{
-		$TarOrg = ReturnOrg($AvailPersons['organization']);
-		$EmployOpt .= "<option value='$AvailPersons[username]'>$AvailPersons[gamename] ($TarOrg[name])";
-		unset($AvailPersons,$TarOrg);
-		}
-		while ($AvailPersons = mysql_fetch_array($query));
-	
-		if ($EmployOpt){
-			echo "<tr><td align=left>¦V <select name=EmployTar>$EmployOpt</select><br><input type=submit value=\"ÁÜ½Ğ\" onClick=\"return cfmEmploy();\"> µo¥XÁÜ½Ğ«H¡C</td></tr>";
-		}
-	
-	
-		if(strpos($Pl_Org['request_list'],'!'.$Pl_Value['USERNAME'].',') !== false){
-			$str = "/(!$Pl_Value[USERNAME], )+/";
-			$Pl_Org['request_list'] = preg_replace($str,'',$Pl_Org['request_list']);
-		}
-	
-		if ($Pl_Org['request_list']){
-		echo "<tr><td align=left>¥¼±o¨ì¦^ÂĞªºÁÜ½Ğ«H: <br>";
-	
-		$Pl_Org['request_list'] = preg_replace('/!| /','',$Pl_Org['request_list']);
-		$List_of_Letters = explode(',',$Pl_Org['request_list']);
-		unset($TargetName,$TarInfo);
-		foreach($List_of_Letters as $TargetName){
-		if ($TargetName){
-		$sqle = ("SELECT `".$GLOBALS['DBPrefix']."phpeb_user_game_info`.`gamename`, `".$GLOBALS['DBPrefix']."phpeb_user_organization`.`name`, `".$GLOBALS['DBPrefix']."phpeb_user_organization`.`color` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info`, `".$GLOBALS['DBPrefix']."phpeb_user_organization` WHERE `".$GLOBALS['DBPrefix']."phpeb_user_game_info`.`username`='". $TargetName ."' AND `".$GLOBALS['DBPrefix']."phpeb_user_game_info`.`organization` = `".$GLOBALS['DBPrefix']."phpeb_user_organization`.`id`");
-		$querye = mysql_query($sqle) or die ('µLªk¨ú±o¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
-		$TarInfo = mysql_fetch_array($querye);
-		echo "<font color=\"$TarInfo[color]\">$TarInfo[name] ªº $TarInfo[gamename]</font><br>";}
-		}
-		echo "</td></tr>";
-		}
-		echo "</form></table>";
+echo "<form action=organization.php?action=Employ method=post name=mainform>";
+        echo "<input type=hidden value='B' name=actionb>";
+        echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
+
+        echo "<script language=\"Javascript\">";
+        echo "function cfmEmploy(){";
+        echo "if (mainform.EmployTar.value == ''){alert('è«‹å…ˆè¼¸å…¥è¦æ‹›æ”¬çš„äººã€‚');return false;}";
+        echo "else {if (confirm('é‚€è«‹ç›®æ¨™åŠ å…¥çµ„ç¹”ï¼Œç¢ºå®šå—ï¼Ÿ')==true){return true;}";
+        echo "else {return false;}}";
+        echo "}</script>";
+
+        echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
+        echo "<tr><td align=left width=280><b style=\"font-size: 10pt;\">æ‹›å‹Ÿäººæ‰: </b></td></tr>";
+
+        unset($sql,$query,$AvailPersons);
+        $sql = ("SELECT `username`,`gamename`,`organization` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `username` != '".$_SESSION['username']."' AND `organization` != '$Game[organization]' AND !`rights` OR !`organization` ORDER BY `organization` ASC");
+        $query = mysql_query($sql) or die(mysql_error());
+        $AvailPersons = mysql_fetch_array($query);
+        do{
+        $TarOrg = ReturnOrg($AvailPersons['organization']);
+        $EmployOpt .= "<option value='$AvailPersons[username]'>$AvailPersons[gamename] ($TarOrg[name])";
+        unset($AvailPersons,$TarOrg);
+        }
+        while ($AvailPersons = mysql_fetch_array($query));
+
+        if ($EmployOpt)
+        echo "<tr><td align=left>å‘ <input type=text name=EmployTar value=è«‹è¼¸å…¥ç©å®¶åç¨±><br><input type=submit value=\"é‚€è«‹\" onClick=\"return cfmEmploy();\"> ç™¼å‡ºé‚€è«‹ä¿¡ã€‚</td></tr>";
+
+        if(!ereg('(\!'.$_SESSION['username'].'\, )+',$Pl_Org['request_list'])){$EmployMsg = "è©²çµ„ç¹”æ²’æœ‰é‚€è«‹æ‚¨ã€‚";$CancelFlag = '1';}
+        else{$Pl_Org['request_list'] = ereg_replace('(\!'.$_SESSION['username'].'\, )+','',$Pl_Org['request_list']);}
+
+        if ($Pl_Org['request_list']){
+        echo "<tr><td align=left>æœªå¾—åˆ°å›è¦†çš„é‚€è«‹ä¿¡: <br>";
+
+        $Pl_Org['request_list'] = ereg_replace('!| ','',$Pl_Org['request_list']);
+        $List_of_Letters = explode(',',$Pl_Org['request_list']);
+        unset($TargetName,$TarInfo);
+        foreach($List_of_Letters as $TargetName){
+        if ($TargetName){
+        $sqle = ("SELECT `".$GLOBALS['DBPrefix']."phpeb_user_game_info`.`gamename`, `".$GLOBALS['DBPrefix']."phpeb_user_organization`.`name`, `".$GLOBALS['DBPrefix']."phpeb_user_organization`.`color` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info`, `".$GLOBALS['DBPrefix']."phpeb_user_organization` WHERE `".$GLOBALS['DBPrefix']."phpeb_user_game_info`.`username`='". $TargetName ."' AND `".$GLOBALS['DBPrefix']."phpeb_user_game_info`.`organization` = `".$GLOBALS['DBPrefix']."phpeb_user_organization`.`id`");
+        $querye = mysql_query($sqle) or die ('ç„¡æ³•å–å¾—è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
+        $TarInfo = mysql_fetch_array($querye);
+        echo "<font color=\"$TarInfo[color]\">$TarInfo[name] çš„ $TarInfo[gamename]</font><br>";}
+        }
+        echo "</td></tr>";
+        }
+        echo "</form></table>";
 	}
 
 //
@@ -205,28 +214,32 @@ if ($actionb == 'A'){
 //
 
 	if ($actionb == 'B'){
-	
-		if (!$EmployTar || $EmployTar == $Pl_Value['USERNAME']){echo "§A­n©ÛÅó½Ö§r¡H";postFooter();exit;}
+		$EmployTar = mysql_real_escape_string($EmployTar);
+		$getun = ("SELECT `username` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `gamename` = '".$EmployTar."' AND rights='0'");
+		$getfull = mysql_query($getun);
+		$tarname = mysql_fetch_row($getfull);
+
+        if (!$EmployTar || $EmployTar == $_SESSION['username']){echo "ä½ è¦æ‹›æ”¬èª°å‘€ï¼Ÿ";postFooter;exit;}
 	
 		$Pl_Org = ReturnOrg($Game['organization']);
 	
-		$Pl_Org['request_list'] .= '!'.$EmployTar.', ';
+		$Pl_Org['request_list'] .= '!'.$tarname[0].', ';
 	
-		//§ó·s Org Info
+		//æ›´æ–° Org Info
 		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_organization` SET `request_list` = '$Pl_Org[request_list]' WHERE `id` = '".$Game['organization']."' LIMIT 1");
-		$query = mysql_query($sql) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+		$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 	
-		$requesttx = "$Pl_Org[name] ªº $Game[gamename] ¦V±zµo¥X¥[¤J²ÕÂ´ªºÁÜ½Ğ«H¡C<br>§A­n¥[¤J²ÕÂ´¶Ü¡H<br>";
+		$requesttx = "$Pl_Org[name] çš„ $Game[gamename] å‘æ‚¨ç™¼å‡ºåŠ å…¥çµ„ç¹”çš„é‚€è«‹ä¿¡ã€‚<br>ä½ è¦åŠ å…¥çµ„ç¹”å—ï¼Ÿ<br>";
 		$requesttx .= "<input type=hidden name=Employer value=\'$Pl_Org[id]\'>";
 	
-		//§ó·s General Info
-		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `request` = '$requesttx' WHERE `username` = '".$EmployTar."' LIMIT 1");
-		$query = mysql_query($sql) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+		//æ›´æ–° General Info
+		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `request` = '$requesttx' WHERE `username` = '".$tarname[0]."' LIMIT 1");
+		$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 	
 		echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-		echo "<p align=center style=\"font-size: 16pt\">²ÕÂ´ÁÜ½Ğ«H¤wµo¥X¡C<input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		echo "<p align=center style=\"font-size: 16pt\">çµ„ç¹”é‚€è«‹ä¿¡å·²ç™¼å‡ºã€‚<input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
+		
+		
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 		echo "</form>";
 	}
@@ -236,45 +249,45 @@ if ($actionb == 'A'){
 //
 }//End of Employ
 elseif ($mode == 'LeaveOrg'){
-	if (!$Game['organization'] || $Game['rights']){echo "¥H±zªº¨­¥÷¤£¯à²æÂ÷²ÕÂ´¡C";postFooter();exit;}
-	if ($actionb != 'A' && $actionb != 'B' && $actionb != 'C') {echo "¥¼©w¸q°Ê§@¡I<br>";exit;}
+	if (!$Game['organization'] || $Game['rights']){echo "ä»¥æ‚¨çš„èº«ä»½ä¸èƒ½è„«é›¢çµ„ç¹”ã€‚";postFooter();exit;}
+	if ($actionb != 'A' && $actionb != 'B' && $actionb != 'C') {echo "æœªå®šç¾©å‹•ä½œï¼<br>";exit;}
 	if ($actionb == 'A'){
 		if ($Pl_Org['license'] == 1 || $Pl_Org['license'] == 3)
-			{echo "±zªº²ÕÂ´¤£®e³\§A¨p¦Û²æÂ÷¡A­Y¯uªº·QÂ÷¶}´N½Ğ±z°k¤`§a¡C";postFooter();exit;}
+			{echo "æ‚¨çš„çµ„ç¹”ä¸å®¹è¨±ä½ ç§è‡ªè„«é›¢ï¼Œè‹¥çœŸçš„æƒ³é›¢é–‹å°±è«‹æ‚¨é€ƒäº¡å§ã€‚";postFooter();exit;}
 		$Game['rank'] -= 4000;
 	}
 	else {
 		if ($Pl_Org['license'] != 1 && $Pl_Org['license'] != 3)
-			{echo "±zµL»İ°k¤`¡C";postFooter();exit;}
+			{echo "æ‚¨ç„¡éœ€é€ƒäº¡ã€‚";postFooter();exit;}
 		if ($actionb == 'C') $Gen['fame'] -= 10;
 		$Gen['fame'] = floor($Gen['fame']*0.9);
 		$Game['rank'] -= 12000;
 	}
 	if( $Game['rank'] < 0 ) $Game['rank'] = 0;
-	//§ó·s Gen Info
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `fame` = '$Gen[fame]' WHERE `username` = '".$Pl_Value['USERNAME']."' LIMIT 1");
-	$query = mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+	//æ›´æ–° Gen Info
+	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `fame` = '$Gen[fame]' WHERE `username` = '".$_SESSION['username']."' LIMIT 1");
+	$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 
 	if (abs($Gen['fame']) >= 100){
-	$HistoryWrite = "<font color=\"$Gen[color]\">$Game[gamename]</font> ²æÂ÷ <font color=\"$Pl_Org[color]\">$Pl_Org[name]</font>¡C";
+	$HistoryWrite = "<font color=\"$Gen[color]\">$Game[gamename]</font> è„«é›¢ <font color=\"$Pl_Org[color]\">$Pl_Org[name]</font>ã€‚";
 	WriteHistory($HistoryWrite);}
 
-	//§ó·s Game Info
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `rank` = '".($Game['rank'])."', `rights` = '0', `organization` = '0' WHERE `username` = '".$Pl_Value['USERNAME']."' LIMIT 1");
-	$query = mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+	//æ›´æ–° Game Info
+	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `rank` = '".($Game['rank'])."', `rights` = '0', `organization` = '0', `lastorg` = '$now' WHERE `username` = '".$_SESSION['username']."' LIMIT 1");
+	$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 
 	echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-	echo "<p align=center style=\"font-size: 16pt\">¤w²æÂ÷²ÕÂ´¡C<input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	echo "<p align=center style=\"font-size: 16pt\">å·²è„«é›¢çµ„ç¹”ã€‚<input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 	}
 //End of LeaveOrg
 elseif ($mode == 'LeavePlace'){
-	echo "<font style=\"font-size: 12pt\">°h¦ì</font>";
+	echo "<font style=\"font-size: 12pt\">é€€ä½</font>";
 	printTHR();
-	if (!$Game['organization'] || !$Game['rights']){echo "¥H±zªº¨­¥÷¤£¯à°h¦ì¡C";postFooter();exit;}
+	if (!$Game['organization'] || !$Game['rights']){echo "ä»¥æ‚¨çš„èº«ä»½ä¸èƒ½é€€ä½ã€‚";postFooter();exit;}
 
 	if ($Game['rights'] == '1'){$RightsTitle = $RightsClass['Major'];$AllowWho = "`rights` != '1'";}
 	elseif ($Game['rights']){$RightsTitle = $RightsClass['Leader'];$AllowWho = "!`rights`";}
@@ -282,111 +295,141 @@ elseif ($mode == 'LeavePlace'){
 	if ($actionb == 'A'){
 	echo "<form action=organization.php?action=LeavePlace method=post name=mainform>";
 	echo "<input type=hidden value='B' name=actionb>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 
 	echo "<script language=\"Javascript\">";
 	echo "function cfmLeavePlace(){";
-	echo "if (mainform.GiveTar.value == ''){alert('½Ğ¥ı¿é¤J­nÅıµ¹ªº¤H¡C');return false;}";
-	echo "else {if (confirm('°h¦ìµ¹¥Ø¼Ğ¤Hª«¡A½T©w¶Ü¡H')==true){return true;}";
+	echo "if (mainform.GiveTar.value == ''){alert('è«‹å…ˆè¼¸å…¥è¦è®“çµ¦çš„äººã€‚');return false;}";
+	echo "else {if (confirm('é€€ä½çµ¦ç›®æ¨™äººç‰©ï¼Œç¢ºå®šå—ï¼Ÿ')==true){return true;}";
 	echo "else {return false;}}";
 	echo "}</script>";
 
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr><td align=left width=280><b style=\"font-size: 10pt;\">°h¦ìÅı½å: </b></td></tr>";
+	echo "<tr><td align=left width=280><b style=\"font-size: 10pt;\">é€€ä½è®“è³¢: </b></td></tr>";
 
 	unset($sql,$query,$AvailPersons);
-	$sql = ("SELECT `username`,`gamename` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `username` != '".$Pl_Value['USERNAME']."'  AND `organization` = '$Game[organization]' AND $AllowWho AND `rank` > 72000 ORDER BY `rank` DESC");
+	$sql = ("SELECT `username`,`gamename` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `username` != '".$_SESSION['username']."'  AND `organization` = '$Game[organization]' AND $AllowWho AND `rank` > 72000 ORDER BY `rank` DESC");
 	$query = mysql_query($sql) or die(mysql_error());
 	$GiveTarOpt = '';
 	while ($AvailPersons = mysql_fetch_array($query))
 		$GiveTarOpt .= "<option value='$AvailPersons[username]'>$AvailPersons[gamename]";
 	unset($AvailPersons);
 
-	echo "<tr><td align=left>±zªºÅv¤O: $RightsTitle <br>";
+	echo "<tr><td align=left>æ‚¨çš„æ¬ŠåŠ›: $RightsTitle <br>";
 
 	if ($GiveTarOpt)
-		echo "¥i°h¦ìµ¹ªº¤H:<select name=GiveTar>$GiveTarOpt</select><br><input type=submit value=\"°h¦ì\" onClick=\"return cfmLeavePlace();\">";
-	else 	echo "¨S¦³¾A¦Xªº¤H¿ï¡C<br>±µ¦ìªº¤H¥²¶·¦³¤@©wªº­x¶¥¡C";
+		echo "å¯é€€ä½çµ¦çš„äºº:<select name=GiveTar>$GiveTarOpt</select><br><input type=submit value=\"é€€ä½\" onClick=\"return cfmLeavePlace();\">";
+	else 	echo "æ²’æœ‰é©åˆçš„äººé¸ã€‚<br>æ¥ä½çš„äººå¿…é ˆæœ‰ä¸€å®šçš„è»éšã€‚";
 	echo "</td></tr></form></table>";
 	}// Action A End
 
 	elseif ($actionb == 'B'){
-
-	if (!$GiveTar){echo "½Ğ¥ı«ü©w¥Ø¼Ğ¡C";postFooter();exit;}
+	$GiveTar= mysql_real_escape_string($GiveTar);
+	if (!$GiveTar){echo "è«‹å…ˆæŒ‡å®šç›®æ¨™ã€‚";postFooter();exit;}
 
 	$sqlgame = ("SELECT `gamename`,`color` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info`,`".$GLOBALS['DBPrefix']."phpeb_user_general_info` WHERE `".$GLOBALS['DBPrefix']."phpeb_user_game_info`.`username`='". $GiveTar ."'");
-	$query_game = mysql_query($sqlgame) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+	$query_game = mysql_query($sqlgame) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 	$GiveTarOpt = mysql_fetch_array($query_game);
 
-	$HistoryWrite = "<font color=\"$Pl_Org[color]\">$Pl_Org[name]</font> ªº <font color=\"$Gen[color]\">$Game[gamename]</font> §â $RightsTitle ¤§Åv¤OÅıµ¹ <font color=\"$GiveTarOpt[color]\">$GiveTarOpt[gamename]</font> ¡C";
+	$HistoryWrite = "<font color=\"$Pl_Org[color]\">$Pl_Org[name]</font> çš„ <font color=\"$Gen[color]\">$Game[gamename]</font> æŠŠ $RightsTitle ä¹‹æ¬ŠåŠ›è®“çµ¦ <font color=\"$GiveTarOpt[color]\">$GiveTarOpt[gamename]</font> ã€‚";
 	WriteHistory($HistoryWrite);
 
-	//§ó·s Game Info
+	//æ›´æ–° Game Info
 	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `rights` = '".$Game['rights']."', `organization` = '$Game[organization]' WHERE `username` = '".$GiveTar."' LIMIT 1");
-	$query = mysql_query($sql) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+	$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 
-	//§ó·s Game Info
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `rights` = '0', `organization` = '$Game[organization]' WHERE `username` = '".$Pl_Value['USERNAME']."' LIMIT 1");
-	$query = mysql_query($sql) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+	//æ›´æ–° Game Info
+	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `rights` = '0', `organization` = '$Game[organization]' WHERE `username` = '".$_SESSION['username']."' LIMIT 1");
+	$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 
 	echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-	echo "<p align=center style=\"font-size: 16pt\">°h¦ì§¹¦¨¤F¡I<input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	echo "<p align=center style=\"font-size: 16pt\">é€€ä½å®Œæˆäº†ï¼<input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 
 	}// Action B End
 
 
-	else {echo "¥¼©w¸q°Ê§@¡I";}
+	else {echo "æœªå®šç¾©å‹•ä½œï¼";}
 }//End of LeavePlace
 elseif ($mode == 'Vice'){
 
-	if ($Game['rights'] != '1'){echo "§A¨S¦³Åv¤O¥ô©R°Æ¥D®u¡C";postFooter();exit;}
+	if ($Game['rights'] != '1'){echo "ä½ æ²’æœ‰æ¬ŠåŠ›ä»»å‘½ã€‚";postFooter();exit;}
 	if ($Game['rights'] == '1'){$RightsTitle = $RightsClass['Major'];}
 	elseif ($Game['rights']){$RightsTitle = $RightsClass['Leader'];}
 
 	if ($actionb == 'A'){
 		echo "<form action=organization.php?action=Vice method=post name=mainform>";
 		echo "<input type=hidden value='B' name=actionb>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		
+		
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	
 		echo "<script language=\"Javascript\">";
 		echo "function cfmVice(){";
-		echo "if (mainform.GiveTar.value == ''){alert('½Ğ¥ı¿é¤J­n¥ô©R¬°°Æ¥D®uªº¤H¡C');return false;}";
-		echo "else {if (confirm('¥ô©R¥Ø¼Ğ¤Hª«¡A½T©w¶Ü¡H')==true){return true;}";
+		echo "if (mainform.GiveTar.value == ''){alert('è«‹å…ˆè¼¸å…¥è¦ä»»å‘½ç‚ºå‰¯ä¸»å¸­çš„äººã€‚');return false;}";
+		echo "else {if (confirm('ä»»å‘½ç›®æ¨™äººç‰©ï¼Œç¢ºå®šå—ï¼Ÿ')==true){return true;}";
 		echo "else {return false;}}";
 		echo "}</script>";
 	
 		echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-		echo "<tr><td align=left width=280><b style=\"font-size: 10pt;\">¥ô©R°Æ¥D®u: </b></td></tr>";
+		echo "<tr><td align=left width=280><b style=\"font-size: 10pt;\">ä»»å‘½: </b></td></tr>";
 	
 		unset($sql,$query,$AvailPersons);
-		$sql = ("SELECT `username`,`gamename` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `username` != '".$Pl_Value['USERNAME']."'  AND `organization` = '$Game[organization]' AND `rank` > 60000 ORDER BY `rank` DESC");
+		$sql = ("SELECT `username`,`gamename` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `username` != '".$_SESSION['username']."'  AND `organization` = '$Game[organization]' ORDER BY `rank` DESC");
 		$query = mysql_query($sql) or die(mysql_error());
 		$GiveTarOpt = '';
 		while ($AvailPersons = mysql_fetch_array($query))
 			$GiveTarOpt .= "<option value='$AvailPersons[username]'>$AvailPersons[gamename]";
 		unset($AvailPersons);
-		echo "<tr><td align=left>±zªºÅv¤O: $RightsTitle <br>";
+		echo "<tr><td align=left>æ‚¨çš„æ¬ŠåŠ›: $RightsTitle <br>";
 	
 		if ($GiveTarOpt)
-			echo "¥ô©R¬°°Æ¥D®uªº¤H:<select name=GiveTar>$GiveTarOpt</select><br><input type=submit value=\"¥ô©R\" onClick=\"return cfmVice();\">";
-		else 	echo "¨S¦³¥i¥H³Q¥ô©Rªº¤H, °Æ¥D®u¥²¶·¦³¤@©wªº¥\ÁZ¡B­x¶¥¡C";
+			echo "ä»»å‘½ç‚ºå‰¯ä¸»å¸­çš„äºº:<select name=GiveTar>$GiveTarOpt</select><br><input type=submit value=\"ä»»å‘½\" onClick=\"return cfmVice();\">";
+		else 	echo "æ²’æœ‰å¯ä»¥è¢«ä»»å‘½çš„äºº, å‰¯ä¸»å¸­å¿…é ˆæœ‰ä¸€å®šçš„åŠŸç¸¾ã€è»éšã€‚";
 		echo "</td></tr></form></table>";
+		echo "<br>";
+		echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\"  style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\" width=\"600px\">";
+		echo "<tr align=center><td colspan=16><b>æˆå“¡åˆ—è¡¨: </b></td></tr>";
+		echo "<tr align=center>";
+        echo "<td width=\"100\">ç©å®¶åç¨±</td>";
+		echo "<td width=\"40\">ç­‰ç´š</td>";
+		echo "<td width=\"40\">è·ä½</td>";
+		echo "<td width=\"140\">æœ€å¾Œä¸Šç·šæ™‚é–“</td>";
+		echo "</tr>";
+		
+		$list = ("SELECT a.gamename AS gamename, a.level AS level,a.rights AS rights, b.lastlogin AS time FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` a INNER JOIN `".$GLOBALS['DBPrefix']."phpeb_user_general_info` b ON a.username = b.username WHERE a.organization = '$Game[organization]' AND a.rights!=1 ORDER BY a.level DESC");
+		$qlist = mysql_query($list);
+		
+		while ($userlevel = mysql_fetch_array($qlist)){
+			echo "<tr align=center>";
+			echo "<td width=\"100\">$userlevel[gamename]</td>";
+			echo "<td width=\"40\">$userlevel[level]</td>";
+			if($userlevel['rights']==0){
+				echo "<td width=\"40\">æ™®é€šæˆå“¡</td>";
+			}
+			if($userlevel['rights']==2){
+				echo "<td width=\"40\">å‰¯ä¸»å¸­</td>";
+			}
+			$realtime = cfu_time_convert($userlevel['time']);
+			echo "<td width=\"140\">$realtime</td>";
+			echo "</tr>";
+		}
+		
+		echo "</form></table>";
+		
 	}// Action A End
 
 	elseif ($actionb == 'B'){
 
-	if (!$GiveTar){echo "½Ğ¥ı«ü©w¥Ø¼Ğ¡C";postFooter();exit;}
+	if (!$GiveTar){echo "è«‹å…ˆæŒ‡å®šç›®æ¨™ã€‚";postFooter();exit;}
 
 	$sqlgame = ("SELECT gen.username AS name, `color`, `gamename`, `rights` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` `game`, `".$GLOBALS['DBPrefix']."phpeb_user_general_info` `gen` WHERE gen.username = game.username AND organization = $Game[organization] AND (gen.username = '". $GiveTar ."' OR `rights` = 2) LIMIT 2;");
-	$qgame = mysql_query($sqlgame) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+	$qgame = mysql_query($sqlgame) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 	$TarQnum = mysql_num_rows($qgame);
 	if($TarQnum > 1){
 		$mem[0] = mysql_fetch_array($qgame);
@@ -398,8 +441,8 @@ elseif ($mode == 'Vice'){
 			$TarQ = $mem[0];
 			$TarXQ = $mem[1];
 		}
-		$HistoryWrite = "<font color=\"$Pl_Org[color]\">$Pl_Org[name]</font> ªº <font color=\"$Gen[color]\">$Game[gamename]</font> «Å§G, <font color=\"$TarQ[color]\">$TarQ[gamename]</font> ±N±µ¥ô <font color=\"$TarXQ[color]\">$TarXQ[gamename]</font> ¬° ".$RightsClass['Leader']." ¤F¡C";
-		//§ó·s Game Info
+		$HistoryWrite = "<font color=\"$Pl_Org[color]\">$Pl_Org[name]</font> çš„ <font color=\"$Gen[color]\">$Game[gamename]</font> å®£ä½ˆ, <font color=\"$TarQ[color]\">$TarQ[gamename]</font> å°‡æ¥ä»» <font color=\"$TarXQ[color]\">$TarXQ[gamename]</font> ç‚º ".$RightsClass['Leader']." äº†ã€‚";
+		//æ›´æ–° Game Info
 		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `rights` = '2' WHERE `username` = '".$TarQ['name']."' LIMIT 1");
 		$query = mysql_query($sql);
 		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `rights` = '0' WHERE `username` = '".$TarXQ['name']."' LIMIT 1");
@@ -408,151 +451,185 @@ elseif ($mode == 'Vice'){
 	else {
 		$TarQ = mysql_fetch_array($qgame);
 		$TarXQ = false;
-		$HistoryWrite = "<font color=\"$Pl_Org[color]\">$Pl_Org[name]</font> ªº <font color=\"$Gen[color]\">$Game[gamename]</font> §â²ÕÂ´¤ºªº <font color=\"$TarQ[color]\">$TarQ[gamename]</font> ¥ô©R¬° ".$RightsClass['Leader']." ¤F¡C";
-		//§ó·s Game Info
+		$HistoryWrite = "<font color=\"$Pl_Org[color]\">$Pl_Org[name]</font> çš„ <font color=\"$Gen[color]\">$Game[gamename]</font> æŠŠçµ„ç¹”å…§çš„ <font color=\"$TarQ[color]\">$TarQ[gamename]</font> ä»»å‘½ç‚º ".$RightsClass['Leader']." äº†ã€‚";
+		//æ›´æ–° Game Info
 		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `rights` = '2' WHERE `username` = '".$GiveTar."' LIMIT 1");
-		$query = mysql_query($sql) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+		$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 	}
 
 	WriteHistory($HistoryWrite);
 
 	echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-	echo "<p align=center style=\"font-size: 16pt\">¥ô©R§¹¦¨¤F¡I<input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	echo "<p align=center style=\"font-size: 16pt\">ä»»å‘½å®Œæˆäº†ï¼<input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 
 	}// Action B End
 
 
-	else {echo "¥¼©w¸q°Ê§@¡I";}
+	else {echo "æœªå®šç¾©å‹•ä½œï¼";}
 }//End of Vice Presidency
 elseif ($mode == 'Break'){
 if ($actionb = 'A'){
-	if (!$Game['organization'] && $Game['rights'] != '1'){echo "¥H±zªº¨­¥÷¤£¯à¸Ñ´²²ÕÂ´¡C";postFooter();exit;}
+	if (!$Game['organization'] && $Game['rights'] != '1'){echo "ä»¥æ‚¨çš„èº«ä»½ä¸èƒ½è§£æ•£çµ„ç¹”ã€‚";postFooter();exit;}
 
 	$sql = ("SELECT count(username) FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `organization` = '".$Game['organization']."'");
 	$query = mysql_query($sql);
 	$result = mysql_fetch_row($query);
-	if($result[0] > 1) {echo "½Ğ¥ı¸Ñ¶±©Ò¥H²ÕÂ´¤H­û¡C";postFooter();exit;}
+	if($result[0] > 1) {echo "è«‹å…ˆè§£åƒ±æ‰€æœ‰æˆå“¡ã€‚";postFooter();exit;}
 
-	$HistoryWrite = "<font color=\"$Gen[color]\">$Game[gamename]</font> §â <font color=\"$Pl_Org[color]\">$Pl_Org[name]</font> ¸Ñ´²¤F¡C";
+	$HistoryWrite = "<font color=\"$Gen[color]\">$Game[gamename]</font> æŠŠ <font color=\"$Pl_Org[color]\">$Pl_Org[name]</font> è§£æ•£äº†ã€‚";
 	WriteHistory($HistoryWrite);
 	
 	$Game['rank'] -= 48000;
 	if($Game['rank'] < 0) $Game['rank'] = 0;
 
-	//§ó·s Game Info
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `rank` = '".($Game['rank'])."', `rights` = '0', `organization` = '0' WHERE `username` = '".$Pl_Value['USERNAME']."'");
-	$query = mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
-	//§ó·s Map Info
+	//æ›´æ–° Game Info
+	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `rank` = '".($Game['rank'])."', `rights` = '0', `organization` = '0', `lastorg` = '$now' WHERE `username` = '".$_SESSION['username']."'");
+	$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
+	//æ›´æ–° Map Info
 	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_map` SET `occupied` = '0' WHERE `occupied` = '".$Game['organization']."'");
-	$query = mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
-	//®ø°£ Org Info
+	$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
+	//æ¶ˆé™¤ Org Info
 	$sql = ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_organization` WHERE id='". $Game['organization'] ."' LIMIT 1");
-	$query = mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+	$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 
 	echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-	echo "<p align=center style=\"font-size: 16pt\">²ÕÂ´¤w³Q¸Ñ´²¡C<input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	echo "<p align=center style=\"font-size: 16pt\">çµ„ç¹”å·²è¢«è§£æ•£ã€‚<input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 	}// Action A End
 }// End of Break Organization
 
 elseif ($mode == 'Dismiss'){
-	echo "<font style=\"font-size: 12pt\">¸Ñ¶±</font>";
+	echo "<font style=\"font-size: 12pt\">è§£åƒ±</font>";
 	printTHR();
-	if (!$Game['organization'] || !$Game['rights']){echo "¥H±zªº¨­¥÷¤£¯à¸Ñ¶±¨ä¥L¤H¡C";postFooter();exit;}
+	if (!$Game['organization'] || !$Game['rights']){echo "ä»¥æ‚¨çš„èº«ä»½ä¸èƒ½è§£åƒ±å…¶ä»–äººã€‚";postFooter();exit;}
 
 	if ($Game['rights'] == '1'){$RightsTitle = $RightsClass['Major'];$AllowWho = "`rights` != '1'";}
 	elseif ($Game['rights']){$RightsTitle = $RightsClass['Leader'];$AllowWho = "!`rights`";}
 
 	if ($actionb == 'A'){
-	echo "<form action=organization.php?action=Dismiss method=post name=mainform>";
+	echo "<form action=organization.php?action=Dismiss method=post name=userlist>";
+	echo "<input type=hidden name=\"kick\" value=''>";
 	echo "<input type=hidden value='B' name=actionb>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 
-	echo "<script language=\"Javascript\">";
+	/*echo "<script language=\"Javascript\">";
 	echo "function cfmDismiss(){";
-	echo "if (mainform.GiveTar.value == ''){alert('½Ğ¥ı¿é¤J­n¸Ñ¶±ªº¤H¡C');return false;}";
-	echo "else {if (confirm('¸Ñ¶±¥Ø¼Ğ¤Hª«¡A½T©w¶Ü¡H')==true){return true;}";
+	echo "if (mainform.GiveTar.value == ''){alert('è«‹å…ˆè¼¸å…¥è¦è§£åƒ±çš„äººã€‚');return false;}";
+	echo "else {if (confirm('è§£åƒ±ç›®æ¨™äººç‰©ï¼Œç¢ºå®šå—ï¼Ÿ')==true){return true;}";
 	echo "else {return false;}}";
-	echo "}</script>";
-
-	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr><td align=left width=280><b style=\"font-size: 10pt;\">¸Ñ¶±¤H­û: </b></td></tr>";
+	echo "}</script>";*/
+	
+	echo "<script language=\"Javascript\">";
+	echo "function kickuser(name){";
+	echo "        userlist.action='organization.php?action=Dismiss';";
+	echo "        userlist.kick.value=name;";
+	echo "		  userlist.submit();";
+	echo "        }</script>";
+		
+	/*echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
+	echo "<tr><td align=left width=280><b style=\"font-size: 10pt;\">è§£åƒ±æˆå“¡: </b></td></tr>";
 
 	unset($sql,$query,$AvailPersons);
-	$sql = ("SELECT `username`,`gamename` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `username` != '".$Pl_Value['USERNAME']."'  AND `organization` = '$Game[organization]' AND $AllowWho ORDER BY `rank` DESC");
+	$sql = ("SELECT `username`,`gamename` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `username` != '".$_SESSION['username']."'  AND `organization` = '$Game[organization]' AND $AllowWho ORDER BY `rank` DESC");
 	$query = mysql_query($sql) or die(mysql_error());
 	$GiveTarOpt = '';
 	while ($AvailPersons = mysql_fetch_array($query))
 		$GiveTarOpt .= "<option value='$AvailPersons[username]'>$AvailPersons[gamename]";
 	unset($AvailPersons);
-	echo "<tr><td align=left>±zªºÅv¤O: $RightsTitle <br>";
+	echo "<tr><td align=left>æ‚¨çš„æ¬ŠåŠ›: $RightsTitle <br>";
 
 	if ($GiveTarOpt)
-		echo "¥i¸Ñ¶±ªº¤H:<select name=GiveTar>$GiveTarOpt</select><br><input type=submit value=\"¸Ñ¶±\" onClick=\"return cfmDismiss();\">";
-	else 	echo "¨S¦³¥i¥H³Q¸Ñ¶±ªº¤H¡C";
-	echo "</td></tr></form></table>";
+		echo "å¯è§£åƒ±çš„äºº:<select name=GiveTar>$GiveTarOpt</select><br><input type=submit value=\"è§£åƒ±\" onClick=\"return cfmDismiss();\">";
+	else 	echo "æ²’æœ‰å¯ä»¥è¢«è§£åƒ±çš„äººã€‚";
+	echo "</td></tr></form></table>";*/
+	
+		echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\"  style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\" width=\"600px\">";
+		echo "<tr align=center><td colspan=16><b>æˆå“¡åˆ—è¡¨: </b></td></tr>";
+		echo "<tr align=center>";
+        echo "<td width=\"100\">åç¨±</td>";
+		echo "<td width=\"40\">ç­‰ç´š</td>";
+		echo "<td width=\"140\">æœ€å¾Œä¸Šç·šæ™‚é–“</td>";
+		echo "<td width=\"40\">æ“ä½œ</td>";
+		echo "</tr>";
+		
+		$list = ("SELECT a.gamename AS gamename, a.level AS level, b.lastlogin AS time FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` a INNER JOIN `".$GLOBALS['DBPrefix']."phpeb_user_general_info` b ON a.username = b.username WHERE a.organization = '$Game[organization]' AND a.rights!=1 ORDER BY a.level DESC");
+		$qlist = mysql_query($list);
+		
+		while ($userlist = mysql_fetch_array($qlist)){
+			echo "<tr align=center>";
+			echo "<td width=\"100\">$userlist[gamename]</td>";
+			echo "<td width=\"40\">$userlist[level]</td>";
+			$realtime = cfu_time_convert($userlist['time']);
+			echo "<td width=\"140\">$realtime</td>";
+			echo "<td width=\"40\"><input type=\"submit\" value=\"è§£åƒ±\" onclick=\"kickuser('$userlist[gamename]');\"></td>";
+			echo "</tr>";
+		}
+		
+		echo "</form></table>";
 	}// Action A End
 
 	elseif ($actionb == 'B'){
-
-		if (!$GiveTar){echo "½Ğ¥ı«ü©w¥Ø¼Ğ¡C";postFooter();exit;}
+		
+		$kick = mysql_real_escape_string($kick);
+		if (!$kick){echo "è«‹å…ˆæŒ‡å®šç›®æ¨™ï¼";postFooter;exit;}
+		/*if (!$GiveTar){echo "è«‹å…ˆæŒ‡å®šç›®æ¨™ã€‚";postFooter();exit;}*/
 	
-		$sqlgame = ("SELECT `gamename` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE username='". $GiveTar ."'");
-		$qgame = mysql_query($sqlgame) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+		$sqlgame = ("SELECT `gamename` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE gamename='". $kick ."'");
+		$qgame = mysql_query($sqlgame);
 		$TarQ = mysql_fetch_array($qgame);
 	
-		$HistoryWrite = "<font color=\"$Pl_Org[color]\">$Pl_Org[name]</font> ªº <font color=\"$Gen[color]\">$Game[gamename]</font> §â²ÕÂ´¤ºªº <font color=\"$TarQ[color]\">$TarQ[gamename]</font> ¸Ñ¶±¤F¡C";
+		$HistoryWrite = "<font color=\"$Pl_Org[color]\">$Pl_Org[name]</font> çš„ <font color=\"$Gen[color]\">$Game[gamename]</font> æŠŠçµ„ç¹”å…§çš„ <font color=\"$TarQ[color]\">$TarQ[gamename]</font> è§£åƒ±äº†ã€‚";
 		WriteHistory($HistoryWrite);
 	
 		$Game['rank'] -= 2000;
 		if($Game['rank'] < 0) $Game['rank'] = 0;
 	
-		//§ó·s Game Info
-		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `rank` = '".($Game['rank'])."', `rights` = '0', `organization` = '0' WHERE `username` = '".$GiveTar."' LIMIT 1");
-		$query = mysql_query($sql) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+		//æ›´æ–° Game Info
+		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `rank` = '".($Game['rank'])."', `rights` = '0', `organization` = '0' WHERE `gamename` = '".$kick."' LIMIT 1");
+		$query = mysql_query($sql);
+		$sql2 = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_organization` SET `cnum` = cnum-'1' WHERE `id` = '$Game[organization]' LIMIT 1");
+		$query = mysql_query($sql2);
 	
 		echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-		echo "<p align=center style=\"font-size: 16pt\">¸Ñ¶±§¹¦¨¤F¡I<input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		echo "<p align=center style=\"font-size: 16pt\">è§£åƒ±å®Œæˆäº†ï¼<input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
+		
+		
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 		echo "</form>";
 
 	}// Action B End
 
 
-	else {echo "¥¼©w¸q°Ê§@¡I";}
+	else {echo "æœªå®šç¾©å‹•ä½œï¼";}
 }//End of Dismiss
 elseif ($mode == 'JoinOrg'){
-	echo "<font style=\"font-size: 12pt\">¥[¤J²ÕÂ´</font>";
+	echo "<font style=\"font-size: 12pt\">åŠ å…¥çµ„ç¹”</font>";
 	printTHR();
-	if ($Game['organization']){echo "§A¤w¦³©ÒÄİªº²ÕÂ´¤F¡C";postFooter();exit;}
+	if ($CFU_Time - $Game['lastorg'] < 43200){echo "12å°æ™‚å…§åªèƒ½åŠ å…¥çµ„ç¹”ä¸€æ¬¡ã€‚";postFooter();exit;}
+	if ($Game['organization']){echo "ä½ å·²æœ‰æ‰€å±¬çš„çµ„ç¹”äº†ã€‚";postFooter();exit;}
 
 	if ($actionb == 'A'){
-		echo "<form action=organization.php?action=JoinOrg method=post name=mainform>";
+		echo "<form action=organization.php?action=JoinOrg method=post name=joinlist>";
 		echo "<input type=hidden value='B' name=actionb>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		echo "<input type=hidden name=\"join\" value=''>";
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	
-		echo "<script language=\"Javascript\">";
+		/*echo "<script language=\"Javascript\">";
 		echo "function cfmJoinOrg(){";
-		echo "if (mainform.GiveTar.value == ''){alert('½Ğ¥ı¿é¤J­n¥[¤Jªº²ÕÂ´¡C');return false;}";
-		echo "else {if (confirm('¥[¤J¥Ø¼Ğ²ÕÂ´¡A½T©w¶Ü¡H')==true){return true;}";
+		echo "if (mainform.GiveTar.value == ''){alert('è«‹å…ˆè¼¸å…¥è¦åŠ å…¥çš„çµ„ç¹”ã€‚');return false;}";
+		echo "else {if (confirm('åŠ å…¥ç›®æ¨™çµ„ç¹”ï¼Œç¢ºå®šå—ï¼Ÿ')==true){return true;}";
 		echo "else {return false;}}";
 		echo "}</script>";
 	
 		echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-		echo "<tr><td align=left width=280><b style=\"font-size: 10pt;\">¥[¤J²ÕÂ´±µ¨ü·s·|­ûªº²ÕÂ´: </b></td></tr>";
+		echo "<tr><td align=left width=280><b style=\"font-size: 10pt;\">åŠ å…¥çµ„ç¹”æ¥å—æ–°æœƒå“¡çš„çµ„ç¹”: </b></td></tr>";
 	
 		unset($sql,$query,$AvailPersons);
 		$sql = ("SELECT `id`,`name` FROM `".$GLOBALS['DBPrefix']."phpeb_user_organization` WHERE `id` != '0' AND `license` < 2  ORDER BY `id` DESC");
@@ -567,154 +644,224 @@ elseif ($mode == 'JoinOrg'){
 		while ($AvailPersons = mysql_fetch_array($query));
 	
 		if ($GiveTarOpt)
-		echo "<tr><td align=left>¥i¥[¤Jªº²ÕÂ´:<select name=GiveTar>$GiveTarOpt</select><br><input type=submit value=\"¥[¤J\" onClick=\"return cfmJoinOrg();\"></td></tr>";
-		else echo "<tr><td align=left>¨S¦³¥i¥H³Q¥[¤Jªº²ÕÂ´¡C</td></tr>";
+		echo "<tr><td align=left>å¯åŠ å…¥çš„çµ„ç¹”:<select name=GiveTar>$GiveTarOpt</select><br><input type=submit value=\"åŠ å…¥\" onClick=\"return cfmJoinOrg();\"></td></tr>";
+		else echo "<tr><td align=left>æ²’æœ‰å¯ä»¥è¢«åŠ å…¥çš„çµ„ç¹”ã€‚</td></tr>";
 		echo "</form></table>";
-	}// Action A End
+	}// Action A End*/
+		echo "<script language=\"Javascript\">";
+		echo "function joinog(org){";
+		echo "        joinlist.action='organization.php?action=JoinOrg';";
+		echo "        joinlist.join.value=org;";
+		echo "		  joinlist.submit();";
+		echo "        }</script>";
+		
+		echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\"  style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\" width=\"600px\">";
+		echo "<tr align=center><td colspan=16><b>çµ„ç¹”åˆ—è¡¨: </b></td></tr>";
+		echo "<tr align=center>";
+        echo "<td width=\"100\">çµ„ç¹”åç¨±</td>";
+		echo "<td width=\"100\">çµ±æ²»è€…</td>";
+		echo "<td width=\"140\">çµ„ç¹”å®—æ—¨</td>";
+		echo "<td width=\"40\">äººæ•¸</td>";
+		echo "<td width=\"40\">æ“ä½œ</td>";
+		echo "</tr>";
 
+		$sql = ("SELECT a.id AS id, a.name AS name, a.cnum AS num, a.pose AS pose, a.license AS license, b.gamename AS gamename FROM `".$GLOBALS['DBPrefix']."phpeb_user_organization` a INNER JOIN `".$GLOBALS['DBPrefix']."phpeb_user_game_info` b ON a.id=b.organization WHERE a.id != '0' AND b.rights=1 ORDER BY a.id DESC");
+        $query = mysql_query($sql);
+       
+		while($joinlist = mysql_fetch_array($query)){
+			echo "<tr align=center>";
+			echo "<td width=\"100\">$joinlist[name]</td>";
+			echo "<td width=\"100\">$joinlist[gamename]</td>";
+			echo "<td width=\"140\" style=\"word-break:break-all\">$joinlist[pose]</td>";
+			echo "<td width=\"40\">$joinlist[num] / 15</td>";
+			if($joinlist['license'] >= 2){
+			echo "<td width=\"40\"><input type=\"submit\" value=\"ç„¡æ³•åŠ å…¥\" disabled></td>";}
+			elseif($joinlist['license'] < 2){
+			echo "<td width=\"40\"><input type=\"submit\" value=\"åŠ å…¥\" onclick=\"joinog('$joinlist[id]');\"></td>";}
+		}
+		echo "</form></table>";		
+}
 	elseif ($actionb == 'B'){
 
-		if (!$GiveTar){echo "½Ğ¥ı«ü©w­n¥[¤Jªº²ÕÂ´¡C";postFooter();exit;}
-
+		$join = mysql_real_escape_string($join);
+        if (!$join){echo "è«‹å…ˆæŒ‡å®šè¦åŠ å…¥çš„çµ„ç¹”ã€‚";postFooter;exit;}
+		/*if (!$GiveTar){echo "è«‹å…ˆæŒ‡å®šè¦åŠ å…¥çš„çµ„ç¹”ã€‚";postFooter();exit;}*/
+		
+		$ppl = ("SELECT count(*) FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `organization` = '".$join."'");
+		$qppl = mysql_query($ppl) or die('åŠ å…¥çµ„ç¹”éŒ¯èª¤ï¼');
+		$lastp = mysql_fetch_row($qppl);
+		
+		if ($lastp[0] >= 15){echo "è©²çµ„ç¹”äººæ•¸éå¤šï¼Œæš«æ™‚ç„¡æ³•åŠ å…¥ã€‚<br>è«‹åŠ å…¥å…¶ä»–çµ„ç¹”æˆ–è‡ªè¡Œæˆç«‹çµ„ç¹”ã€‚";postFooter;exit;}
+		
 		$Og_Org = ReturnOrg($Game['organization']);
-		$Pl_Org = ReturnOrg($GiveTar);
-		if($Pl_Org['license'] >= 2){echo "¥Ø¼Ğ²ÕÂ´¤£±µ¨ü·s·|­û¡C";postFooter();exit;}
+		$Pl_Org = ReturnOrg($join);
+		if($Pl_Org['license'] >= 2){echo "ç›®æ¨™çµ„ç¹”ä¸æ¥å—æ–°æœƒå“¡ã€‚";postFooter();exit;}
 
 		if (abs($Gen['fame']) >= 100){
-			$HistoryWrite = "<font color=\"$Og_Org[color]\">$Og_Org[name]</font> ªº <font color=\"$Gen[color]\">$Game[gamename]</font> ¥[¤J <font color=\"$Pl_Org[color]\">$Pl_Org[name]</font>¡C";
+			$HistoryWrite = "<font color=\"$Og_Org[color]\">$Og_Org[name]</font> çš„ <font color=\"$Gen[color]\">$Game[gamename]</font> åŠ å…¥ <font color=\"$Pl_Org[color]\">$Pl_Org[name]</font>ã€‚";
 			WriteHistory($HistoryWrite);
 		}
 
 		$Game['rank'] += 2000;
 		if($Game['rank'] > 100000) $Game['rank'] = 100000;
 
-		//§ó·s Game Info
-		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `rank` = '".($Game['rank'])."', `rights` = '0', `organization` = '".$GiveTar."' WHERE `username` = '".$Pl_Value['USERNAME']."' LIMIT 1");
-		$query = mysql_query($sql) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+		//æ›´æ–° Game Info
+		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `rank` = '".($Game['rank'])."', `rights` = '0', `organization` = '".$join."', `lastorg` = '$now' WHERE `username` = '".$_SESSION['username']."' LIMIT 1");
+		$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 
+		$sql2 = ("SELECT count(*) FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `organization` = '".$join."'");
+		$query2 = mysql_query($sql2);
+		$cquery = mysql_result($query2, 0);
+		$sql3 = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_organization` SET `cnum` = '$cquery' WHERE `id` = '".$join."'");
+		$query2 = mysql_query($sql3);
+		
 		echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-		echo "<p align=center style=\"font-size: 16pt\">¥[¤J²ÕÂ´§¹¦¨¤F¡I<input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		echo "<p align=center style=\"font-size: 16pt\">åŠ å…¥çµ„ç¹”å®Œæˆäº†ï¼<input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
+		
+		
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 		echo "</form>";
 
 	}// Action B End
 
 
-	else {echo "¥¼©w¸q°Ê§@¡I";}
+	else {echo "æœªå®šç¾©å‹•ä½œï¼";}
 }//End of JoinOrg
 elseif ($mode == 'Settings'){
-	echo "<font style=\"font-size: 12pt\">²ÕÂ´³]©w</font>";
+	echo "<font style=\"font-size: 12pt\">çµ„ç¹”è¨­å®š</font>";
 	printTHR();
-	if (!$Game['organization'] || $Game['rights'] != '1'){echo "§AªºÅv¤O¤£¨¬¡C";postFooter();exit;}
+	if (!$Game['organization'] || $Game['rights'] != '1'){echo "ä½ çš„æ¬ŠåŠ›ä¸è¶³ã€‚";postFooter();exit;}
 
 	if ($actionb == 'A'){
 	echo "<form action=organization.php?action=ModOrg method=post name=mainform>";
 	echo "<input type=hidden value='' name=actionb>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 
 	echo "<script language=\"Javascript\">";
 	echo "function cfmModOrgLi(){";
-	echo "if (confirm('­×§ï²ÕÂ´¦Û¥Ñ«×, ½T©w¶Ü¡H')==true){mainform.actionb.value='ModLi';return true;}";
+	echo "if (confirm('ä¿®æ”¹çµ„ç¹”è‡ªç”±åº¦, ç¢ºå®šå—ï¼Ÿ')==true){mainform.actionb.value='ModLi';return true;}";
 	echo "else {return false;}";
 	echo "}</script>";
 
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr><td align=left width=280><b style=\"font-size: 10pt;\">³]©w²ÕÂ´²ÕºA: </b></td></tr>";
-	echo "<tr><td align=left width=280><b style=\"font-size: 10pt;\">²ÕÂ´¸êª÷: ".number_format($Pl_Org['funds'])."¤¸</b></td></tr>";
-	echo "<tr><td align=left>²ÕÂ´¦Û¥Ñ«×:<br><input type=radio name=\"license\" checked value=\"0\">: ¦Û¥Ñ¥[¤J¡B°h¥X<br><input type=radio name=\"license\" value=\"1\">: ¦Û¥Ñ¥[¤J¡A­­¨î°h¥X<br><input type=radio name=\"license\" value=\"2\">: ­­¨î¥[¤J¡A¦Û¥Ñ°h¥X<br><input type=radio name=\"license\" value=\"3\">: ­­¨î¥[¤J¡B°h¥X<br>";
-	echo "<input type=submit value=\"³]©w\" onClick=\"return cfmModOrgLi();\">";
+	echo "<tr><td align=left width=280><b style=\"font-size: 10pt;\">è¨­å®šçµ„ç¹”çµ„æ…‹: </b></td></tr>";
+	echo "<tr><td align=left width=280><b style=\"font-size: 10pt;\">çµ„ç¹”è³‡é‡‘: ".number_format($Pl_Org['funds'])."å…ƒ</b></td></tr>";
+	echo "<tr><td align=left>çµ„ç¹”è‡ªç”±åº¦:<br><input type=radio name=\"license\" checked value=\"0\">: è‡ªç”±åŠ å…¥ã€é€€å‡º<br><input type=radio name=\"license\" value=\"1\">: è‡ªç”±åŠ å…¥ï¼Œé™åˆ¶é€€å‡º<br><input type=radio name=\"license\" value=\"2\">: é™åˆ¶åŠ å…¥ï¼Œè‡ªç”±é€€å‡º<br><input type=radio name=\"license\" value=\"3\">: é™åˆ¶åŠ å…¥ã€é€€å‡º<br>";
+	echo "<input type=submit value=\"è¨­å®š\" onClick=\"return cfmModOrgLi();\">";
 	echo "</td></tr>";
 
 	if ($Pl_Org['funds'] > 1000000){
 
 	echo "<script language=\"Javascript\">";
 	echo "function cfmModOrgC(){";
-	echo "if (confirm('¥H 1,000,000¤¸ ­×§ï²ÕÂ´¥Nªí¦â, ½T©w¶Ü¡H')==true){mainform.actionb.value='ModC';return true;}";
+	echo "if (confirm('ä»¥ 1,000,000å…ƒ ä¿®æ”¹çµ„ç¹”ä»£è¡¨è‰², ç¢ºå®šå—ï¼Ÿ')==true){mainform.actionb.value='ModC';return true;}";
 	echo "else {return false;}";
 	echo "}</script>";
 
-	echo "<tr><td align=left>²ÕÂ´¥Nªí¦â:<br>§óÅÜ¥Nªí¦â»İ­n¨Ï¥Î 1,000,000¤¸ ²ÕÂ´¸êª÷¡C<br>";
+	echo "<tr><td align=left>çµ„ç¹”ä»£è¡¨è‰²:<br>æ›´æ›ä»£è¡¨è‰²éœ€è¦ä½¿ç”¨ 1,000,000å…ƒ çµ„ç¹”è³‡é‡‘ã€‚<br>";
 	$br=$ct_default=0;
 	foreach ($MainColors as $TheColor){$br++;$ct_default++;
 	echo "<input type=\"radio\" name=\"org_color\" value=#".$TheColor;
 	if ($ct_default==1) echo " checked";
-	echo "><font color=#".$TheColor.">¡»</font> &nbsp;&nbsp; ";
+	echo "><font color=#".$TheColor.">â—†</font> &nbsp;&nbsp; ";
 	if ($br==6){echo"<br>";$br=0;}	}
-	echo "<input type=submit value=\"³]©w\" onClick=\"return cfmModOrgC();\">";
+	echo "<input type=submit value=\"è¨­å®š\" onClick=\"return cfmModOrgC();\">";
 	echo "</td></tr>";
 	}
 	if ($Pl_Org['funds'] > 10000000){
 	echo "<script language=\"Javascript\">";
 	echo "function cfmModOrgN(){";
-	echo "if (confirm('¥H 10,000,000¤¸ ­×§ï²ÕÂ´¦WºÙ, ½T©w¶Ü¡H')==true){mainform.actionb.value='ModN';return true;}";
+	echo "if (confirm('ä»¥ 10,000,000å…ƒ ä¿®æ”¹çµ„ç¹”åç¨±, ç¢ºå®šå—ï¼Ÿ')==true){mainform.actionb.value='ModN';return true;}";
 	echo "else {return false;}";
 	echo "}</script>";
 
-	echo "<tr><td align=left>²ÕÂ´¦WºÙ:<br>§óÅÜ²ÕÂ´¦WºÙ»İ­n¨Ï¥Î 10,000,000¤¸ ²ÕÂ´¸êª÷¡C<br>";
-	echo "·s¦WºÙ: <input type=text name=NewOrgName maxlength=32>";
-	echo "<input type=submit value=\"³]©w\" onClick=\"return cfmModOrgN();\">";
+	echo "<tr><td align=left>çµ„ç¹”åç¨±:<br>æ›´æ›çµ„ç¹”åç¨±éœ€è¦ä½¿ç”¨ 10,000,000å…ƒ çµ„ç¹”è³‡é‡‘ã€‚<br>";
+	echo "æ–°åç¨±: <input type=text name=NewOrgName maxlength=32>";
+	echo "<input type=submit value=\"è¨­å®š\" onClick=\"return cfmModOrgN();\">";
 	echo "</td></tr>";
+	}
+	if ($Pl_Org['funds'] > 1000000){
+        echo "<script language=\"Javascript\">";
+        echo "function cfmModOrgX(){";
+        echo "if (confirm('ä»¥ 1,000,000å…ƒ ä¿®æ”¹çµ„ç¹”å®—æ—¨, ç¢ºå®šå—ï¼Ÿ')==true){mainform.actionb.value='ModX';return true;}";
+        echo "else {return false;}";
+        echo "}</script>";
+
+        echo "<tr><td align=left>çµ„ç¹”å®—æ—¨:<br>æ›´æ›çµ„ç¹”å®—æ—¨éœ€è¦ä½¿ç”¨ 1,000,000å…ƒ çµ„ç¹”è³‡é‡‘ã€‚<br>";
+        echo "æ–°å®—æ—¨: <input type=text name=NewOrgPose maxlength=90 value=$Pl_Org[pose]>";
+        echo "<input type=submit value=\"è¨­å®š\" onClick=\"return cfmModOrgX();\">";
+        echo "</td></tr>";
 	}
 	echo "</form></table>";
 	}// Action A End
-	else {echo "¥¼©w¸q°Ê§@¡I";}
+	else {echo "æœªå®šç¾©å‹•ä½œï¼";}
 }//End of Settings
 elseif ($mode == 'ModOrg'){
-	if (!$Game['organization'] || $Game['rights'] != '1'){echo "§AªºÅv¤O¤£¨¬¡C";postFooter();exit;}
-
+	if (!$Game['organization'] || $Game['rights'] != '1'){echo "ä½ çš„æ¬ŠåŠ›ä¸è¶³ã€‚";postFooter();exit;}
+	
 	if ($actionb == 'ModLi'){
-		//§ó·s Org Info
+		$license = mysql_real_escape_string($license);
+		//æ›´æ–° Org Info
 		if ($license > 3 || $license < 0){echo "Hacking Attempt.";postFooter();exit;}
 		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_organization` SET `license` = '$license' WHERE `id` = '".$Pl_Org['id']."' LIMIT 1");
-		$query = mysql_query($sql) or die ('µLªk¨ú±o²ÕÂ´¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
-		if ($license == 0) $LiText = "§Y¤é°_<b>±µ¨ü·s·|­û</b>¥[¤J¦Ó¥B·|­û¥i¥H<b>¦Û¥Ñ²æÂ÷</b>²ÕÂ´";
-		elseif ($license == 1) $LiText = "§Y¤é°_<b>±µ¨ü·s·|­û<b>¥[¤J¦ı<b>­­¨î·|­û¦Û¦æ°h¥X</b>";
-		elseif ($license == 2) $LiText = "§Y¤é°_<b>¤£¦A±µ¨ü·s·|­û</b>¥[¤J¦ı·|­û¥i¥H<b>¦Û¥Ñ²æÂ÷</b>²ÕÂ´";
-		elseif ($license == 3) $LiText = "§Y¤é°_<b>¤£¦A±µ¨ü·s·|­û</b>¥[¤J¦Ó¥B<b>­­¨î·|­û¦Û¦æ°h¥X</b>";
-		$HistoryWrite = "<font color=\"$Pl_Org[color]\">$Pl_Org[name]</font> ªº <font color=\"$Gen[color]\">$Game[gamename]</font> «Å§G²ÕÂ´".$LiText."¡C";
+		$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—çµ„ç¹”è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
+		if ($license == 0) $LiText = "å³æ—¥èµ·<b>æ¥å—æ–°æœƒå“¡</b>åŠ å…¥è€Œä¸”æœƒå“¡å¯ä»¥<b>è‡ªç”±è„«é›¢</b>çµ„ç¹”";
+		elseif ($license == 1) $LiText = "å³æ—¥èµ·<b>æ¥å—æ–°æœƒå“¡<b>åŠ å…¥ä½†<b>é™åˆ¶æœƒå“¡è‡ªè¡Œé€€å‡º</b>";
+		elseif ($license == 2) $LiText = "å³æ—¥èµ·<b>ä¸å†æ¥å—æ–°æœƒå“¡</b>åŠ å…¥ä½†æœƒå“¡å¯ä»¥<b>è‡ªç”±è„«é›¢</b>çµ„ç¹”";
+		elseif ($license == 3) $LiText = "å³æ—¥èµ·<b>ä¸å†æ¥å—æ–°æœƒå“¡</b>åŠ å…¥è€Œä¸”<b>é™åˆ¶æœƒå“¡è‡ªè¡Œé€€å‡º</b>";
+		$HistoryWrite = "<font color=\"$Pl_Org[color]\">$Pl_Org[name]</font> çš„ <font color=\"$Gen[color]\">$Game[gamename]</font> å®£ä½ˆçµ„ç¹”".$LiText."ã€‚";
 		WriteHistory($HistoryWrite);
 	}// Action A End
 	elseif ($actionb == 'ModC'){
-		if (1000000 > $Pl_Org['funds']){echo "²ÕÂ´¸êª÷¤£¨¬¡C";postFooter();exit;}
-		if (!$org_color){echo "½Ğ¥ı¿ï¦nÃC¦â¡C";postFooter();exit;}
+		$org_color = mysql_real_escape_string($org_color);
+		if (1000000 > $Pl_Org['funds']){echo "çµ„ç¹”è³‡é‡‘ä¸è¶³ã€‚";postFooter();exit;}
+		if (!$org_color){echo "è«‹å…ˆé¸å¥½é¡è‰²ã€‚";postFooter();exit;}
 		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_organization` SET `color` = '$org_color', `funds` = `funds`-1000000 WHERE `id` = '".$Pl_Org['id']."' LIMIT 1");
-		$query = mysql_query($sql) or die ('µLªk¨ú±o²ÕÂ´¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+		$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—çµ„ç¹”è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 		$Gen['cash']-=1000000;
-		$HistoryWrite = "<font color=\"$org_color\">$Pl_Org[name]</font> ªº <font color=\"$Gen[color]\">$Game[gamename]</font> «Å§G²ÕÂ´§óÅÜ¥NªíÃC¦â¡C";
+		$HistoryWrite = "<font color=\"$org_color\">$Pl_Org[name]</font> çš„ <font color=\"$Gen[color]\">$Game[gamename]</font> å®£ä½ˆçµ„ç¹”æ›´æ›ä»£è¡¨é¡è‰²ã€‚";
 		WriteHistory($HistoryWrite);
 	}
 	elseif ($actionb == 'ModN'){
-		if (10000000 > $Pl_Org['funds']){echo "²ÕÂ´¸êª÷¤£¨¬¡C";postFooter();exit;}
-		if (!$NewOrgName){echo "½Ğ¥ı¿ï¦n²ÕÂ´¦WºÙ¡C";postFooter();exit;}
+		$NewOrgName = mysql_real_escape_string($NewOrgName);
+		if (10000000 > $Pl_Org['funds']){echo "çµ„ç¹”è³‡é‡‘ä¸è¶³ã€‚";postFooter();exit;}
+		if (!$NewOrgName){echo "è«‹å…ˆé¸å¥½çµ„ç¹”åç¨±ã€‚";postFooter();exit;}
 		$NewOrgName = preg_replace('/<[^<>]*>/','',$NewOrgName);
 		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_organization` SET `name` = '$NewOrgName', `funds` = `funds`-10000000 WHERE `id` = '".$Pl_Org['id']."' LIMIT 1");
-		$query = mysql_query($sql) or die ('µLªk¨ú±o²ÕÂ´¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
-		$HistoryWrite = "<font color=\"$Pl_Org[color]\">$Pl_Org[name]</font> ªº <font color=\"$Gen[color]\">$Game[gamename]</font> «Å§G²ÕÂ´§ó¦W¬° <font color=\"$Pl_Org[color]\">$NewOrgName</font> ¡C";
+		$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—çµ„ç¹”è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
+		$HistoryWrite = "<font color=\"$Pl_Org[color]\">$Pl_Org[name]</font> çš„ <font color=\"$Gen[color]\">$Game[gamename]</font> å®£ä½ˆçµ„ç¹”æ›´åç‚º <font color=\"$Pl_Org[color]\">$NewOrgName</font> ã€‚";
 		WriteHistory($HistoryWrite);
 	}
-	else {echo "¥¼©w¸q°Ê§@¡I";}
+	elseif ($actionb == 'ModX'){
+		$NewOrgPose = mysql_real_escape_string($NewOrgPose);
+        if (1000000 > $Pl_Org['funds']){echo "çµ„ç¹”è³‡é‡‘ä¸è¶³ã€‚";postFooter();exit;}
+        if (!$NewOrgPose){echo "è«‹å…ˆé¸å¥½çµ„ç¹”å®—æ—¨ã€‚";postFooter();exit;}
+        $sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_organization` SET `pose` = '$NewOrgPose', `funds` = `funds`-1000000 WHERE `id` = '".$Pl_Org['id']."' LIMIT 1");
+        $query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—çµ„ç¹”è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
+	}
+	else {echo "æœªå®šç¾©å‹•ä½œï¼";}
 	echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-	echo "<p align=center style=\"font-size: 16pt\">²ÕÂ´³]©w§¹¦¨¤F¡I<input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	echo "<p align=center style=\"font-size: 16pt\">çµ„ç¹”è¨­å®šå®Œæˆäº†ï¼<input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 
 }//End of ModOrg
 elseif ($mode == 'CityAtk'){
-	echo "<font style=\"font-size: 12pt\">§ğ²¤­p¹º</font>";
+	echo "<font style=\"font-size: 12pt\">æ”»ç•¥è¨ˆåŠƒ</font>";
 	printTHR();
-	if (!$Game['organization'] || $Game['rights'] != '1'){echo "§AªºÅv¤O¤£¨¬¡C";postFooter();exit;}
+	if (!$Game['organization'] || !$Game['rights']){echo "ä½ çš„æ¬ŠåŠ›ä¸è¶³ã€‚";postFooter();exit;}
+	if ($CFU_Time - $Pl_Org['lastopt'] < 21600){echo "6å°æ™‚å…§åªèƒ½ç™¼å‹•ä¸€æ¬¡æˆ°çˆ­ã€‚";postFooter();exit;}
+	if ($Pl_Org['wartime'] >= 5){echo "æ¯å¤©åªèƒ½ç™¼å‹•5æ¬¡æˆ°çˆ­ï¼Œè«‹å‹¿æ¿«ç”¨æˆ°çˆ­åŠŸèƒ½ã€‚";postFooter();exit;}
 	
 	if($Pl_Org['optmissioni']){
 		$sql = ("SELECT COUNT(`t_end`) FROM `".$GLOBALS['DBPrefix']."phpeb_user_war` WHERE `war_id` = '$Pl_Org[optmissioni]' AND `t_end` > '$CFU_Time' LIMIT 1;");
 		$query = mysql_query($sql);
 		$result = mysql_fetch_row($query);
-		if($result[0] > 0) {echo "<p style='font-size: 12pt; color: coral' align=center>¾Ôª§¤wµo°Ê¡C";postFooter();exit;}
+		if($result[0] > 0) {echo "<p style='font-size: 12pt; color: coral' align=center>æˆ°çˆ­å·²ç™¼å‹•ã€‚";postFooter();exit;}
 	}
 
 	if ($actionb == 'A'){
@@ -722,15 +869,15 @@ elseif ($mode == 'CityAtk'){
 		echo "<input type=hidden value='B' name=actionb>";
 		echo "<input type=hidden value='1' name=reinforcements>";
 		echo "<input type=hidden value='0' name=revolutionPrice>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		
+		
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 
 		echo "<script language=\"Javascript\">";
 		echo "function changeDuration(){price.innerHTML= $Org_War_Cost * mainform.duration.value;}";
 		echo "function cfmDeclare(){";
-		echo "if ($Pl_Org[funds] < parseInt(price.innerHTML) + parseInt(mainform.revolutionPrice.value)){alert('²ÕÂ´¸êª÷¤£¨¬¡I');return false;}";
-		echo "else if (confirm('§Y±Nµo°Ê¾Ôª§, ¥i¥H¶Ü¡H')==true){return true;}";
+		echo "if ($Pl_Org[funds] < parseInt(price.innerHTML) + parseInt(mainform.revolutionPrice.value)){alert('çµ„ç¹”è³‡é‡‘ä¸è¶³ï¼');return false;}";
+		echo "else if (confirm('å³å°‡ç™¼å‹•æˆ°çˆ­, å¯ä»¥å—ï¼Ÿ')==true){return true;}";
 		echo "else {return false;}";
 		echo "}function makeVal(val,max){";
 		echo "val = val.replace(/[a-zA-Z\-+&!?=,<>@#$%\^\*\#\/\\\\[\]\{\}\'\"]+/,'');";
@@ -744,21 +891,21 @@ elseif ($mode == 'CityAtk'){
 		echo "for(i=0;mainform.atkArea[i];i++){";
 		echo "	if(mainform.atkArea[i].checked) {";
 		echo "		avaVal = parseInt(document.getElementById('rnfrcmnt_'+mainform.atkArea[i].value).innerHTML);avaVal -= 1;";
-		echo "		inputVal = prompt('½Ğ¿é¤J½Õ°Ê­x¤Oªº¼Æ¶q( 1 - '+avaVal+' )', '1');";
+		echo "		inputVal = prompt('è«‹è¼¸å…¥èª¿å‹•è»åŠ›çš„æ•¸é‡( 1 - '+avaVal+' )', '1');";
 		echo "		if(inputVal == null) {mainform.atkArea[i].checked = false;return false;}";
-		echo "		inputVal = makeVal(inputVal,avaVal); alert('§Y±N½Õ°Ê '+inputVal+' ÂI­x¤O¡C');";
+		echo "		inputVal = makeVal(inputVal,avaVal); alert('å³å°‡èª¿å‹• '+inputVal+' é»è»åŠ›ã€‚');";
 		echo "		mainform.reinforcements.value = inputVal;";
-		echo "		sel_msg.innerHTML = '±q '+mainform.atkArea[i].value+' ½Õ°Ê '+numberFormat(inputVal)+' ÂI­x¤O¶i§ğ¡C';";
+		echo "		sel_msg.innerHTML = 'å¾ '+mainform.atkArea[i].value+' èª¿å‹• '+numberFormat(inputVal)+' é»è»åŠ›é€²æ”»ã€‚';";
 		echo "		continue;";
 		echo "	}";
 		echo "}";
 		echo "else {";
 		echo "		avaVal = parseInt(document.getElementById('rnfrcmnt_'+mainform.atkArea.value).innerHTML);avaVal -= 1;";
-		echo "		inputVal = prompt('½Ğ¿é¤J½Õ°Ê­x¤Oªº¼Æ¶q( 1 - '+avaVal+' )', '1');";
+		echo "		inputVal = prompt('è«‹è¼¸å…¥èª¿å‹•è»åŠ›çš„æ•¸é‡( 1 - '+avaVal+' )', '1');";
 		echo "		if(inputVal == null) {mainform.atkArea.checked = false;return false;}";
-		echo "		inputVal = makeVal(inputVal,avaVal); alert('§Y±N½Õ°Ê '+inputVal+' ÂI­x¤O¡C');";
+		echo "		inputVal = makeVal(inputVal,avaVal); alert('å³å°‡èª¿å‹• '+inputVal+' é»è»åŠ›ã€‚');";
 		echo "		mainform.reinforcements.value = inputVal;";
-		echo "		sel_msg.innerHTML = '±q '+mainform.atkArea.value+' ½Õ°Ê '+numberFormat(inputVal)+' ÂI­x¤O¶i§ğ¡C';";
+		echo "		sel_msg.innerHTML = 'å¾ '+mainform.atkArea.value+' èª¿å‹• '+numberFormat(inputVal)+' é»è»åŠ›é€²æ”»ã€‚';";
 		echo "}";
 		echo "}";
 		echo "function numberFormat(num){";
@@ -779,27 +926,27 @@ elseif ($mode == 'CityAtk'){
 		echo "}</script>";
 
 		echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-		echo "<tr><td align=left width=475><b style=\"font-size: 10pt;\">­p¹º¹ï°Ï°ìµo°Ê¾Ôª§: </b></td></tr>";
-		echo "<tr><td align=left><b style=\"font-size: 10pt;\">²ÕÂ´¸êª÷: ".number_format($Pl_Org['funds'])."¤¸</b></td></tr>";
-		echo "<tr><td align=left>»İ­n¸êª÷: ¨C¤p®É ".number_format($Org_War_Cost)."¤¸<br>¦@»İ­n: <span id=price>$Org_War_Cost</span> ¤¸<br>";
+		echo "<tr><td align=left width=475><b style=\"font-size: 10pt;\">è¨ˆåŠƒå°å€åŸŸç™¼å‹•æˆ°çˆ­: </b></td></tr>";
+		echo "<tr><td align=left><b style=\"font-size: 10pt;\">çµ„ç¹”è³‡é‡‘: ".number_format($Pl_Org['funds'])."å…ƒ</b></td></tr>";
+		echo "<tr><td align=left>éœ€è¦è³‡é‡‘: æ¯å°æ™‚ ".number_format($Org_War_Cost)."å…ƒ<br>å…±éœ€è¦: <span id=price>$Org_War_Cost</span> å…ƒ<br>";
 
 
 		unset($sql,$query,$AtTarPosblty,$nums);
 		$sql = ("SELECT `map_id`,`name`,`aname` FROM `".$GLOBALS['DBPrefix']."phpeb_user_map`,`".$GLOBALS['DBPrefix']."phpeb_user_organization` WHERE `occupied`=`id` AND `occupied` != ". $Pl_Org['id']." ORDER BY `map_id` ASC");
-		$query = mysql_query($sql) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+		$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 		$nums = mysql_num_rows($query);
 		$AtTarPosblty = $AtkDisabled = '';
 		if ($nums){
 			while ($AtkInfo = mysql_fetch_array($query))
 				$AtTarPosblty .= "<option value='$AtkInfo[map_id]'>$AtkInfo[aname] ($AtkInfo[map_id] - $AtkInfo[name])";
-			echo "©ó<select name=sttimedelay style=\"$BStyleA;text-align: center;\"><option value=6>6<option value=7>7<option value=8>8<option value=9>9<option value=10>10<option value=11>11<option value=12>12<option value=13>13<option value=14>14<option value=15>15<option value=16>16<option value=17>17<option value=18>18</select>¤p®É«á";
-			echo "¦V<select name=target style=\"$BStyleA;text-align: center;\">$AtTarPosblty</select> µo°Ê<br>";
-			echo "ºû«ù<select name=duration onChange=\"changeDuration()\" style=\"$BStyleA;text-align: center;\"><option value=1>1<option value=2>2<option value=3>3</select>¤p®Éªº¾Ôª§";
-			$DefaultOName = $CFU_Date."ªº¾Ôª§";
-			echo "<br>¦æ°Ê¥N¸¹: <input type=text name=Opt_Name maxlength=32 size=39 $BStyleB style=\"$BStyleA;text-align: center;\" value='$DefaultOName'>";
+			echo "æ–¼<select name=sttimedelay style=\"$BStyleA;text-align: center;\"><option value=1>1<option value=2>2<option value=3>3<option value=4>4<option value=5>5<option value=6>6<option value=7>7<option value=8>8<option value=9>9<option value=10>10<option value=11>11<option value=12>12<option value=13>13</select>å°æ™‚å¾Œ";
+			echo "å‘<select name=target style=\"$BStyleA;text-align: center;\">$AtTarPosblty</select> ç™¼å‹•<br>";
+			echo "ç¶­æŒ<select name=duration onChange=\"changeDuration()\" style=\"$BStyleA;text-align: center;\"><option value=1>1</select>å°æ™‚çš„æˆ°çˆ­";
+			$DefaultOName = $CFU_Date."çš„æˆ°çˆ­";
+			echo "<br>è¡Œå‹•ä»£è™Ÿ: <input type=text name=Opt_Name maxlength=32 size=39 $BStyleB style=\"$BStyleA;text-align: center;\" value='$DefaultOName'>";
 			echo "<hr width=80% align=center>";
 
-			echo "<b style=\"font-size: 10pt;\">½Õ°Ê­x¤O: </b>";
+			echo "<b style=\"font-size: 10pt;\">èª¿å‹•è»åŠ›: </b>";
 			echo "<table align=center border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
 				$sql = ("SELECT `map_id`, `aname`, `development`, `defenders`, `tickets` FROM `".$GLOBALS['DBPrefix']."phpeb_user_map` WHERE `occupied` = '$Game[organization]' ORDER BY `map_id`");
 				$query = mysql_query($sql);
@@ -812,9 +959,9 @@ elseif ($mode == 'CityAtk'){
 				if(mysql_num_rows($query) > 0){
 					echo "<tr>";
 					echo "<td width=400 valign=top>";
-					echo "¦UºŞÁÒ°Ïªº­x¨Æ¤O¶q:";
+					echo "å„ç®¡è½„å€çš„è»äº‹åŠ›é‡:";
 						echo "<table align=center border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 12pt;\" bordercolor=\"#FFFFFF\">";
-						echo "<tr align=center><td width=50>°Ï°ì</td><td width=150>°Ï°ì¦WºÙ</td><td width=75>Á`­x¤O</td><td width=75>±q¦¹°Ï½Õ°Ê</td></tr>";
+						echo "<tr align=center><td width=50>å€åŸŸ</td><td width=150>å€åŸŸåç¨±</td><td width=75>ç¸½è»åŠ›</td><td width=75>å¾æ­¤å€èª¿å‹•</td></tr>";
 							foreach($O_Area as $a)
 								printf ('<tr align=center><td>%s</td><td>%s</td><td id=rnfrcmnt_%1$s>%s</td><td><input type=radio name=atkArea value="%1$s" onClick="detectArea();"></td></tr>',$a['map_id'],$a['aname'],$a['tickets']);
 						echo "</table>";
@@ -826,47 +973,51 @@ elseif ($mode == 'CityAtk'){
 					$members = mysql_fetch_row($query);
 					echo "<script language=\"Javascript\">";
 					echo "function checkRevolution(){";
-					echo "		inputVal = makeVal(mainform.atkArea.value,".($members[0]*1000)."); alert('§Y±N½Õ°Ê '+numberFormat(inputVal)+' ÂI­x¤O°_¸q¡C');";
+					echo "		inputVal = makeVal(mainform.atkArea.value,".($members[0]*1000)."); alert('å³å°‡èª¿å‹• '+numberFormat(inputVal)+' é»è»åŠ›èµ·ç¾©ã€‚');";
 					echo "		mainform.reinforcements.value = mainform.atkArea.value = inputVal; mainform.revolutionPrice.value = mainform.reinforcements.value*$ticketCost;";
-					echo "		sel_msg.innerHTML = '¥l¶° '+inputVal+' ÂI­x¤O°_¸q¡C<br>°_¸q©Ò»İ²ÕÂ´¸êª÷(¥]¬A«Å¾Ô¶O): \$' + numberFormat(parseInt(mainform.revolutionPrice.value)+parseInt(price.innerHTML));";
+					echo "		sel_msg.innerHTML = 'å¬é›† '+inputVal+' é»è»åŠ›èµ·ç¾©ã€‚<br>èµ·ç¾©æ‰€éœ€çµ„ç¹”è³‡é‡‘(åŒ…æ‹¬å®£æˆ°è²»): \$' + numberFormat(parseInt(mainform.revolutionPrice.value)+parseInt(price.innerHTML));";
 					echo "	}";
 					echo "</script>";
 					echo "<tr>";
 					echo "<td width=400 valign=top>";
-					echo "<b>°_¸q</b>:";
-					echo "<br>¡@- ¥Ñ©ó¤v¤è²ÕÂ´¨Ã¨S¦³»â¦a, ¦]¦¹¥i¥H¶i¦æ¡u°_¸q¡v<br>¡@- °_¸q­x¤Oªº­pºâ¤è¦¡:<br>¡@¡@- ­x¤O¼Æ¶q: ²ÕÂ´¤H¼Æ * 1000 (".number_format($members[0]*1000)." ÂI)<br>¡@¡@- ¤W­­: " . ($dailyTicketLim * 4) . "<br>¡@- ¨C¤@ÂI­x¤Oªº»ù¿ú: ".$ticketCost."<br>";
-						echo "<br> ¿é¤J°_¸q­x¤O¼Æ¶q: <input type=text name=atkArea value=0 onChange=\"checkRevolution();\">";
+					echo "<b>èµ·ç¾©</b>:";
+					echo "<br>ã€€- ç”±æ–¼å·±æ–¹çµ„ç¹”ä¸¦æ²’æœ‰é ˜åœ°, å› æ­¤å¯ä»¥é€²è¡Œã€Œèµ·ç¾©ã€<br>ã€€- èµ·ç¾©è»åŠ›çš„è¨ˆç®—æ–¹å¼:<br>ã€€ã€€- è»åŠ›æ•¸é‡: çµ„ç¹”äººæ•¸ * 1000 (".number_format($members[0]*1000)." é»)<br>ã€€ã€€- ä¸Šé™: " . ($dailyTicketLim * 4) . "<br>ã€€- æ¯ä¸€é»è»åŠ›çš„åƒ¹éŒ¢: ".$ticketCost."<br>";
+						echo "<br> è¼¸å…¥èµ·ç¾©è»åŠ›æ•¸é‡: <input type=text name=atkArea value=0 onChange=\"checkRevolution();\">";
 					echo "</td></tr>";
 				}
 				echo "<tr><td id=sel_msg>&nbsp;</td></tr>";
 			echo "</td></tr>";
 			echo "</table>";
 		}
-		else {echo "¨S¦³¥i§ğ²¤ªº«°¥«¡C"; $AtkDisabled = ' disabled';}
+		else {echo "æ²’æœ‰å¯æ”»ç•¥çš„åŸå¸‚ã€‚"; $AtkDisabled = ' disabled';}
 		echo "<hr width=80% align=center>";
-		echo "<center><input type=submit value=\"«Å¾Ô\"$AtkDisabled onClick=\"return cfmDeclare();\" $BStyleB style=\"$BStyleA;\">";
+		echo "<center><input type=submit value=\"å®£æˆ°\"$AtkDisabled onClick=\"return cfmDeclare();\" $BStyleB style=\"$BStyleA;\">";
 		echo "</td></tr></form></table>";
 	}
 
 	elseif ($actionb == 'B'){
-		if ($duration > 3){echo "¾Ôª§®É¶¡ÄY­«¹Lªø¡C";postFooter();exit;}
-		elseif ($duration < 0){echo "¾Ôª§®É¶¡ÄY­«¥X¿ù¡C";postFooter();exit;}
-		if ($sttimedelay > 18 || $sttimedelay < 6){echo "¾Ôª§©µ®É®É°İ¥X¿ù¡C";postFooter();exit;}
+		$sttimedelay = mysql_real_escape_string($sttimedelay);
+		$duration = mysql_real_escape_string($duration);
+		$target = mysql_real_escape_string($target);
+		
+		if ($duration > 1){echo "æˆ°çˆ­æ™‚é–“åš´é‡éé•·ã€‚";postFooter();exit;}
+		elseif ($duration < 0){echo "æˆ°çˆ­æ™‚é–“åš´é‡å‡ºéŒ¯ã€‚";postFooter();exit;}
+		if ($sttimedelay > 13 || $sttimedelay < 0){echo "æˆ°çˆ­å»¶æ™‚æ™‚å•å‡ºéŒ¯ã€‚";postFooter();exit;}
 		$Cost = $Org_War_Cost * $duration;
-		if ($Cost < 0){echo "Hacking Attempt¡I";postFooter();exit;}
-		if (!$Pl_Org['id']){echo "²ÕÂ´¥X¿ù¡I";postFooter();exit;}
-		if ($Pl_Org['funds'] < $Cost){echo "²ÕÂ´¸êª÷¤£¨¬¡C";postFooter();exit;}
-		if ($Pl_Org['optmissioni']){echo "¤W¤@¦¸ªº¾Ôª§ÁÙ¨S§¹µ²¡I";postFooter();exit;}
+		if ($Cost < 0){echo "Hacking Attemptï¼";postFooter();exit;}
+		if (!$Pl_Org['id']){echo "çµ„ç¹”å‡ºéŒ¯ï¼";postFooter();exit;}
+		if ($Pl_Org['funds'] < $Cost){echo "çµ„ç¹”è³‡é‡‘ä¸è¶³ã€‚";postFooter();exit;}
+		if ($Pl_Org['optmissioni']){echo "ä¸Šä¸€æ¬¡çš„æˆ°çˆ­é‚„æ²’å®Œçµï¼";postFooter();exit;}
 
 		unset($sql,$query);
 		$sql = ("SELECT `occupied` FROM `".$GLOBALS['DBPrefix']."phpeb_user_map` WHERE `map_id` = '$target'");
 		$query = mysql_query($sql) or die();
 		$count = mysql_num_rows($query);
 
-		if($count == 0){echo "§ä¤£¨ì¥Ø¼Ğ°Ï°ì¡I";postFooter();exit;}
+		if($count == 0){echo "æ‰¾ä¸åˆ°ç›®æ¨™å€åŸŸï¼";postFooter();exit;}
 		else{
 			$TargetInf = mysql_fetch_array($query);
-			if($TargetInf['occupied'] == $Pl_Org['id']) {echo "¦¹°Ï°ì¤w¸g¬°¤w¤è©Ò¦³¡I¤£¯à¶i¦æ§ğ²¤¡C";postFooter();exit;}
+			if($TargetInf['occupied'] == $Pl_Org['id']) {echo "æ­¤å€åŸŸå·²ç¶“ç‚ºå·²æ–¹æ‰€æœ‰ï¼ä¸èƒ½é€²è¡Œæ”»ç•¥ã€‚";postFooter();exit;}
 		}
 		
 		$revolutionFlag = false;
@@ -879,7 +1030,7 @@ elseif ($mode == 'CityAtk'){
 			$query = mysql_query($sql);
 			$areaCount = mysql_fetch_row($query);
 			if($areaCount[0] > 0){
-				echo "¿ù»~: ¤w¦³»â¦a, ¤£¯à¶i¦æ°_¸q¡C";
+				echo "éŒ¯èª¤: å·²æœ‰é ˜åœ°, ä¸èƒ½é€²è¡Œèµ·ç¾©ã€‚";
 				postFooter();
 				exit;
 			}
@@ -889,25 +1040,25 @@ elseif ($mode == 'CityAtk'){
 			$query = mysql_query($sql);
 			$memberCount = mysql_fetch_row($query);
 
-			if ($reinforcements > $memberCount[0] * 1000 || $reinforcements > $dailyTicketLim * 4){echo "°_¸q­x¤O¹L°ª¡I";postFooter();exit;}
+			if ($reinforcements > $memberCount[0] * 1000 || $reinforcements > $dailyTicketLim * 4){echo "èµ·ç¾©è»åŠ›éé«˜ï¼";postFooter();exit;}
 
 			$Cost += $reinforcements*$ticketCost;
 
-			if ($Cost < 0){echo "Hacking Attempt¡I";postFooter();exit;}
-			if ($Pl_Org['funds'] < $Cost){echo "²ÕÂ´¸êª÷¤£¨¬¡C";postFooter();exit;}
+			if ($Cost < 0){echo "Hacking Attemptï¼";postFooter();exit;}
+			if ($Pl_Org['funds'] < $Cost){echo "çµ„ç¹”è³‡é‡‘ä¸è¶³ã€‚";postFooter();exit;}
 			
-			$HistoryWrite = "<font color=\"$Pl_Org[color]\">$Pl_Org[name]</font> ¥H <b style=\"color: $Pl_Org[color]\">".$reinforcements."ÂI</b> ­x¤O°_¸q, ¹ï ".$target." °Ï°ì«Å¾Ô¡I<br>¦æ°Ê¥N¸¹¡y<font color=\"$Pl_Org[color]\">".$Opt_Name."</font>¡z¡I";
+			$HistoryWrite = "<font color=\"$Pl_Org[color]\">$Pl_Org[name]</font> ä»¥ <b style=\"color: $Pl_Org[color]\">".$reinforcements."é»</b> è»åŠ›èµ·ç¾©, å° ".$target." å€åŸŸå®£æˆ°ï¼å°‡æ–¼<font color=\"$Pl_Org[color]\"> $sttimedelay å°æ™‚</font> å¾Œç™¼å‹•ï¼<br>è¡Œå‹•ä»£è™Ÿã€<font color=\"$Pl_Org[color]\">".$Opt_Name."</font>ã€ï¼";
 
 		}
 		else{
 			$sql = ("SELECT `occupied`,`tickets` FROM `".$GLOBALS['DBPrefix']."phpeb_user_map` WHERE `map_id` = '$atkArea'");
 			$query = mysql_query($sql) or die();
 			$AtkAreaInf = mysql_fetch_array($query);
-			if($reinforcements > $AtkAreaInf['tickets']-1){echo "­x¤O¤£¨¬¡I";postFooter();exit;}
-			$HistoryWrite = "<font color=\"$Pl_Org[color]\">$Pl_Org[name]</font> ¬£¥X <b style=\"color: $Pl_Org[color]\">".$reinforcements."ÂI</b> ­x¤O¹ï ".$target." °Ï°ì«Å¾Ô¡I<br>¦æ°Ê¥N¸¹¡y<font color=\"$Pl_Org[color]\">".$Opt_Name."</font>¡z¡I";
+			if($reinforcements > $AtkAreaInf['tickets']-1){echo "è»åŠ›ä¸è¶³ï¼";postFooter();exit;}
+			$HistoryWrite = "<font color=\"$Pl_Org[color]\">$Pl_Org[name]</font> æ´¾å‡º <b style=\"color: $Pl_Org[color]\">".$reinforcements."é»</b> è»åŠ›å° ".$target." å€åŸŸå®£æˆ°ï¼å°‡æ–¼<font color=\"$Pl_Org[color]\"> $sttimedelay å°æ™‚</font> å¾Œç™¼å‹•ï¼<br>è¡Œå‹•ä»£è™Ÿã€<font color=\"$Pl_Org[color]\">".$Opt_Name."</font>ã€ï¼";
 		}
 
-		if($AtkAreaInf['occupied'] != $Pl_Org['id'] && !$revolutionFlag){echo "¿ù»~: ½Õ°Ê­x¤O¡Bµo°Ê§ğÀ»ªº°Ï°ì, «D¤v¤è²ÕÂ´©Ò¦³¡I<br>½Ğ¬D¿ï¤v¤è²ÕÂ´ªº»â¦a½Õ°Ê­x¤O¡Bµo°Ê§ğÀ»¡C";postFooter();exit;}
+		if($AtkAreaInf['occupied'] != $Pl_Org['id'] && !$revolutionFlag){echo "éŒ¯èª¤: èª¿å‹•è»åŠ›ã€ç™¼å‹•æ”»æ“Šçš„å€åŸŸ, éå·±æ–¹çµ„ç¹”æ‰€æœ‰ï¼<br>è«‹æŒ‘é¸å·±æ–¹çµ„ç¹”çš„é ˜åœ°èª¿å‹•è»åŠ›ã€ç™¼å‹•æ”»æ“Šã€‚";postFooter();exit;}
 
 		WriteHistory($HistoryWrite);
 
@@ -924,26 +1075,26 @@ elseif ($mode == 'CityAtk'){
 		$sql = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_war` (`war_id`, `t_start`, `t_end`, `a_org`, `b_org`, `ticket_a`, `ticket_b`, `mission`) VALUES('$war_id', '$StartTime', '$EndTime', '$Game[organization]', $TargetInf[occupied], $reinforcements, 1, 'Atk<$target>');");
 		mysql_query($sql);
 
-		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_organization` SET `funds` = `funds`-$Cost, `optmissioni` = '$war_id', `operation` = '$Opt_Name' WHERE `id` = '$Game[organization]' LIMIT 1;");
+		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_organization` SET `funds` = `funds`-$Cost, `optmissioni` = '$war_id', `operation` = '$Opt_Name', `lastopt` = '$now', `wartime` = $wartime+'1' WHERE `id` = '$Game[organization]' LIMIT 1;");
 		mysql_query($sql);
 
 		echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-		echo "<p align=center style=\"font-size: 16pt\">¾Ôª§µo°Ê¤F¡I<input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		echo "<p align=center style=\"font-size: 16pt\">æˆ°çˆ­ç™¼å‹•äº†ï¼<input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
+		
+		
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 		echo "</form>";
 	}
 
-	else {echo "¥¼©w¸q°Ê§@¡I";}
+	else {echo "æœªå®šç¾©å‹•ä½œï¼";}
 }//End of CityAtk
 
 
 elseif ($mode == 'TakeCity'){
-	echo "<font style=\"font-size: 12pt\">¦û»â°Ï°ì</font>";
+	echo "<font style=\"font-size: 12pt\">ä½”é ˜å€åŸŸ</font>";
 	printTHR();
-	if (!$Game['organization'] || $Game['rights'] != '1'){echo "§AªºÅv¤O¤£¨¬¡C";postFooter();exit;}
-	if ($Game['status']){echo "­×²z¤¤¡AµLªk¦û»â°Ï°ì¡C";postFooter();exit;}
+	if (!$Game['organization'] || !$Game['rights']){echo "ä½ çš„æ¬ŠåŠ›ä¸è¶³ã€‚";postFooter();exit;}
+	if ($Game['status']){echo "ä¿®ç†ä¸­ï¼Œç„¡æ³•ä½”é ˜å€åŸŸã€‚";postFooter();exit;}
 	$Area = ReturnMap("$Gen[coordinates]");
 
 	$sql = ("SELECT `mission`,`t_start`,`t_end`,`ticket_a`,`victory` FROM `".$GLOBALS['DBPrefix']."phpeb_user_war` WHERE `war_id` = '".$Pl_Org['optmissioni']."' AND `t_end` > '$CFU_Time' LIMIT 1;");
@@ -959,40 +1110,40 @@ elseif ($mode == 'TakeCity'){
 	}
 	unset($tmp);
 
-	if(!$Opt_Info) $ErrorFlag .= 'µLªk¨ú±o¾Ô°«¸ê°T©Î¾Ôª§¤w§¹µ²¡I<br>';
-	if($Mission_Area_Id != $Gen['coordinates']) $ErrorFlag .= 'µLªk¦û»â°Ï°ì¡A¨S¦³¹ï¦¹¦a°Ï«Å¾Ô¡I<br>';
-	if ($Opt_Info['victory'] != 1){$ErrorFlag .= "µLªk¦û»â°Ï°ì¡A¤´¥¼³Ó¥X¾Ôª§¡C<br>";}
-	if ($Area["Sys"]["occprice"] > $Pl_Org['funds'])$ErrorFlag .= "²ÕÂ´¸êª÷¤£¨¬¡I¤£¯à¦û»â°Ï°ì¡C<br>";
+	if(!$Opt_Info) $ErrorFlag .= 'ç„¡æ³•å–å¾—æˆ°é¬¥è³‡è¨Šæˆ–æˆ°çˆ­å·²å®Œçµï¼<br>';
+	if($Mission_Area_Id != $Gen['coordinates']) $ErrorFlag .= 'ç„¡æ³•ä½”é ˜å€åŸŸï¼Œæ²’æœ‰å°æ­¤åœ°å€å®£æˆ°ï¼<br>';
+	if ($Opt_Info['victory'] != 1){$ErrorFlag .= "ç„¡æ³•ä½”é ˜å€åŸŸï¼Œä»æœªå‹å‡ºæˆ°çˆ­ã€‚<br>";}
+	if ($Area["Sys"]["occprice"] > $Pl_Org['funds'])$ErrorFlag .= "çµ„ç¹”è³‡é‡‘ä¸è¶³ï¼ä¸èƒ½ä½”é ˜å€åŸŸã€‚<br>";
 
 	if($ErrorFlag) {echo $ErrorFlag;postFooter();exit;}
 
 	if ($actionb == 'A'){
 	echo "<form action=organization.php?action=TakeCity method=post name=mainform>";
 	echo "<input type=hidden value='B' name=actionb>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 
 	echo "<script language=\"Javascript\">";
 	echo "function cfmOccupy(){";
-	echo "if ($Pl_Org[funds] < ".$Area["Sys"]["occprice"]."){alert('²ÕÂ´¸êª÷¤£¨¬¡I');return false;}";
-	echo "else if (confirm('¥H ".$Area["Sys"]["occprice"]." ¦û¦a¦¹¦a°Ï, ¥i¥H¶Ü¡H')==true){return true;}";
+	echo "if ($Pl_Org[funds] < ".$Area["Sys"]["occprice"]."){alert('çµ„ç¹”è³‡é‡‘ä¸è¶³ï¼');return false;}";
+	echo "else if (confirm('ä»¥ ".$Area["Sys"]["occprice"]." ä½”åœ°æ­¤åœ°å€, å¯ä»¥å—ï¼Ÿ')==true){return true;}";
 	echo "else {return false;}";
 	echo "}</script>";
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr><td align=left width=280><b style=\"font-size: 10pt;\">¦û»â¦¹°Ï°ì: </b></td></tr>";
+	echo "<tr><td align=left width=280><b style=\"font-size: 10pt;\">ä½”é ˜æ­¤å€åŸŸ: </b></td></tr>";
 
-	echo "<tr><td align=left width=280><b style=\"font-size: 10pt;\">°Ï°ì: $Gen[coordinates]</b><br>";
-	echo "²ÕÂ´¸êª÷: ".number_format($Pl_Org['funds'])."¤¸<br>";
-	echo "¦û»â¶O¥Î: ".number_format($Area["Sys"]["occprice"])."¤¸<br>";
+	echo "<tr><td align=left width=280><b style=\"font-size: 10pt;\">å€åŸŸ: $Gen[coordinates]</b><br>";
+	echo "çµ„ç¹”è³‡é‡‘: ".number_format($Pl_Org['funds'])."å…ƒ<br>";
+	echo "ä½”é ˜è²»ç”¨: ".number_format($Area["Sys"]["occprice"])."å…ƒ<br>";
 	$Area_At = $Area["Sys"]["at"];
 	$Area_De = $Area["Sys"]["de"];
 	$Area_Ta = $Area["Sys"]["ta"];
-	echo "­n¶ëªì´Á¯à¤O:<br>HP¤W­­: ". $Area["Sys"]["hpmax"];
-	echo "<br>§ğÀ»¤O: $Area_At ¨¾½Ã¤O: $Area_De ©R¤¤: $Area_Ta<br>";
+	echo "è¦å¡åˆæœŸèƒ½åŠ›:<br>HPä¸Šé™: ". $Area["Sys"]["hpmax"];
+	echo "<br>æ”»æ“ŠåŠ›: $Area_At é˜²è¡›åŠ›: $Area_De å‘½ä¸­: $Area_Ta<br>";
 	GetWeaponDetails($Area["Sys"]["wepa"],'FortDfltWep');
-	echo "¨¾¿mªZ¾¹: $FortDfltWep[name]<br>";
-	echo "<input type=submit value=¦û»â¦¹°Ï°ì onClicl=\"return cfmOccupy()\">";
+	echo "é˜²ç¦¦æ­¦å™¨: $FortDfltWep[name]<br>";
+	echo "<input type=submit value=ä½”é ˜æ­¤å€åŸŸ onClicl=\"return cfmOccupy()\">";
 	echo "</td></tr>";
 	echo "</form></table>";
 	}
@@ -1001,11 +1152,11 @@ elseif ($mode == 'TakeCity'){
 	if($Opt_Info['ticket_a'] < 1) $Opt_Info['ticket_a'] = 1;
 	elseif($Opt_Info['ticket_a'] > $ticketMax) $Opt_Info['ticket_a'] = $ticketMax;
 
-	$HistoryWrite = "<font color=\"$Pl_Org[color]\">$Pl_Org[name]</font> ¦¨¥\\§â $Gen[coordinates] °Ï°ì¦û»â¤F¡I";
+	$HistoryWrite = "<font color=\"$Pl_Org[color]\">$Pl_Org[name]</font> æˆåŠŸæŠŠ $Gen[coordinates] å€åŸŸä½”é ˜äº†ï¼";
 	WriteHistory($HistoryWrite);
 
 	unset($sql,$query);
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_map` SET `hpmax` = '".$Area["Sys"]["hpmax"]."' ,`hp`=`hpmax` ,`at` ='".$Area["Sys"]["at"]."', `de` ='".$Area["Sys"]["de"]."', `ta` ='".$Area["Sys"]["ta"]."', `wepa` ='".$Area["Sys"]["wepa"]."', `occupied` = '$Game[organization]', `tickets` = '' WHERE `map_id` = '$Gen[coordinates]' LIMIT 1;");
+	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_map` SET `hpmax` = '".$Area["Sys"]["hpmax"]."' ,`hp`=`hpmax` ,`at` ='".$Area["Sys"]["at"]."', `de` ='".$Area["Sys"]["de"]."', `ta` ='".$Area["Sys"]["ta"]."', `wepa` ='".$Area["Sys"]["wepa"]."', `occupied` = '$Game[organization]', `tickets` = '', `defenders` = '' WHERE `map_id` = '$Gen[coordinates]' LIMIT 1;");
 	$query = mysql_query($sql) or die(mysql_error());
 
 	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_organization` SET `funds` = `funds`-".$Area["Sys"]["occprice"].", `optmissioni` = 0, `operation` = '' WHERE `id` = '$Game[organization]' LIMIT 1;");
@@ -1015,17 +1166,95 @@ elseif ($mode == 'TakeCity'){
 	$query = mysql_query($sql);
 
 	echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-	echo "<p align=center style=\"font-size: 16pt\">¦¨¥\\¦û»â¤F¦¹°Ï°ì¡I<input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	echo "<p align=center style=\"font-size: 16pt\">æˆåŠŸä½”é ˜äº†æ­¤å€åŸŸï¼<input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 	}
 
-	else {echo "¥¼©w¸q°Ê§@¡I";}
+	else {echo "æœªå®šç¾©å‹•ä½œï¼";}
 }//End of TakeCity
 
-else {echo "¥¼©w¸q°Ê§@¡I";}
+elseif ($mode == 'GiveUp'){
+        echo "<font style=\"font-size: 12pt\">æ”¾æ£„ä½”é ˜å€åŸŸ</font>";
+        echo "<hr width=80% style=\"filter:alpha(opacity=100,finishopacity=40,style=2)\">";
+        if (!$Game['organization'] || !$Game['rights']){echo "ä½ çš„æ¬ŠåŠ›ä¸è¶³ã€‚";postFooter;exit;}
+        $Area = ReturnMap("$Gen[coordinates]");
+		
+	$sql = ("SELECT `mission`,`t_start`,`t_end`,`ticket_a`,`victory`,`war_id` FROM `".$GLOBALS['DBPrefix']."phpeb_user_war` WHERE `war_id` = '".$Pl_Org['optmissioni']."' AND `t_end` > '$CFU_Time' LIMIT 1;");
+	$query = mysql_query($sql);
+	$Opt_Info = mysql_fetch_array($query);
+	
+	$ErrorFlag = '';
+	$tmp = array();
+	if(preg_match('/Atk<([0-9a-zA-Z]+)>/', $Opt_Info['mission'], $tmp)){
+		$Mission_Area_Id = $tmp[1];
+	}else{
+		$Mission_Area_Id = '';
+	}
+	unset($tmp);
+		
+        if ($Mission_Area_Id != $Gen['coordinates'] && $CFU_Time > $Opt_Info['war_id']){
+			echo "ç„¡æ³•æ”¾æ£„ä½”é ˜ï¼Œæ²’æœ‰å°æ­¤åœ°å€ç™¼å‹•ä½”é ˜ã€‚";
+			postFooter();
+			exit;
+		}
+
+        if ($actionb == 'A'){
+        echo "<form action=organization.php?action=GiveUp method=post name=mainform>";
+        echo "<input type=hidden value='B' name=actionb>";
+        echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
+
+        echo "<script language=\"Javascript\">";
+        echo "function cfmGiveup(){";
+        echo "if (confirm('æ”¾æ£„ä½”é ˜æ­¤å€åŸŸå—ï¼Ÿ')==true){return true;}";
+        echo "else {return false;}";
+        echo "}</script>";
+        echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
+        echo "<tr><td align=left width=280><b style=\"font-size: 10pt;\">æ”¾æ£„ä½”é ˜æ­¤å€åŸŸ: </b></td></tr>";
+
+        echo "<tr><td align=left width=280><b style=\"font-size: 10pt;\">å€åŸŸ: $Gen[coordinates]</b><br>";
+        echo "åœ‹å®¶è³‡é‡‘: ".number_format($Pl_Org['funds'])."å…ƒ<br>";
+        echo "æ”¾æ£„ä½”é ˜è²»ç”¨: 1,000,000å…ƒ<br>";
+        echo "<input type=submit value=æ”¾æ£„ä½”é ˜æ­¤å€åŸŸ onClick=\"return cfmGiveup()\">";
+        echo "</td></tr>";
+        echo "</form></table>";
+        }
+        elseif ($actionb == 'B'){
+		
+		$checkt = ("SELECT `t_end` FROM `".$GLOBALS['DBPrefix']."phpeb_user_war` WHERE `war_id` = '".$Pl_Org['optmissioni']."'");
+        $qcheck = mysql_query($checkt);
+        $times = mysql_fetch_array($qcheck);
+		
+		if($times['t_end'] < $CFU_Time){
+			$fee = 0;
+			$text = "æ”¾æ£„å·²éæ™‚çš„æˆ°çˆ­ï¼Œç„¡é ˆç¹³äº¤æŠ•é™è²»ç”¨ã€‚";
+		} else if($times['t_end'] > $CFU_Time){
+			$fee = 1000000;
+			$text = "ç¹³äº¤æŠ•é™è²»ç”¨ $1000000ã€‚";
+		}
+		
+        $HistoryWrite = "<font color=\"$Pl_Org[color]\">$Pl_Org[name]</font> æ”¾æ£„ä½”é ˜ $Gen[coordinates] å€åŸŸäº†ï¼";
+        WriteHistory($HistoryWrite);
+
+        $upsql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_organization` SET `operation` = '', `optmissioni` = '', `funds` = funds-$fee, `lastopt` = '0' WHERE `name` = '$Pl_Org[name]'");
+        mysql_query($upsql);
+		
+		$delsql = ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_war` WHERE `war_id` = '".$Pl_Org['optmissioni']."'");
+        mysql_query($delsql);
+
+        echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=Alpha>";
+        echo "<p align=center style=\"font-size: 16pt\">å·²æ”¾æ£„ä½”é ˜æ­¤å€åŸŸï¼<br> $text <br><input type=submit value=\"è¿”å›\" onClick=\"parent.Beta.location.replace('gen_info.php')\"></p>";
+        echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
+        echo "</form>";
+        }
+
+        else {echo "æœªå®šç¾©å‹•ä½œï¼";}
+}
+//End of GiveUp
+
+else {echo "æœªå®šç¾©å‹•ä½œï¼";}
 postFooter();
 echo "</body>";
 echo "</html>";

@@ -1,46 +1,31 @@
 <?php
+header('Content-Type: text/html; charset=utf-8');
 //-------------------------//-------------------------//-------------------------//
 //----------------------------         php-eb        ----------------------------//
-//-------------------------  Chat System Version 1.40  --------------------------//
+//--------------------------  Chat System Version 1.3  --------------------------//
 //---------------------------   Official Open Build   ---------------------------//
 //-------------------------//-------------------------//-------------------------//
 if (isset($_GET['action'])) $mode = $_GET['action'];
 elseif (isset($_POST['action'])) $mode = $_POST['action'];
 else $mode = '';
 
-$ErrMsg = (isset($ErrMsg)) ? (String) "$ErrMsg" : '';
-
 include('cfu.php');
 
+if (empty($PriTarget)) $PriTarget = 'Alpha';
+if (empty($SecTarget)) $SecTarget = 'Beta';
+if (empty($ThrTarget)) $ThrTarget = 'Chat';
 
-if(empty($rmPrcV)){
-	// Date in the past
-	header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-	// always modified
-	header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
- 	// HTTP/1.1
-	header("Cache-Control: no-store, no-cache, must-revalidate");
-	header("Cache-Control: post-check=0, pre-check=0", false);
-	// HTTP/1.0
-	header("Pragma: no-cache");
-	session_name("php-eb_Session");
-	session_set_cookie_params(0,mktime(0,0,0,12,31,2010),"/","php-eb_Gen_Session_hd47ula");
-	session_save_path("phpeb_session_dir");
-	session_start();
-	session_register("session_un");
-	session_register("session_pwd");
-	session_destroy();
-	echo "<html>";
-	echo "<head>";
-	echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">";
-	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=big5\">";
-	echo "<title>Endless Battle ~ php-eb - &copy; 2005-2008 v2Alliance</title>";
-	echo "</head>";
-}
-
+        echo "<html>";
+        echo "<head>";
+        echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">";
+        echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">";
+        echo "<title>ÁÑ°Áõ°ÁöÑÊà∞È¨• - ËÅäÂ§©ÂÆ§</title>";
+        echo "</head>";
+                
 if(!$mode){
-	if (strpos($HTTP_USER_AGENT, 'MSIE') !== false) $mode = 'default';
-	else $mode = "loginA";
+		session_start();
+        if(!isset($_SESSION['username']) || $_SESSION['username']==''){$mode = 'loginA';
+        }else {$mode = "default";}
 }
 if($mode == 'loginA'){
 echo "<frameset rows='270,*' framespacing=0 border=0 frameborder=0><frame name=\"chatmain\" scrolling=\"no\" src=\"chat.php?action=loginB\">";
@@ -57,338 +42,262 @@ echo "</script>";
 echo "<body bgcolor=\"#000000\" text=#FFFFFF link=#FFFFFF style=\"margin:0px 0px 0px 0px;\" oncontextmenu=\"return false;\">";
 echo "<form action=chat.php?action=entchat method=post name=chatmainer target=chatmain>";
 echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
-echo "<div align=center style=\"font-size:50px;font-family: 'Milano LET';color:#505050;filter:alpha(opacity=100,finishopacity=0,style=2);height:40px;background-color:#fff0f0;\">";
-echo "<b>php-eb Chatroom</b></div><hr style=\"filter: alpha(opacity=100,finishopacity=10,style=2);\">";
+echo "<div align=center style=\"font-size:40px;font-family: 'Milano LET';color:yellow;filter:alpha(opacity=100,finishopacity=0,style=2);height:40px;\">";
+echo "<b>ËÅäÂ§©ÂÆ§</b></div><hr style=\"filter: alpha(opacity=100,finishopacity=10,style=2);\">";
 echo "<table align=center border=1 cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
 echo "<tr>";
-echo "<td colspan=2 align=center style=\"font-size: 12pt;font-weight: Bold;\">µn§J≤·§—´«®t≤Œ</td>";
+echo "<td colspan=2 align=center style=\"font-size: 12pt;font-weight: Bold;\">ÁôªÂÖ•ËÅäÂ§©ÂÆ§Á≥ªÁµ±</td>";
 echo "</tr><tr>";
-echo "<td align=right>®œ•Œ™Ã¶W∫Ÿ:</td>";
-echo "<td><input type=text name=Pl_Value[USERNAME] id=namec style=\"height:21px; color:white; font-size:16px; background: transparent; border:0px solid; \" size=\"20\"></td>";
+echo "<td align=right>‰ΩøÁî®ËÄÖÂêçÁ®±:</td>";
+echo "<td><input type=text name=username id=namec style=\"height:21px; color:white; font-size:16px; background: transparent; border:0px solid; \" size=\"20\"></td>";
 echo "</tr><tr>";
-echo "<td align=right>±KΩX:</td>";
-echo "<td><input type=password name=Pl_Value[PASSWORD] id=passc  style=\"height:21px; color:white; font-size:16px; background: transparent; border:0px solid; \" size=\"20\"></td>";
+echo "<td align=right>ÂØÜÁ¢º:</td>";
+echo "<td><input type=password name=password id=passc style=\"height:21px; color:white; font-size:16px; background: transparent; border:0px solid; \" size=\"20\"></td>";
 echo "</tr><tr><td colspan=2 align=center>";
-echo "<input type=submit value=\"µn§J\" onClick=\"proc();\">";
+echo "<input type=submit value=\"ÁôªÂÖ•\" name=login onClick=\"proc();\">";
 echo "</td></tr></table>";
 echo "</form>";
 echo "<form action=chat.php?action=display method=post name=procer target=proc>";
-echo "<input type=hidden value='' name=Pl_Value[USERNAME] id=namep>";
-echo "<input type=hidden value='' name=Pl_Value[PASSWORD] id=passp>";
 echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 exit;
 }
-if($mode != 'RemoteDisplay'){
-		$sql_ugnrli = ("SELECT username, password FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` WHERE username='". $Pl_Value['USERNAME'] ."'");
-		$UsrGenrl_Qr = mysql_query ($sql_ugnrli) or die ('ø˘ª~°I<br>•ºØ‡≥s±µ®ÏSQL∏ÍÆ∆Æw(PHPEB_ERROR: 001)'.$GLOBALS['DBPrefix'].':' . mysql_error());
-		$UsrGenrl = mysql_fetch_array($UsrGenrl_Qr);
-		if (!$UsrGenrl['username'] || ($UsrGenrl['password'] != md5($Pl_Value['PASSWORD']) && $UsrGenrl['password'] != $Pl_Value['PASSWORD']) || $UsrGenrl['username'] != $Pl_Value['USERNAME']){
-		echo "<center><br><br>®œ•Œ™Ã¶W∫Ÿ©Œ±KΩXø˘ª~°C<a href=\"index2.php\" target='_top' style=\"text-decoration: none\">¶^®Ï≠∫≠∂</a>";
-		postFooter();
-		exit;}
-}
+
+		if(isset($_POST['login'])){
+			session_start();
+			$_SESSION['username'] = $_POST['username'];
+			$_SESSION['password'] = $_POST['password'];
+			$_SESSION['timeauth'] = $_POST['TIMEAUTH'];
+			$_SESSION['username'] = mysql_real_escape_string($_SESSION[username]);
+			$_SESSION['password'] = mysql_real_escape_string($_SESSION[password]);
+		}
+		
+				session_start();
+				$U = $_SESSION['username'];
+				$P = $_SESSION['password'];
+		
+				$sql_ugnrli = ("SELECT username, password, acc_status FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` WHERE username='". $U ."'");
+                $UsrGenrl_Qr = mysql_query ($sql_ugnrli) or die ('ÈåØË™§ÔºÅ<br>Êú™ËÉΩÈÄ£Êé•Âà∞SQLË≥áÊñôÂ∫´(PHPEB_ERROR: 001)'.$GLOBALS['DBPrefix'].':' . mysql_error());
+                $UsrGenrl = mysql_fetch_array($UsrGenrl_Qr);
+                if (!$UsrGenrl['username'] || ($UsrGenrl['password'] != md5($P) && $UsrGenrl['password'] != $P) || $UsrGenrl['username'] != $U){
+                echo "<center><br><br>‰ΩøÁî®ËÄÖÂêçÁ®±ÊàñÂØÜÁ¢ºÈåØË™§„ÄÇ<br><a href=\"index.php\" target='_top' style=\"text-decoration: none\">ÂõûÂà∞È¶ñÈ†Å</a>";
+                postFooter();
+                exit;}
+				if ($UsrGenrl['acc_status'] == 2){
+                echo "<center><br><br>Â∏≥ËôüË¢´ÈéñÔºåË´ãËàáÁÆ°ÁêÜÂì°ËÅØÁµ°ÔºÅ<br><br><a href=\"http://ext4.me\" target='_top' style=\"text-decoration: none\">ÂõûÂà∞Ë´ñÂ£á</a>";
+                postFooter();
+                exit;}
 
 //Start FrameSet
 if($mode == 'default'){
 echo "<form action=chat.php?action=entchat method=post name=chatmainer target=chatmain>";
-echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
 echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 echo "<script language=\"JavaScript\">setTimeout(\"chatmainer.submit()\",0);</script>";
 echo "</form>";
 echo "<form action=chat.php?action=display method=post name=procer target=proc>";
-echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
 echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 echo "<script language=\"Javascript\">";
 echo "setTimeout(\"procer.submit()\",0);";
 echo "</script>";
-echo "<frameset rows='270,*' framespacing=0 border=0 frameborder=0><frame name=\"chatmain\" scrolling=\"no\" src=\"chat.php?action=entchat&usr=$Pl_Value[USERNAME]&pwd=$Pl_Value[PASSWORD]\">";
-echo "<frame name=\"proc\" scrolling=\"auto\" src=\"chat.php?action=display&usr=$Pl_Value[USERNAME]&pwd=$Pl_Value[PASSWORD]\"></frameset></html>";
+echo "<frameset rows='270,*' framespacing=0 border=0 frameborder=0><frame name=\"chatmain\" scrolling=\"no\" src=\"chat.php?action=entchat\">";
+echo "<frame name=\"proc\" scrolling=\"auto\" src=\"chat.php?action=display\"></frameset></html>";
 exit;
 }
-
-if(empty($rmPrcV)){
-	echo "<style type=\"text/css\">BODY {SCROLLBAR-FACE-COLOR: #ffffff;SCROLLBAR-3DLIGHT-COLOR: #d0d0d0; SCROLLBAR-ARROW-COLOR: #000000;  SCROLLBAR-HIGHLIGHT-COLOR: #A0A0A0;SCROLLBAR-TRACK-COLOR: #000000; SCROLLBAR-DARKSHADOW-COLOR: #000000; SCROLLBAR-BASE-COLOR: #505050;FONT-SIZE: 10px; FONT-FAMILY: \"Arial\",  \"∑s≤”©˙≈È\"; cursor:default}TD {FONT-SIZE: 9pt; FONT-FAMILY: \"Arial\", \"∑s≤”©˙≈È\"}A:visited {COLOR: #FFFFFF;}</style>";
-	if (empty($withoutbody)) echo "<body bgcolor=\"#000000\" text=#dcdcdc link=#dcdcdc style=\"margin:0px 0px 0px 0px;\" oncontextmenu=\"return false;\">";
-}
+        echo "<style type=\"text/css\">BODY {SCROLLBAR-FACE-COLOR: #ffffff;SCROLLBAR-3DLIGHT-COLOR: #d0d0d0; SCROLLBAR-ARROW-COLOR: #000000;  SCROLLBAR-HIGHLIGHT-COLOR: #A0A0A0;SCROLLBAR-TRACK-COLOR: #000000; SCROLLBAR-DARKSHADOW-COLOR: #000000; SCROLLBAR-BASE-COLOR: #505050;FONT-SIZE: 10px; FONT-FAMILY: \"Arial\",  \"Êñ∞Á¥∞ÊòéÈ´î\"; cursor:default}TD {FONT-SIZE: 9pt; FONT-FAMILY: \"Arial\", \"Êñ∞Á¥∞ÊòéÈ´î\"}A:visited {COLOR: #FFFFFF;}</style>";
+        if (empty($withoutbody)) echo "<body bgcolor=\"#000000\" text=#dcdcdc link=#dcdcdc style=\"margin:0px 0px 0px 0px;\" oncontextmenu=\"return false;\">";
 
 if($mode == 'entchat'){
 
-	echo "<form action=chat.php?action=speak method=post name=chatenter target=proc>";
-	echo "<input type=hidden value='none' name=actionb>";
-	echo "<input type=hidden value='0' name=tempvar>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
-	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
-	echo "<div align=center style=\"font-size:50px;font-family: 'Milano LET';color:#505050;filter:alpha(opacity=100,finishopacity=0,style=2);height:40px;background-color:#fff0f0;\">";
-	echo "<b>php-eb Chatroom</b></div><hr style=\"filter: alpha(opacity=100,finishopacity=10,style=2);\">";
+        echo "<form action=chat.php?action=speak method=post name=chatenter target=proc>";
+        echo "<input type=hidden value='none' name=actionb>";
+        echo "<input type=hidden value='0' name=tempvar>";
+        echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
+        echo "<div align=center style=\"font-size:40px;font-family: 'Milano LET';color:yellow;filter:alpha(opacity=100,finishopacity=0,style=2);height:40px;\">";
+        echo "<b>ËÅäÂ§©ÂÆ§</b></div><hr style=\"filter: alpha(opacity=100,finishopacity=10,style=2);\">";
 
 //Draw Table for Entering Text
-	echo "<style type=\"text/css\">.sc {SCROLLBAR-FACE-COLOR: #ffffff;SCROLLBAR-3DLIGHT-COLOR: #d0d0d0; SCROLLBAR-ARROW-COLOR: #000000;  SCROLLBAR-HIGHLIGHT-COLOR: #A0A0A0;SCROLLBAR-TRACK-COLOR: #000000; SCROLLBAR-DARKSHADOW-COLOR: #000000; SCROLLBAR-BASE-COLOR: #505050;}</style>";
+        echo "<style type=\"text/css\">.sc {SCROLLBAR-FACE-COLOR: #ffffff;SCROLLBAR-3DLIGHT-COLOR: #d0d0d0; SCROLLBAR-ARROW-COLOR: #000000;  SCROLLBAR-HIGHLIGHT-COLOR: #A0A0A0;SCROLLBAR-TRACK-COLOR: #000000; SCROLLBAR-DARKSHADOW-COLOR: #000000; SCROLLBAR-BASE-COLOR: #505050;}</style>";
+        
+        
+        echo "<script language=\"Javascript\">";
+        echo "function hideSelect(ob){";
+        echo "if(ob == 'players'){selcol.style.visibility='visible';selcol.style.position='relative';chatenter.org.style.visibility='hidden';chatenter.org.style.position='absolute';chatenter.players.style.visibility='visible';chatenter.players.style.position='relative';chatenter.entname.style.visibility='visible';chatenter.entname.style.position='relative';}";
+        echo "else if(ob == 'org'){chatenter.entname.style.visibility='hidden';chatenter.entname.style.position='absolute';selcol.style.visibility='visible';selcol.style.position='relative';chatenter.players.style.visibility='hidden';chatenter.players.style.position='absolute';chatenter.org.style.visibility='visible';chatenter.org.style.position='relative';}";
+        echo "else{selcol.style.visibility='hidden';chatenter.entname.style.visibility='hidden';chatenter.entname.style.position='absolute';selcol.style.position='absolute';chatenter.players.style.visibility='hidden';chatenter.players.style.position='absolute';chatenter.org.style.visibility='hidden';chatenter.org.style.position='absolute';}";
+        echo "}function vldSubmit(){";
+        echo "if (!chatenter.message.value){alert(\"Ë´ãËº∏ÂÖ•‰Ω†ÁöÑË™™Ë©±„ÄÇ\");return false;}";
+        echo "else if (chatenter.tempvar.value == 1 && !chatenter.players.value && (!chatenter.entname.value || chatenter.entname.value == '<<ÊâãÂãïËº∏ÂÖ•>>')){alert(\"Ë´ãÊåáÂÆöË™™Ë©±ÁõÆÊ®ô‰∫∫Áâ©„ÄÇ\");return false;}";
+        echo "else if (chatenter.tempvar.value == 2 && !chatenter.org.value){alert(\"Ë´ãÊåáÂÆöË™™Ë©±ÁõÆÊ®ôÁµÑÁπî„ÄÇ\");return false;}";
+        echo "else {chatenter.action='chat.php?action=speak';chatenter.SbmtBtn.value='Ë´ãÁ®çÁ≠â ".$SpeakIntv." Áßí...';chatenter.SbmtBtn.disabled=true;chatenter.submit();chatenter.message.value='';setTimeout(\"chatenter.SbmtBtn.disabled=false;chatenter.SbmtBtn.value='Á¢∫ Ë™ç ÈÄÅ Âá∫';\",".round($SpeakIntv*1000).");}}</script>";
+        
+        echo "<table align=center border=1 cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
+        echo "<tr width=300>";
+        echo "<td colspan=4>";
+        echo " ËÅäÂ§©Á≥ªÁµ±";
+        echo "</td>";
+        echo "<td rowspan=4 valign=top align=left width=150 id=selcol style=\"visibility:hidden;position:absolute\">";
+        echo "<select name=players size=10 class=sc style=\"visibility:hidden;position:absolute;width: 100%;font-size: 9pt; color: #ffffff; background-color: #000000;\">";
+        
+        $SQL_Users = ("SELECT `username`,`gamename` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `username` != '$_SESSION[username]' ORDER BY `gamename`");
+        $Query_Users = mysql_query($SQL_Users);
+        
+        while($Users = mysql_fetch_row($Query_Users)){
+        echo "<option value='".$Users[0]."'>".$Users[1].' ';}
+        echo "</select><input type=text name=\"entname\" value=\"<<ÊâãÂãïËº∏ÂÖ•>>\" style=\"visibility:hidden;position:absolute;width: 100%;font-size: 9pt; color: #ffffff; background-color: #000000;text-align: center\" onfocus=\"this.value='';this.style.textAlign='left'\" onmouseover=\"this.style.color='yellow'\" onmouseout=\"this.style.color='FFFFFF'\">";
 
+        $SQL_Orgs = ("SELECT `id`,`name` FROM `".$GLOBALS['DBPrefix']."phpeb_user_organization`");
+        $Query_Orgs = mysql_query($SQL_Orgs);
 
-	echo "<script language=\"Javascript\">";
-	echo "function hideSelect(ob){";
-	echo "if(ob == 'players'){selcol.style.visibility='visible';selcol.style.position='relative';chatenter.org.style.visibility='hidden';chatenter.org.style.position='absolute';chatenter.players.style.visibility='visible';chatenter.players.style.position='relative';chatenter.entname.style.visibility='visible';chatenter.entname.style.position='relative';}";
-	echo "else if(ob == 'org'){chatenter.entname.style.visibility='hidden';chatenter.entname.style.position='absolute';selcol.style.visibility='visible';selcol.style.position='relative';chatenter.players.style.visibility='hidden';chatenter.players.style.position='absolute';chatenter.org.style.visibility='visible';chatenter.org.style.position='relative';}";
-	echo "else{selcol.style.visibility='hidden';chatenter.entname.style.visibility='hidden';chatenter.entname.style.position='absolute';selcol.style.position='absolute';chatenter.players.style.visibility='hidden';chatenter.players.style.position='absolute';chatenter.org.style.visibility='hidden';chatenter.org.style.position='absolute';}";
-	echo "}function vldSubmit(){";
-	echo "if (!chatenter.message.value){alert(\"Ω–øÈ§JßA™∫ª°∏‹°C\");return false;}";
-	echo "else if (chatenter.tempvar.value == 1 && !chatenter.players.value && (!chatenter.entname.value || chatenter.entname.value == '<<§‚∞ øÈ§J>>')){alert(\"Ω–´¸©wª°∏‹•ÿº–§H™´°C\");return false;}";
-	echo "else if (chatenter.tempvar.value == 2 && !chatenter.org.value){alert(\"Ω–´¸©wª°∏‹•ÿº–≤’¬¥°C\");return false;}";
-	echo "else {chatenter.action='chat.php?action=speak';chatenter.SbmtBtn.value='Ω–µyµ• ".$SpeakIntv." ¨Ì...';chatenter.SbmtBtn.disabled=true;chatenter.submit();chatenter.message.value='';setTimeout(\"chatenter.SbmtBtn.disabled=false;chatenter.SbmtBtn.value='ΩT ª{ ∞e •X';\",".round($SpeakIntv*1000).");}}</script>";
+        echo "<select name=org size=12 class=sc style=\"visibility:hidden;position:absolute;width: 100%;font-size: 9pt; color: #ffffff; background-color: #000000;\">";
+        
+        while($Orgs = mysql_fetch_row($Query_Orgs)){
+        echo "<option value='".$Orgs[0]."'>".$Orgs[1].' ';}
+        
+        echo "</select>";
+        echo "</td>";
+        echo "</tr>";
+        echo "<tr>";
+        echo "<td colspan=4 style=\"border-bottom-style:none;\">";
+                echo " Ë´ãËº∏ÂÖ•‰Ω†ÁöÑË™™Ë©±: <br><center><textarea class=sc name=\"message\" rows=5 wrap=\"hard\" cols=36 style=\"font-size: 9pt; color: #ffffff; border: 1px solid;border-color: #7F7F7F; background-color: #000000;\">";
+                echo "</textarea></center>";
+        echo "Ë™™Ë©±Â∞çÂÉè:</td>";
+        echo "</tr>";
+        echo "<tr style=\"padding-left: 8px\"><td style=\"border-bottom-style:none;border-top-style:none;border-right-style:none;\"><input checked type=radio value='0' name=type onClick=\"hideSelect('');tempvar.value='0';\">ÂÖ®È†ª</td>";
+        echo "<td style=\"border-bottom-style:none;border-top-style:none;border-left-style:none;border-right-style:none;\"><input type=radio value='1' name=type onClick=\"hideSelect('players');tempvar.value='1';\">Áé©ÂÆ∂</td>";
+        echo "<td style=\"border-bottom-style:none;border-top-style:none;border-left-style:none;border-right-style:none;\"><input type=radio value='2' name=type onClick=\"hideSelect('org');tempvar.value='2';\">ÁµÑÁπî</td>";
+        echo "<td style=\"border-bottom-style:none;border-top-style:none;border-left-style:none;\"><input type=radio value='3' name=type onClick=\"hideSelect('');tempvar.value='3';\" disabled>ÊãçË≥£</td></tr>";
+        
+        echo "<tr><td colspan=4 style=\"border-top-style:none;\" align=center><input style=\"font-size: 9pt; color: #ffffff; background-color: #000000;\" type=button value='Á¢∫ Ë™ç ÈÄÅ Âá∫' onClick='vldSubmit();' onmouseover=\"this.style.color='yellow'\" onmouseout=\"this.style.color='FFFFFF'\" name=SbmtBtn>";
+        echo "<input style=\"font-size: 9pt; color: #ffffff; background-color: #000000;\" type=button value='Âà∑ Êñ∞ Ë≥á Ë®ä' onClick=\"chatenter.action='chat.php?action=display';chatenter.submit()\" onmouseover=\"this.style.color='yellow'\" onmouseout=\"this.style.color='FFFFFF'\"></td></tr>";
+        
+        echo "</table>";
 
-	echo "<table align=center border=1 cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr width=300>";
-	echo "<td colspan=4>";
-	echo "&nbsp;≤·§—®t≤Œ";
-	echo "</td>";
-	echo "<td rowspan=4 valign=top align=left width=150 id=selcol style=\"visibility:hidden;position:absolute\">";
-	echo "<select name=players size=10 class=sc style=\"visibility:hidden;position:absolute;width: 100%;font-size: 9pt; color: #ffffff; background-color: #000000;\">";
-
-	$SQL_Users = ("SELECT `username`,`gamename` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `username` != '$Pl_Value[USERNAME]' ORDER BY `gamename`");
-	$Query_Users = mysql_query($SQL_Users);
-
-	while($Users = mysql_fetch_row($Query_Users)){
-	echo "<option value='".$Users[0]."'>".$Users[1].' ';}
-	echo "</select><input type=text name=\"entname\" value=\"<<§‚∞ øÈ§J>>\" style=\"visibility:hidden;position:absolute;width: 100%;font-size: 9pt; color: #ffffff; background-color: #000000;text-align: center\" onfocus=\"this.value='';this.style.textAlign='left'\" onmouseover=\"this.style.color='yellow'\" onmouseout=\"this.style.color='FFFFFF'\">";
-
-	$SQL_Orgs = ("SELECT `id`,`name` FROM `".$GLOBALS['DBPrefix']."phpeb_user_organization`");
-	$Query_Orgs = mysql_query($SQL_Orgs);
-
-	echo "<select name=org size=12 class=sc style=\"visibility:hidden;position:absolute;width: 100%;font-size: 9pt; color: #ffffff; background-color: #000000;\">";
-
-	while($Orgs = mysql_fetch_row($Query_Orgs)){
-	echo "<option value='".$Orgs[0]."'>".$Orgs[1].' ';}
-
-	echo "</select>";
-	echo "</td>";
-	echo "</tr>";
-	echo "<tr>";
-	echo "<td colspan=4 style=\"border-bottom-style:none;\">";
-		echo "&nbsp;Ω–øÈ§JßA™∫ª°∏‹: <br><center><textarea class=sc name=\"message\" rows=5 wrap=\"hard\" cols=36 style=\"font-size: 9pt; color: #ffffff; border: 1px solid;border-color: #7F7F7F; background-color: #000000;\">";
-		echo "</textarea></center>";
-	echo "ª°∏‹πÔ∂H:</td>";
-	echo "</tr>";
-	echo "<tr style=\"padding-left: 8px\"><td style=\"border-bottom-style:none;border-top-style:none;border-right-style:none;\"><input checked type=radio value='0' name=type onClick=\"hideSelect('');tempvar.value='0';\">•˛¿W</td>";
-	echo "<td style=\"border-bottom-style:none;border-top-style:none;border-left-style:none;border-right-style:none;\"><input type=radio value='1' name=type onClick=\"hideSelect('players');tempvar.value='1';\">™±Æa</td>";
-	echo "<td style=\"border-bottom-style:none;border-top-style:none;border-left-style:none;border-right-style:none;\"><input type=radio value='2' name=type onClick=\"hideSelect('org');tempvar.value='2';\">≤’¬¥</td>";
-	echo "<td style=\"border-bottom-style:none;border-top-style:none;border-left-style:none;\"><input type=radio value='3' name=type onClick=\"hideSelect('');tempvar.value='3';\" disabled>©ÁΩÊ</td></tr>";
-
-	echo "<tr><td colspan=4 style=\"border-top-style:none;\" align=center><input style=\"font-size: 9pt; color: #ffffff; background-color: #000000;\" type=button value='ΩT ª{ ∞e •X' onClick='vldSubmit();' onmouseover=\"this.style.color='yellow'\" onmouseout=\"this.style.color='FFFFFF'\" name=SbmtBtn>";
-	echo "<input style=\"font-size: 9pt; color: #ffffff; background-color: #000000;\" type=button value='®Í ∑s ∏Í ∞T' onClick=\"chatenter.action='chat.php?action=display';chatenter.submit()\" onmouseover=\"this.style.color='yellow'\" onmouseout=\"this.style.color='FFFFFF'\"></td></tr>";
-
-	echo "</table>";
-
-	echo "<hr style=\"filter: alpha(opacity=100,finishopacity=10,style=2);\">";
+        echo "<hr style=\"filter: alpha(opacity=100,finishopacity=10,style=2);\">";
 }
 elseif($mode == 'speak' || $mode == 'display'){
-	if(empty($rmPrcV)){
-	echo "<form action=chat.php?action=speak method=post name=chatenter target=proc>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
-	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
-	echo "<script language=\"Javascript\">";
-	echo "setTimeout(\"chatenter.submit()\",".intval($ChatAutoRefresh*1000).");";
-	echo "</script>";
-	}
+        echo "<form action=chat.php?action=speak method=post name=chatenter target=proc>";
+        echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
+        echo "<script language=\"Javascript\">";
+        echo "setTimeout(\"chatenter.submit()\",".intval($ChatAutoRefresh*1000).");";
+        echo "</script>";
 
-	if ($ChatSave){
-	$Del_Prep = ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_chat` WHERE $CFU_Time - c_time > $ChatSave");
-	mysql_query($Del_Prep);}
+        if ($ChatSave){
+        $Del_Prep = ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_chat` WHERE $CFU_Time - c_time > $ChatSave");
+        mysql_query($Del_Prep);}
 
 if($mode == 'speak'){
 unset($M,$T);
-$type = (isset($type)) ? $type : '';
-if (empty($message)){$ErrMsg = "Ω–øÈ§JßA™∫ª°∏‹°C<br>";}
-if ($type == 1 && !$players && (!$entname || $entname == '<<§‚∞ øÈ§J>>'))$ErrMsg .= "Ω–´¸©wª°∏‹•ÿº–§H™´°C<br>";
-elseif ($type == 2 && !$org && $org != 0)$ErrMsg .= "Ω–´¸©wª°∏‹•ÿº–≤’¬¥°C<br>";}
+if (!$message){$ErrMsg = "Ë´ãËº∏ÂÖ•‰Ω†ÁöÑË™™Ë©±„ÄÇ<br>";}
+if ($type == 1 && !$players && (!$entname || $entname == '<<ÊâãÂãïËº∏ÂÖ•>>'))$ErrMsg .= "Ë´ãÊåáÂÆöË™™Ë©±ÁõÆÊ®ô‰∫∫Áâ©„ÄÇ<br>";
+elseif ($type == 2 && !$org && $org != 0)$ErrMsg .= "Ë´ãÊåáÂÆöË™™Ë©±ÁõÆÊ®ôÁµÑÁπî„ÄÇ<br>";}
+
 if (!$ErrMsg && $mode == 'speak'){
-	$players = (isset($players)) ? $players : '' ;
-	if(strpos($message,'phpeb_user_') !== false || strpos($message,'phpeb_sys_') !== false) {echo "<center><br><br>Fatal Error<br><br>";exit;}
-	$FormStr = array("\t",'   ','  ','"',"'",
-			'<','>','-','+','*',
-			',','.',
-			'(',')','ßCØ‡•J','§K§Ω','§K±C','ßA∂˝∂˝','∂˝™∫','§k∞®•’§c','∑F',
-			'Œxπß','§≤µÛ','Œx','ºø','§≤','ßA¶—•¿','±z¶—•¿',
-			'@@@@@');
-	$ToStr = array(	'&nbsp; &nbsp; &nbsp; &nbsp; ','&nbsp; &nbsp;','&nbsp;&nbsp;','&quot;','&#39;',
-			'&lt;','&gt;','&#45;','&#43;','&#42;',
-			'&#44;','&#46;',
-			'&#40;','&#41;','','','','','','','',
-			'','','','','','','',
-			' ');
-	$M = nl2br(str_replace($FormStr,$ToStr,$message));
-	$message = addslashes($message);
-	$M = preg_replace("/((f.ck)|(fu.k)|(fuc.)|(shit)|(sh\|t)|(sh1t)|(shlt)|(fxxk)|(sucker)|(bitch)|(asshole)|(fucker)|(motherfucker))+/i",' ',$M);
-	if($type == 1){
-		$restriction = array("|","`","'","--","\"","\\");
-		$entname = str_replace($restriction,'',$entname);
-		$players = str_replace($restriction,'',$players);
-		if ($entname && $entname != '<<§‚∞ øÈ§J>>') {
-			$PrepSQL = ("SELECT `username` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `gamename` = '".($entname)."' LIMIT 1;");
-			$SelNameQuery = mysql_query($PrepSQL);
-			$SelName = mysql_fetch_row($SelNameQuery) or die("®S¶≥¶π§H™´¶W∫Ÿ");
-			$T = $SelName[0];
-		}
-		else $T = "$players";
-	}
-	elseif($type == 2) $T = "$org";
-	else {$type = 0;$T = '';}
-
-	$SQL_Prep = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_chat` (`c_user`, `c_time` , `c_msg` , `c_type` , `c_tar` ) VALUES ('$Pl_Value[USERNAME]', '$CFU_Time', '$M', '$type', '$T');");
-	mysql_query($SQL_Prep);
-
-	if(isset($rmPrcV)){
-		$rmAf = $rmChatAutoRefresh * 5;
-		echo "<script language=\"JavaScript\">";
-		echo "parent.document.chatUpdate = ".intval($rmAf + 100).";";
-		echo "parent.document.chatSpeaker.message.value = '';";
-		echo "parent.document.chatSpeaker.message.style.visibility = 'visible';";
-		echo "parent.document.chatUpdater.lastCID.value = 'last';";
-		echo "parent.document.chatUpdater.submit();";
-		echo "parent.document.chatUpdate = 0;";
-		echo "parent.chatDisplay_frame.document.getElementById('rmCht_Display').doScroll(\"pageDown\");";
-		echo "parent.document.chatSpeaker.message.focus();";
-		echo "parent.document.chatSpeaker.message.click();";
-		echo "</script>";
-		exit;
-	}
+        if(ereg('(phpeb_user_)+',$message) || ereg('(phpeb_sys_)+',$message)) {echo "<center><br><br>Fatal Error<br><br>";exit;}
+        $M = nl2br(str_replace("\\r\\n","\r\n",mysql_real_escape_string($message)));
+        $entname = str_replace("[\|\`(--)]+",'',$entname);
+        $players = str_replace("[\|\`(--)]+",'',$players);
+        if($type == 1)
+                {if ($entname && $entname != '<<ÊâãÂãïËº∏ÂÖ•>>') {
+                        $PrepSQL = ("SELECT `username` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `gamename` = '".($entname)."' LIMIT 1;");
+                        $SelNameQuery = mysql_query($PrepSQL);
+                        $SelName = mysql_fetch_row($SelNameQuery) or die("Ê≤íÊúâÊ≠§‰∫∫Áâ©ÂêçÁ®±");
+                        $T = $SelName[0];}
+                else $T = "$players";
+                }
+        elseif($type == 2) $T = "$org";
+        else {$type = 0;$T = '';}
+		
+		if($_SESSION['username'] == 'iop'){echo "<br>";exit;}
+        
+		$type = mysql_real_escape_string($type);
+		$T = mysql_real_escape_string($T);
+		
+        $SQL_Prep = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_chat` (`c_user`, `c_time` , `c_msg` , `c_type` , `c_tar` ) VALUES ('$_SESSION[username]', '$CFU_Time', '$M', '$type', '$T');");
+        mysql_query($SQL_Prep);
+        
 }
 //Start Viewing Section
+        
+        $L = ($LiS)?intval($LiS):'0';
+        $U = ($UiS)?intval($UiS):"$ChatShow";
+        
+        $SQL_PlData = ("SELECT `g`.`username` name,`organization` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` g,`".$GLOBALS['DBPrefix']."phpeb_user_general_info` n WHERE `g`.`username` = `n`.`username` AND `g`.`username` = '$_SESSION[username]' LIMIT 1;");
+        $PlData_Query = mysql_query($SQL_PlData);
+        $User = mysql_fetch_array($PlData_Query);
+        
+        $SQL_ChatData_All = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_chat` WHERE `c_type` = 0 ORDER BY `c_time` DESC LIMIT $L , $U ");
+        $ChatData_All_Query = mysql_query($SQL_ChatData_All);
+        
+        $SQL_ChatData_Priv = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_chat` WHERE ((`c_tar` = '$User[name]' OR `c_user` = '$User[name]') AND `c_type` = 1) ORDER BY `c_time` DESC LIMIT $L , $U ");
+        $ChatData_Priv_Query = mysql_query($SQL_ChatData_Priv);
+        
+        $SQL_ChatData_Orgz = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_chat` WHERE ((`c_tar` = '$User[organization]' OR `c_user` = '$User[name]') AND `c_type` = 2) ORDER BY `c_time` DESC LIMIT $L , $U ");
+        $ChatData_Orgz_Query = mysql_query($SQL_ChatData_Orgz);
 
-	$L = (isset($LiS))?intval($LiS):'0';
-	$U = (isset($UiS))?intval($UiS):"$ChatShow";
+        unset($MsgShow,$MSC);
+        $MsgShow = array();
+        $MSC = 0;
+        
+        //All Msg
 
-	$SQL_PlData = ("SELECT `g`.`username` name,`organization` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` g,`".$GLOBALS['DBPrefix']."phpeb_user_general_info` n WHERE `g`.`username` = `n`.`username` AND `g`.`username` = '$Pl_Value[USERNAME]' LIMIT 1;");
-	$PlData_Query = mysql_query($SQL_PlData);
-	$User = mysql_fetch_array($PlData_Query);
+        while($ChatData_All = mysql_fetch_array($ChatData_All_Query)){
+        if ($ChatData_All['c_user'] != $_SESSION['username'])
+        $Apre = ("SELECT `gamename`,`color` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` a,`".$GLOBALS['DBPrefix']."phpeb_user_general_info` b WHERE `a`.`username` = `b`.`username` AND `a`.`username` = '$ChatData_All[c_user]'");
+        elseif ($ChatData_All['c_user'] == $_SESSION['username'])
+        $Apre = ("SELECT `gamename`,`color` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` a,`".$GLOBALS['DBPrefix']."phpeb_user_general_info` b WHERE `a`.`username` = `b`.`username` AND `a`.`username` = '$ChatData_All[c_tar]'");
+        $Aq = mysql_query($Apre) or die(mysql_error());
+        $A = mysql_fetch_row($Aq);
+        $MSC ++;
+        $MsgShow["gen"] = "<br><div style=\"font-size: 10pt;margin-left: 10px;width: 100%\">$ChatData_All[c_msg]</div></font><hr width=50% align=left style=\"filter: alpha(opacity=100,finishopacity=10,style=1);\">";
 
-	$SQL_ChatData_All = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_chat` WHERE `c_type` = 0 ORDER BY `c_time` DESC LIMIT $L , $U ");
-	$ChatData_All_Query = mysql_query($SQL_ChatData_All);
+        if ($ChatData_All['c_user'] == $_SESSION['username'])
+                $MsgShow["All"][$MSC] = cfu_time_convert($ChatData_All['c_time'])." ‰Ω†Â∞çÂÖ®ÈÉ®‰∫∫Ë™™:<font color=coral><B>".$MsgShow["gen"]."</b>";
+        else        $MsgShow["All"][$MSC] = cfu_time_convert($ChatData_All['c_time'])." <font color=#00E196>$A[0]</font> Â∞çÂÖ®ÈÉ®‰∫∫Ë™™:<font color=#00E196>".$MsgShow["gen"];
 
-	$SQL_ChatData_Priv = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_chat` WHERE ((`c_tar` = '$User[name]' OR `c_user` = '$User[name]') AND `c_type` = 1) ORDER BY `c_time` DESC LIMIT $L , $U ");
-	$ChatData_Priv_Query = mysql_query($SQL_ChatData_Priv);
+        unset($Apre,$Aq,$A);
+        }
 
-	$SQL_ChatData_Orgz = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_chat` WHERE ((`c_tar` = '$User[organization]' OR `c_user` = '$User[name]') AND `c_type` = 2) ORDER BY `c_time` DESC LIMIT $L , $U ");
-	$ChatData_Orgz_Query = mysql_query($SQL_ChatData_Orgz);
+        while($ChatData_Priv = mysql_fetch_array($ChatData_Priv_Query)){
+        if ($ChatData_Priv['c_user'] != $_SESSION['username'])
+        $Apre = ("SELECT `gamename`,`color` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` a,`".$GLOBALS['DBPrefix']."phpeb_user_general_info` b WHERE `a`.`username` = `b`.`username` AND `a`.`username` = '$ChatData_Priv[c_user]'");
+        elseif ($ChatData_Priv['c_user'] == $_SESSION['username'])
+        $Apre = ("SELECT `gamename`,`color` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` a,`".$GLOBALS['DBPrefix']."phpeb_user_general_info` b WHERE `a`.`username` = `b`.`username` AND `a`.`username` = '$ChatData_Priv[c_tar]'");
+        $Aq = mysql_query($Apre) or die(mysql_error());
+        $A = mysql_fetch_row($Aq);
+        $MSC ++;
+        $MsgShow["gen"] = "<br><div style=\"font-size: 10pt;margin-left: 10px;width: 100%\">$ChatData_Priv[c_msg]</div></font><hr width=50% align=left style=\"filter: alpha(opacity=100,finishopacity=10,style=1);\">";
+        
+        if ($ChatData_Priv['c_user'] == $_SESSION['username']) 
+                $MsgShow["Priv"][$MSC] = cfu_time_convert($ChatData_Priv['c_time'])." ‰Ω†Â∞ç <font color=#00E196>$A[0]</font> ‰øè‰øèË©±:<font color=coral><b>".$MsgShow["gen"]."</b>";
+        else         $MsgShow["Priv"][$MSC] = cfu_time_convert($ChatData_Priv['c_time'])." <font color=#00E196>$A[0]</font> Â∞ç‰Ω†‰øè‰øèË©±:<font color=#00E196>".$MsgShow["gen"]; 
+                
+        unset($Apre,$Aq,$A);
+        }        
+        
+        while($ChatData_Orgz = mysql_fetch_array($ChatData_Orgz_Query)){
+        $Apre = ("SELECT `name`,`o`.`color`,`gamename`,`g`.`color` FROM `".$GLOBALS['DBPrefix']."phpeb_user_organization` o,`".$GLOBALS['DBPrefix']."phpeb_user_game_info` n,`".$GLOBALS['DBPrefix']."phpeb_user_general_info` g WHERE `id` = '$ChatData_Orgz[c_tar]' AND `g`.`username`=`n`.`username` AND `g`.`username`='$ChatData_Orgz[c_user]'");
+        $Aq = mysql_query($Apre) or die(mysql_error());
+        $A = mysql_fetch_row($Aq);
+        $MSC ++;
+        $MsgShow["gen"] = "<br><div style=\"font-size: 10pt;margin-left: 10px;width: 100%\">$ChatData_Orgz[c_msg]</div></font><hr width=50% align=left style=\"filter: alpha(opacity=100,finishopacity=10,style=1);\">";
 
-	unset($MsgShow,$MSC);
-	$MsgShow = array();
-	$MSC = 0;
+        if ($ChatData_Orgz['c_user'] == $_SESSION['username']) 
+                $MsgShow["Orgz"][$MSC] = cfu_time_convert($ChatData_Orgz['c_time'])." ‰Ω†Â∞ç <font color=#00E196>$A[0]</font> Ë™™:<font color=coral><b>".$MsgShow["gen"]."</b>";
+        else          $MsgShow["Orgz"][$MSC] = cfu_time_convert($ChatData_Orgz['c_time'])." <font color=#00E196>$A[2]</font> Â∞ç <font color=#00E196>$A[0]</font> Ë™™:<font color=#00E196>".$MsgShow["gen"];
 
-	//All Msg
-
-	while($ChatData_All = mysql_fetch_array($ChatData_All_Query)){
-	if ($ChatData_All['c_user'] != $Pl_Value['USERNAME'])
-	$Apre = ("SELECT `gamename`,`color` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` a,`".$GLOBALS['DBPrefix']."phpeb_user_general_info` b WHERE `a`.`username` = `b`.`username` AND `a`.`username` = '$ChatData_All[c_user]'");
-	elseif ($ChatData_All['c_user'] == $Pl_Value['USERNAME'])
-	$Apre = ("SELECT `gamename`,`color` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` a,`".$GLOBALS['DBPrefix']."phpeb_user_general_info` b WHERE `a`.`username` = `b`.`username` AND `a`.`username` = '$ChatData_All[c_tar]'");
-	$Aq = mysql_query($Apre) or die(mysql_error());
-	$A = mysql_fetch_row($Aq);
-	$MSC ++;
-	$MsgShow["gen"] = "<br><div style=\"font-size: 10pt;margin-left: 10px;width: 100%\">$ChatData_All[c_msg]</div></font><hr width=50% align=left style=\"filter: alpha(opacity=100,finishopacity=10,style=1);\">";
-
-	if ($ChatData_All['c_user'] == $Pl_Value['USERNAME'])
-		$MsgShow["All"][$MSC] = cfu_time_convert($ChatData_All['c_time'])." ßAπÔ•˛≥°§Hª°:<font color=coral><B>".$MsgShow["gen"]."</b>";
-	else	$MsgShow["All"][$MSC] = cfu_time_convert($ChatData_All['c_time'])." <font color=$A[1]>$A[0]</font> πÔ•˛≥°§Hª°:<font color=$A[1]>".$MsgShow["gen"];
-
-	unset($Apre,$Aq,$A);
-	}
-
-	while($ChatData_Priv = mysql_fetch_array($ChatData_Priv_Query)){
-	if ($ChatData_Priv['c_user'] != $Pl_Value['USERNAME'])
-	$Apre = ("SELECT `gamename`,`color` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` a,`".$GLOBALS['DBPrefix']."phpeb_user_general_info` b WHERE `a`.`username` = `b`.`username` AND `a`.`username` = '$ChatData_Priv[c_user]'");
-	elseif ($ChatData_Priv['c_user'] == $Pl_Value['USERNAME'])
-	$Apre = ("SELECT `gamename`,`color` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` a,`".$GLOBALS['DBPrefix']."phpeb_user_general_info` b WHERE `a`.`username` = `b`.`username` AND `a`.`username` = '$ChatData_Priv[c_tar]'");
-	$Aq = mysql_query($Apre) or die(mysql_error());
-	$A = mysql_fetch_row($Aq);
-	$MSC ++;
-	$MsgShow["gen"] = "<br><div style=\"font-size: 10pt;margin-left: 10px;width: 100%\">$ChatData_Priv[c_msg]</div></font><hr width=50% align=left style=\"filter: alpha(opacity=100,finishopacity=10,style=1);\">";
-
-	if ($ChatData_Priv['c_user'] == $Pl_Value['USERNAME'])
-		$MsgShow["Priv"][$MSC] = cfu_time_convert($ChatData_Priv['c_time'])." ßAπÔ <font color=$A[1]>$A[0]</font> ´N´N∏‹:<font color=coral><b>".$MsgShow["gen"]."</b>";
-	else 	$MsgShow["Priv"][$MSC] = cfu_time_convert($ChatData_Priv['c_time'])." <font color=$A[1]>$A[0]</font> πÔßA´N´N∏‹:<font color=$A[1]>".$MsgShow["gen"];
-
-	unset($Apre,$Aq,$A);
-	}
-
-	while($ChatData_Orgz = mysql_fetch_array($ChatData_Orgz_Query)){
-	$Apre = ("SELECT `name`,`o`.`color`,`gamename`,`g`.`color` FROM `".$GLOBALS['DBPrefix']."phpeb_user_organization` o,`".$GLOBALS['DBPrefix']."phpeb_user_game_info` n,`".$GLOBALS['DBPrefix']."phpeb_user_general_info` g WHERE `id` = '$ChatData_Orgz[c_tar]' AND `g`.`username`=`n`.`username` AND `g`.`username`='$ChatData_Orgz[c_user]'");
-	$Aq = mysql_query($Apre) or die(mysql_error());
-	$A = mysql_fetch_row($Aq);
-	$MSC ++;
-	$MsgShow["gen"] = "<br><div style=\"font-size: 10pt;margin-left: 10px;width: 100%\">$ChatData_Orgz[c_msg]</div></font><hr width=50% align=left style=\"filter: alpha(opacity=100,finishopacity=10,style=1);\">";
-
-	if ($ChatData_Orgz['c_user'] == $Pl_Value['USERNAME'])
-		$MsgShow["Orgz"][$MSC] = cfu_time_convert($ChatData_Orgz['c_time'])." ßAπÔ <font color=$A[1]>$A[0]</font> ª°:<font color=coral><b>".$MsgShow["gen"]."</b>";
-	else  	$MsgShow["Orgz"][$MSC] = cfu_time_convert($ChatData_Orgz['c_time'])." <font color=$A[3]>$A[2]</font> πÔ <font color=$A[1]>$A[0]</font> ª°:<font color=$A[3]>".$MsgShow["gen"];
-
-	unset($Apre,$Aq,$A);
-	}
-
-	echo "<table width=100% border=2 bordercolor=\"#D4D4D4\">";
-	echo "<tr width=100% valign=top><td width=33%><center><font size=3 color=khaki>°X°X°X≤’¬¥¿WπD°X°X°X</center></font><hr>";
-	if(isset($MsgShow["Orgz"]) && is_array($MsgShow["Orgz"]))
-		foreach($MsgShow["Orgz"] as $M_Show_Orgz) echo $M_Show_Orgz;
-	else	echo "(®S¶≥)";
-	echo "</td><td width=34%><center><font size=3 color=khaki>°X°X°X§Ω∂}¿WπD°X°X°X</center></font><hr>";
-	if(isset($MsgShow["All"]) && is_array($MsgShow["All"]))
-		foreach($MsgShow["All"] as $M_Show_All) echo $M_Show_All;
-	else	echo "(®S¶≥)";
-	echo "</td><td width=33%><center><font size=3 color=khaki>°X°X°X®p§H¿WπD°X°X°X</center></font><hr>";
-	if(isset($MsgShow["Priv"]) && is_array($MsgShow["Priv"]))
-		foreach($MsgShow["Priv"] as $M_Show_Priv) echo $M_Show_Priv;
-	else	echo "(®S¶≥)";
-	echo "</td></tr></table>";
-}
-//Remote Chat Function - Impletementation of php-eb UE v1.0
-//Requires Full Linkage of cfu.php
-elseif($mode == 'RemoteDisplay' && $actionb == 'fetch'){
-AuthUser("$Pl_Value[USERNAME]","$Pl_Value[PASSWORD]");
-	$update = '';echo "$lastCID<hr>";
-	if($lastCID != 'new'){
-		if($lastCID != 'last'){
-			$lastCID = intval($lastCID);
-			$sql = ("SELECT `c_id`,`c_msg`,`gamename` FROM `".$GLOBALS['DBPrefix']."phpeb_chat`, `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `username` = `c_user` AND `c_id` > $lastCID ORDER BY `c_id` ASC");
-		}
-		else
-		$sql = ("SELECT `c_id`,`c_msg`,`gamename` FROM `".$GLOBALS['DBPrefix']."phpeb_chat`, `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `username` = `c_user` ORDER BY `c_id` DESC LIMIT 1;");
-		$query = mysql_query($sql);
-		if(mysql_num_rows($query) > 0){
-			while($cht = mysql_fetch_array($query)){
-				$update .= '<font color=ForestGreen><b>'.$cht['gamename'].'</b>: '.preg_replace('/(<br>|<br( )*\/>)+/i','&nbsp;',$cht['c_msg']).'</font><br>';
-				$New_lastCID = $cht['c_id'];
-			}
-		}else $New_lastCID = $lastCID;
-	}elseif($lastCID == 'new'){
-		$sql = ("SELECT `c_id` FROM `".$GLOBALS['DBPrefix']."phpeb_chat` ORDER BY `c_id` DESC LIMIT 1;");
-		$query = mysql_query($sql);
-		$cht = mysql_fetch_array($query);
-		$New_lastCID = $cht['c_id'];
-	}
-	//JavaScript AutoUpdate
-		echo "<script language=\"JavaScript\">";
-		if($lastCID == 'new' || $lastCID == 'last')
-		echo "if(parent.document.getElementById('rmCht_Tar').style.visibility == 'hidden') parent.document.getElementById('rmCht_Tar').style.visibility = 'visible';";
-		echo "var msgStr = '';";
-		echo "msgStr = parent.chatDisplay_frame.document.getElementById('rmCht_Display').innerHTML;";
-		echo "msgStr = msgStr + '".$update."';";
-		echo "parent.chatDisplay_frame.document.getElementById('rmCht_Display').innerHTML = msgStr;";
-		echo "parent.document.chatUpdater.lastCID.value = '".$New_lastCID."';";
-		echo "parent.chatDisplay_frame.scroll(0, 9999);";
-		echo "</script>";
-	//End
-	exit;
-}
-elseif($mode == 'RemoteDisplay' && $actionb == 'baseline'){
-	echo "<div id=\"rmCht_Display\" style=\"height: 205; width: 775\"></div>";
-	exit;
+        unset($Apre,$Aq,$A);
+        }        
+        
+        echo "<table width=100% border=2 bordercolor=\"#D4D4D4\">";
+        echo "<tr width=100% valign=top><td width=33%><center><font size=3 color=khaki>‚Äî‚Äî‚ÄîÁµÑÁπîÈ†ªÈÅì‚Äî‚Äî‚Äî</center></font><hr>";
+                foreach($MsgShow["Orgz"] as $M_Show_Orgz) echo $M_Show_Orgz;
+        echo "</td><td width=34%><center><font size=3 color=khaki>‚Äî‚Äî‚ÄîÂÖ¨ÈñãÈ†ªÈÅì‚Äî‚Äî‚Äî</center></font><hr>";
+                foreach($MsgShow["All"] as $M_Show_All) echo $M_Show_All;
+        echo "</td><td width=33%><center><font size=3 color=khaki>‚Äî‚Äî‚ÄîÁßÅ‰∫∫È†ªÈÅì‚Äî‚Äî‚Äî</center></font><hr>";
+                foreach($MsgShow["Priv"] as $M_Show_Priv) echo $M_Show_Priv;
+        echo "</td></tr></table>";
 }
 else{
 echo "<center><hr>$ErrMsg<hr>";
 }
-postFooter();
 exit;
 ?>

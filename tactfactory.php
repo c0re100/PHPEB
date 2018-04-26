@@ -10,8 +10,8 @@ include('cfu.php');
 if (empty($PriTarget)) $PriTarget = 'Alpha';
 if (empty($SecTarget)) $SecTarget = 'Beta';
 postHead('');
-AuthUser("$Pl_Value[USERNAME]","$Pl_Value[PASSWORD]");
-GetUsrDetails("$Pl_Value[USERNAME]",'Gen','Game');
+AuthUser();
+GetUsrDetails("$_SESSION[username]",'Gen','Game');
 $UsrWepB = explode('<!>',$Game['wepb']);
 $UsrWepB[2] = (isset($UsrWepB[2])) ? $UsrWepB[2]: 0;
 $UsrWepC = explode('<!>',$Game['wepc']);
@@ -25,40 +25,40 @@ unset($IncThread);
 $TargetPut = 0;
 
 //Set DataTable
-$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` WHERE username='". $Pl_Value['USERNAME'] ."'");
+$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` WHERE username='". $_SESSION['username'] ."'");
 $query_ttf = mysql_query($sql);$defineuserc = 0;
 $defineuserc = mysql_num_rows($query_ttf);
 
 if ($defineuserc == 0){
-	$sqldftf = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` (username,time) VALUES('$Pl_Value[USERNAME]','$CFU_Time')");
-	mysql_query($sqldftf) or die ('<br><center>¥¼¯à«Ø¥ß§L¾¹»s³y¤u³õ¸ê®Æ<br>­ì¦]:' . mysql_error() . '<br>');
-	$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` WHERE username='". $Pl_Value['USERNAME'] ."'");
-	$query_ttf = mysql_query($sql) or die ('<br><center>¥¼¯à¨ú±o§L¾¹»s³y¤u³õ¸ê®Æ<br>­ì¦]:' . mysql_error() . '<br>');
+	$sqldftf = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` (username,time) VALUES('$_SESSION[username]','$CFU_Time')");
+	mysql_query($sqldftf) or die ('<br><center>æœªèƒ½å»ºç«‹å…µå™¨è£½é€ å·¥å ´è³‡æ–™<br>åŸå› :' . mysql_error() . '<br>');
+	$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` WHERE username='". $_SESSION['username'] ."'");
+	$query_ttf = mysql_query($sql) or die ('<br><center>æœªèƒ½å–å¾—å…µå™¨è£½é€ å·¥å ´è³‡æ–™<br>åŸå› :' . mysql_error() . '<br>');
 }
 
 global $TactFactory;
 $TactFactory = mysql_fetch_array($query_ttf);
 
 if (($CFU_Time - $TactFactory['time']) < 1 && $defineuserc){
-	echo "§A¹ê¦b«öªº¤Ó§Ö¤F¡C½Ğ©ó¨â¬í«á¦A«ö¡C<br>¦hÁÂ¦X§@¡I";
+	echo "ä½ å¯¦åœ¨æŒ‰çš„å¤ªå¿«äº†ã€‚è«‹æ–¼å…©ç§’å¾Œå†æŒ‰ã€‚<br>å¤šè¬åˆä½œï¼";
 	postFooter();
 	exit;
 }
 
 //Weapon Casting GUI
 if ($mode=='main' && $actionb=='none'){
-	echo "§L¾¹»s³y¤u³õ<Hr>";
+	echo "å…µå™¨è£½é€ å·¥å ´<Hr>";
 	echo "<form action=tactfactory.php?action=main method=post name=mainform target=$SecTarget>";
 	echo "<input type=hidden value='none' name=actionb>";
 	echo "<input type=hidden value='none' name=actionc>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 
 	//Start Table -- User's Information
 	
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"font-size: 12pt; border-collapse: collapse\" bordercolor=\"#111111\" width=\"400\" id=\"AutoNumber1\">";
-	echo "<tr><td width=400 colspan=2>$Game[gamename] ªº¸Ë³Æ</td></tr>";
+	echo "<tr><td width=400 colspan=2>$Game[gamename] çš„è£å‚™</td></tr>";
 	printPutOption($UsrWepB,'b');
 	printPutOption($UsrWepC,'c');
 	echo "</table>";
@@ -81,31 +81,31 @@ if ($mode=='main' && $actionb=='none'){
 
 	if($checkPresence){
 		// JavaScripts
-		echo "<script language=\"Javascript\">function CfmCast(){if (confirm('¯uªº­n¶}©l¦X¦¨¤u§Ç¶Ü¡H\\n¤@¦ı¥¢±Ñ¤F¡A©Ò¦³­ì®Æ´N·|®ø¥¢¡I\\n¤w¦Ò¼{²M·¡¶Ü¡H')==true){";
+		echo "<script language=\"Javascript\">function CfmCast(){if (confirm('çœŸçš„è¦é–‹å§‹åˆæˆå·¥åºå—ï¼Ÿ\\nä¸€ä½†å¤±æ•—äº†ï¼Œæ‰€æœ‰åŸæ–™å°±æœƒæ¶ˆå¤±ï¼\\nå·²è€ƒæ…®æ¸…æ¥šå—ï¼Ÿ')==true){";
 		echo "mainform.action='tactfactory.php?action=cast';mainform.actionb.value='start';mainform.submit();}";
 		echo "else {return false;}";
 		echo "}</script>";
 
-		// ¦X¦¨­ì®Æ®w Table
+		// åˆæˆåŸæ–™åº« Table
 		echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#111111\" width=\"700\">";
-		echo "<tr><td width=700 colspan=6 align=center>ªZ¸Ë¦X¦¨®w</td></tr>";
+		echo "<tr><td width=700 colspan=6 align=center>æ­¦è£åˆæˆåº«</td></tr>";
 		for($i = 1; $i <= 10; $i++){
 			$ii = $i + 10;
-			echo '<tr><td width=40 align=right>'.$i.'¸¹:&nbsp;</td>';
+			echo '<tr><td width=40 align=right>'.$i.'è™Ÿ:&nbsp;</td>';
 			printBinDetails($i);
-			echo '<td width=40 align=right>'.$ii.'¸¹:&nbsp;</td>';
+			echo '<td width=40 align=right>'.$ii.'è™Ÿ:&nbsp;</td>';
 			printBinDetails($ii);
 			echo "</tr>";
 		}
 		// Raw Materials
-		echo "<tr><td colspan=6 align=center><b>¥[¤J­ì®Æ</b>: &nbsp;";
+		echo "<tr><td colspan=6 align=center><b>åŠ å…¥åŸæ–™</b>: &nbsp;";
 		$pFormatStr = '%s: <input type=text maxlength=3 name="raw[%d]" value=0 style="height: 14pt; width: 30px; text-align: center; '.$BStyleA.'" onClick="this.value=\'\'" onChange="this.value=parseInt(this.value)"> &nbsp; &nbsp;';
 		$pFormatStrB = '%s: <input type=text maxlength=3 name="rawCur[%d]" disabled value="%d" style="height: 14pt; width: 30px; text-align: center; '.$BStyleA.'" > &nbsp; &nbsp;';
 		for($i = 1; $i <= 8; $i++){
 			printf($pFormatStr, $product_id_list[$i], $i);
 		}
-		$rawBins = getMiningStorage($Pl_Value['USERNAME']);
-		echo "<br><b>²{¦³­ì®Æ</b>: &nbsp;";
+		$rawBins = getMiningStorage($_SESSION['username']);
+		echo "<br><b>ç¾æœ‰åŸæ–™</b>: &nbsp;";
 		for($i = 1; $i <= 8; $i++){
 			printf($pFormatStrB, $product_id_list[$i], $i, $rawBins[$i]);
 		}
@@ -113,19 +113,19 @@ if ($mode=='main' && $actionb=='none'){
 		echo "</table>";
 
 		// Confirmation Button
-		echo "<br><center><input type=button name='start' value='¶}©l¦X¦¨¤u§Ç' onClick=\"CfmCast()\"></center>";
+		echo "<br><center><input type=button name='start' value='é–‹å§‹åˆæˆå·¥åº' onClick=\"CfmCast()\"></center>";
 		echo "<hr align=center width=80%>";
 	}
 
-	echo "<p align=center><input type=button value='¤u³õ»¡©ú' onClick=\"mainform.action='tactfactory.php?action=readme';mainform.submit();\"><input type=button value='±M¥Î¤Æ§ï³y' onClick=\"mainform.action='tactfactory.php?action=custom';mainform.submit();\"><input type=button value='¤uµ{®v¤u·|' onClick=\"mainform.action='tactfactory.php?action=guild';mainform.submit();\"><input type=button value='¶i¤JªZ¾¹®w' onClick=\"mainform.action='warehouse.php?action=main';mainform.submit();\"></p>";
+	echo "<p align=center><input type=button value='å·¥å ´èªªæ˜' onClick=\"mainform.action='tactfactory.php?action=readme';mainform.submit();\"><input type=button value='å°ˆç”¨åŒ–æ”¹é€ ' onClick=\"mainform.action='tactfactory.php?action=custom';mainform.submit();\"><input type=button value='å·¥ç¨‹å¸«å·¥æœƒ' onClick=\"mainform.action='tactfactory.php?action=guild';mainform.submit();\"><input type=button value='é€²å…¥æ­¦å™¨åº«' onClick=\"mainform.action='warehouse.php?action=main';mainform.submit();\"></p>";
 	echo "</form>";
 }
 //Process with Put Weapon
 elseif ($mode=='main' && $actionb=='put' && $actionc){
 
-	if (!$Game[$actionc] && $actionc != 'wh'){echo "¨S¦³¦¹¸Ë³Æ¦s¦b¡C";postFooter();exit;}
-	if ($actionc == 'wepa'){echo "¦³¦¹¸Ë³Æ¦s¦b¡A¥i¬O§Ú­ÌµLªk§âªZ¾¹±q±z¾÷Åéªº¤â¤¤©î¤U¨Ó¡C";postFooter();exit;}
-	if ($actionc != 'wepb' && $actionc != 'wepc' && $actionc != 'wh'){echo "±z·Q§â§A¦Û¤v·í§@­ì®Æ¶Ü¡H";postFooter();exit;}
+	if (!$Game[$actionc] && $actionc != 'wh'){echo "æ²’æœ‰æ­¤è£å‚™å­˜åœ¨ã€‚";postFooter();exit;}
+	if ($actionc == 'wepa'){echo "æœ‰æ­¤è£å‚™å­˜åœ¨ï¼Œå¯æ˜¯æˆ‘å€‘ç„¡æ³•æŠŠæ­¦å™¨å¾æ‚¨æ©Ÿé«”çš„æ‰‹ä¸­æ‹†ä¸‹ä¾†ã€‚";postFooter();exit;}
+	if ($actionc != 'wepb' && $actionc != 'wepc' && $actionc != 'wh'){echo "æ‚¨æƒ³æŠŠä½ è‡ªå·±ç•¶ä½œåŸæ–™å—ï¼Ÿ";postFooter();exit;}
 
 	$counter = 1;
 	$TargetPut = 0;
@@ -138,23 +138,23 @@ elseif ($mode=='main' && $actionb=='put' && $actionc){
 		$counter++;
 	}
 
-	if (!$TargetPut){echo "­ì®Æ®w¤wº¡¤F¡A§A¯uªºÄ±±o¦³»İ­n¥Î¨º»ò¦h­ì®Æ¶Ü¡H";postFooter();exit;};
+	if (!$TargetPut){echo "åŸæ–™åº«å·²æ»¿äº†ï¼Œä½ çœŸçš„è¦ºå¾—æœ‰éœ€è¦ç”¨é‚£éº¼å¤šåŸæ–™å—ï¼Ÿ";postFooter();exit;};
 	unset($counter,$sql);
 
 	if($actionc != 'wh') $TargetPutWep = explode('<!>',$Game[$actionc]);
 	else{
-		$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` WHERE username='". $Pl_Value['USERNAME'] ."'");
+		$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` WHERE username='". $_SESSION['username'] ."'");
 		$query_whr = mysql_query($sql);
 		$defineuserc = mysql_num_rows($query_whr);
 		if ($defineuserc == 0){
-			$sqldfwh = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` (username) VALUES('$Pl_Value[USERNAME]')");
-			mysql_query($sqldfwh) or die ('<br><center>¥¼¯à«Ø¥ß­Ü®w¸ê®Æ<br>­ì¦]:' . mysql_error() . '<br>');
-			$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` WHERE username='". $Pl_Value['USERNAME'] ."'");
-			$query_whr = mysql_query($sql) or die ('<br><center>¥¼¯à¨ú±o­Ü®w¸ê®Æ<br>­ì¦]:' . mysql_error() . '<br>');
-		}elseif ($defineuserc > 1){echo "¥Î¤á¦WºÙ¥X²{°İÃD¡A½ĞÁpµ¸ºŞ²z­û¡C";exit;}
+			$sqldfwh = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` (username) VALUES('$_SESSION[username]')");
+			mysql_query($sqldfwh) or die ('<br><center>æœªèƒ½å»ºç«‹å€‰åº«è³‡æ–™<br>åŸå› :' . mysql_error() . '<br>');
+			$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` WHERE username='". $_SESSION['username'] ."'");
+			$query_whr = mysql_query($sql) or die ('<br><center>æœªèƒ½å–å¾—å€‰åº«è³‡æ–™<br>åŸå› :' . mysql_error() . '<br>');
+		}elseif ($defineuserc > 1){echo "ç”¨æˆ¶åç¨±å‡ºç¾å•é¡Œï¼Œè«‹è¯çµ¡ç®¡ç†å“¡ã€‚";exit;}
 		$Warehouse = mysql_fetch_row($query_whr);
 		
-		if ($getwep == 'none'){echo '½Ğ«ü©w­n¸m©ñªº¸Ë³Æ¡C';postFooter();exit;}
+		if ($getwep == 'none'){echo 'è«‹æŒ‡å®šè¦ç½®æ”¾çš„è£å‚™ã€‚';postFooter();exit;}
 		else {
 			$WChacheArrays = explode("\n",$Warehouse[1]);
 			sort($WChacheArrays);
@@ -173,52 +173,52 @@ elseif ($mode=='main' && $actionb=='put' && $actionc){
 	}
 
 	$TargetPutWep[2]= (isset($TargetPutWep[2])) ? $TargetPutWep[2]: 0;
-	if ($TargetPutWep[2]){echo "¶i¦æ¹L±M¥Î¤Æ§ï³yªº¸Ë³ÆµLªk¦¨¬°§÷®Æ¡C";postFooter();exit;}
-	if ($TargetPutWep[1] < $RepairEqCondMax){echo "¦¹¸Ë³Æª¬ºA¤Ó®t, µLªk¦¨¬°§÷®Æ¡C";postFooter();exit;}
+	if ($TargetPutWep[2]){echo "é€²è¡Œéå°ˆç”¨åŒ–æ”¹é€ çš„è£å‚™ç„¡æ³•æˆç‚ºææ–™ã€‚";postFooter();exit;}
+	if ($TargetPutWep[1] < $RepairEqCondMax){echo "æ­¤è£å‚™ç‹€æ…‹å¤ªå·®, ç„¡æ³•æˆç‚ºææ–™ã€‚";postFooter();exit;}
 	
 	if($actionc != 'wh'){
-		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `$actionc` = '0<!>0' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `$actionc` = '0<!>0' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 		mysql_query($sql);unset($sql);
 	}
 	else{
-		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` SET `warehouse` = '$Warehouse[1]', `timelast` = '$CFU_Time' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` SET `warehouse` = '$Warehouse[1]', `timelast` = '$CFU_Time' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 		mysql_query($sql);
 	}
 
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` SET `time` = '$CFU_Time', `".$mc."` = '$TargetPutWep[0]' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` SET `time` = '$CFU_Time', `".$mc."` = '$TargetPutWep[0]' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 	mysql_query($sql) or die(mysql_error());unset($sql);
 	
 	echo "<form action=tactfactory.php?action=main method=post name=freect target=$SecTarget>";
 	echo "<input type=hidden value='none' name=actionb>";
 	echo "<input type=hidden value='none' name=actionc>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 	echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-	echo "<p align=center style=\"font-size: 16pt\">¸m©ñ§¹¦¨¤F¡I<br><input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\">";
-	echo "<input type=button value=\"¦^¨ì¤u³õ\" onClick=\"freect.submit()\"><input type=button value='¶i¤JªZ¾¹®w' onClick=\"freect.action='warehouse.php?action=main';freect.submit();\"></p>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	echo "<p align=center style=\"font-size: 16pt\">ç½®æ”¾å®Œæˆäº†ï¼<br><input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\">";
+	echo "<input type=button value=\"å›åˆ°å·¥å ´\" onClick=\"freect.submit()\"><input type=button value='é€²å…¥æ­¦å™¨åº«' onClick=\"freect.action='warehouse.php?action=main';freect.submit();\"></p>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";	
 }
 //Process with View Blueprint
 elseif ($mode=='main' && $actionb=='view' && $actionc){
 
-	if ($actionc == 'wepa'){echo "ÂÅ¹Ï¦ì¸m¥X¿ù¡C";postFooter();exit;}
-	if ($actionc != 'wepb' && $actionc != 'wepc' && $actionc != 'wh'){echo "ÂÅ¹Ï¦ì¸m¥X¿ù¡C";postFooter();exit;}
-	if (!$Game[$actionc] && $actionc != 'wh'){echo "¨S¦³¦¹¸Ë³Æ¦s¦b¡C";postFooter();exit;}
+	if ($actionc == 'wepa'){echo "è—åœ–ä½ç½®å‡ºéŒ¯ã€‚";postFooter();exit;}
+	if ($actionc != 'wepb' && $actionc != 'wepc' && $actionc != 'wh'){echo "è—åœ–ä½ç½®å‡ºéŒ¯ã€‚";postFooter();exit;}
+	if (!$Game[$actionc] && $actionc != 'wh'){echo "æ²’æœ‰æ­¤è£å‚™å­˜åœ¨ã€‚";postFooter();exit;}
 
 	if($actionc != 'wh') $TargetView = explode('<!>',$Game[$actionc]);
 	else{
-		$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` WHERE username='". $Pl_Value['USERNAME'] ."'");
+		$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` WHERE username='". $_SESSION['username'] ."'");
 		$query_whr = mysql_query($sql);
-		if (mysql_num_rows($query_whr) != 1){echo "¥Î¤á¦WºÙ¥X²{°İÃD¡A½ĞÁpµ¸ºŞ²z­û¡C";exit;}
+		if (mysql_num_rows($query_whr) != 1){echo "ç”¨æˆ¶åç¨±å‡ºç¾å•é¡Œï¼Œè«‹è¯çµ¡ç®¡ç†å“¡ã€‚";exit;}
 
 		$Warehouse = mysql_fetch_row($query_whr);
 		
-		if ($getwep == 'none'){echo '½Ğ«ü©w­nÀË¬dªºÂÅ¹Ï¡C';postFooter();exit;}
+		if ($getwep == 'none'){echo 'è«‹æŒ‡å®šè¦æª¢æŸ¥çš„è—åœ–ã€‚';postFooter();exit;}
 		else {
 			$WChacheArrays = explode("\n",$Warehouse[1]);
 			sort($WChacheArrays);
@@ -235,65 +235,63 @@ elseif ($mode=='main' && $actionb=='view' && $actionc){
 	`raw_materials` FROM `".$GLOBALS['DBPrefix']."phpeb_sys_tactfactory` WHERE `blueprint` = '$TargetView[0]'");
 	$query = mysql_query($sql);
 
-	if (mysql_num_rows($query) != 1){echo "<br><br><p align=center style='font-size: 14pt' >§ä¤£¨ì¥Ø¼ĞÂÅ¹Ï¡C<br>½Ğ½T»{¸Óª««~¬O§_¬°¡u³]­pÂÅ¹Ï¡v¡C";}
+	if (mysql_num_rows($query) != 1){echo "<br><br><p align=center style='font-size: 14pt' >æ‰¾ä¸åˆ°ç›®æ¨™è—åœ–ã€‚<br>è«‹ç¢ºèªè©²ç‰©å“æ˜¯å¦ç‚ºã€Œè¨­è¨ˆè—åœ–ã€ã€‚";}
 	else{
 		$Directions = mysql_fetch_row($query);
-		echo "<table><tr><td><font color=orange>¹ï¸Ü</font></td></tr>";
+		echo "<table><tr><td><font color=orange>å°è©±</font></td></tr>";
 		echo "<tr><td>". str_replace('\"','"',$Directions[0]) ."</td></tr>";
 		echo "<tr><td style='text-align: center;'>";
 		printBPTable($Directions, $product_id_list);
 		echo "</td></tr>";
-		echo "<tr><td><font color=orange>½Ğ§A°O§C¤U³o¨Ç¹ï¸Ü</font></td></tr></table>";
+		echo "<tr><td><font color=orange>è«‹ä½ è¨˜ä½ä¸‹é€™äº›å°è©±</font></td></tr></table>";
 	}
 	
 	echo "<form action=tactfactory.php?action=main method=post name=freect target=$SecTarget>";
 	echo "<input type=hidden value='none' name=actionb>";
 	echo "<input type=hidden value='none' name=actionc>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 	echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-	echo "<p align=center><input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\">";
-	echo "<input type=button value=\"¦^¨ì¤u³õ\" onClick=\"freect.submit()\"><input type=button value='¶i¤JªZ¾¹®w' onClick=\"freect.action='warehouse.php?action=main';freect.submit();\"></p>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	echo "<p align=center><input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\">";
+	echo "<input type=button value=\"å›åˆ°å·¥å ´\" onClick=\"freect.submit()\"><input type=button value='é€²å…¥æ­¦å™¨åº«' onClick=\"freect.action='warehouse.php?action=main';freect.submit();\"></p>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";	
 }
 
 //Process with Reclaim Weapon
 elseif ($mode=='main' && $actionb=='reclaim' && $actionc){
-	if (!$TactFactory[$actionc]){echo "¨S¦³¦¹¸Ë³Æ¦s¦b¡C";postFooter();exit;}
+	if (!$TactFactory[$actionc]){echo "æ²’æœ‰æ­¤è£å‚™å­˜åœ¨ã€‚";postFooter();exit;}
 	if (!$UsrWepB[0]){$TargetRec = 'wepb';}
 	elseif (!$UsrWepC[0]){$TargetRec = 'wepc';}
-	else{echo "¨SªÅ¦ì¸Ë³Æ¡C";postFooter();exit;}
+	else{echo "æ²’ç©ºä½è£å‚™ã€‚";postFooter();exit;}
 	unset($sql);
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `$TargetRec` = '".$TactFactory[$actionc]."<!>0' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `$TargetRec` = '".$TactFactory[$actionc]."<!>0' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 	mysql_query($sql);unset($sql);
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` SET `time` = '$CFU_Time', `".$actionc."` = '' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` SET `time` = '$CFU_Time', `".$actionc."` = '' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 	mysql_query($sql) or die(mysql_error());unset($sql);
 	echo "<form action=tactfactory.php?action=main method=post name=freect target=$SecTarget>";
 	echo "<input type=hidden value='none' name=actionb>";
 	echo "<input type=hidden value='none' name=actionc>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 	echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-	echo "<p align=center style=\"font-size: 16pt\">¦^¦¬§¹¦¨¤F¡I<br><input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"><input type=button value=\"Ä~Äò\" onClick=\"freect.submit()\"></p>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	echo "<p align=center style=\"font-size: 16pt\">å›æ”¶å®Œæˆäº†ï¼<br><input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"><input type=button value=\"ç¹¼çºŒ\" onClick=\"freect.submit()\"></p>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";	
 }//End Reclaim and Put
 
 //Start Cast
 elseif($mode == 'cast' && $actionb == 'start' && $actionc=='none'){
-	if(isset($ChosenTact)){echo "§A·Q·F¤°»ò¡H";postFooter();exit;}
+	if(isset($ChosenTact)){echo "ä½ æƒ³å¹¹ä»€éº¼ï¼Ÿ";postFooter();exit;}
 	if (!$UsrWepB[0]){$TargetGrant = 'wepb';}
 	elseif (!$UsrWepC[0]){$TargetGrant = 'wepc';}
-	else{echo "¨SªÅ¦ì¸Ë³Æ¡C";postFooter();exit;}
+	else{echo "æ²’ç©ºä½è£å‚™ã€‚";postFooter();exit;}
 	
 	$raw[0] = 0;
 	$Storage = array();
@@ -308,14 +306,14 @@ elseif($mode == 'cast' && $actionb == 'start' && $actionc=='none'){
 	$SQL_Format = 'UPDATE `'.$GLOBALS['DBPrefix'].'phpeb_mining_storage` SET `quantity` = %d WHERE `m_store_user` = \''.$Game['username'].'\' AND `item` = %d ;';
 	if($raw[0] > 0){
 		if(checkMBillsPending($Game['username'])){
-			echo "½Ğ¥ı¤ä¥I­ì®Æ±Ä¶°¶O¡A¦hÁÂ¦X§@¡C";postFooter();exit;
+			echo "è«‹å…ˆæ”¯ä»˜åŸæ–™æ¡é›†è²»ï¼Œå¤šè¬åˆä½œã€‚";postFooter();exit;
 		}
 		$Storage = getMiningStorage($Game['username']);
 		for($i = 1; $i <= 8; $i++){
 			if($raw[$i] > 0){
 				$Storage[$i] -= $raw[$i];
 				if($Storage[$i] < 0){
-					echo "<br><p align=center style='font-size: 12pt'>­ì®Æ¤£¨¬¡I</p>";
+					echo "<br><p align=center style='font-size: 12pt'>åŸæ–™ä¸è¶³ï¼</p>";
 					postFooter();
 					exit;
 				}
@@ -331,7 +329,7 @@ elseif($mode == 'cast' && $actionb == 'start' && $actionc=='none'){
 	$sql = "SELECT `wep_id`, `m1`, `m2`, `m3`, `m4`, `m5`, `m6`, `m7`, `m8`, `m9`, `m10`, `m11`, `m12`, `m13`, `m14`, `m15`, `m16`, `m17`, `m18`, `m19`, `m20`, `raw_materials` ";
 	$sql .= " FROM `".$GLOBALS['DBPrefix']."phpeb_sys_tactfactory` ";
 	$sql .= " WHERE `m1` = '$TactFactory[m1]' ORDER BY `grade` DESC;";	// Refine results
-	$query = mysql_query($sql) or die ('<br><center>¥¼¯à¨ú±o§L¾¹»s³y¤u³õ¸ê®Æ<br>­ì¦]:' . mysql_error() . '<br>');
+	$query = mysql_query($sql) or die ('<br><center>æœªèƒ½å–å¾—å…µå™¨è£½é€ å·¥å ´è³‡æ–™<br>åŸå› :' . mysql_error() . '<br>');
 	$nosrow = mysql_num_rows($query);
 	unset($counter,$counterb,$counterc,$mb,$ChosenTact);
 
@@ -391,14 +389,14 @@ elseif($mode == 'cast' && $actionb == 'start' && $actionc=='none'){
 
 	//Grant Chosen Weapon
 	if ($ChosenTact){
-		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `$TargetGrant` = '".$ChosenTact."<!>0' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `$TargetGrant` = '".$ChosenTact."<!>0' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 		mysql_query($sql);
-		$CastResult = "¦X¦¨¤u§Ç¶¶§Q§¹¦¨!!<br>¤w»s³y¥X <font color=blue>".getWeaponName($ChosenTact)."</font> ¡I";
+		$CastResult = "åˆæˆå·¥åºé †åˆ©å®Œæˆ!!<br>å·²è£½é€ å‡º <font color=blue>".getWeaponName($ChosenTact)."</font> ï¼";
 	}else{
-		$CastResult = "»s³y¥¢±Ñ¤F¡C¤]³\§AÀ³§ï§ï°t¤è©M¼W¥[­ì®Æ¼Æ¶q¡C";
+		$CastResult = "è£½é€ å¤±æ•—äº†ã€‚ä¹Ÿè¨±ä½ æ‡‰æ”¹æ”¹é…æ–¹å’Œå¢åŠ åŸæ–™æ•¸é‡ã€‚";
 	}
 
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` SET `time` = '$CFU_Time', `m1` = '', `m2` = '', `m3` = NULL, `m4` = NULL, `m5` = NULL, `m6` = NULL, `m7` = NULL, `m8` = NULL, `m9` = NULL, `m10` = NULL, `m11` = NULL, `m12` = NULL, `m13` = NULL, `m14` = NULL, `m15` = NULL, `m16` = NULL, `m17` = NULL, `m18` = NULL, `m19` = NULL, `m20` = NULL WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1"); 
+	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` SET `time` = '$CFU_Time', `m1` = '', `m2` = '', `m3` = NULL, `m4` = NULL, `m5` = NULL, `m6` = NULL, `m7` = NULL, `m8` = NULL, `m9` = NULL, `m10` = NULL, `m11` = NULL, `m12` = NULL, `m13` = NULL, `m14` = NULL, `m15` = NULL, `m16` = NULL, `m17` = NULL, `m18` = NULL, `m19` = NULL, `m20` = NULL WHERE `username` = '$_SESSION[username]' LIMIT 1"); 
 	mysql_query($sql) or die(mysql_error());unset($sql);
 
 	if(count($sqlStorage) > 0){
@@ -408,50 +406,48 @@ elseif($mode == 'cast' && $actionb == 'start' && $actionc=='none'){
 	echo "<form action=tactfactory.php?action=main method=post name=freect target=$SecTarget>";
 	echo "<input type=hidden value='none' name=actionb>";
 	echo "<input type=hidden value='none' name=actionc>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 	echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-	echo "<p align=center style=\"font-size: 16pt\">$CastResult<br><input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"><input type=button value=\"Ä~Äò\" onClick=\"freect.submit()\"></p>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	echo "<p align=center style=\"font-size: 16pt\">$CastResult<br><input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"><input type=button value=\"ç¹¼çºŒ\" onClick=\"freect.submit()\"></p>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";	
 }
 elseif($mode == 'readme' && $actionb == 'none' && $actionc=='none'){
-echo "§L¾¹»s³y¤u³õ<hr>";
-	if($RepairEqCondMax == 0) $DisMinXp = '¡Ó0%';
+echo "å…µå™¨è£½é€ å·¥å ´<hr>";
+	if($RepairEqCondMax == 0) $DisMinXp = 'Â±0%';
 	else $DisMinXp = ($RepairEqCondMax > 0) ? '+'.($RepairEqCondMax/100) : ($RepairEqCondMax/100);
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr><td align=center width=400><b style=\"font-size: 10pt;\">§L¾¹»s³y¤u³õ»¡©ú</b></td></tr>";
+	echo "<tr><td align=center width=400><b style=\"font-size: 10pt;\">å…µå™¨è£½é€ å·¥å ´èªªæ˜</b></td></tr>";
 	echo "<tr><td align=left>";
-	echo "<b>§L¾¹»s³y¤u³õ</b><Br>¡@- ¥i¥H¤£¦Pªº­ì®Æ¡BªZ¾¹¡B¸Ë³Æ, ¦X¦¨·sªºªZ¾¹©M¸Ë³Æ<br>¡@- ¦X¦¨ªZ¾¹®É, ¥²¶·¦ç·Ó«ü¥Ü(³]­pÂÅ¹Ï/¦X¦¨ªk)¶i¦æ, §_«h¦X¦¨·|¥¢±Ñ<br>¡@- ¥¢±Ñªº¸Ü, ·|¥¢¥h©Ò¦³­ì®Æ©M¥ô¦ó¦bº²¸ÑÄl¤ºªºª««~<br>¡@- ¥ô¦ó¸m©ñ¦bº²¸ÑÄlªºª««~, ³£·|¥¢¥h©Ò¦³ª¬ºA­È<br>¡@- ¸Ë³Æª¬ºA¤£¯à¤Ó®t, ¥²¶·¬° $DisMinXp ¥H¤W, §_«hµLªk¦¨¬°§÷®Æ¡C<br>";
-	echo "<b>±M¥Î¤Æ§ï³y¤u³õ</b><Br>¡@- ±M¥Î¤Æ¯à°÷Åı§A§ï³yªZ¾¹¡B´£¤É«Â¤O©M®Ä²v¡C<br>¡@- ·íªZ¾¹²Å¦X¤@©wªº±ø¥ó®É¡A¥i¥H¶i¦æ±M¥Î¤Æ¡C<br>¡@- ±ø¥ó¦p¤U:<br>¡@ ¡@ - ªZ¾¹ª¬ºA­È¹F +250% <br>¡@ ¡@ - ªZ¾¹´¿¨S¦³¶i¦æ±M¥Î¤Æ <br>¡@ ¡@ - ±M¥Î¤Æ§¹¦¨«á¡AªZ¾¹¸gÅçÂk¹s¡C<br>¡@- ¥¢±Ñªº¸Ü, ·|¥¢¥h©Ò¦³­ì®Æ©M¶i¦æ±M¥Î¤ÆªºªZ¾¹<br>¡@- ¥ô¦ó¸m©ñ¦bº²¸ÑÄlªºª««~, ³£·|¥¢¥h©Ò¦³¸gÅç<br>";
-	echo "<b>¤uµ{®v¤u·|</b><Br>¡@- ¥i¥H¦b³oÁÊ¶R¦X¦¨ÂÅ¹Ï<br>¡@- ¨C¦¸ÁÊ¶R«á¤]·|±o¨ì¬YªZ¸Ëªº<B>³]­pÂÅ¹Ï</B>¤@´T<br>";
+	echo "<b>å…µå™¨è£½é€ å·¥å ´</b><Br>ã€€- å¯ä»¥ä¸åŒçš„åŸæ–™ã€æ­¦å™¨ã€è£å‚™, åˆæˆæ–°çš„æ­¦å™¨å’Œè£å‚™<br>ã€€- åˆæˆæ­¦å™¨æ™‚, å¿…é ˆè¡£ç…§æŒ‡ç¤º(è¨­è¨ˆè—åœ–/åˆæˆæ³•)é€²è¡Œ, å¦å‰‡åˆæˆæœƒå¤±æ•—<br>ã€€- å¤±æ•—çš„è©±, æœƒå¤±å»æ‰€æœ‰åŸæ–™å’Œä»»ä½•åœ¨ç†”è§£çˆå…§çš„ç‰©å“<br>ã€€- ä»»ä½•ç½®æ”¾åœ¨ç†”è§£çˆçš„ç‰©å“, éƒ½æœƒå¤±å»æ‰€æœ‰ç‹€æ…‹å€¼<br>ã€€- è£å‚™ç‹€æ…‹ä¸èƒ½å¤ªå·®, å¿…é ˆç‚º $DisMinXp ä»¥ä¸Š, å¦å‰‡ç„¡æ³•æˆç‚ºææ–™ã€‚<br>";
+	echo "<b>å°ˆç”¨åŒ–æ”¹é€ å·¥å ´</b><Br>ã€€- å°ˆç”¨åŒ–èƒ½å¤ è®“ä½ æ”¹é€ æ­¦å™¨ã€æå‡å¨åŠ›å’Œæ•ˆç‡ã€‚<br>ã€€- ç•¶æ­¦å™¨ç¬¦åˆä¸€å®šçš„æ¢ä»¶æ™‚ï¼Œå¯ä»¥é€²è¡Œå°ˆç”¨åŒ–ã€‚<br>ã€€- æ¢ä»¶å¦‚ä¸‹:<br>ã€€ ã€€ - æ­¦å™¨ç‹€æ…‹å€¼é” +250% <br>ã€€ ã€€ - æ­¦å™¨æ›¾æ²’æœ‰é€²è¡Œå°ˆç”¨åŒ– <br>ã€€ ã€€ - å°ˆç”¨åŒ–å®Œæˆå¾Œï¼Œæ­¦å™¨ç¶“é©—æ­¸é›¶ã€‚<br>ã€€- å¤±æ•—çš„è©±, æœƒå¤±å»æ‰€æœ‰åŸæ–™å’Œé€²è¡Œå°ˆç”¨åŒ–çš„æ­¦å™¨<br>ã€€- ä»»ä½•ç½®æ”¾åœ¨ç†”è§£çˆçš„ç‰©å“, éƒ½æœƒå¤±å»æ‰€æœ‰ç¶“é©—<br>";
+	echo "<b>å·¥ç¨‹å¸«å·¥æœƒ</b><Br>ã€€- å¯ä»¥åœ¨é€™è³¼è²·åˆæˆè—åœ–<br>ã€€- æ¯æ¬¡è³¼è²·å¾Œä¹Ÿæœƒå¾—åˆ°æŸæ­¦è£çš„<B>è¨­è¨ˆè—åœ–</B>ä¸€å¹…<br>";
 	echo "</tr></td></table>";
 }
 elseif($mode == 'guild' && $actionb == 'none' && $actionc=='none'){
-	echo "§L¾¹»s³y¤u³õ -- ¤uµ{®v¤u·|<hr>";
+	echo "å…µå™¨è£½é€ å·¥å ´ -- å·¥ç¨‹å¸«å·¥æœƒ<hr>";
 	echo "
 	<table>
-	<tr><td>¨Ï¥Î»¡©ú</td></tr>
+	<tr><td>ä½¿ç”¨èªªæ˜</td></tr>
 	<tr>
 	<td style=\"font-size: 10pt\">
-	³o¸Ì¬O¤uµ{®v¤u·|¡A§A¥i¥H¦b³oÁÊ¶R¦X¦¨ÂÅ¹Ï¡A·|¦³¤@¦Ü¤T­Ó¦ì¤uµ{®v¦^µª§Aªº¡A¦ı¥u¦³¤@­Ó¤H»¡ªº¸Ü¬O§¹¥¿½Tªº¡C
-	<br>½Ğª`·N, ªZ¸Ë¦X¦¨®w¤ºªº§÷®Æ©M­ì®Æ, §Y¨Ï©ñ¦h¤F, ¤]¤£·|¼vÅT¦X¦¨µ²ªG¡C
-	<br>¥i¬O, ­ì®Æ¼Æ¶q¤£¨¬, ©Î¬OªZ¾¹¡B¸Ë³Æªº¦¸§Ç¿ù¤F¡A«o·|¦X¦¨¥¢±Ñ¡B¥\\Á«¤@Â±¡I
-	<br>¦X¦¨ªZ¾¹¦³¤Àµ¥¯Å¡A¤À§O¬O¥Ñ¤@¯Å¦Ü¤Q¯Å¡C¤Q¯Å¬°³Ì°ª¯Å¡C
-	<br>±¡³ø»ù¿ú<font color=red>ÀH¯Å¼Æ¤W¤É</font>¡C¤½¦¡¬°: ¤Gªº¯Å§O¦¸¤è­¼".($TFDCostCons)." (§Y 2<sup>n</sup> * ".($TFDCostCons)." )
+	é€™è£¡æ˜¯å·¥ç¨‹å¸«å·¥æœƒï¼Œä½ å¯ä»¥åœ¨é€™è³¼è²·åˆæˆè—åœ–ï¼Œæœƒæœ‰ä¸€è‡³ä¸‰å€‹ä½å·¥ç¨‹å¸«å›ç­”ä½ çš„ï¼Œä½†åªæœ‰ä¸€å€‹äººèªªçš„è©±æ˜¯å®Œæ­£ç¢ºçš„ã€‚
+	<br>è«‹æ³¨æ„, æ­¦è£åˆæˆåº«å…§çš„ææ–™å’ŒåŸæ–™, å³ä½¿æ”¾å¤šäº†, ä¹Ÿä¸æœƒå½±éŸ¿åˆæˆçµæœã€‚
+	<br>å¯æ˜¯, åŸæ–™æ•¸é‡ä¸è¶³, æˆ–æ˜¯æ­¦å™¨ã€è£å‚™çš„æ¬¡åºéŒ¯äº†ï¼Œå»æœƒåˆæˆå¤±æ•—ã€åŠŸ\è™§ä¸€ç°£ï¼
+	<br>åˆæˆæ­¦å™¨æœ‰åˆ†ç­‰ç´šï¼Œåˆ†åˆ¥æ˜¯ç”±ä¸€ç´šè‡³åç´šã€‚åç´šç‚ºæœ€é«˜ç´šã€‚
+	<br>æƒ…å ±åƒ¹éŒ¢<font color=red>éš¨ç´šæ•¸ä¸Šå‡</font>ã€‚å…¬å¼ç‚º: äºŒçš„ç´šåˆ¥æ¬¡æ–¹ä¹˜".($TFDCostCons)." (å³ 2<sup>n</sup> * ".($TFDCostCons)." )
 	</td></tr>
 	<tr><td>
 	<form action=tactfactory.php?action=guild method=post name=mainform>";
 	echo "<input type=hidden value='buy' name=actionb>";
 	echo "<input type=hidden value='none' name=actionc>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
-	echo "ÁÊ¶R: 
+	echo "è³¼è²·: 
 	<script langauge=\"Javascript\">
 	function changeprice(){
 		document.getElementById('cost').innerHTML = (Math.pow(2,document.mainform.grade.value))*".($TFDCostCons).";
@@ -459,54 +455,52 @@ elseif($mode == 'guild' && $actionb == 'none' && $actionc=='none'){
 		else {document.getElementById('cost').style.color='DodgerBlue';}
 	}
 	function ChkBuy(){
-	if (document.getElementById('cost').innerHTML > $Gen[cash]){alert('ª÷¿ú¤£¨¬¡I');return false;}
-	else {if (confirm('½T©w­nÁÊ¶R¶Ü¡H')==true){return true;}else{return false;}}
+	if (document.getElementById('cost').innerHTML > $Gen[cash]){alert('é‡‘éŒ¢ä¸è¶³ï¼');return false;}
+	else {if (confirm('ç¢ºå®šè¦è³¼è²·å—ï¼Ÿ')==true){return true;}else{return false;}}
 	}</script>
 	<select name='grade' onchange=\"changeprice()\">
-	<option value=1 selected>¤@¯Å</option>
-	<option value=2>¤G¯Å</option>
-	<!--
-	<option value=3>¤T¯Å</option>
-	<option value=4>¥|¯Å</option>
-	<option value=5>¤­¯Å</option>
-	<option value=6>¤»¯Å</option>
-	<option value=7>¤C¯Å</option>
-	<option value=8>¤K¯Å</option>
-	<option value=9>¤E¯Å</option>
-	<option value=10>¤Q¯Å</option>
-	-->
-	</select>¦X¦¨ªk¡C<br>
-	©Ò»İª÷ÃB: <span id=cost style='color: DodgerBlue;'>".intval(2*$TFDCostCons)."</span><br>
-	<input type=submit value=ÁÊ¶R OnClick=\"return ChkBuy()\">
+	<option value=1 selected>ä¸€ç´š</option>
+	<option value=2>äºŒç´š</option>
+	<option value=3>ä¸‰ç´š</option>
+	<option value=4>å››ç´š</option>
+	<option value=5>äº”ç´š</option>
+	<option value=6>å…­ç´š</option>
+	<option value=7>ä¸ƒç´š</option>
+	<option value=8>å…«ç´š</option>
+	<option value=9>ä¹ç´š</option>
+	<option value=10>åç´š</option>
+	</select>åˆæˆæ³•ã€‚<br>
+	æ‰€éœ€é‡‘é¡: <span id=cost style='color: DodgerBlue;'>".intval(2*$TFDCostCons)."</span><br>
+	<input type=submit value=è³¼è²· OnClick=\"return ChkBuy()\">
 	</td></tr></form>";
 	echo "<tr><td><form action=tactfactory.php?action=main method=post name=freect target=$SecTarget>";
 	echo "<input type=hidden value='none' name=actionb>";
 	echo "<input type=hidden value='none' name=actionc>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 	echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-	echo "<p align=left style=\"font-size: 16pt\">$CastResult<br><input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"><input type=button value=\"Ä~Äò\" onClick=\"freect.submit()\"></p>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	echo "<p align=left style=\"font-size: 16pt\">$CastResult<br><input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"><input type=button value=\"ç¹¼çºŒ\" onClick=\"freect.submit()\"></p>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form></tr></td>";
 	echo "</table>";
 }
 elseif ($mode == 'guild' && $actionb == 'buy' && $actionc=='none'){
 	$grade = intval($grade);
-	if ($grade < 0 || $grade > 10){echo "¯Å§O¥X¿ù!!<br>";PostFooter();exit;}
+	if ($grade < 0 || $grade > 10){echo "ç´šåˆ¥å‡ºéŒ¯!!<br>";PostFooter();exit;}
 	$TrueCost = intval(pow(2,$grade) * $TFDCostCons);
-	if ( $TrueCost > $Gen['cash']){echo "ª÷¿ú¤£¨¬!!<br>";PostFooter();exit;}
+	if ( $TrueCost > $Gen['cash']){echo "é‡‘éŒ¢ä¸è¶³!!<br>";PostFooter();exit;}
 	else {$Gen['cash'] -= $TrueCost;}
 
 	if (!$UsrWepB[0]){$TargetGrant = 'wepb';}
 	elseif (!$UsrWepC[0]){$TargetGrant = 'wepc';}
-	else{echo "¨SªÅ¦ì©ñ¸m¦X¦¨³]­pÂÅ¹Ï, ½Ğ¥ıªÅ¥X³Æ¥Î¤@©Î¤G¦A¸Õ¡C";postFooter();exit;}
+	else{echo "æ²’ç©ºä½æ”¾ç½®åˆæˆè¨­è¨ˆè—åœ–, è«‹å…ˆç©ºå‡ºå‚™ç”¨ä¸€æˆ–äºŒå†è©¦ã€‚";postFooter();exit;}
 
 	unset($sql);
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = '$Gen[cash]' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = '$Gen[cash]' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 	mysql_query($sql);
 	
 	unset($sql,$query,$counter,$TheTString,$TheBpString);
@@ -526,15 +520,15 @@ elseif ($mode == 'guild' && $actionb == 'buy' && $actionc=='none'){
 	$RandSelect = mt_rand(0, ($i - 1));
 	$Result = $TactEntries[$RandSelect];
 
-	echo "<table><tr><td><font color=orange>¹ï¸Ü</font></td></tr>";
+	echo "<table><tr><td><font color=orange>å°è©±</font></td></tr>";
 	echo "<tr><td>". str_replace('\"','"',$Result['directions']) ."</td></tr>";
 	echo "<tr><td style='text-align: center;' align=center>";
 	printBPTable($Result, $product_id_list);
-	echo "</td></tr><tr><td><font color=orange>½Ğ§A°O§C¤U³o¨Ç¹ï¸Ü</font></td></tr>";
+	echo "</td></tr><tr><td><font color=orange>è«‹ä½ è¨˜ä½é€™äº›å°è©±</font></td></tr>";
 	echo "</table>";
 	
 	unset($sql);
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `$TargetGrant` = '". $Result['blueprint'] ."<!>0' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `$TargetGrant` = '". $Result['blueprint'] ."<!>0' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 	mysql_query($sql);
 	unset($sql);
 
@@ -543,7 +537,7 @@ elseif($mode == 'custom'){
 $IncThread = "tcust_200509241855";
 include('tact_custom.php');
 }
-else {echo "¥¼©w¸q°Ê§@¡I";}
+else {echo "æœªå®šç¾©å‹•ä½œï¼";}
 postFooter();
 echo "</body>";
 echo "</html>";

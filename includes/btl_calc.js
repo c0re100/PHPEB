@@ -477,12 +477,12 @@ function player(){
 			}
 		}
 
-		if (this.spec_p_var.match('©³¤O') || (this.TypeIndex == 'psy' && this.TypeLv >= 8) || (this.TypeIndex == 'enh' && this.TypeLv >= 8)) {
+		if (this.spec_p_var.match('åº•åŠ›') || (this.TypeIndex == 'psy' && this.TypeLv >= 8) || (this.TypeIndex == 'enh' && this.TypeLv >= 8)) {
 			this.De_Fix += 15;
-			if (this.spec_p_var.match('©³¤O') && (this.TypeIndex == 'psy' && this.TypeLv >= 8)) this.De_Fix += 15;
+			if (this.spec_p_var.match('åº•åŠ›') && (this.TypeIndex == 'psy' && this.TypeLv >= 8)) this.De_Fix += 15;
 			}
 
-		if (this.spec_p_var.match('¿³¾Ä')) this.At_Fix += 20;
+		if (this.spec_p_var.match('èˆˆå¥®')) this.At_Fix += 20;
 
 		// Update to View
 		this.updateAbilityFix();
@@ -522,7 +522,7 @@ function player(){
 			if(pos == 'a'){
 				this.oRange.innerHTML = getRange(WepID[this.WepA_ID][6]);
 				this.oAttrb.innerHTML = getAttrb(WepID[this.WepA_ID][7]);
-				alert(WepID[this.WepA_ID][0]+'\n¸Ë³Æ¦³¥H¤U¯S®Ä:\n' + brToNL(WepID[this.WepA_ID][5]));
+				alert(WepID[this.WepA_ID][0]+'\nè£å‚™æœ‰ä»¥ä¸‹ç‰¹æ•ˆ:\n' + brToNL(WepID[this.WepA_ID][5]));
 			}
 		}
 
@@ -530,14 +530,14 @@ function player(){
 			if(this.oWepE.value != null) this.WepE_ID = this.oWepE.value;
 			else this.WepE_ID = 0;
 			if(pos == 'e')
-				alert('¸Ë³Æ¦³¥H¤U¯S®Ä:\n' + brToNL(WepID[this.WepE_ID][5]));
+				alert('è£å‚™æœ‰ä»¥ä¸‹ç‰¹æ•ˆ:\n' + brToNL(WepID[this.WepE_ID][5]));
 		}
 
 		if(pos == 'p' || pos == 'all'){
 				if(this.oWepP.value != null) this.WepP_ID = this.oWepP.value;
 				else this.WepP_ID = 0;
 			if(pos == 'p')
-				alert('¸Ë³Æ¦³¥H¤U¯S®Ä:\n' + brToNL(WepID[this.WepP_ID][5]));
+				alert('è£å‚™æœ‰ä»¥ä¸‹ç‰¹æ•ˆ:\n' + brToNL(WepID[this.WepP_ID][5]));
 		}
 
 		if(pos == 'ms' || pos == 'all'){
@@ -557,58 +557,58 @@ function player(){
 
 		this.spec_p_var = WepID[this.WepA_ID][5] + WepID[this.WepE_ID][5] + WepID[this.WepP_ID][5] + MSID[this.MS_ID][5];
 
-		this.spec_prc = this.spec_p_var.match('§¹¥ş¨¾¿m') + ', '
-		 + this.spec_p_var.match('¥[³t') + ', '
-		 + this.spec_p_var.match('¶W«e') + ', '
-		 + this.spec_p_var.match('°{Á×') + ', '
-		 + this.spec_p_var.match('°kÂ÷') + ', '
-		 + this.spec_p_var.match('Â²³æ±À¶i') + ', '
-		 + this.spec_p_var.match('±j¤O±À¶i') + ', '
-		 + this.spec_p_var.match('³Ì¨Î¤Æ±À¶i') + ', '
-		 + this.spec_p_var.match('°ª¯Å±À¶i') + ', '
-		 + this.spec_p_var.match('·¥¯Å±À¶i') + ', '
-		 + this.spec_p_var.match('®Õ·Ç') + ', '
-		 + this.spec_p_var.match('ºË·Ç') + ', '
-		 + this.spec_p_var.match('¶°¤¤') + ', '
-		 + this.spec_p_var.match('¹w´ú') + ', '
-		 + this.spec_p_var.match('¦Û°ÊÂê©w') + ', '
-		 + this.spec_p_var.match('°ª¯Å®Õ·Ç') + ', '
-		 + this.spec_p_var.match('µL»~®Õ·Ç') + ', '
-		 + this.spec_p_var.match('¦h­«Âê©w') + ', '
-		 + this.spec_p_var.match('§¹¬üÂê©w') + ', '
-		 + this.spec_p_var.match('Â²³æ¨¾¿m') + ', '
-		 + this.spec_p_var.match('¥¿±`¨¾¿m') + ', '
-		 + this.spec_p_var.match('±j¤Æ¨¾¿m') + ', '
-		 + this.spec_p_var.match('°ª¯Å¨¾¿m') + ', '
-		 + this.spec_p_var.match('³Ì²×¨¾¿m') + ', '
-		 + this.spec_p_var.match('«p¥Ò') + ', '
-		 + this.spec_p_var.match('§Ü½ÄÀ»') + ', '
-		 + this.spec_p_var.match('¼u¶}') + ', '
+		this.spec_prc = this.spec_p_var.match('å®Œå…¨é˜²ç¦¦') + ', '
+		 + this.spec_p_var.match('åŠ é€Ÿ') + ', '
+		 + this.spec_p_var.match('è¶…å‰') + ', '
+		 + this.spec_p_var.match('é–ƒé¿') + ', '
+		 + this.spec_p_var.match('é€ƒé›¢') + ', '
+		 + this.spec_p_var.match('ç°¡å–®æ¨é€²') + ', '
+		 + this.spec_p_var.match('å¼·åŠ›æ¨é€²') + ', '
+		 + this.spec_p_var.match('æœ€ä½³åŒ–æ¨é€²') + ', '
+		 + this.spec_p_var.match('é«˜ç´šæ¨é€²') + ', '
+		 + this.spec_p_var.match('æ¥µç´šæ¨é€²') + ', '
+		 + this.spec_p_var.match('æ ¡æº–') + ', '
+		 + this.spec_p_var.match('ç„æº–') + ', '
+		 + this.spec_p_var.match('é›†ä¸­') + ', '
+		 + this.spec_p_var.match('é æ¸¬') + ', '
+		 + this.spec_p_var.match('è‡ªå‹•é–å®š') + ', '
+		 + this.spec_p_var.match('é«˜ç´šæ ¡æº–') + ', '
+		 + this.spec_p_var.match('ç„¡èª¤æ ¡æº–') + ', '
+		 + this.spec_p_var.match('å¤šé‡é–å®š') + ', '
+		 + this.spec_p_var.match('å®Œç¾é–å®š') + ', '
+		 + this.spec_p_var.match('ç°¡å–®é˜²ç¦¦') + ', '
+		 + this.spec_p_var.match('æ­£å¸¸é˜²ç¦¦') + ', '
+		 + this.spec_p_var.match('å¼·åŒ–é˜²ç¦¦') + ', '
+		 + this.spec_p_var.match('é«˜ç´šé˜²ç¦¦') + ', '
+		 + this.spec_p_var.match('æœ€çµ‚é˜²ç¦¦') + ', '
+		 + this.spec_p_var.match('åšç”²') + ', '
+		 + this.spec_p_var.match('æŠ—è¡æ“Š') + ', '
+		 + this.spec_p_var.match('å½ˆé–‹') + ', '
 		 + this.spec_p_var.match('Phase Shift') + ', '
 		 + this.spec_p_var.match('V. P. S.') + ', '
-		 + this.spec_p_var.match('­@¼ö') + ', '
-		 + this.spec_p_var.match('¼öÂà²¾') + ', '
-		 + this.spec_p_var.match('§á¦±') + ', '
-		 + this.spec_p_var.match('§é®g') + ', '
-		 + this.spec_p_var.match('®ø´²') + ', '
-		 + this.spec_p_var.match('©À°Ê¤zÂZ') + ', '
-		 + this.spec_p_var.match('­«¤O¾ŞÁa') + ', '
-		 + this.spec_p_var.match('ªÅ¶¡¤zÂZ') + ', '
-		 + this.spec_p_var.match('®ÉªÅÂZ¶Ã') + ', '
-		 + this.spec_p_var.match('¦¸¤¸³sµ²') + ', '
-		 + this.spec_p_var.match('®æ¾×') + ', '
-		 + this.spec_p_var.match('§Ü¿Å') + ', '
-		 + this.spec_p_var.match('¤z¯A') + ', '
-		 + this.spec_p_var.match('°í¾À') + ', '
-		 + this.spec_p_var.match('ªÅ¶¡¬Û¹ï¦ì²¾') + ', '
-		 + this.spec_p_var.match('©³¤O') + ', '
-		 + this.spec_p_var.match('¿³¾Ä') + ', '
-		 + this.spec_p_var.match('°ª¼ö¯à') + ', '
-		 + this.spec_p_var.match('º²¸Ñ') + ', '
-		 + this.spec_p_var.match('¸TÀD') + ', '
-		 + this.spec_p_var.match('³e¬ï') + ', '
-		 + this.spec_p_var.match('ºôµ¸¤zÂZ') + ', '
-		 + this.spec_p_var.match('¹p¹F¤zÂZ') + ', '
+		 + this.spec_p_var.match('è€ç†±') + ', '
+		 + this.spec_p_var.match('ç†±è½‰ç§»') + ', '
+		 + this.spec_p_var.match('æ‰­æ›²') + ', '
+		 + this.spec_p_var.match('æŠ˜å°„') + ', '
+		 + this.spec_p_var.match('æ¶ˆæ•£') + ', '
+		 + this.spec_p_var.match('å¿µå‹•å¹²æ“¾') + ', '
+		 + this.spec_p_var.match('é‡åŠ›æ“ç¸±') + ', '
+		 + this.spec_p_var.match('ç©ºé–“å¹²æ“¾') + ', '
+		 + this.spec_p_var.match('æ™‚ç©ºæ“¾äº‚') + ', '
+		 + this.spec_p_var.match('æ¬¡å…ƒé€£çµ') + ', '
+		 + this.spec_p_var.match('æ ¼æ“‹') + ', '
+		 + this.spec_p_var.match('æŠ—è¡¡') + ', '
+		 + this.spec_p_var.match('å¹²æ¶‰') + ', '
+		 + this.spec_p_var.match('å …å£') + ', '
+		 + this.spec_p_var.match('ç©ºé–“ç›¸å°ä½ç§»') + ', '
+		 + this.spec_p_var.match('åº•åŠ›') + ', '
+		 + this.spec_p_var.match('èˆˆå¥®') + ', '
+		 + this.spec_p_var.match('é«˜ç†±èƒ½') + ', '
+		 + this.spec_p_var.match('ç†”è§£') + ', '
+		 + this.spec_p_var.match('ç¦éŒ®') + ', '
+		 + this.spec_p_var.match('è²«ç©¿') + ', '
+		 + this.spec_p_var.match('ç¶²çµ¡å¹²æ“¾') + ', '
+		 + this.spec_p_var.match('é›·é”å¹²æ“¾') + ', '
 		 + 'null';
 
 		this.spec_prc = this.spec_prc.replace(/(null, )/g,'');
@@ -640,37 +640,37 @@ function player(){
 
 		//Analyze MobS Grade - Basic
 		if(Pl_TarSGd < 6 && Op_TarSGd < 6){
-			if(this.spec_p_var.match('¦Û°ÊÂê©w')) Pl_TarSGd = 1;
-			if(this.spec_p_var.match('°ª¯Å®Õ·Ç')) Pl_TarSGd = 2;
-			if(this.spec_p_var.match('µL»~®Õ·Ç')) Pl_TarSGd = 3;
-			if(this.spec_p_var.match('¦h­«Âê©w')) Pl_TarSGd = 4;
-			if(this.spec_p_var.match('§¹¬üÂê©w')) Pl_TarSGd = 5;
-			if(Op.spec_p_var.match('¦Û°ÊÂê©w')) Op_TarSGd = 1;
-			if(Op.spec_p_var.match('°ª¯Å®Õ·Ç')) Op_TarSGd = 2;
-			if(Op.spec_p_var.match('µL»~®Õ·Ç')) Op_TarSGd = 3;
-			if(Op.spec_p_var.match('¦h­«Âê©w')) Op_TarSGd = 4;
-			if(Op.spec_p_var.match('§¹¬üÂê©w')) Op_TarSGd = 5;
+			if(this.spec_p_var.match('è‡ªå‹•é–å®š')) Pl_TarSGd = 1;
+			if(this.spec_p_var.match('é«˜ç´šæ ¡æº–')) Pl_TarSGd = 2;
+			if(this.spec_p_var.match('ç„¡èª¤æ ¡æº–')) Pl_TarSGd = 3;
+			if(this.spec_p_var.match('å¤šé‡é–å®š')) Pl_TarSGd = 4;
+			if(this.spec_p_var.match('å®Œç¾é–å®š')) Pl_TarSGd = 5;
+			if(Op.spec_p_var.match('è‡ªå‹•é–å®š')) Op_TarSGd = 1;
+			if(Op.spec_p_var.match('é«˜ç´šæ ¡æº–')) Op_TarSGd = 2;
+			if(Op.spec_p_var.match('ç„¡èª¤æ ¡æº–')) Op_TarSGd = 3;
+			if(Op.spec_p_var.match('å¤šé‡é–å®š')) Op_TarSGd = 4;
+			if(Op.spec_p_var.match('å®Œç¾é–å®š')) Op_TarSGd = 5;
 		}
 		//End Lower-Case Specs of Hit Values
 
 		//Insert Upper Case Effects
 		var CeaseFlag;
-		if(Op.spec_p_var.match('¸TÀD')){
+		if(Op.spec_p_var.match('ç¦éŒ®')){
 			this.MS_ReFix -= 5;
 			this.MS_TaFix -= 5;
 			CeaseFlag = 1;
 		}
 		else CeaseFlag = 0;
 
-		if 	(this.spec_p_var.match('°kÂ÷'))                     this.MS_ReFix += 14;
-		else if (this.spec_p_var.match('°{Á×'))                 this.MS_ReFix += 10;
-		else if (this.spec_p_var.match('¶W«e') && !CeaseFlag)   this.MS_ReFix +=  6;
-		else if (this.spec_p_var.match('¥[³t') && !CeaseFlag)   this.MS_ReFix +=  2;
+		if 	(this.spec_p_var.match('é€ƒé›¢'))                     this.MS_ReFix += 14;
+		else if (this.spec_p_var.match('é–ƒé¿'))                 this.MS_ReFix += 10;
+		else if (this.spec_p_var.match('è¶…å‰') && !CeaseFlag)   this.MS_ReFix +=  6;
+		else if (this.spec_p_var.match('åŠ é€Ÿ') && !CeaseFlag)   this.MS_ReFix +=  2;
 
-		if 	(this.spec_p_var.match('¹w´ú'))                     this.MS_TaFix += 14;
-		else if (this.spec_p_var.match('¶°¤¤'))                 this.MS_TaFix += 10;
-		else if (this.spec_p_var.match('ºË·Ç') && !CeaseFlag)   this.MS_TaFix +=  6;
-		else if (this.spec_p_var.match('®Õ·Ç') && !CeaseFlag)   this.MS_TaFix +=  2;
+		if 	(this.spec_p_var.match('é æ¸¬'))                     this.MS_TaFix += 14;
+		else if (this.spec_p_var.match('é›†ä¸­'))                 this.MS_TaFix += 10;
+		else if (this.spec_p_var.match('ç„æº–') && !CeaseFlag)   this.MS_TaFix +=  6;
+		else if (this.spec_p_var.match('æ ¡æº–') && !CeaseFlag)   this.MS_TaFix +=  2;
 
 		//Apply TarS
 		if(Pl_TarSGd > Op_TarSGd && Pl_TarSGd < 6 && Op_TarSGd < 6){
@@ -679,14 +679,14 @@ function player(){
 		}
 
 		//Upper Case Def Specs
-		if	(this.spec_p_var.match('³Ì²×¨¾¿m'))     this.MS_DeFix += 15;
-		else if	(this.spec_p_var.match('°ª¯Å¨¾¿m')) this.MS_DeFix += 12;
-		else if	(this.spec_p_var.match('±j¤Æ¨¾¿m')) this.MS_DeFix +=  9;
-		else if	(this.spec_p_var.match('¥¿±`¨¾¿m')) this.MS_DeFix +=  6;
-		else if	(this.spec_p_var.match('Â²³æ¨¾¿m')) this.MS_DeFix +=  3;
+		if	(this.spec_p_var.match('æœ€çµ‚é˜²ç¦¦'))     this.MS_DeFix += 15;
+		else if	(this.spec_p_var.match('é«˜ç´šé˜²ç¦¦')) this.MS_DeFix += 12;
+		else if	(this.spec_p_var.match('å¼·åŒ–é˜²ç¦¦')) this.MS_DeFix +=  9;
+		else if	(this.spec_p_var.match('æ­£å¸¸é˜²ç¦¦')) this.MS_DeFix +=  6;
+		else if	(this.spec_p_var.match('ç°¡å–®é˜²ç¦¦')) this.MS_DeFix +=  3;
 
-		if	(Op.spec_p_var.match('º²¸Ñ'))	          this.MS_DeFix -= 10;
-		else if	(Op.spec_p_var.match('°ª¼ö¯à'))	    this.MS_DeFix -=  5;
+		if	(Op.spec_p_var.match('ç†”è§£'))	          this.MS_DeFix -= 10;
+		else if	(Op.spec_p_var.match('é«˜ç†±èƒ½'))	    this.MS_DeFix -=  5;
 
 		if(this.MS_AtFix < 0) this.MS_AtFix = 0;
 		if(this.MS_DeFix < 0) this.MS_DeFix = 0;
@@ -701,8 +701,8 @@ function player(){
 	}
 
 	this.switchTactics = function(Op){
-		alert('¤w¤è:\n¡@¾Ôªk¦WºÙ: '+TacticsID[this.oTactics.value][0]+'\n'+'¡@¡@¾÷®v­×¥¿\n¡@¡@¡@Attacking: '+TacticsID[this.oTactics.value][1]+'\n¡@¡@¡@Defending: '+TacticsID[this.oTactics.value][2]+'\n¡@¡@¡@Reacting: '+TacticsID[this.oTactics.value][3]+'\n¡@¡@¡@Targeting: '+TacticsID[this.oTactics.value][4]+'\n'+'¡@¡@¾÷Åé­×¥¿: \n¡@¡@¡@©R¤¤: '+TacticsID[this.oTactics.value][5]+'\n¡@¡@¡@¦^Á×: '+TacticsID[this.oTactics.value][6]+'\n¡@¡@¯S®í®ÄªG: '+brToComma(TacticsID[this.oTactics.value][7]) +
-		'\n______________________________\n\n¼Ä¤è:\n¡@¾Ôªk¦WºÙ: '+TacticsID[Op.oTactics.value][0]+'\n'+'¡@¡@¾÷®v­×¥¿\n¡@¡@¡@Attacking: '+TacticsID[Op.oTactics.value][1]+'\n¡@¡@¡@Defending: '+TacticsID[Op.oTactics.value][2]+'\n¡@¡@¡@Reacting: '+TacticsID[Op.oTactics.value][3]+'\n¡@¡@¡@Targeting: '+TacticsID[Op.oTactics.value][4]+'\n'+'¡@¡@¾÷Åé­×¥¿: \n¡@¡@¡@©R¤¤: '+TacticsID[Op.oTactics.value][5]+'\n¡@¡@¡@¦^Á×: '+TacticsID[Op.oTactics.value][6]+'\n¡@¡@¯S®í®ÄªG: '+brToComma(TacticsID[Op.oTactics.value][7]));
+		alert('å·²æ–¹:\nã€€æˆ°æ³•åç¨±: '+TacticsID[this.oTactics.value][0]+'\n'+'ã€€ã€€æ©Ÿå¸«ä¿®æ­£\nã€€ã€€ã€€Attacking: '+TacticsID[this.oTactics.value][1]+'\nã€€ã€€ã€€Defending: '+TacticsID[this.oTactics.value][2]+'\nã€€ã€€ã€€Reacting: '+TacticsID[this.oTactics.value][3]+'\nã€€ã€€ã€€Targeting: '+TacticsID[this.oTactics.value][4]+'\n'+'ã€€ã€€æ©Ÿé«”ä¿®æ­£: \nã€€ã€€ã€€å‘½ä¸­: '+TacticsID[this.oTactics.value][5]+'\nã€€ã€€ã€€å›é¿: '+TacticsID[this.oTactics.value][6]+'\nã€€ã€€ç‰¹æ®Šæ•ˆæœ: '+brToComma(TacticsID[this.oTactics.value][7]) +
+		'\n______________________________\n\næ•µæ–¹:\nã€€æˆ°æ³•åç¨±: '+TacticsID[Op.oTactics.value][0]+'\n'+'ã€€ã€€æ©Ÿå¸«ä¿®æ­£\nã€€ã€€ã€€Attacking: '+TacticsID[Op.oTactics.value][1]+'\nã€€ã€€ã€€Defending: '+TacticsID[Op.oTactics.value][2]+'\nã€€ã€€ã€€Reacting: '+TacticsID[Op.oTactics.value][3]+'\nã€€ã€€ã€€Targeting: '+TacticsID[Op.oTactics.value][4]+'\n'+'ã€€ã€€æ©Ÿé«”ä¿®æ­£: \nã€€ã€€ã€€å‘½ä¸­: '+TacticsID[Op.oTactics.value][5]+'\nã€€ã€€ã€€å›é¿: '+TacticsID[Op.oTactics.value][6]+'\nã€€ã€€ç‰¹æ®Šæ•ˆæœ: '+brToComma(TacticsID[Op.oTactics.value][7]));
 	}
 	
 	this.dataToStr = function(){
@@ -739,14 +739,14 @@ function player(){
 		var dataArray;
 		
 		if( str == '' ){
-			alert('½Ğ¥ı¦b¤U¤è¶K¤W¸ê®Æ¦r¦ê¡I');
+			alert('è«‹å…ˆåœ¨ä¸‹æ–¹è²¼ä¸Šè³‡æ–™å­—ä¸²ï¼');
 			return;
 		}
 
 		dataArray = str.split(',');
 		
 		if(dataArray.length != 21){
-			alert('¸ê®Æ¦r¦ê¤£§¹¾ã©Î®æ¦¡¤£²Å¡I');
+			alert('è³‡æ–™å­—ä¸²ä¸å®Œæ•´æˆ–æ ¼å¼ä¸ç¬¦ï¼');
 			return;
 		}
 		
@@ -782,7 +782,7 @@ function player(){
 		this.chk_dis_spcflv();
 		this.switchWep(Op,'all');
 			
-		alert('¸ê®Æ¶×¤J§¹¦¨¡I');
+		alert('è³‡æ–™åŒ¯å…¥å®Œæˆï¼');
 	}
 	
 	this.saveToCookie = function(slot){
@@ -840,26 +840,26 @@ function pd_CalHitDam(Pl, Op){
 	Pl.dprd_min = GetWAtkL(Pl.dprd_max, Pl.Ta(), Op.Re());
 
 	var rds_multiplier = 1;
-	if (Pl.spec_p_var.match('¤T³sÀ»') || Pl.getTacticSpec().match('¤T³sÀ»') ) rds_multiplier = 3;
-	else if (Pl.spec_p_var.match('¤G³sÀ»') || Pl.getTacticSpec().match('¤T³sÀ»') ) rds_multiplier = 2;
+	if (Pl.spec_p_var.match('ä¸‰é€£æ“Š') || Pl.getTacticSpec().match('ä¸‰é€£æ“Š') ) rds_multiplier = 3;
+	else if (Pl.spec_p_var.match('äºŒé€£æ“Š') || Pl.getTacticSpec().match('ä¸‰é€£æ“Š') ) rds_multiplier = 2;
 
-	if(Pl.spec_p_var.match('¹ê¼uÀ»¸¨') && Op.oAttrb.innerHTML.match('­¸¼u')) rds_multiplier *= 0.6;
-	if(Pl.spec_p_var.match('±K¶°®gÀ»') ) rds_multiplier /= 0.6;
+	if(Pl.spec_p_var.match('å¯¦å½ˆæ“Šè½') && Op.oAttrb.innerHTML.match('é£›å½ˆ')) rds_multiplier *= 0.6;
+	if(Pl.spec_p_var.match('å¯†é›†å°„æ“Š') ) rds_multiplier /= 0.6;
 
 	var T_Rds = Math.round(Pl.getWeaponRDS() * rds_multiplier);
 	var DamagePrevent = 0;
 
-	if(Pl.spec_p_var.match('³e¬ï') == null){
-		if(Op.spec_p_var.match('ªÅ¶¡¬Û¹ï¦ì²¾')) DamagePrevent = 5000;
-		else if (Op.spec_p_var.match('°í¾À'))	DamagePrevent = 3500;
-		else if (Op.spec_p_var.match('¤z¯A'))	DamagePrevent = 2000;
-		else if (Op.spec_p_var.match('§Ü¿Å'))	DamagePrevent = 1000;
-		else if (Op.spec_p_var.match('®æ¾×'))	DamagePrevent = 400;
+	if(Pl.spec_p_var.match('è²«ç©¿') == null){
+		if(Op.spec_p_var.match('ç©ºé–“ç›¸å°ä½ç§»')) DamagePrevent = 5000;
+		else if (Op.spec_p_var.match('å …å£'))	DamagePrevent = 3500;
+		else if (Op.spec_p_var.match('å¹²æ¶‰'))	DamagePrevent = 2000;
+		else if (Op.spec_p_var.match('æŠ—è¡¡'))	DamagePrevent = 1000;
+		else if (Op.spec_p_var.match('æ ¼æ“‹'))	DamagePrevent = 400;
 	
 		var myDamAvg = (Pl.dprd_max + Pl.dprd_min) / 2 * T_Rds;
-		DamagePrevent += tryGetPv(myDamAvg, Pl, Op, 'Beam');
-		DamagePrevent += tryGetPv(myDamAvg, Pl, Op, '¹êÅé');
-		DamagePrevent += tryGetPv(myDamAvg, Pl, Op, '¯S®í');
+		DamagePrevent += tryGetPv(myDamAvg, Pl, Op, 'å…‰æŸ');
+		DamagePrevent += tryGetPv(myDamAvg, Pl, Op, 'å¯¦é«”');
+		DamagePrevent += tryGetPv(myDamAvg, Pl, Op, 'ç‰¹æ®Š');
 	}
 
 	if( DamagePrevent > 0 ){
@@ -875,11 +875,11 @@ function pd_CalHitDam(Pl, Op){
 
 	var Op_MobS_Fix = 1.0;
 
-	if(Op.spec_p_var.match('·¥¯Å±À¶i'))  Op_MobS_Fix = 0.5;
-	else if(Op.spec_p_var.match('°ª¯Å±À¶i'))  Op_MobS_Fix = 0.6;
-	else if(Op.spec_p_var.match('³Ì¨Î¤Æ±À¶i'))Op_MobS_Fix = 0.7;
-	else if(Op.spec_p_var.match('±j¤O±À¶i'))  Op_MobS_Fix = 0.8;
-	else if(Op.spec_p_var.match('Â²³æ±À¶i'))  Op_MobS_Fix = 0.9;
+	if(Op.spec_p_var.match('æ¥µç´šæ¨é€²'))  Op_MobS_Fix = 0.5;
+	else if(Op.spec_p_var.match('é«˜ç´šæ¨é€²'))  Op_MobS_Fix = 0.6;
+	else if(Op.spec_p_var.match('æœ€ä½³åŒ–æ¨é€²'))Op_MobS_Fix = 0.7;
+	else if(Op.spec_p_var.match('å¼·åŠ›æ¨é€²'))  Op_MobS_Fix = 0.8;
+	else if(Op.spec_p_var.match('ç°¡å–®æ¨é€²'))  Op_MobS_Fix = 0.9;
 
 	var AccByMS = acc_cons_MS_Bias + ( Pl.cl_ms_ta - Op.cl_ms_re ) / acc_cons_MS_Sense ;
 	var AccByPi = acc_cons_Pi_Bias + ( Pl.cl_pi_ta - Op.cl_pi_re ) / acc_cons_Pi_Sense ;
@@ -939,20 +939,20 @@ function pd_Calc(Pl, Op){
 function getRange(r){
 	r = parseInt(r);
 	switch(r){
-		case 0: return '»·¶ZÂ÷';
-		case 1: return 'ªñ¶ZÂ÷';
-		case 2: return '¯S®í¶ZÂ÷';
+		case 0: return 'é è·é›¢';
+		case 1: return 'è¿‘è·é›¢';
+		case 2: return 'ç‰¹æ®Šè·é›¢';
 	}
 }
 // Attribute Convert
 function getAttrb(a){
 	a = parseInt(a);
 	switch(a){
-		case 0: return 'Beam';
-		case 1: return '¹êÅé';
-		case 2: return '­¸¼u';
-		case 3: return '¯S®í';
-		case 4: return '­n¶ëªZ¾¹';
+		case 0: return 'å…‰æŸ';
+		case 1: return 'å¯¦é«”';
+		case 2: return 'é£›å½ˆ';
+		case 3: return 'ç‰¹æ®Š';
+		case 4: return 'è¦å¡æ­¦å™¨';
 	}
 }
 
@@ -962,14 +962,14 @@ function tryGetPv(myDamAvg, Pl, Op, pvAttrb){
 	DamagePrevent = 0;
 
 	if(Pl.oAttrb.innerHTML.match(pvAttrb)){
-		if(pvAttrb == 'Beam'){
-			PvTypes = new Array('­@¼ö','¼öÂà²¾','§á¦±','§é®g','®ø´²');
+		if(pvAttrb == 'å…‰æŸ'){
+			PvTypes = new Array('è€ç†±','ç†±è½‰ç§»','æ‰­æ›²','æŠ˜å°„','æ¶ˆæ•£');
 		}
-		else if (pvAttrb == '¹êÅé'){
-			PvTypes = new Array('«p¥Ò','§Ü½ÄÀ»','¼u¶}','Phase Shift','V. P. S.');
+		else if (pvAttrb == 'å¯¦é«”'){
+			PvTypes = new Array('åšç”²','æŠ—è¡æ“Š','å½ˆé–‹','Phase Shift','V. P. S.');
 		}
-		else if (pvAttrb == '¯S®í'){
-			PvTypes = new Array('©À°Ê¤zÂZ','­«¤O¾ŞÁa','ªÅ¶¡¤zÂZ','®ÉªÅÂZ¶Ã','¦]ªG«ß¤z¯A');
+		else if (pvAttrb == 'ç‰¹æ®Š'){
+			PvTypes = new Array('å¿µå‹•å¹²æ“¾','é‡åŠ›æ“ç¸±','ç©ºé–“å¹²æ“¾','æ™‚ç©ºæ“¾äº‚','å› æœå¾‹å¹²æ¶‰');
 		}
 		if (Op.spec_p_var.match(PvTypes[0])) DamagePrevent += getPvAmount(myDamAvg, 0.10, 200, 1200);
 		if (Op.spec_p_var.match(PvTypes[1])) DamagePrevent += getPvAmount(myDamAvg, 0.15, 500, 2000);
@@ -1093,14 +1093,14 @@ function CalcLevelRec (NowStat, NPt){
 
 // Get Weapon Attack Lower Limit
 function GetWAtkL(Atk, Tar, Re){
-	//ªZ¾¹§ğÀ»¤O, §ğ¤èTargeting, ¦u¤è¦^Á×­È
+	//æ­¦å™¨æ”»æ“ŠåŠ›, æ”»æ–¹Targeting, å®ˆæ–¹å›é¿å€¼
 	if (Tar < Re/3)	AtkL = Atk/5;
 	else
 	AtkL=Atk * (Math.floor(Tar-Re/3) * 0.01);
 	if (AtkL < Atk/5) AtkL = Atk/5;
 	if (AtkL > Atk) AtkL = Atk;
 	AtkL = Math.round(AtkL);
-	return AtkL; //§ğ¤è§ğÀ»­È­pºâ¤U­­
+	return AtkL; //æ”»æ–¹æ”»æ“Šå€¼è¨ˆç®—ä¸‹é™
 }
 
 // <br> Converting Functions

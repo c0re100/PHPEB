@@ -14,7 +14,7 @@
 	`type`.`name` as `t_name`
 	FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` `gen`, `".$GLOBALS['DBPrefix']."phpeb_user_game_info` `game` , `".$GLOBALS['DBPrefix']."phpeb_sys_ms` `ms`, `".$GLOBALS['DBPrefix']."phpeb_sys_chtype` `type`
 	WHERE `gen`.`username`=`game`.`username` AND `ms`.`id` = `msuit` AND `type`.`id` = `typech` AND `type`.`typelv` = FLOOR( `level` / 10 ) + 1
-	AND `gen`.`username` != '$Pl_Value[USERNAME]'
+	AND `gen`.`username` != '$_SESSION[username]'
 	AND `wepa` NOT REGEXP '^0<!>' AND `msuit` != '0' AND `coordinates` REGEXP '(".substr($Pl->Player['coordinates'],0,2).")' ";
 
 	$SQL .= ($Pl->Player['organization'] != 0) ?  "AND (`organization` != '".$Pl->Player['organization']."') " : '';
@@ -22,5 +22,5 @@
 
 	unset($torder);
 
-	$Query = mysql_query ($SQL) or die ('<hr>MySQL ¸ê®Æ®w¦s¨ú¿ù»~, ½ĞÁpµ¸GM, ¿ù»~¥N¸¹ BTL-DF-000<br>');
+	$Query = mysql_query ($SQL) or die ('<hr>MySQL è³‡æ–™åº«å­˜å–éŒ¯èª¤, è«‹è¯çµ¡GM, éŒ¯èª¤ä»£è™Ÿ BTL-DF-000<br>');
 ?>

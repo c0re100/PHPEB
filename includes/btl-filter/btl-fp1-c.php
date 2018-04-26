@@ -53,10 +53,10 @@
 	$SQL .= " AND `ms`.`id` = `msuit`";
 	if($Pl->Player['fdis_tch'])	$SQL .= " AND `type`.`id` = `typech` AND `type`.`typelv` = FLOOR( `level` / 10 ) + 1 ";
 
-	$SQL .= " AND `gen`.`username` != '$Pl_Value[USERNAME]' AND `wepa` NOT REGEXP '^0<!>' AND `msuit` != '0' AND `coordinates` REGEXP '(".substr($Pl->Player['coordinates'],0,2).")' ";
+	$SQL .= " AND `gen`.`username` != '$_SESSION[username]' AND `wepa` NOT REGEXP '^0<!>' AND `msuit` != '0' AND `coordinates` REGEXP '(".substr($Pl->Player['coordinates'],0,2).")' ";
 	$SQL .= ($Pl->Player['organization'] != 0) ?  "AND (`organization` != '".$Pl->Player['organization']."') " : '';
 	$SQL .= $CustomFilter." ORDER BY ".$CustomOrder;
 
-	$Query = mysql_query ($SQL) or die ('<hr>MySQL ¸ê®Æ®w¦s¨ú¿ù»~, ½ĞÁpµ¸GM, ¿ù»~¥N¸¹ BTL-CF-000<br>');
+	$Query = mysql_query ($SQL) or die ('<hr>MySQL è³‡æ–™åº«å­˜å–éŒ¯èª¤, è«‹è¯çµ¡GM, éŒ¯èª¤ä»£è™Ÿ BTL-CF-000<br>');
 
 ?>

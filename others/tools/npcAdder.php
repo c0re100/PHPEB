@@ -5,11 +5,11 @@
 
 // Activate Program
 // Turn this on (set to true) or delete this file when not using!!
-// ¤£¨Ï¥Î®É, °O±o³]©w¬°¡uTrue¡v ©Î §R°£³o­ÓÀÉ®×!!
+// ä¸ä½¿ç”¨æ™‚, è¨˜å¾—è¨­å®šç‚ºã€ŒTrueã€ æˆ– åˆªé™¤é€™å€‹æª”æ¡ˆ!!
 $UseAuth = false;
 $Script_Name = 'npcAdder.php';
-include('../../cfu.php');
-postHead('','../../phpeb_session_dir');
+include('cfu.php');
+postHead('');
 mt_srand ((double) microtime()*1000000);
 
 $mode = ( isset($_POST['action']) ) ? $_POST['action'] : '';
@@ -123,12 +123,13 @@ if($mode == 'process'){
 
 	for($i = 0; $i < $amount; $i++){
 		
-		$usrName = 'NPC-' . ($count + $i);
+		$usrName = 'NPC00' . ($count + $i);
 		$GenItm = array();// color, ms, type, coord
 		$GameItm = array();// gamename0, attacking1, defending2, reacting3, targeting4, level5, hp6, hpmax7, en8, enmax9, sp10, spmax11, wepa12, rank13, tactics14
 		
 		$GenItm[0] = $MainColors[mt_rand(0,(count($MainColors) - 1))];
-		$GenItm[1] = $MsList[mt_rand(0, ($countMS - 1))];
+		/*$GenItm[1] = $MsList[mt_rand(0, ($countMS - 1))];*/
+		$GenItm[1] = 9999;
 		$GenItm[2] = $TypeList[mt_rand(0, 9)];
 		$GenItm[3] = randCoord($tLevel);
 		
@@ -142,7 +143,12 @@ if($mode == 'process'){
 		$Ability[1] = array( floor($tLevel * 0.75) - 5, floor($tLevel * 0.75) + 10);
 		$Ability[2] = array( floor($tLevel * 0.45) - 5, floor($tLevel * 0.45) + 10);
 		$Ability[3] = array( floor($tLevel * 0.20) - 5, floor($tLevel * 0.20) + 10);
-
+		
+		/*$Ability[0] = array(1, 5);
+		$Ability[1] = array(1, 5);
+		$Ability[2] = array(1, 5);
+		$Ability[3] = array(1, 5);*/
+		
 		for($j = 0; $j < 4; $j++){
 			$Stat[$statList[$j]] = mt_rand($Ability[$j][0], $Ability[$j][1]);
 		}
@@ -206,9 +212,9 @@ echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 ?>
 
 
-µ¥¯Å: <input type=text name='tLevel'><br>
-±K½X: <input type=text name='password'><br>
-¼Æ¶q: <input type=text name='amount'><br>
+ç­‰ç´š: <input type=text name='tLevel'><br>
+å¯†ç¢¼: <input type=text name='password'><br>
+æ•¸é‡: <input type=text name='amount'><br>
 <input type=submit value='Submit'>
 
 

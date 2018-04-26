@@ -28,10 +28,10 @@ function FetchPlayer($FetchEssentialSettings=false,$FetchFilterSettings=false){
 $SelectionFeilds = "`Gen`.`username` AS `name`, `gamename`, `cash`, `bounty`, `color`, `avatar`, ".
 		"`msuit`, " .
 		"`typech`, `hypermode`, `growth`, `coordinates`, `fame`, ".
-		"`time1`, `time2`, `btltime`, `acc_status`, ".
+		"`time1`, `time2`, `btltime`, `acc_status`, `lastip`,".
 		"`hp`, `hpmax`, `en`, `enmax`, `sp`, `spmax`, ".
 		"`attacking`, `defending`, `reacting`, `targeting`, ".
-		"`ms_custom`, `level`, `expr`, `wepa`, `wepb`, `wepc`, `eqwep`, `p_equip`, ".
+		"`ms_custom`, `level`, `expr`, `mslv`, `msexp`, `wepa`, `wepb`, `wepc`, `eqwep`, `p_equip`, ".
 		"`spec`, `rank`, `rights`, `organization`, `org_group`, ".
 		"`tactics`, `last_tact`, `status`, `victory`, `v_points`";
 
@@ -49,7 +49,7 @@ $SQL .= ($FetchEssentialSettings == true || $FetchFilterSettings == true) ? ', `
 $SQL .= " WHERE `Gen`.`username` = '". $this->User ."' AND `Gen`.`username` = `Game`.`username`";
 $SQL .= ($FetchEssentialSettings == true || $FetchFilterSettings == true) ? ' AND `Gen`.`username` = `Settings`.`username`' : '';
 
-$Query = mysql_query($SQL) or die ('<hr>MySQL ¸ê®Æ®w¦s¨ú¿ù»~, ½ĞÁpµ¸GM, ¿ù»~¥N¸¹ SFO-000<br>');
+$Query = mysql_query($SQL) or die ('<hr>MySQL è³‡æ–™åº«å­˜å–éŒ¯èª¤, è«‹è¯çµ¡GM, éŒ¯èª¤ä»£è™Ÿ SFO-000<br>');
 $this->Player = mysql_fetch_array($Query);
 }
 //FetchPlayer Stats - End
@@ -162,7 +162,6 @@ function ProcessMS($RecordBase = false){
 		$this->MS['atf']=$this->MS['def']=$this->MS['ref']=$this->MS['taf']=0;
 		return;
 	}
-
 	//Record Base
 	if($RecordBase){
 		$this->MS['base']['atf'] = $this->MS['atf'];
@@ -199,7 +198,7 @@ function iniFixes($getName = false){
 	$Selection = '`atf`, `def`, `ref`, `taf`';
 	if($getName) $Selection .= ', `name`';
 	$SQL = ("SELECT $Selection FROM `".$GLOBALS['DBPrefix']."phpeb_sys_chtype` WHERE `id` = '". $this->Player['typech'] ."' AND `typelv` = ".$this->getTypeLevel().";");
-	$Query = mysql_query($SQL) or die ('<hr>MySQL ¸ê®Æ®w¦s¨ú¿ù»~, ½ĞÁpµ¸GM, ¿ù»~¥N¸¹ SFO-001<br>');
+	$Query = mysql_query($SQL) or die ('<hr>MySQL è³‡æ–™åº«å­˜å–éŒ¯èª¤, è«‹è¯çµ¡GM, éŒ¯èª¤ä»£è™Ÿ SFO-001<br>');
 	$Type = mysql_fetch_array($Query);
 	$this->PiFix['attacking'] = $Type['atf'];
 	$this->PiFix['defending'] = $Type['def'];

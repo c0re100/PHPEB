@@ -2,11 +2,11 @@
 	//Bar 5: Money
 	echo "<tr><td colspan=3 height=10 style=\"font-size: 1px\">&nbsp;</td></tr>";
 	echo "<tr><td style=\"background-image: url('$General_Image_Dir/neo/btn_neo_l.gif');\" width=12>&nbsp;</td><td style=\"background-image: url('$General_Image_Dir/neo/btn_neo_m.gif');background-color: $Player[color];padding-left: 18px;\" height=30 width=175>";
-	echo "<b color=FEFEFE>ª÷¿ú: &nbsp;</b><span id=pl_cash>".number_format($Player['cash']);
+	echo "<b color=FEFEFE>é‡‘éŒ¢: &nbsp;</b><span id=pl_cash>".number_format($Player['cash']);
 	echo "</spam></td><td width=13 style=\"background-image: url('$General_Image_Dir/neo/btn_neo_r.gif');\">&nbsp;</td></tr>";
 
 	//Bar 6: Fame / Notor
-	$TypeFame = ($Player['fame'] >= 0) ? '¦WÁn' : '´c¦W';
+	$TypeFame = ($Player['fame'] >= 0) ? 'åè²' : 'æƒ¡å';
 	$ShowFame = abs($Player['fame']);
 	echo "<tr><td colspan=3 height=10 style=\"font-size: 1px\">&nbsp;</td></tr>";
 	echo "<tr><td style=\"background-image: url('$General_Image_Dir/neo/btn_neo_l.gif');\" width=12>&nbsp;</td><td style=\"background-image: url('$General_Image_Dir/neo/btn_neo_m.gif');background-color: $Player[color];padding-left: 18px;\" height=30 width=175>";
@@ -16,10 +16,10 @@
 	//Bar 7: Status
 	$StatusShow = $StatusColor = '';
 	if ($Player['msuit'])
-	switch ($Player['status']){case 0: $StatusShow="µo¶iµn¿ı¥i¯à"; $StatusColor='#016CFE';break; case 1: $StatusShow="­×²z¶i¦æ¤¤"; $StatusColor='#FF2200';break;}
-	else {$StatusShow = '¨S¦³¾÷Åé'; $StatusColor = '#FF2200';}
+	switch ($Player['status']){case 0: $StatusShow="å¯æˆ°é¬¥"; $StatusColor='#016CFE';break; case 1: $StatusShow="ä¿®ç†ä¸­"; $StatusColor='#FF2200';break;}
+	else {$StatusShow = 'æ²’æœ‰æ©Ÿé«”'; $StatusColor = '#FF2200';}
 	echo "<tr><td colspan=3 height=10 style=\"font-size: 1px\">&nbsp;</td></tr>";
 	echo "<tr><td style=\"background-image: url('$General_Image_Dir/neo/btn_neo_l.gif');\" width=12>&nbsp;</td><td style=\"background-image: url('$General_Image_Dir/neo/btn_neo_m.gif');background-color: $Player[color];padding-left: 18px;\" height=30 width=175>";
-	echo "<b color=FEFEFE>¾÷Åéª¬ºA:</b>&nbsp; <b style=\"color: $StatusColor;\" id=status_now>$StatusShow</b>";
+	echo "<b color=FEFEFE>æ©Ÿé«”ç‹€æ…‹:</b>&nbsp; <b style=\"color: $StatusColor;\" id=status_now>$StatusShow</b>";
 	echo "</td><td width=13 style=\"background-image: url('$General_Image_Dir/neo/btn_neo_r.gif');\">&nbsp;</td></tr>";
 ?>

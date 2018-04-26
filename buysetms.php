@@ -4,18 +4,22 @@ include('cfu.php');
 if (empty($PriTarget)) $PriTarget = 'Alpha';
 if (empty($SecTarget)) $SecTarget = 'Beta';
 postHead('');
-AuthUser("$Pl_Value[USERNAME]","$Pl_Value[PASSWORD]");
-if ($CFU_Time >= $TIMEAUTH+$TIME_OUT_TIME || $TIMEAUTH <= $CFU_Time-$TIME_OUT_TIME){echo "³s½u¹O®É¡I<br>½Ğ­«·sµn¤J¡I";exit;}
+AuthUser();
+
+if ($CFU_Time >= $_SESSION['timeauth']+$TIME_OUT_TIME || $_SESSION['timeauth'] <= $CFU_Time-$TIME_OUT_TIME){echo "é€£ç·šé€¾æ™‚ï¼<br>è«‹é‡æ–°ç™»å…¥ï¼";exit;}
+
+GetUsrDetails("$_SESSION[username]",'GenVal','GameVal');
+if($GameVal['organization'] == 0){echo "è«‹å…ˆåŠ å…¥çµ„ç¹”å†ä½¿ç”¨æ­¤åŠŸèƒ½ï¼";postFooter();exit;}
 
 include('includes/sfo.class.php');
 
 $Pl = new player_stats;
-$Pl->SetUser($Pl_Value['USERNAME']);
+$Pl->SetUser($_SESSION['username']);
 $Pl->FetchPlayer();
 
 $t_now = time();
 if ($t_now - $Pl->Player['btltime'] <= 1){
-	echo "°Ê§@¹L§Ö¡C";
+	echo "å‹•ä½œéå¿«ã€‚";
 	postFooter();
 	mysql_query("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `btltime` = ".intval($t_now+10)." WHERE `username` = '".$Pl->Player['name']."' LIMIT 1;");
 	exit;
@@ -41,13 +45,11 @@ $crossImg = $Base_Image_Dir. '/crossImgB.gif';
 
 if ($mode=='main'){
 
-	echo "¯S®í¾÷Åé¥Í²£¤u³õ".sprintTHR('75%');
+	echo "ç‰¹æ®Šæ©Ÿé«”ç”Ÿç”¢å·¥å ´".sprintTHR('75%');
 
 	echo "<form action=buysetms.php?action=main method=post name=setmain>";
 	echo "<input type=hidden value='' name=actionb>";
 	echo "<input type=hidden value='' name=actionc>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 
 	
@@ -69,7 +71,7 @@ if ($mode=='main'){
 	ORDER BY `needlv` DESC, `msname`, `cost` DESC, `s_id`;
 	";
 
-	$query = mysql_query($sql) or die("µo¥Í¿ù»~: ¥N¸¹ SETMS-000");
+	$query = mysql_query($sql) or die("ç™¼ç”ŸéŒ¯èª¤: ä»£è™Ÿ SETMS-000");
 	
 	$selection_options = "";
 	$ms_js = "j_sp_id = new Array();
@@ -145,12 +147,12 @@ j_image = new Array();";
 				}
 				if (${$S_Wep}[1] > 0) ${$S_Wep}['displayXp'] = '+'.(${$S_Wep}[1]/100).'%';
 				elseif (${$S_Wep}[1] < 0) ${$S_Wep}['displayXp'] = (${$S_Wep}[1]/100).'%';
-				else ${$S_Wep}['displayXp'] = '¡Ó0%';
-				$$W_Inf = ${$S_SyWep}['name']."<br>ª¬ºA­È: ".${$S_Wep}['displayXp']."<hr width=95%>¯à¤O:<br>";
-				$$W_Inf .= "¡@§ğÀ»¤O: ".${$S_SyWep}['atk']."¡@¡@¡@¦^¼Æ: ".${$S_SyWep}['rd']."<br>¡@©R¤¤: ".${$S_SyWep}['hit']."¡@¡@¡@EN®ø¶O: ".${$S_SyWep}['enc']."<br>";
-				$$W_Inf .= "¶ZÂ÷/Äİ©Ê: ".getRangeAttrb(${$S_SyWep}['range'],${$S_SyWep}['attrb'],${$S_SyWep}['equip'],false)."<br>";
-				$$W_Inf .= "¯S®í®ÄªG:<br>";
-				if (${$S_SyWep}['equip']) $$W_Inf .= "¥i¥H¸Ë³Æ<br>";
+				else ${$S_Wep}['displayXp'] = 'Â±0%';
+				$$W_Inf = ${$S_SyWep}['name']."<br>ç‹€æ…‹å€¼: ".${$S_Wep}['displayXp']."<hr width=95%>èƒ½åŠ›:<br>";
+				$$W_Inf .= "ã€€æ”»æ“ŠåŠ›: ".${$S_SyWep}['atk']."ã€€ã€€ã€€å›æ•¸: ".${$S_SyWep}['rd']."<br>ã€€å‘½ä¸­: ".${$S_SyWep}['hit']."ã€€ã€€ã€€ENæ¶ˆè²»: ".${$S_SyWep}['enc']."<br>";
+				$$W_Inf .= "è·é›¢/å±¬æ€§: ".getRangeAttrb(${$S_SyWep}['range'],${$S_SyWep}['attrb'],${$S_SyWep}['equip'],false)."<br>";
+				$$W_Inf .= "ç‰¹æ®Šæ•ˆæœ:<br>";
+				if (${$S_SyWep}['equip']) $$W_Inf .= "å¯ä»¥è£å‚™<br>";
 				if (${$S_SyWep}['spec']) $$W_Inf .= ReturnSpecs(${$S_SyWep}['spec']);
 				$ms_js .= "j_".$V."[".$i."] = '".$$W_Inf."';";
 			}
@@ -266,12 +268,12 @@ j_image = new Array();";
 
 	function confirmBuy(){
 		var i = document.setmain.set_ms.selectedIndex;
-		if(j_cost[i] > ".$Pl->Player['cash']."){alert('²{ª÷¤£¨¬¡I'); return false;}
-		else if(j_area_req[i] > ".$occupiedAreas."){alert('°ê®a»â¦a¼Æ¥Ø¤£¨¬¡I'); return false;}
-		else if(j_local_ticket[i] > ".$localTickets." || j_ticket_cost > ".($localTickets-1)."){alert('¥»¦a­x¤O¤£¨¬¡I'); return false;}
-		else if(j_global_ticket[i] > ".$globalTickets."){alert('¥ş°ê­x¤O¤£¨¬¡I'); return false;}
-		else if(j_local_ticket[i] > 0 && !".$Pl->Player['rights']."){alert('¨S¦³¨Ï¥Î­x¤OªºÅv­­¡C'); return false;}
-		else if(confirm('½T©wÁÊ¶R¶Ü¡H') == true){
+		if(j_cost[i] > ".$Pl->Player['cash']."){alert('ç¾é‡‘ä¸è¶³ï¼'); return false;}
+		else if(j_area_req[i] > ".$occupiedAreas."){alert('åœ‹å®¶é ˜åœ°æ•¸ç›®ä¸è¶³ï¼'); return false;}
+		else if(j_local_ticket[i] > ".$localTickets." || j_ticket_cost > ".($localTickets-1)."){alert('æœ¬åœ°è»åŠ›ä¸è¶³ï¼'); return false;}
+		else if(j_global_ticket[i] > ".$globalTickets."){alert('å…¨åœ‹è»åŠ›ä¸è¶³ï¼'); return false;}
+		else if(j_local_ticket[i] > 0 && !".$Pl->Player['rights']."){alert('æ²’æœ‰ä½¿ç”¨è»åŠ›çš„æ¬Šé™ã€‚'); return false;}
+		else if(confirm('ç¢ºå®šè³¼è²·å—ï¼Ÿ') == true){
 			document.setmain.action = 'buysetms.php?action=process';
 			document.setmain.actionb.value = 'buy';
 			document.setmain.actionc.value = j_sp_id[i];
@@ -283,7 +285,7 @@ j_image = new Array();";
 	</script>";
 
 	echo "<table align=center border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" width=\"750\">";
-	echo "<tr align=center><td colspan=5><b>®M¸Ë¾÷Åé¤@Äı: </b></td></tr>";
+	echo "<tr align=center><td colspan=5><b>å¥—è£æ©Ÿé«”ä¸€è¦½: </b></td></tr>";
 	echo "<tr align=center><td colspan=5>";
 	echo "<select name=set_ms onChange=\"processTable(this.selectedIndex);\">";
 	echo $selection_options;
@@ -294,30 +296,30 @@ j_image = new Array();";
 	echo "<td width=450 rowspan=4 valign=top>";
 	
 		echo "&nbsp;&nbsp;<span id=sp_id>1</span>: <span id=msname style=\"color: ForestGreen; font-weight: Bold; font-size: 12pt;\"></span><br>";
-		echo "<b>­Ó¤H»İ¨D</b>:";
+		echo "<b>å€‹äººéœ€æ±‚</b>:";
 		echo "<table border=0 width=300 align=center>";
 		echo "<tr>";
-		echo "<td width=100>µ¥¯Å: <span id=needlv>0</span></td>";
-		echo "<td width=200>»ù¿ú: <span id=cost>0</span></td>";
+		echo "<td width=100>ç­‰ç´š: <span id=needlv>0</span></td>";
+		echo "<td width=200>åƒ¹éŒ¢: <span id=cost>0</span></td>";
 		echo "</tr>";
-		echo "<tr><td width=300 colspan=2>®ø¯Ó­x¤O: <span id=ticket_cost>0</span></td></tr>";
+		echo "<tr><td width=300 colspan=2>æ¶ˆè€—è»åŠ›: <span id=ticket_cost>0</span></td></tr>";
 		echo "</table><Br>";
 
-		echo "<b>²ÕÂ´»İ¨D</b>:";
+		echo "<b>çµ„ç¹”éœ€æ±‚</b>:";
 		echo "<table border=0 width=300 align=center>";
-		echo "<tr><td width=75 align=right>±±¨î°Ï°ì¼Æ¥Ø:</td><td align=left><span id=area_req>0</span></td></tr>";
-		echo "<tr><td width=75 align=right>¥»¦a­x¤O:</td><td align=left><span id=local_ticket>0</span></td></tr>";
-		echo "<tr><td width=75 align=right>¥ş°ê­x¤O:</td><td align=left><span id=global_ticket>0</span></td></tr>";
+		echo "<tr><td width=75 align=right>æ§åˆ¶å€åŸŸæ•¸ç›®:</td><td align=left><span id=area_req>0</span></td></tr>";
+		echo "<tr><td width=75 align=right>æœ¬åœ°è»åŠ›:</td><td align=left><span id=local_ticket>0</span></td></tr>";
+		echo "<tr><td width=75 align=right>å…¨åœ‹è»åŠ›:</td><td align=left><span id=global_ticket>0</span></td></tr>";
 		echo "</table><Br>";
 
-		echo "<b>¾÷ÅéªZ¸Ë</b>:";
+		echo "<b>æ©Ÿé«”æ­¦è£</b>:";
 		echo "<table border=0 width=400 align=center>";
 		echo "<tr align=center>";
-		echo "<td width=80 onMouseOver=''>ªZ¾¹</td>";
-		echo "<td width=80>³Æ¥Î¤@</td>";
-		echo "<td width=80>³Æ¥Î¤G</td>";
-		echo "<td width=80>»²§U¸Ë³Æ</td>";
-		echo "<td width=80>±`³W¸Ë³Æ</td>";
+		echo "<td width=80 onMouseOver=''>æ­¦å™¨</td>";
+		echo "<td width=80>å‚™ç”¨ä¸€</td>";
+		echo "<td width=80>å‚™ç”¨äºŒ</td>";
+		echo "<td width=80>è¼”åŠ©è£å‚™</td>";
+		echo "<td width=80>å¸¸è¦è£å‚™</td>";
 		echo "</tr>";
 		echo "<tr align=center>";
 		echo "<td width=80 OnMouseOver=\"setLayer(event.clientX,event.clientY,200,100,0)\" OnMouseOut=\"offLayer()\"><img src='$tickImg' id=wepa></td>";
@@ -347,14 +349,14 @@ j_image = new Array();";
 	echo "</tr>";
 
 	echo "<tr style=\"visibility: hidden;\" id=tr_4>";
-	echo "<td width=150 colspan=2>¦^´_²v: <span id=hprec></span></td>";
-	echo "<td width=150 colspan=2>¦^´_²v: <span id=enrec></span></td>";
+	echo "<td width=150 colspan=2>å›å¾©ç‡: <span id=hprec></span></td>";
+	echo "<td width=150 colspan=2>å›å¾©ç‡: <span id=enrec></span></td>";
 	echo "</tr>";
 
 	echo "<tr><td>&nbsp;</td>";
 	echo "<td colspan=4 align=right>".printTHR('75%');
-	echo "¤w¤è²ÕÂ´±±¨î»â¦a¼Æ¥Ø: $occupiedAreas <Br>¤w¤è²ÕÂ´¥»¦a­x¤O: ".number_format($localTickets) . "<br> ¤w¤è²ÕÂ´¥ş°ê­x¤O: ".number_format($globalTickets);
-	echo "<Br><input type=submit value=ÁÊ¶R onClick=\"return confirmBuy();\">";
+	echo "å·²æ–¹çµ„ç¹”æ§åˆ¶é ˜åœ°æ•¸ç›®: $occupiedAreas <Br>å·²æ–¹çµ„ç¹”æœ¬åœ°è»åŠ›: ".number_format($localTickets) . "<br> å·²æ–¹çµ„ç¹”å…¨åœ‹è»åŠ›: ".number_format($globalTickets);
+	echo "<Br><input type=submit value=è³¼è²· onClick=\"return confirmBuy();\">";
 	echo "</td></tr>";
 	
 	echo "</table></form>";
@@ -378,7 +380,7 @@ elseif($mode=='process' && $actionb == 'buy'){
 	`inf_id` = `s_id` AND `sp_id` = ".$actionc."
 	LIMIT 1;";
 
-	$query = mysql_query($sql) or die("µo¥Í¿ù»~: ¥N¸¹ SETMS-001");
+	$query = mysql_query($sql) or die("ç™¼ç”ŸéŒ¯èª¤: ä»£è™Ÿ SETMS-001");
 	$choices = mysql_num_rows($query);
 	if($choices <= 0) $Error = true;
 	
@@ -390,19 +392,19 @@ elseif($mode=='process' && $actionb == 'buy'){
 	elseif($setMS['global_ticket'] > $globalTickets) $Error = true;
 	elseif($setMS['local_ticket'] > 0 && !$Pl->Player['rights']) $Error = true;
 	
-	if($Error) echo "¥X¿ù¡I";
+	if($Error) echo "å‡ºéŒ¯ï¼";
 	else{
 
-		$sql = "SELECT COUNT(`h_id`) As counter FROM `".$GLOBALS['DBPrefix']."phpeb_user_hangar` WHERE `h_user` = '$Pl_Value[USERNAME]';";
+		$sql = "SELECT COUNT(`h_id`) As counter FROM `".$GLOBALS['DBPrefix']."phpeb_user_hangar` WHERE `h_user` = '$_SESSION[username]';";
 		$query = mysql_query($sql);
 		$counter = mysql_fetch_row($query);
 		
-		if ($counter[0] >= $Hangar_Limit) {echo '®æ¯Ç®wªÅ¶¡¤£¨¬¡I<Br>¤w¸g¨Ï¥Î¤F$counter[0]/$Hangar_Limit­ÓªÅ¶¡¡C';postFooter();exit;}
+		if ($counter[0] >= $Hangar_Limit) {echo 'æ ¼ç´åº«ç©ºé–“ä¸è¶³ï¼<Br>å·²ç¶“ä½¿ç”¨äº†$counter[0]/$Hangar_Limitå€‹ç©ºé–“ã€‚';postFooter();exit;}
 
-		$sql = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_hangar` VALUES('','$Pl_Value[USERNAME]','$setMS[s_msuit]','$setMS[s_hpmax]','$setMS[s_hpmax]','$setMS[s_enmax]','$setMS[s_enmax]','$setMS[s_ms_custom]','$setMS[s_wepa]','$setMS[s_wepb]','$setMS[s_wepc]','$setMS[s_eqwep]','$setMS[s_p_equip]');");
+		$sql = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_hangar` VALUES('','$_SESSION[username]','$setMS[s_msuit]','$setMS[s_hpmax]','$setMS[s_hpmax]','$setMS[s_enmax]','$setMS[s_enmax]','$setMS[s_ms_custom]','$setMS[s_wepa]','$setMS[s_wepb]','$setMS[s_wepc]','$setMS[s_eqwep]','$setMS[s_p_equip]','1','0');");
 		mysql_query($sql) or die(mysql_error());
 		
-		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = `cash`-".$setMS['cost']." WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = `cash`-".$setMS['cost']." WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 		mysql_query($sql) or die(mysql_error());
 		
 		if($setMS['ticket_cost'] > 0){
@@ -415,10 +417,10 @@ elseif($mode=='process' && $actionb == 'buy'){
 		}
 
 		echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$SecTarget>";
-		echo "<p align=center style=\"font-size: 16pt\">¤w¦¨¥\ÁÊ¤J¾÷Åé¡I<br><input type=submit value=\"­«·s¾ã²z\" onClick=\"frmreturn.target=$PriTarget\"></p>";
-		echo "<center><input type=submit value=\"¦^¨ì¤u³õ\" onClick=\"frmreturn.action='buysetms.php?action=main';\"><input type=submit value=\"¶i¤J®æ¯Ç®w\" onClick=\"frmreturn.action='hangar.php?action=main';\"></center>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		echo "<p align=center style=\"font-size: 16pt\">å·²æˆåŠŸè³¼å…¥æ©Ÿé«”ï¼<br><input type=submit value=\"é‡æ–°æ•´ç†\" onClick=\"frmreturn.target=$PriTarget\"></p>";
+		echo "<center><input type=submit value=\"å›åˆ°å·¥å ´\" onClick=\"frmreturn.action='buysetms.php?action=main';\"><input type=submit value=\"é€²å…¥æ ¼ç´åº«\" onClick=\"frmreturn.action='hangar.php?action=main';\"></center>";
+		
+		
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 		echo "</form>";
 
@@ -426,7 +428,7 @@ elseif($mode=='process' && $actionb == 'buy'){
 	
 }
 
-else {echo "¥¼©w¸q°Ê§@¡I";}
+else {echo "æœªå®šç¾©å‹•ä½œï¼";}
 postFooter();exit;
 
 ?>

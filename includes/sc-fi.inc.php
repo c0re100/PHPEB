@@ -7,7 +7,7 @@
 
 function GetTactics($TactId='0',$Selection = '*'){
 	$sql = ("SELECT $Selection FROM `".$GLOBALS['DBPrefix']."phpeb_sys_tactics` WHERE id='". $TactId ."'");
-	$query_r = mysql_query($sql) or die('µLªk¨ú±o¾Ô³N¸ê°T¡I');
+	$query_r = mysql_query($sql) or die('ç„¡æ³•å–å¾—æˆ°è¡“è³‡è¨Šï¼');
 	if(mysql_num_rows($query_r) < 1) return false;
 	return mysql_fetch_array($query_r);
 }
@@ -20,14 +20,14 @@ function WriteHistory($Con){
 	if($iChatInstalled){
 		$sql = 'INSERT INTO `'.$DBPrefix.$iChatTable.'` '
 			. '(ic_user, ic_time, ic_message, ic_type, ic_target)'
-			. sprintf('VALUES (\'%s\', %d, \'%s\', %d, \'%s\')','¾ú¥v¨Æ¥ó',$CFU_Time,'',5,0);
+			. sprintf('VALUES (\'%s\', %d, \'%s\', %d, \'%s\')','æ­·å²äº‹ä»¶',$CFU_Time,'',5,0);
 		mysql_query($sql);
 	}
 }
 
 function GetUsrLog($username){
 	$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_log` WHERE username='". $username ."'");
-	$query = mysql_query($sql) or die ('µLªk¨ú±o¬ö¿ı¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+	$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—ç´€éŒ„è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 	$Results = mysql_fetch_array($query);
 	return $Results;
 }
@@ -38,14 +38,14 @@ function GetChType($Chtypeinput, $Level){
 	elseif($TypeRank < 1) $TypeRank = 1;
 
 	$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_sys_chtype` WHERE `id` = '". $Chtypeinput ."' AND `typelv` = $TypeRank;");
-	$query = mysql_query($sql) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+	$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 	$Assigned = mysql_fetch_array($query);
 	return $Assigned;
 }
 
 function ReturnOrg($Org){
 	$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_organization` WHERE id='". $Org ."'");
-	$query = mysql_query($sql) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+	$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 	return mysql_fetch_array($query);
 }
 
@@ -68,12 +68,12 @@ function sprintTHR($width = '80%'){
 //Start Get Map Functions
 	function ReturnMType($Type){
 		switch($Type){
-			case 0: $ReturnType = '¦a­±';break;
-			case 1: $ReturnType = '¤ô¤¤';break;
-			case 2: $ReturnType = 'ªÅ¤¤';break;
-			case 3: $ReturnType = '¦t©z';break;
-			case 4: $ReturnType = '´Ş¥Á¬P';break;
-			case 5: $ReturnType = '¤ë­±';break;
+			case 0: $ReturnType = 'åœ°é¢';break;
+			case 1: $ReturnType = 'æ°´ä¸­';break;
+			case 2: $ReturnType = 'ç©ºä¸­';break;
+			case 3: $ReturnType = 'å®‡å®™';break;
+			case 4: $ReturnType = 'æ®–æ°‘æ˜Ÿ';break;
+			case 5: $ReturnType = 'æœˆé¢';break;
 		}return $ReturnType;
 	}
 	function ReturnMBg($Type){
@@ -89,11 +89,11 @@ function sprintTHR($width = '80%'){
 	function ReturnMap($MapID){
 
 		$sqls = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_sys_map` WHERE map_id='". $MapID ."'");
-		$querys = mysql_query($sqls) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+		$querys = mysql_query($sqls) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 		$Sys = mysql_fetch_array($querys);
 
 		$sqlu = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_map` WHERE map_id='". $MapID ."'");
-		$queryu = mysql_query($sqlu) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+		$queryu = mysql_query($sqlu) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 		$User = mysql_fetch_array($queryu);
 
 		return Array("Sys" => $Sys, "User" => $User);
@@ -119,7 +119,24 @@ function CalcStatReq($Prefix,$Stat_N){//Req
 	global $$AssignmentStat_Req;
 	$$AssignmentStat_Req=$Stat_Req;
 
-}//End Stat Point Function
+}
+function CalcStatPt2($Lv_N){
+	$Stat_Gain=3;
+	for($Lv=1;$Lv<=$Lv_N;$Lv++){
+		if ($Lv%5 == 0)$Stat_Gain++;
+		}
+	return $Stat_Gain;
+}
+function CalcTotalStatPtsG($Prefix,$NowLv){
+	$Growth_Total = 26;
+	for($lv_loop_ct=1;$lv_loop_ct <= $NowLv;$lv_loop_ct++){
+		$Growth_Total += CalcStatPt2($lv_loop_ct);
+	}
+	$AssignmentGrowth_Total ="$Prefix".'_Growth_Total';
+	global $$AssignmentGrowth_Total;
+	$$AssignmentGrowth_Total=$Growth_Total;
+}
+//End Stat Point Function
 
 //Start Calc Exp Functions
 function CalcExp ($NowLv=1,$AssignVar='UserNextLvExp',$ShowFlag=false){
@@ -138,6 +155,29 @@ function CalcExp ($NowLv=1,$AssignVar='UserNextLvExp',$ShowFlag=false){
 			$exp = floor((4*pow($Lv,3) - 5.34*pow($Lv,2) - 41.5*$Lv) + 161);
 			$sum += $exp;
 			printf("<tr align=center><td>%d -> %d</td><td>%s</td><td>%s</td></tr>",$i,$Lv,number_format($exp),number_format($sum));
+		}
+		echo "</table>";
+	}
+}
+
+function CalcMsExp ($NowMsLv=1,$AssignMsVar='UserNextMsLvExp',$ShowFlag=false){
+	if (!$ShowFlag){
+		$Lv = $NowMsLv * 10 + 10;
+		global $$AssignMsVar;
+		$$AssignMsVar = $Lv * (20 + 12 * $Lv) + floor(2 * pow($Lv,3) / 3);
+	}
+	
+	else{
+		echo "<table border=0>";
+		$sum = 0;
+		echo "<tr align=center><td width=100>Level</td><td width=100>Exp</td><td width=100>Total</td></tr>";
+		for($i = 1; $i < 300;$i++){
+			$exp = $i * (20 + 12 * $i) + floor(2 * pow($i,3) / 3);
+			if (($i % 10) == 0){
+				$sum += $exp;
+				$Lv = $Lv + 1;
+				printf("<tr align=center><td>%d -> %d</td><td>%s</td><td>%s</td></tr>",$Lv,$Lv+1,number_format($exp),number_format($sum));
+			}
 		}
 		echo "</table>";
 	}

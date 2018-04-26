@@ -2,7 +2,7 @@
 if ($mode == 'attack_target'){
 	//Include Functions
 	include('battle_function.php');
-
+	
 //
 // Pre-phase
 //
@@ -10,8 +10,8 @@ if ($mode == 'attack_target'){
 	$AtkFortFlag = 0;
 	$Op_Name = (isset($Op_Name)) ? $Op_Name : '';
 	$isAtkFortName = ( $Op_Name == '<AttackFort>' );
-	if (!$Op_Name){echo "½Ğ¥ı¬D¿ï¹ï¤â¡I";exit;}
-	elseif ($Op_Name == $Pl_Value['USERNAME']){echo "¤£¯à§ğÀ»¦Û¤v¡I";exit;}
+	if (!$Op_Name){echo "è«‹å…ˆæŒ‘é¸å°æ‰‹ï¼";exit;}
+	elseif ($Op_Name == $Pl_Value['USERNAME']){echo "ä¸èƒ½æ”»æ“Šè‡ªå·±ï¼";exit;}
 	elseif (!$isAtkFortName){
 		$Op = new oBattle;
 		$Op->SetUser($Op_Name);
@@ -19,7 +19,7 @@ if ($mode == 'attack_target'){
 	}
 	else{
 		if ($AttackFort != 'True' || $Area["User"]["hp"] <= 0){
-			echo "¤£¯à§ğÀ»­n¶ë";
+			echo "ä¸èƒ½æ”»æ“Šè¦å¡";
 			postFooter();
 			exit;
 		}
@@ -39,7 +39,7 @@ if ($mode == 'attack_target'){
 			
 			$d = mysql_fetch_array($query);
 			if($d['num'] > 0){
-				echo "½Ğ¥ı§ğÀ»¦u½Ã¡I";
+				echo "è«‹å…ˆæ”»æ“Šå®ˆè¡›ï¼";
 				postFooter();
 				exit;
 			}
@@ -50,7 +50,7 @@ if ($mode == 'attack_target'){
 		$Op->Player = Array(
 			"username" => '<AttackFort>', "name" => '<AttackFort>', "bounty" => 0, "color" => "$Area_Org[color]", "msuit" => '<AttackFort>',
 			"typech" => "nat", "hypermode" => 0, "coordinates" => $Pl->Player['coordinates'], "fame" => "0", "time2" => "0",
-			"gamename" => '¨¾¿m­n¶ë',
+			"gamename" => 'é˜²ç¦¦è¦å¡',
 			"hp" => $Area["User"]["hp"], "hpmax" => $Area["User"]["hpmax"],
 			"en" => "100000", "enmax" => "100000",
 			"attacking" => $Area_Pi, "defending" => $Area_Pi,
@@ -68,8 +68,8 @@ if ($mode == 'attack_target'){
 		// Create Fort Information - Done
 	}
 
-	if ($Op->Player['status']){echo "¹ï¤â­×²z¤¤¡D¡D";postFooter();exit;}
-	if (substr($Op->Player['coordinates'],0,2) != substr($Pl->Player['coordinates'],0,2)){echo "¬İ¤£¨£¹ï¤â¡D¡D<br>¹ï¤è¦ì¸m: ".$Op->Player['coordinates']." ¦Û¤v¦ì¸m: ".$Pl->Player['coordinates'];postFooter();exit;}
+	if ($Op->Player['status']){echo "å°æ‰‹ä¿®ç†ä¸­ï¼ï¼";postFooter();exit;}
+	if (substr($Op->Player['coordinates'],0,2) != substr($Pl->Player['coordinates'],0,2)){echo "çœ‹ä¸è¦‹å°æ‰‹ï¼ï¼<br>å°æ–¹ä½ç½®: ".$Op->Player['coordinates']." è‡ªå·±ä½ç½®: ".$Pl->Player['coordinates'];postFooter();exit;}
 
 	$Op_Org = ($Area['User']['occupied'] != $Op->Player['organization']) ? ReturnOrg($Op->Player['organization']) : $Area_Org;
 	$Op_LocalOrgFlag = 0;
@@ -132,7 +132,7 @@ if ($mode == 'attack_target'){
 	if ($AtkFortFlag != 1) $Op->ProcessMS();
 	else{
 		$Op->MS = Array(
-		'id' => 'Fortress', 'msname' => $Pl->Player['coordinates'].'°Ï°ì­n¶ë',
+		'id' => 'Fortress', 'msname' => $Pl->Player['coordinates'].'å€åŸŸè¦å¡',
 		'atf' => $Area_At, 'def' => $Area_De, 'ref' => 0, 'taf' => $Area_Ta,
 		'hpfix' => 0, 'enfix' => 0, 'needlv' => 200000, 'price' => 0,
 		'spec' => 'AntiDam', 'image' => 'fortress.gif');
@@ -293,7 +293,7 @@ if ($mode == 'attack_target'){
 	//Calculate Hit Times and Damage Values
 		unset($Calc,$Dealt,$Strike);
 		if(!$CS_Flag['Op']){
-			$Calc['Pl'] = ReturnHitDam($Pl->Eq['A']['atk'],$Pl->Eq['A']['rd'],$Pl->Eq['A']['hit'],$Pl->MS['atf'],$Op->MS['def'],$Op->MS['ref'],$Pl->MS['taf'],$Pl->Player['attacking'],$Op->Player['defending'],$Op->Player['reacting'],$Pl->Player['targeting'],$Pl->Specs,$Op->Specs,$Pl->Eq['A']['range'],$Op->Eq['A']['range'],$Pl->Eq['A']['attrb'],$Op->Eq['A']['attrb']);
+			$Calc['Pl'] = ReturnHitDam($Pl->Eq['A']['atk'],$Pl->Eq['A']['rd'],$Pl->Eq['A']['hit'],$Pl->MS['atf'],$Op->MS['def'],$Op->MS['ref'],$Pl->MS['taf'],$Pl->Player['attacking'],$Op->Player['defending'],$Op->Player['reacting'],$Pl->Player['targeting'],$Pl->Specs,$Op->Specs,$Pl->Eq['A']['range'],$Op->Eq['A']['range'],$Pl->Eq['A']['attrb'],$Op->Eq['A']['attrb'],$Pl->Player['mslv'],$Op->Player['mslv']);
 			$Dealt['Pl'] = $Calc['Pl'][0];
 			$Strike['Pl'] = $Calc['Pl'][1];
 		}
@@ -301,7 +301,7 @@ if ($mode == 'attack_target'){
 			$Dealt['Pl'][0] = $Strike['Pl'][0] = 0;
 		}
 		if((($Op->Player['en'] - $Op->RequireEN) > 0) && !$CS_Flag['Pl']){
-			$Calc['Op'] = ReturnHitDam($Op->Eq['A']['atk'],$Op->Eq['A']['rd'],$Op->Eq['A']['hit'],$Op->MS['atf'],$Pl->MS['def'],$Pl->MS['ref'],$Op->MS['taf'],$Op->Player['attacking'],$Pl->Player['defending'],$Pl->Player['reacting'],$Op->Player['targeting'],$Op->Specs,$Pl->Specs,$Op->Eq['A']['range'],$Pl->Eq['A']['range'],$Op->Eq['A']['attrb'],$Pl->Eq['A']['attrb']);
+			$Calc['Op'] = ReturnHitDam($Op->Eq['A']['atk'],$Op->Eq['A']['rd'],$Op->Eq['A']['hit'],$Op->MS['atf'],$Pl->MS['def'],$Pl->MS['ref'],$Op->MS['taf'],$Op->Player['attacking'],$Pl->Player['defending'],$Pl->Player['reacting'],$Op->Player['targeting'],$Op->Specs,$Pl->Specs,$Op->Eq['A']['range'],$Pl->Eq['A']['range'],$Op->Eq['A']['attrb'],$Pl->Eq['A']['attrb'],$Op->Player['mslv'],$Pl->Player['mslv']);
 			$Dealt['Op'] = $Calc['Op'][0];
 			$Strike['Op'] = $Calc['Op'][1];
 		}
@@ -323,12 +323,12 @@ if ($mode == 'attack_target'){
 		if(tryFirstStrike($Pl, $Op, $Damage['Pl'], $FirstStrikeFlag['Pl'], $FirstStrikeFlag['Op'])){
 			unset($Dealt['Op'],$Strike['Op']);
 			$Dealt['Op'][0] = $Strike['Op'][0] = $Damage['Op'] = 0;
-			$Spec_Event_Tag .="<br>§Aªº¥ı¨î§ğÀ»§â¹ï¤è§Y®ÉÀ»¯}¡I";
+			$Spec_Event_Tag .="<br>ä½ çš„å…ˆåˆ¶æ”»æ“ŠæŠŠå°æ–¹å³æ™‚æ“Šç ´ï¼";
 		}
 		if(tryFirstStrike($Op, $Pl, $Damage['Op'], $FirstStrikeFlag['Op'], $FirstStrikeFlag['Pl'])){
 			unset($Dealt['Pl'],$Strike['Pl']);
 			$Dealt['Pl'][0] = $Strike['Pl'][0] = $Damage['Pl'] = 0;
-			$Spec_Event_Tag .="<br>¹ï¤èªº¥ı¨î§ğÀ»§â§A§Y®ÉÀ»¯}¡I";
+			$Spec_Event_Tag .="<br>å°æ–¹çš„å…ˆåˆ¶æ”»æ“ŠæŠŠä½ å³æ™‚æ“Šç ´ï¼";
 		}
 
 //
@@ -363,8 +363,8 @@ if ($mode == 'attack_target'){
 			if($Resulting_SP['Op'] < 0) $Resulting_SP['Op'] = 0;
 		}
 	//NT Presage Message
-		if($NTP_Flag['Pl'] == 2) $Spec_Event_Tag .="<br>¹w®Æ¨ì¹ï¤è­P©R§ğÀ»¡I¥u¦³»²§U¸Ë³Æ³Q·lÃa¡I";
-		if($NTP_Flag['Op'] == 2) $Spec_Event_Tag .="<br>¹ï¤è¹w®Æ¨ì§Aªº­P©R§ğÀ»¡I¥u¯à·lÃa»²§U¸Ë³Æ¡I";
+		if($NTP_Flag['Pl'] == 2) $Spec_Event_Tag .="<br>é æ–™åˆ°å°æ–¹è‡´å‘½æ”»æ“Šï¼åªæœ‰è¼”åŠ©è£å‚™è¢«æå£ï¼";
+		if($NTP_Flag['Op'] == 2) $Spec_Event_Tag .="<br>å°æ–¹é æ–™åˆ°ä½ çš„è‡´å‘½æ”»æ“Šï¼åªèƒ½æå£è¼”åŠ©è£å‚™ï¼";
 	//Analyze Results
 		//VictoryFlag: 0=no results, 1=victory, 2=lost, 3=both lost
 		unset($HistoryWrite);
@@ -376,7 +376,7 @@ if ($mode == 'attack_target'){
 				$Pl->Player['fame']+=20;
 				if (mt_rand(0,100) >= 75) $Pl->Player['growth'] += 1;
 				$fortDestroyed = 1;
-				$HistoryWrite = "<font color=$Pl_Org[color]>$Pl_Org[name]</font>ªº<font color=".$Pl->Player['color'].">".$Pl->Player['gamename']."</font>¡A¦¨¥\\§ğ³´¥Ñ<font color=$Area_Org[color]>$Area_Org[name]²Îªv¤Uªº".$Pl->Player['coordinates']."°Ï°ì</font>¡I";
+				$HistoryWrite = "<font color=$Pl_Org[color]>$Pl_Org[name]</font>çš„<font color=".$Pl->Player['color'].">".$Pl->Player['gamename']."</font>ï¼ŒæˆåŠŸ\æ”»é™·ç”±<font color=$Area_Org[color]>$Area_Org[name]çµ±æ²»ä¸‹çš„".$Pl->Player['coordinates']."å€åŸŸ</font>ï¼";
 				WriteHistory($HistoryWrite);
 			}
 			if ($Op->Player['fame'] < 0){
@@ -397,7 +397,7 @@ if ($mode == 'attack_target'){
 					$Pl->Player['fame']+=5;
 					if(mt_rand(0,100) >= 90)$Pl->Player['growth'] += 1;
 					$fortDestroyed = 1;
-					$HistoryWrite = "<font color=$Pl_Org[color]>$Pl_Org[name]</font>ªº<font color=".$Pl->Player['color'].'>'.$Pl->Player['gamename']."</font>¡A¦¨¥\\§ğ³´¥Ñ<font color=$Area_Org[color]>$Area_Org[name]²Îªv¤Uªº".$Pl->Player['coordinates']."°Ï°ì</font>¡I";
+					$HistoryWrite = "<font color=$Pl_Org[color]>$Pl_Org[name]</font>çš„<font color=".$Pl->Player['color'].'>'.$Pl->Player['gamename']."</font>ï¼ŒæˆåŠŸ\æ”»é™·ç”±<font color=$Area_Org[color]>$Area_Org[name]çµ±æ²»ä¸‹çš„".$Pl->Player['coordinates']."å€åŸŸ</font>ï¼";
 					WriteHistory($HistoryWrite);
 				}
 			}
@@ -460,17 +460,17 @@ if ($mode == 'attack_target'){
 			$StrikePercentage['Pl'] = ($Strikes['Pl'] / $Pl->Eq['A']['rd']) * 100;
 			$StrikePercentage['Op'] = ($Strikes['Op'] / $Op->Eq['A']['rd']) * 100;
 		//Special Event Status
-			$DamA_S_Flag = array('Pl' => 0, 'Op' => 0);		// DamA Analysis Flags, ªZ¾¹¯S®Ä - ¾÷Åé·lÃa
+			$DamA_S_Flag = array('Pl' => 0, 'Op' => 0);		// DamA Analysis Flags, æ­¦å™¨ç‰¹æ•ˆ - æ©Ÿé«”æå£
 			$Pl->msDamageSpec($Spec_Event_Tag, $Resulting_EN['Op'], $DamA_S_Flag['Pl'], $StrikePercentage['Pl']);
 			$Op->msDamageSpec($Spec_Event_Tag, $Resulting_EN['Pl'], $DamA_S_Flag['Op'], $StrikePercentage['Op'], false);
 
 		//Special Event Status
-			//ªZ¾¹¯S®Ä - ¾Ô°«¤£¯à
+			//æ­¦å™¨ç‰¹æ•ˆ - æˆ°é¬¥ä¸èƒ½
 			if(!getAntiDamFlag($Pl)){
-				if(tryDamB($Pl, $Op, $VictoryFlag, 0, 2)) $Spec_Event_Tag .="<br>¹ï¤âªº¾÷Åé³Q·lÃa¡A¾Ô°«¤£¯à¡I";
+				if(tryDamB($Pl, $Op, $VictoryFlag, 0, 2)) $Spec_Event_Tag .="<br>å°æ‰‹çš„æ©Ÿé«”è¢«æå£ï¼Œæˆ°é¬¥ä¸èƒ½ï¼";
 			}
 			if(!getAntiDamFlag($Op)){
-				if(tryDamB($Op, $Pl, $VictoryFlag, 0, 1)) $Spec_Event_Tag .="<br>§Aªº¾÷Åé³Q¹ï¤â·lÃa¡A¾Ô°«¤£¯à¡A»İ­n­×²z¡I";
+				if(tryDamB($Op, $Pl, $VictoryFlag, 0, 1)) $Spec_Event_Tag .="<br>ä½ çš„æ©Ÿé«”è¢«å°æ‰‹æå£ï¼Œæˆ°é¬¥ä¸èƒ½ï¼Œéœ€è¦ä¿®ç†ï¼";
 			}
 
 //
@@ -479,8 +479,8 @@ if ($mode == 'attack_target'){
 
 		//Gain Experience & Primary Weapon Condition Level
 			$Pl_Gain_Wep_Exp = $Op_Gain_Wep_Exp = $Pl_Gain_Exp = $Op_Gain_Exp = 0;
-			$Pl_Gain_Exp = (pow($Op->Player['level'],2)) + ($Pl->Player['rank']*0.01) + ($Op->Player['rank']*0.02);
-			$Op_Gain_Exp = (pow($Pl->Player['level'],2))*0.1 + ($Pl->Player['rank']*0.002);
+			$Pl_Gain_Exp = (pow($Op->Player['level'],2)) + ($Pl->Player['rank']*0.05) + ($Op->Player['rank']*0.1);
+			$Op_Gain_Exp = (pow($Pl->Player['level'],2))*0.1 + ($Pl->Player['rank']*0.01);
 			$Pl_Gain_Exp *= $Exp_By_Damage['Pl'];
 			$Op_Gain_Exp *= $Exp_By_Damage['Op'];
 			$Pl_Gain_Wep_Exp = 5;
@@ -541,8 +541,8 @@ if ($mode == 'attack_target'){
 				}
 
 			//Extra Gain for Primary Weapon
-				$PlBWGain= mt_rand(Floor($StrikePercentage['Pl']/30),Floor($StrikePercentage['Pl']/10));
-				$OpBWGain= mt_rand(Floor($StrikePercentage['Op']/60),Floor($StrikePercentage['Op']/20));
+				$PlBWGain= mt_rand(Floor($StrikePercentage['Pl']/7.5),Floor($StrikePercentage['Pl']/2.5));
+				$OpBWGain= mt_rand(Floor($StrikePercentage['Op']/15),Floor($StrikePercentage['Op']/5));
 				$Pl_Gain_Wep_Exp = $Pl_Gain_Wep_Exp + $PlBWGain;
 				$Op_Gain_Wep_Exp = $Op_Gain_Wep_Exp + $OpBWGain;
 			//Level Gap Experience Fix
@@ -582,9 +582,11 @@ if ($mode == 'attack_target'){
 			if(strpos($Pl->Specs,'DoubleExp') !== false){$Pl_Gain_Exp*=2; $Pl_Gain_Wep_Exp*=2;}
 		//Fame and Notoriety Modifier
 			if($Pl->Player['fame'] < 0){
+				$Pl_Gain_Exp *= 1 + ($Pl->Player['fame']/1000);
 				$Pl_Gain_Wep_Exp *= 1 + ($Pl->Player['fame']/1000);
 			}
 			if($Op->Player['fame'] < 0){
+				$Op_Gain_Exp *= 1 + ($Op->Player['fame']/1000);
 				$Op_Gain_Wep_Exp *= 1 + ($Op->Player['fame']/1000);
 			}
 		//Finalize
@@ -594,18 +596,34 @@ if ($mode == 'attack_target'){
 			$Op_Gain_Exp = floor($Op_Gain_Exp+1);
 			if ($Pl_Gain_Exp < 0) $Pl_Gain_Exp = 0;
 			if ($Op_Gain_Exp < 0) $Op_Gain_Exp = 0;
+			$Pl_Gain_MsExp = floor($Pl_Gain_Exp * 0.8);
+			$Op_Gain_MsExp = floor($Op_Gain_Exp * 0.8);
 			if ($Pl->Player['fame'] > 1000)  $Pl->Player['fame'] = 1000;
 			if ($Pl->Player['fame'] < -1000) $Pl->Player['fame'] = -1000;
 		//Experience Multiplier
 			$Pl_Gain_Exp *= $Exp_Multiplier;
 			$Op_Gain_Exp *= $Exp_Multiplier;
-			$Pl_Gain_Wep_Exp *= $Exp_Multiplier;
-			$Op_Gain_Wep_Exp *= $Exp_Multiplier;
+			$Pl_Gain_Wep_Exp *= $Exp_Multiplier-4;
+			$Op_Gain_Wep_Exp *= $Exp_Multiplier-4;
+		/*/Double Exp
+			$Pl_Gain_Exp *= 2;
+			$Op_Gain_Exp *= 2;*/
 		//Update All Experiences
 			$Pl->Player['expr'] = $Pl->Player['expr'] + $Pl_Gain_Exp;
 			$Op->Player['expr'] = $Op->Player['expr'] + $Op_Gain_Exp;
+			$Pl->Player['msexp'] = $Pl->Player['msexp'] + $Pl_Gain_MsExp;
+			$Op->Player['msexp'] = $Op->Player['msexp'] + $Op_Gain_MsExp;
 			$Pl->Eq['A']['exp'] = $Pl->Eq['A']['exp'] + $Pl_Gain_Wep_Exp;
 			$Op->Eq['A']['exp'] = $Op->Eq['A']['exp'] + $Op_Gain_Wep_Exp;
+		//Clear Player Exp
+		if($Pl->Player['lastip'] == $Op->Player['lastip']){
+			$Pl->Player['expr'] = 0;
+			$Op->Player['expr'] = 0;
+			$Pl->Eq['A']['exp'] = 0;
+			$Op->Eq['A']['exp'] = 0;
+			$Pl->Player['msexp'] = 0;
+			$Op->Player['msexp'] = 0;
+		}
 		//Update Equipment Condition
 			$Eq_Cond_Bonus['Op'] = floor(0.2*$Eq_Cond_Bonus['Op']);
 			for($i=0;$i<=1;$i++){
@@ -652,14 +670,17 @@ if ($mode == 'attack_target'){
 		//Update Equipment Info
 	//Gain Money
 		$Pl_Gain_Money = 0;
-		$PlMoneyBGain = mt_rand(($Op->Player['level']*200),($Op->Player['level']*250));
+		$PlMoneyBGain = mt_rand(($Op->Player['level']*400),($Op->Player['level']*450));
 		if ($VictoryFlag == 1)     $Pl_Gain_Money = $PlMoneyBGain;
-		elseif ($VictoryFlag == 0) $Pl_Gain_Money = $PlMoneyBGain/10;
-		elseif ($VictoryFlag == 3) $Pl_Gain_Money = $PlMoneyBGain/25;
-		$Pl_Gain_Money = Floor($Pl_Gain_Money + $Op->Player['rank']/100);
+		elseif ($VictoryFlag == 0) $Pl_Gain_Money = $PlMoneyBGain/5;
+		elseif ($VictoryFlag == 3) $Pl_Gain_Money = $PlMoneyBGain/15;
+		$Pl_Gain_Money = Floor($Pl_Gain_Money + $Op->Player['rank']/50);
 		if(strpos($Pl->Specs,'DoubleMon') !== false) $Pl_Gain_Money *= 2;
 		if($Exp_Multiplier > 1) $Pl_Gain_Money *= $Exp_Multiplier;
 		if($Strikes['Pl'] == 0) $Pl_Gain_Money = 0;
+		if($Pl->Player['lastip'] == $Op->Player['lastip']){
+			$Pl_Gain_Money = 0;
+		}
 		$Pl->Player['cash'] += $Pl_Gain_Money;
 		//Gain Bounty
 		$Gain_Bounty = 0;
@@ -668,10 +689,13 @@ if ($mode == 'attack_target'){
 			elseif ($Op->Player['bounty'] <= 100000) $Gain_Bounty = Floor($Op->Player['bounty']*0.5);
 			else $Gain_Bounty = floor($Op->Player['bounty']*0.1);
 
+			if($Pl->Player['lastip'] == $Op->Player['lastip']){
+				$Gain_Bounty = 0;
+			}
 			$Op->Player['bounty'] -= $Gain_Bounty;
 
 			if ($Gain_Bounty){
-			$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_bank` SET `savings` = `savings`+$Gain_Bounty WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+			$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_bank` SET `savings` = `savings`+$Gain_Bounty WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 			mysql_query($sql);unset($sql);}
 
 			$Gain_BountyFlag = '1';
@@ -681,9 +705,9 @@ if ($mode == 'attack_target'){
 		$Salary = 0;
 		switch ($VictoryFlag){
 			case '1':
-				$Result_Tag .="<br>§A§â¹ï¤âÀ»¯}¡I";
-				$Pl_Log_Tag ="¹ï¤âªº".$Op->MS['msname']."³Q§AÀ»¯}¡I";
-				$Op_Log_Tag ="§A³Q¹ï¤âªº".$Pl->MS['msname']."À»¯}¡C";
+				$Result_Tag .="<br>ä½ æŠŠå°æ‰‹æ“Šç ´ï¼";
+				$Pl_Log_Tag ="å°æ‰‹çš„".$Op->MS['msname']."è¢«ä½ æ“Šç ´ï¼";
+				$Op_Log_Tag ="ä½ è¢«å°æ‰‹çš„".$Pl->MS['msname']."æ“Šç ´ã€‚";
 				// Increase Victory Counts, Pay Salary
 				$Pl->Player['victory']  += 1;
 				$Pl->Player['v_points'] += 1;
@@ -692,29 +716,35 @@ if ($mode == 'attack_target'){
 				$Pl->Player['cash'] += $Salary;
 			break;
 			case '2':
-				$Result_Tag .="<br>§A³Q¹ï¤âÀ»¯}¡C";
-				$Pl_Log_Tag ="§A³Q¹ï¤âªº".$Op->MS['msname']."À»¯}¡C";
-				$Op_Log_Tag ="¹ï¤âªº".$Pl->MS['msname']."³Q§AÀ»¯}¡I";
+				$Result_Tag .="<br>ä½ è¢«å°æ‰‹æ“Šç ´ã€‚";
+				$Pl_Log_Tag ="ä½ è¢«å°æ‰‹çš„".$Op->MS['msname']."æ“Šç ´ã€‚";
+				$Op_Log_Tag ="å°æ‰‹çš„".$Pl->MS['msname']."è¢«ä½ æ“Šç ´ï¼";
 			break;
 			case '3':
-				$Result_Tag .="<br>§A»P¹ï¤â¨â±Ñ­Ñ¶Ë¡C";
-				$Pl_Log_Tag = "§A»P¹ï¤â¨â±Ñ­Ñ¶Ë¡C";
-				$Op_Log_Tag = "¹ï¤â»P§A¨â±Ñ­Ñ¶Ë¡C";
+				$Result_Tag .="<br>ä½ èˆ‡å°æ‰‹å…©æ•—ä¿±å‚·ã€‚";
+				$Pl_Log_Tag = "ä½ èˆ‡å°æ‰‹å…©æ•—ä¿±å‚·ã€‚";
+				$Op_Log_Tag = "å°æ‰‹èˆ‡ä½ å…©æ•—ä¿±å‚·ã€‚";
 			break;
 			default:
-				$Result_Tag .="<br>§A»P¹ï¤âªº¾Ô°«¨S¦³¤À¥X³Ó­t¡C";
-				$Pl_Log_Tag = "§A»P¹ï¤âªº¾Ô°«¨S¦³¤À¥X³Ó­t¡C";
-				$Op_Log_Tag = "¹ï¤â»P§Aªº¾Ô°«¨S¦³¤À¥X³Ó­t¡C";
+				$Result_Tag .="<br>ä½ èˆ‡å°æ‰‹çš„æˆ°é¬¥æ²’æœ‰åˆ†å‡ºå‹è² ã€‚";
+				$Pl_Log_Tag = "ä½ èˆ‡å°æ‰‹çš„æˆ°é¬¥æ²’æœ‰åˆ†å‡ºå‹è² ã€‚";
+				$Op_Log_Tag = "å°æ‰‹èˆ‡ä½ çš„æˆ°é¬¥æ²’æœ‰åˆ†å‡ºå‹è² ã€‚";
 		}
 	//Level Up
 		if ($Pl->Player['level'] < 150) CalcExp($Pl->Player['level']);
 		else {$UserNextLvExp = 99999999999;$Pl->Player['expr'] = 0;}
 		if ($Op->Player['level'] < 150) CalcExp($Op->Player['level'],'OppoNextLvExp');
 		else {$OppoNextLvExp = 99999999999;$Op->Player['expr'] = 0;}
+		if ($Pl->Player['mslv'] < 30) CalcMsExp($Pl->Player['mslv']);
+		else {$UserNextMsLvExp = 99999999999;$Pl->Player['msexp'] = 0;}
+		if ($Op->Player['mslv'] < 30) CalcMsExp($Op->Player['mslv'],'OppoNextMsLvExp');
+		else {$OppoNextMsLvExp = 99999999999;$Op->Player['msexp'] = 0;}
 		CalcStatPt('Pl',$Pl->Player['level']);
 		CalcStatPt('Op',$Op->Player['level']);
-		if ($Pl->Player['expr'] >= $UserNextLvExp){$Pl->Player['level'] += 1;$Pl->Player['spmax'] += 1;if($Pl->Player['level']%10==0)$Pl->Player['spmax'] += 5;$Pl->Player['expr'] = 0;$Pl->Player['growth'] = $Pl->Player['growth'] + $Pl_Stat_Gain;$Result_Tag .="<br>§A¤É¤F¯Å¡I<br>Àò±o $Pl_Stat_Gain ÂI¦¨ªøÂI¼Æ¡I";$UpD_Pl_level='1';}
-		if ($Op->Player['expr'] >= $OppoNextLvExp){$Op->Player['level'] += 1;$Op->Player['spmax'] += 1;if($Op->Player['level']%10==0)$Op->Player['spmax'] += 5;$Op->Player['expr'] = 0;$Op->Player['growth'] = $Op->Player['growth'] + $Op_Stat_Gain;$Result_Tag .="<br>¹ï¤â¤É¤F¯Å¡I";$UpD_Op_level='1';}
+		if ($Pl->Player['expr'] >= $UserNextLvExp){$Pl->Player['level'] += 1;$Pl->Player['spmax'] += 1;if($Pl->Player['level']%10==0)$Pl->Player['spmax'] += 5;$Pl->Player['expr'] = 0;$Pl->Player['growth'] = $Pl->Player['growth'] + $Pl_Stat_Gain;$Result_Tag .="<br>ä½ å‡äº†ç´šï¼<br>ç²å¾— $Pl_Stat_Gain é»æˆé•·é»æ•¸ï¼";$UpD_Pl_level='1';}
+		if ($Op->Player['expr'] >= $OppoNextLvExp){$Op->Player['level'] += 1;$Op->Player['spmax'] += 1;if($Op->Player['level']%10==0)$Op->Player['spmax'] += 5;$Op->Player['expr'] = 0;$Op->Player['growth'] = $Op->Player['growth'] + $Op_Stat_Gain;$Result_Tag .="<br>å°æ‰‹å‡äº†ç´šï¼";$UpD_Op_level='1';}
+		if ($Pl->Player['msexp'] >= $UserNextMsLvExp){$Pl->Player['mslv'] += 1;$Pl->Player['msexp'] = 0;$Result_Tag .="<br>ä½ çš„æ©Ÿé«”å‡äº†ç´šï¼";}
+		if ($Op->Player['msexp'] >= $OppoNextMsLvExp){$Op->Player['mslv'] += 1;$Op->Player['msexp'] = 0;$Result_Tag .="<br>å°æ‰‹çš„æ©Ÿé«”å‡äº†ç´šï¼";}
 
 //
 // Information Update / Database Phase
@@ -724,8 +754,8 @@ if ($mode == 'attack_target'){
 		if($isEnemyFlag){
 			$W_ID = $lostSet = $sideTicket = array();
 			$War_Victory_Flag = false;
-			$W_rt['Op'] = "<br><font color=$Op_Org[color]>$Op_Org[name]</font>­x¤O·l¥¢¤F <b>".number_format($ticketLoss['Op'])."</b> ÂI¡C";
-			$W_rt['Pl'] = "<br><font color=$Pl_Org[color]>$Pl_Org[name]</font>­x¤O·l¥¢¤F <b>".number_format($ticketLoss['Pl'])."</b> ÂI¡C";
+			$W_rt['Op'] = "<br><font color=$Op_Org[color]>$Op_Org[name]</font>è»åŠ›æå¤±äº† <b>".number_format($ticketLoss['Op'])."</b> é»ã€‚";
+			$W_rt['Pl'] = "<br><font color=$Pl_Org[color]>$Pl_Org[name]</font>è»åŠ›æå¤±äº† <b>".number_format($ticketLoss['Pl'])."</b> é»ã€‚";
 			switch($isEnemyFlag){
 				case 1:
 					$W_ID[1] = $Op_Org['optmissioni'];
@@ -747,7 +777,7 @@ if ($mode == 'attack_target'){
 					$sideTicket['B'] = 'Pl';
 				break;
 				default:
-					echo "<hr>¥X¿ù: BTL-2-WTRes-01, ½Ğ³qª¾ GM!";
+					echo "<hr>å‡ºéŒ¯: BTL-2-WTRes-01, è«‹é€šçŸ¥ GM!";
 					exit;
 				break;
 			}
@@ -771,8 +801,8 @@ if ($mode == 'attack_target'){
 			$sql_k = $sql = '';
 			if($isEnemyFlag > 1){
 				$sql = "SELECT `ticket_a` AS `".$sideTicket['A']."`, `ticket_b` AS `".$sideTicket['B']."`, `victory`, `mission` FROM `".$GLOBALS['DBPrefix']."phpeb_user_war` WHERE `war_id` = ".$W_ID[1];
-				$query = mysql_query($sql) or die("<hr>¥X¿ù: BTL-2-WTRes-02, ½Ğ³qª¾ GM!");
-				if(mysql_num_rows($query) != 1) {echo "<hr>¥X¿ù: BTL-2-WTRes-03, ½Ğ³qª¾ GM!";exit;}
+				$query = mysql_query($sql) or die("<hr>å‡ºéŒ¯: BTL-2-WTRes-02, è«‹é€šçŸ¥ GM!");
+				if(mysql_num_rows($query) != 1) {echo "<hr>å‡ºéŒ¯: BTL-2-WTRes-03, è«‹é€šçŸ¥ GM!";exit;}
 				$Tickets = mysql_fetch_array($query);
 				if(!$Tickets['victory']){
 					if($Tickets['Op'] <= 0)     $War_Victory_Flag = 'Pl';
@@ -784,9 +814,9 @@ if ($mode == 'attack_target'){
 							$sql_k = ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_war` WHERE `war_id` != ".$W_ID[1]." AND `mission` = '".$Tickets['mission']."';");
 						}elseif($isEnemyFlag == 3 && $War_Victory_Flag == 'Op'){
 							$sql = ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_war` WHERE `war_id` = ".$W_ID[1]." LIMIT 1 ;");
-						}else	{echo "<hr>¥X¿ù: BTL-2-WTRes-04, ½Ğ³qª¾ GM!";exit;}
-						$Result_Tag .= "<br><font color=".${$winner_org}['color'].">".${$winner_org}['name']."</font> ³Ó¥X³o³õ¾Ôª§¡I¡I";
-						$HistoryWrite = "<font color=".${$winner_org}['color'].">".${$winner_org}['name']."</font> ³Ó¥X¤F¾Ôª§¡I¡I";
+						}else	{echo "<hr>å‡ºéŒ¯: BTL-2-WTRes-04, è«‹é€šçŸ¥ GM!";exit;}
+						$Result_Tag .= "<br><font color=".${$winner_org}['color'].">".${$winner_org}['name']."</font> å‹å‡ºé€™å ´æˆ°çˆ­ï¼ï¼";
+						$HistoryWrite = "<font color=".${$winner_org}['color'].">".${$winner_org}['name']."</font> å‹å‡ºäº†æˆ°çˆ­ï¼ï¼";
 						WriteHistory($HistoryWrite);
 					}
 				}
@@ -807,8 +837,8 @@ if ($mode == 'attack_target'){
 					$sql = ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_war` WHERE `war_id` = ".$W_ID[$War_Victory_Flag]." LIMIT 1 ;");
 					$winner_org = ($War_Victory_Flag == 2) ? 'Op_Org' : 'Pl_Org';
 					$loser_org = ($War_Victory_Flag == 2) ? 'Pl_Org' : 'Op_Org';
-					$Result_Tag .= "<br><font color=".$Area_Org['color'].">".$Area_Org['name']."</font> À»°h <font color=".${$loser_org}['color'].">".${$loser_org}['name']."</font> ³Ó¥X³o³õ¾Ôª§¡I¡I";
-					$HistoryWrite = "<font color=".$Area_Org['color'].">".$Area_Org['name']."</font> ¦b <font color=".${$winner_org}['color'].">".${$winner_org}['name']."</font> ¨ó§U¤UÀ»°h <font color=".${$loser_org}['color'].">".${$loser_org}['name']."</font> ¡I¡I";
+					$Result_Tag .= "<br><font color=".$Area_Org['color'].">".$Area_Org['name']."</font> æ“Šé€€ <font color=".${$loser_org}['color'].">".${$loser_org}['name']."</font> å‹å‡ºé€™å ´æˆ°çˆ­ï¼ï¼";
+					$HistoryWrite = "<font color=".$Area_Org['color'].">".$Area_Org['name']."</font> åœ¨ <font color=".${$winner_org}['color'].">".${$winner_org}['name']."</font> å”åŠ©ä¸‹æ“Šé€€ <font color=".${$loser_org}['color'].">".${$loser_org}['name']."</font> ï¼ï¼";
 					WriteHistory($HistoryWrite);
 				}
 			}
@@ -819,7 +849,7 @@ if ($mode == 'attack_target'){
 	//Update Information
 		$sqlgen = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET ");
 		$sqlgen .= ("`bounty` = '".$Pl->Player['bounty']."',`fame` = '".$Pl->Player['fame']."', `cash` = '".$Pl->Player['cash']."', `hypermode` = '".$Pl->Player['hypermode']."',");
-		$sqlgen .= (" `growth` = '".$Pl->Player['growth']."', `time1` = '$t_now', `time2` = '$t_now', `btltime` = '$t_now' ");
+		$sqlgen .= (" `growth` = '".$Pl->Player['growth']."', `time1` = '$t_now', `time2` = '$t_now', `btltime` = '$t_now', `lastlogin` = '$t_now' ");
 		if($UpdateMSFlag['Pl']) $sqlgen .= (" ,`msuit` = '".$Pl->Player['msuit']."' ");
 		$sqlgen .= (" WHERE `username` = '".$Pl->Player['name']."' LIMIT 1;");
 		if ($AtkFortFlag != 1){
@@ -830,8 +860,8 @@ if ($mode == 'attack_target'){
 			$sqlgenop .= (" WHERE `username` = '".$Op->Player['name']."' LIMIT 1;");
 		}
 		else $sqlgenop = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_map` SET `hp` = '".$Resulting_HP['Op']."' WHERE `map_id` = '".$Pl->Player['coordinates']."' LIMIT 1;");
-		mysql_query($sqlgen) or die ('<hr>MySQL ¸ê®Æ®w¦s¨ú¿ù»~, ½ĞÁpµ¸GM, ¿ù»~¥N¸¹ BTL-2-003<br>' . postFooter());
-		mysql_query($sqlgenop) or die ('<hr>MySQL ¸ê®Æ®w¦s¨ú¿ù»~, ½ĞÁpµ¸GM, ¿ù»~¥N¸¹ BTL-2-004<br>' . postFooter());
+		mysql_query($sqlgen) or die ('<hr>MySQL è³‡æ–™åº«å­˜å–éŒ¯èª¤, è«‹è¯çµ¡GM, éŒ¯èª¤ä»£è™Ÿ BTL-2-003<br>' . postFooter());
+		mysql_query($sqlgenop) or die ('<hr>MySQL è³‡æ–™åº«å­˜å–éŒ¯èª¤, è«‹è¯çµ¡GM, éŒ¯èª¤ä»£è™Ÿ BTL-2-004<br>' . postFooter());
 		$sqlgame = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET ");
 		$sqlgame .= ("`hp` = '".$Resulting_HP['Pl']."', ");
 		$sqlgame .= ("`en` = '".$Resulting_EN['Pl']."', ");
@@ -845,6 +875,8 @@ if ($mode == 'attack_target'){
 		$sqlgame .= ("`eqwep` = '".$Pl->Player['eqwep']."', ");
 		$sqlgame .= ("`p_equip` = '".$Pl->Player['p_equip']."', ");
 		$sqlgame .= ("`status` = '".$Pl->Player['status']."', ");
+		$sqlgame .= ("`mslv` = '".$Pl->Player['mslv']."', ");
+		$sqlgame .= ("`msexp` = '".$Pl->Player['msexp']."', ");
 		if ($Pl->Tactics['id'] != $Pl->Player['last_tact'])$sqlgame .= ("`last_tact` = '".$Pl->Tactics['id']."', ");
 		$sqlgame .= ("`victory` = '".$Pl->Player['victory']."', ");
 		$sqlgame .= ("`v_points` = '".$Pl->Player['v_points']."', ");
@@ -859,14 +891,16 @@ if ($mode == 'attack_target'){
 			$sqlgameop .= ("`level` = '".$Op->Player['level']."',");}
 			if ($Op->SP_Cost || $Op_NewSeed == 1) $sqlgameop .= ("`sp` = '".$Resulting_SP['Op']."',");
 			$sqlgameop .= ("`expr` = '".$Op->Player['expr']."',");
+			$sqlgameop .= ("`mslv` = '".$Op->Player['mslv']."',");
+			$sqlgameop .= ("`msexp` = '".$Op->Player['msexp']."',");
 			$sqlgameop .= ("`wepa` = '".$Op->Player['wepa']."',");
 			$sqlgameop .= ("`eqwep` = '".$Op->Player['eqwep']."', ");
 			$sqlgameop .= ("`p_equip` = '".$Op->Player['p_equip']."', ");
 			$sqlgameop .= ("`status` = '".$Op->Player['status']."' ");
 			$sqlgameop .= ("WHERE `username` = '".$Op->Player['name']."' LIMIT 1;");
-			mysql_query($sqlgameop) or die ('<hr>MySQL ¸ê®Æ®w¦s¨ú¿ù»~, ½ĞÁpµ¸GM, ¿ù»~¥N¸¹ BTL-2-006<br>' . postFooter());
+			mysql_query($sqlgameop) or die ('<hr>MySQL è³‡æ–™åº«å­˜å–éŒ¯èª¤, è«‹è¯çµ¡GM, éŒ¯èª¤ä»£è™Ÿ BTL-2-006<br>' . postFooter());
 		}
-		mysql_query($sqlgame) or die ('<hr>MySQL ¸ê®Æ®w¦s¨ú¿ù»~, ½ĞÁpµ¸GM, ¿ù»~¥N¸¹ BTL-2-005<br>' . postFooter());
+		mysql_query($sqlgame) or die ('<hr>MySQL è³‡æ–™åº«å­˜å–éŒ¯èª¤, è«‹è¯çµ¡GM, éŒ¯èª¤ä»£è™Ÿ BTL-2-005<br>' . postFooter());
 		//Write Logs
 		if ($Pl->Player['show_log_num'] || $Op->Player['show_log_num']){
 			if ($LogEntries){
@@ -880,7 +914,7 @@ if ($mode == 'attack_target'){
 				if ($Pl_LEnt >= 4) {$sqllog .= ("`log4` = `log3`,"); $TmpLogVar[2] = '`time4` = `time3`,';}
 				if ($Pl_LEnt >= 3) {$sqllog .= ("`log3` = `log2`,"); $TmpLogVar[1] = '`time3` = `time2`,';}
 				if ($Pl_LEnt >= 2) {$sqllog .= ("`log2` = `log1`,"); $TmpLogVar[0] = '`time2` = `time1`,';}
-				$sqllog .= ("`log1` = '§A»P".$Op->Player['gamename']."¥æ¾Ô¡I$Pl_Log_Tag',".$TmpLogVar[3].$TmpLogVar[2].$TmpLogVar[1].$TmpLogVar[0]);
+				$sqllog .= ("`log1` = 'ä½ èˆ‡".$Op->Player['gamename']."äº¤æˆ°ï¼$Pl_Log_Tag',".$TmpLogVar[3].$TmpLogVar[2].$TmpLogVar[1].$TmpLogVar[0]);
 				$sqllog .= ("`time1` = '$t_now' WHERE `username` = '".$Pl->Player['name']."' LIMIT 1;");
 				$TmpLogVar = array('','','','');
 				$sqllogop = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_log` SET");
@@ -888,11 +922,11 @@ if ($mode == 'attack_target'){
 				if ($Op_LEnt >= 4) {$sqllogop .= ("`log4` = `log3`,"); $TmpLogVar[2] = '`time4` = `time3`,';}
 				if ($Op_LEnt >= 3) {$sqllogop .= ("`log3` = `log2`,"); $TmpLogVar[1] = '`time3` = `time2`,';}
 				if ($Op_LEnt >= 2) {$sqllogop .= ("`log2` = `log1`,"); $TmpLogVar[0] = '`time2` = `time1`,';}
-				$sqllogop .= ("`log1` = '".$Pl->Player['gamename']."»P§A¥æ¾Ô¡I$Op_Log_Tag',".$TmpLogVar[3].$TmpLogVar[2].$TmpLogVar[1].$TmpLogVar[0]);
+				$sqllogop .= ("`log1` = '".$Pl->Player['gamename']."èˆ‡ä½ äº¤æˆ°ï¼$Op_Log_Tag',".$TmpLogVar[3].$TmpLogVar[2].$TmpLogVar[1].$TmpLogVar[0]);
 				$sqllogop .= ("`time1` = '$t_now' WHERE `username` = '".$Op->Player['name']."' LIMIT 1;");
-				mysql_query($sqllog) or die ('<hr>MySQL ¸ê®Æ®w¦s¨ú¿ù»~, ½ĞÁpµ¸GM, ¿ù»~¥N¸¹ BTL-2-007<br>' . postFooter());
+				mysql_query($sqllog) or die ('<hr>MySQL è³‡æ–™åº«å­˜å–éŒ¯èª¤, è«‹è¯çµ¡GM, éŒ¯èª¤ä»£è™Ÿ BTL-2-007<br>' . postFooter());
 				if ($AtkFortFlag != 1)
-				mysql_query($sqllogop) or die ('<hr>MySQL ¸ê®Æ®w¦s¨ú¿ù»~, ½ĞÁpµ¸GM, ¿ù»~¥N¸¹ BTL-2-008<br>' . postFooter());
+				mysql_query($sqllogop) or die ('<hr>MySQL è³‡æ–™åº«å­˜å–éŒ¯èª¤, è«‹è¯çµ¡GM, éŒ¯èª¤ä»£è™Ÿ BTL-2-008<br>' . postFooter());
 			}
 		}
 		//End of Write Logs
@@ -910,12 +944,12 @@ if ($mode == 'attack_target'){
 	$DisOpayXp['Op']['D'] = ($Op->Eq['D']['exp'] >= 0) ? '+'.($Op->Eq['D']['exp']/100) : ($Op->Eq['D']['exp']/100);
 	$DisOpayXp['Op']['E'] = ($Op->Eq['E']['exp'] >= 0) ? '+'.($Op->Eq['E']['exp']/100) : ($Op->Eq['E']['exp']/100);
 
-	echo "<td>¥DªZ¾¹: ".$Pl->Eq['A']['name'].' <font style="font-size: 8pt; font-weight: 700;">('.$DisplayXp['Pl']['A'].'%)</font>'.getEqStatChange('Pl','A').'<br>';
-	if ($Pl->Eq['D']['id']) echo '»²§U¸Ë³Æ: '.$Pl->Eq['D']['name'].' <font style="font-size: 8pt; font-weight: 700;">('.$DisplayXp['Pl']['D'].'%)</font>'.getEqStatChange('Pl','D').'<br>';
-	if ($Pl->Eq['E']['id']) echo '±`³W¸Ë³Æ: '.$Pl->Eq['E']['name'].' <font style="font-size: 8pt; font-weight: 700;">('.$DisplayXp['Pl']['E'].'%)</font>'.getEqStatChange('Pl','E').'<br>';
-	echo "</td><td>¥DªZ¾¹: ".$Op->Eq['A']['name'].' <font style="font-size: 8pt; font-weight: 700;">('.$DisOpayXp['Op']['A'].'%)</font>'.getEqStatChange('Op','A').'<br>';
-	if ($Op->Eq['D']['id']) echo '»²§U¸Ë³Æ: '.$Op->Eq['D']['name'].' <font style="font-size: 8pt; font-weight: 700;">('.$DisOpayXp['Op']['D'].'%)</font>'.getEqStatChange('Op','D').'<br>';
-	if ($Op->Eq['E']['id']) echo '±`³W¸Ë³Æ: '.$Op->Eq['E']['name'].' <font style="font-size: 8pt; font-weight: 700;">('.$DisOpayXp['Op']['E'].'%)</font>'.getEqStatChange('Op','E').'<br>';
+	echo "<td>æ©Ÿé«”ç­‰ç´š: ".$Pl->Player['mslv']." <br>ä¸»æ­¦å™¨: ".$Pl->Eq['A']['name'].' <font style="font-size: 8pt; font-weight: 700;">('.$DisplayXp['Pl']['A'].'%)</font>'.getEqStatChange('Pl','A').'<br>';
+	if ($Pl->Eq['D']['id']) echo 'è¼”åŠ©è£å‚™: '.$Pl->Eq['D']['name'].' <font style="font-size: 8pt; font-weight: 700;">('.$DisplayXp['Pl']['D'].'%)</font>'.getEqStatChange('Pl','D').'<br>';
+	if ($Pl->Eq['E']['id']) echo 'å¸¸è¦è£å‚™: '.$Pl->Eq['E']['name'].' <font style="font-size: 8pt; font-weight: 700;">('.$DisplayXp['Pl']['E'].'%)</font>'.getEqStatChange('Pl','E').'<br>';
+	echo "</td><td>æ©Ÿé«”ç­‰ç´š: ".$Op->Player['mslv']." <br>ä¸»æ­¦å™¨: ".$Op->Eq['A']['name'].' <font style="font-size: 8pt; font-weight: 700;">('.$DisOpayXp['Op']['A'].'%)</font>'.getEqStatChange('Op','A').'<br>';
+	if ($Op->Eq['D']['id']) echo 'è¼”åŠ©è£å‚™: '.$Op->Eq['D']['name'].' <font style="font-size: 8pt; font-weight: 700;">('.$DisOpayXp['Op']['D'].'%)</font>'.getEqStatChange('Op','D').'<br>';
+	if ($Op->Eq['E']['id']) echo 'å¸¸è¦è£å‚™: '.$Op->Eq['E']['name'].' <font style="font-size: 8pt; font-weight: 700;">('.$DisOpayXp['Op']['E'].'%)</font>'.getEqStatChange('Op','E').'<br>';
 	echo "</td></tr>";
 	echo "<tr align=center>";
 	echo "<td width=50%>";
@@ -934,17 +968,17 @@ if ($mode == 'attack_target'){
 		while($CHitIcon <= $CHitTimes){echo "<img src='$Base_Image_Dir/hit.gif'>";$CTIcons++;if($CTIcons==10){echo"<br>";$CTIcons=0;}$CHitIcon++;}
 		while($CMissIcon <= $CMissTime){echo "<img src='$Base_Image_Dir/miss.gif'>";$CTIcons++;if($CTIcons==10){echo"<br>";$CTIcons=0;}$CMissIcon++;}
 	}
-	else {echo "¯à·½¤£¨¬¡I¡I";}
+	else {echo "èƒ½æºä¸è¶³ï¼ï¼";}
 	echo"</td>";
 	echo "</tr>";
 	echo "<tr align=center>";
 	echo "<td>".$Pl->Tactics['name']."<br>";
-	if($Strikes['Pl']) echo "§AÀ»¤¤¹ï¤â ".$Strikes['Pl']." ¦¸¡A¨Ã³y¦¨ ".$Damage['Pl']." ÂI¶Ë®`¡C</td>";
-	else echo "§A¥¼¯àÀ»¤¤¹ï¤â¡I</td>";
+	if($Strikes['Pl']) echo "ä½ æ“Šä¸­å°æ‰‹ ".$Strikes['Pl']." æ¬¡ï¼Œä¸¦é€ æˆ ".$Damage['Pl']." é»å‚·å®³ã€‚</td>";
+	else echo "ä½ æœªèƒ½æ“Šä¸­å°æ‰‹ï¼</td>";
 	echo "<td>".$Op->Tactics['name']."<br>";
-	if($Strikes['Op'] && !$OpNoENFlag) echo "¹ï¤âÀ»¤¤§A ".$Strikes['Op']." ¦¸¡A¨Ã³y¦¨ ".$Damage['Op']." ÂI¶Ë®`¡C</td>";
-	elseif($OpNoENFlag == '1'){echo "¤ÏÀ»¤£¯à¡C</td>";}
-	else echo "¹ï¤â¥¼¯àÀ»¤¤§A¡I</td>";
+	if($Strikes['Op'] && !$OpNoENFlag) echo "å°æ‰‹æ“Šä¸­ä½  ".$Strikes['Op']." æ¬¡ï¼Œä¸¦é€ æˆ ".$Damage['Op']." é»å‚·å®³ã€‚</td>";
+	elseif($OpNoENFlag == '1'){echo "åæ“Šä¸èƒ½ã€‚</td>";}
+	else echo "å°æ‰‹æœªèƒ½æ“Šä¸­ä½ ï¼</td>";
 
 	echo "</tr>";
 
@@ -958,22 +992,23 @@ if ($mode == 'attack_target'){
 	$Oppo_now_dealt = ($Op->Player['hp']-$Resulting_HP['Op']) / $Op->Player['hpmax'] * 150;
 	$Oppo_now_left = $Resulting_HP['Op'] / $Op->Player['hpmax'] * 150;
 	echo "<img src='$Base_Image_Dir/hp.gif' hspace=0 height=7 width=$Player_now_left><img src='$Base_Image_Dir/dmg.gif' hspace=0 height=7 width=$Player_now_dealt><img src='$Base_Image_Dir/zen.gif' hspace=0 height=7 width=$Player_init_damaged>";
-	echo '<br>HP: <span id=Pl_Res_Hp>'.$Pl->Player['hp'].'</span>/'.$Pl->Player['hpmax'].'<br>®ø¯ÓEN: '.number_format($Pl->RequireEN)."</td>";
+	echo '<br>HP: <span id=Pl_Res_Hp>'.$Pl->Player['hp'].'</span>/'.$Pl->Player['hpmax'].'<br>æ¶ˆè€—EN: '.number_format($Pl->RequireEN)."</td>";
 	echo "<td>";
 	echo "<img src='$Base_Image_Dir/hp.gif' hspace=0 height=7 width=$Oppo_now_left><img src='$Base_Image_Dir/dmg.gif' hspace=0 height=7 width=$Oppo_now_dealt><img src='$Base_Image_Dir/zen.gif' hspace=0 height=7 width=$Oppo_init_damaged>";
-	echo '<br>HP: <span id=Op_Res_Hp>'.$Op->Player['hp'].'</span>/'.$Op->Player['hpmax'].'<br>®ø¯ÓEN: '.number_format($Op->RequireEN)."</td>";
+	echo '<br>HP: <span id=Op_Res_Hp>'.$Op->Player['hp'].'</span>/'.$Op->Player['hpmax'].'<br>æ¶ˆè€—EN: '.number_format($Op->RequireEN)."</td>";
 	echo "</tr>";
 	echo "<tr align=center>";
 	echo "<td colspan=2>";
 		echo "<table width=100% border=0 style=\"border-collapse: collapse\" align=center style=\"font-size: 12pt;font-family: Comic Sans MS;\" cellspacing=0 cellpadding=0>";
 		echo "<tr><td colspan=2 align=center>".sprintTHR()."</td></tr><tr>";
-		echo "<td style=\"color: #FFFF00;font-size: 10;padding-left: 10px;\" width=40%>";
-		echo "±o¨ì $Pl_Gain_Exp ÂI¸gÅç­È¡C<br>";
-		if($Pl_Gain_Money > 0) echo "<br>Àò±o¾Ô§Qª÷ $Pl_Gain_Money ¤¸¡C";
-		if($Salary > 0) echo "<br>Àò±oÁ~ª÷ $Salary ¤¸¡C";
+		echo "<td style=\"color: #FFFF00;font-size: 10;padding-left: 10px;\" width=40%  align=\"right\">";
+		if($Pl->Player['level'] < 150) echo "å¾—åˆ° $Pl_Gain_Exp é»ç¶“é©—å€¼ã€‚<br>";
+		if($Pl->Player['mslv'] < 30) echo "å¾—åˆ° $Pl_Gain_MsExp é»æ©Ÿé«”ç¶“é©—å€¼ã€‚<br>";
+		if($Pl_Gain_Money > 0) echo "<br>ç²å¾—æˆ°åˆ©é‡‘ $Pl_Gain_Money å…ƒã€‚";
+		if($Salary > 0) echo "<br>ç²å¾—è–ªé‡‘ $Salary å…ƒã€‚";
 		$Gain_BountyFlag = (isset($Gain_BountyFlag)) ? $Gain_BountyFlag : 0;
 		$Gain_Bounty = (isset($Gain_Bounty)) ? $Gain_Bounty : 0;
-		if ($Gain_BountyFlag) echo "<br>Àò±o $Gain_Bounty ¤¸ªºÄa½àª÷¡C";
+		if ($Gain_BountyFlag) echo "<br>ç²å¾— $Gain_Bounty å…ƒçš„æ‡¸è³é‡‘ã€‚";
 		echo "$Result_Tag";
 		echo "$Spec_Event_Tag";
 		echo "</td>";
@@ -985,38 +1020,53 @@ if ($mode == 'attack_target'){
 		echo "</tr></table>";
 	echo "</td></tr></table>";
 	echo "<p align=center>";
-	echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
+	if(!$version){
+		echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
+	}else{
+		echo "<form action=gmscrn_old.php?action=proc method=post name=frmreturn target=Alpha>";
+		echo "<input type=hidden value='old' name='version'>";
+	}
 	if ($Game_Scrn_Type == 0){
-	echo "<input type=button $BStyleB style=\"$BStyleA\" value=\"Ãö³¬\" onClick=\"parent.$SecTarget.location.replace('about:blank');parent.document.getElementById('STiF').style.left = -1150;\">";
-
+		if(!$mode){
+			echo "<center><input type=button $BStyleB style=\"$BStyleA\" value=\"é—œé–‰\" onClick=\"parent.$SecTarget.location.replace('about:blank');parent.document.getElementById('STiF').style.left = -1150;\">";
+		}else{
+			echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
+			echo "<center><input type=submit $BStyleB style=\"$BStyleA\" value=\"è¿”å›\" onClick=\"parent.Beta.location.replace('gen_info.php');\">";
+		}
 		//Requires Battle Continual System
 		if($VictoryFlag == 0 || $VictoryFlag == 1) {
 			echo "<input type=hidden name=\"actionb\" value=\"battle_sel\">";
-			echo "<input type=button name=\"shortcutBattle\" $BStyleB style=\"$BStyleA\" disabled value=\"¾Ô°«(".$Btl_Intv.")\" onClick=\"movebattle();\">";
+			echo "<input type=button name=\"shortcutBattle\" $BStyleB style=\"$BStyleA\" disabled value=\"æˆ°é¬¥(".$Btl_Intv.")\" onClick=\"movebattle();\"></center>";
 		}
 
 	$AllowRefreshFormBtl = (isset($AllowRefreshFormBtl)) ? $AllowRefreshFormBtl : 0;
 	if ($AllowRefreshFormBtl)
-	echo "<input type=submit $BStyleB style=\"$BStyleA\" value=\"­«·s¾ã²z\" onClick=\"parent.$SecTarget.location.replace('about:blank')\"></p>";
+	echo "<input type=submit $BStyleB style=\"$BStyleA\" value=\"é‡æ–°æ•´ç†\" onClick=\"parent.$SecTarget.location.replace('about:blank')\"></p>";
 	}
 	elseif ($Game_Scrn_Type == 1)
-	echo "<input type=submit $BStyleB style=\"$BStyleA\" value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	echo "<input type=submit $BStyleB style=\"$BStyleA\" value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 	echo "<script language=\"JavaScript\">";
 	echo "var BtlCD = $Btl_Intv;";
-	echo	"function movebattle(){",
-		"var enc = parseInt(eval(\"parent.document.getElementById('EqmEnc_A').innerHTML;\"))+parseInt(eval(\"parent.document.getElementById('EqmEnc_D').innerHTML;\"))+parseInt(eval(\"parent.document.getElementById('EqmEnc_E').innerHTML;\"));",
-		"if (enc > parseInt(parent.document.getElementById('current_en').innerHTML)) {alert('ENÁÙ¥¼¨¬°÷¡I'); return false;}",
-		"document.frmreturn.action='battle.php?action=battle_sel';",
-		"document.frmreturn.target='$SecTarget';",
-		"document.frmreturn.submit();}";
+	
+	if(!$version){
+		echo	"function movebattle(){",
+			"var enc = parseInt(eval(\"parent.document.getElementById('EqmEnc_A').innerHTML;\"))+parseInt(eval(\"parent.document.getElementById('EqmEnc_D').innerHTML;\"))+parseInt(eval(\"parent.document.getElementById('EqmEnc_E').innerHTML;\"));",
+			"if (enc > parseInt(parent.document.getElementById('current_en').innerHTML)) {alert('ENé‚„æœªè¶³å¤ ï¼'); return false;}",
+			"document.frmreturn.action='battle.php?action=battle_sel';",
+			"document.frmreturn.target='$SecTarget';",
+			"document.frmreturn.submit();}";
+	}else{
+		echo       "function movebattle(){",
+			"document.frmreturn.action='battle.php?action=battle_sel';",
+			"document.frmreturn.actionb.value='battle_sel';",
+			"document.frmreturn.target='Beta';document.frmreturn.submit();}";
+	}
 	if($VictoryFlag == 0 || $VictoryFlag == 1) {
 		echo "function refreshSCBtl(){";
-		echo "if(BtlCD > 0) {document.frmreturn.shortcutBattle.value='¾Ô°«('+BtlCD+')';BtlCD--;}";
-		echo "else if(BtlCD <= 0) {document.frmreturn.shortcutBattle.value='¾Ô°«';document.frmreturn.shortcutBattle.disabled=false;return;}";
+		echo "if(BtlCD > 0) {document.frmreturn.shortcutBattle.value='æˆ°é¬¥('+BtlCD+')';BtlCD--;}";
+		echo "else if(BtlCD <= 0) {document.frmreturn.shortcutBattle.value='æˆ°é¬¥';document.frmreturn.shortcutBattle.disabled=false;return;}";
 		echo "setTimeout(\"refreshSCBtl()\",1000);}refreshSCBtl();";
 	}
 	echo "timeID=10;";
@@ -1053,13 +1103,13 @@ if ($mode == 'attack_target'){
 		echo "parent.document.getElementById('current_en').innerHTML = parent.i_e = parent.e = ".$Resulting_EN['Pl'].";";
 		echo "parent.document.getElementById('current_sp').innerHTML = parent.i_s = parent.s = ".$Resulting_SP['Pl'].";";
 		if ($Pl->Player['status'] == '1')
-		echo "parent.document.getElementById('status_now').innerHTML = '­×²z¶i¦æ¤¤';parent.document.getElementById('status_now').style.color='#FF2200';";
+		echo "parent.document.getElementById('status_now').innerHTML = 'ä¿®ç†é€²è¡Œä¸­';parent.document.getElementById('status_now').style.color='#FF2200';";
 		echo "parent.document.getElementById('pl_cash').innerHTML = '".number_format($Pl->Player['cash'])."';";
 		if(isset($Tickets))
 		echo "parent.document.getElementById('pl_active_tickets').innerHTML = '".number_format($Tickets['Pl'])."';";
 		if ($Pl->Player['fame'] >= 0)
-		echo "parent.document.getElementById('type_fame').innerHTML = '¦WÁn';";
-		else echo "parent.document.getElementById('type_fame').innerHTML = '´c¦W';";
+		echo "parent.document.getElementById('type_fame').innerHTML = 'åè²';";
+		else echo "parent.document.getElementById('type_fame').innerHTML = 'æƒ¡å';";
 		echo "parent.document.getElementById('pl_fame').innerHTML = '".abs($Pl->Player['fame'])."';";
 		echo "parent.document.getElementById('EqmExp_A').innerHTML = '".$DisplayXp['Pl']['A']."%';";
 		if ($Pl->Eq['D']['id'])
@@ -1091,6 +1141,17 @@ if ($mode == 'attack_target'){
 			echo "parent.document.getElementById('pl_".$p."_sum').innerHTML = '".($Pl_Base_Stat[$p]+$i)."';";
 		}
 
+		$Show_MsExp = $UserNextMsLvExp = '';
+		if ($Pl->Player['mslv'] < 30) CalcMsExp($Pl->Player['mslv']);
+		if ($Pl->Player['mslv'] >= 30) {$UserNextMsLvExp = false;$Show_MsExp = '0';} //Hide upon 30Lv
+		else {
+			CalcMsExp($Pl->Player['mslv']);
+			$Show_MsExp = number_format($Pl->Player['msexp'])." / ".number_format($UserNextMsLvExp);
+			echo "parent.document.getElementById('pl_msexp').innerHTML = '$Show_MsExp';";
+			echo "parent.document.getElementById('pl_msexp_l').width = '".ceil(($Pl->Player['msexp']/$UserNextMsLvExp)*124)."';";
+			echo "parent.document.getElementById('pl_msexp_r').width = '".(124-ceil(($Pl->Player['msexp']/$UserNextMsLvExp)*124))."';";
+		}
+		
 		$Show_Exp = $UserNextLvExp = '';
 		if ($Pl->Player['level'] < 150) CalcExp($Pl->Player['level']);
 		if ($Pl->Player['level'] >= 150) {$UserNextLvExp = false;$Show_Exp = '0';} //Hide upon 150Lv
@@ -1128,7 +1189,7 @@ if ($mode == 'attack_target'){
 			echo "parent.document.getElementById('log$j').innerHTML = parent.document.getElementById('loglog".($LogShowNum-1)."').innerHTML;";
 			}
 		echo "parent.document.getElementById('logtime1').innerHTML = '".cfu_time_convert($t_now)."';";
-		echo "parent.document.getElementById('loglog1').innerHTML = '§A»P".$Op->Player['gamename']."¥æ¾Ô¡I$Pl_Log_Tag';";
+		echo "parent.document.getElementById('loglog1').innerHTML = 'ä½ èˆ‡".$Op->Player['gamename']."äº¤æˆ°ï¼$Pl_Log_Tag';";
 		}
 
 		if($Pl_MS_JSUpdate){

@@ -6,9 +6,9 @@ if (empty($PriTarget)) $PriTarget = 'Alpha';
 if (empty($SecTarget)) $SecTarget = 'Beta';
 if (!isset($Game_Scrn_Type)) $Game_Scrn_Type = 1;
 postHead('');
-AuthUser("$Pl_Value[USERNAME]","$Pl_Value[PASSWORD]");
-if ($CFU_Time >= $TIMEAUTH+$TIME_OUT_TIME || $TIMEAUTH <= $CFU_Time-$TIME_OUT_TIME){echo "³s½u¹O®É¡I<br>½Ğ­«·sµn¤J¡I";exit;}
-GetUsrDetails("$Pl_Value[USERNAME]",'Gen','Game');
+AuthUser();
+if ($CFU_Time >= $_SESSION['timeauth']+$TIME_OUT_TIME || $_SESSION['timeauth'] <= $CFU_Time-$TIME_OUT_TIME){echo "é€£ç·šé€¾æ™‚ï¼<br>è«‹é‡æ–°ç™»å…¥ï¼";exit;}
+GetUsrDetails("$_SESSION[username]",'Gen','Game');
 
 $War_State = false;
 
@@ -23,14 +23,14 @@ function checkWartime($Coord){
 		$TimetS['hours'] = floor($TimeTSSec/3600);
 		$TimetS['minutes'] = floor(($TimeTSSec - ($TimetS['hours']*3600))/60);
 		$TimetS['seconds'] = floor($TimeTSSec - ($TimetS['hours']*3600) - ($TimetS['minutes']*60));
-		$Otp_TellTime = "ÁÙ¦³$TimetS[hours]¤p®É$TimetS[minutes]¤ÀÄÁ$TimetS[seconds]¬í¶}©l¾Ôª§¡C";
+		$Otp_TellTime = "é‚„æœ‰$TimetS[hours]å°æ™‚$TimetS[minutes]åˆ†é˜$TimetS[seconds]ç§’é–‹å§‹æˆ°çˆ­ã€‚";
 		}
 		else{
 		$TimeTSSec = $Otp_A_ITar['t_end'] - $CFU_Time;
 		$TimetS['hours'] = floor($TimeTSSec/3600);
 		$TimetS['minutes'] = floor(($TimeTSSec - ($TimetS['hours']*3600))/60);
 		$TimetS['seconds'] = floor($TimeTSSec - ($TimetS['hours']*3600) - ($TimetS['minutes']*60));
-		$Otp_TellTime = "ÁÙ¦³$TimetS[hours]¤p®É$TimetS[minutes]¤ÀÄÁ$TimetS[seconds]¬í¾Ôª§«Å§i²×¤F1¡C";
+		$Otp_TellTime = "é‚„æœ‰$TimetS[hours]å°æ™‚$TimetS[minutes]åˆ†é˜$TimetS[seconds]ç§’æˆ°çˆ­å®£å‘Šçµ‚äº†1ã€‚";
 		return true;
 		}
 	}
@@ -40,26 +40,26 @@ function checkWartime($Coord){
 if ($mode=='addstat' && $actionb){
 	$stat_added = '';
 	switch($actionb){
-	case 'at': $stat_added = 'attacking';if ($Game['attacking'] >= 150){echo "¯à¤O¹L°ª¡I";exit;}$NextStatPt_At=$Game['attacking']+1;CalcStatReq('AtAdd',"$NextStatPt_At");if ($Gen['growth']-$AtAdd_Stat_Req < 0){echo "ÂI¼Æ¤£¨¬¡I";exit;}$Gen['growth']-=$AtAdd_Stat_Req;$Game['attacking']=$NextStatPt_At;$ShowCompl="§ğÀ»§Ş³NÅÜ¦¨ $Game[attacking] ¤F¡C";break;
-	case 'de': $stat_added = 'defending';if ($Game['defending'] >= 150){echo "¯à¤O¹L°ª¡I";exit;}$NextStatPt_De=$Game['defending']+1;CalcStatReq('DeAdd',"$NextStatPt_De");if ($Gen['growth']-$DeAdd_Stat_Req < 0){echo "ÂI¼Æ¤£¨¬¡I";exit;}$Gen['growth']-=$DeAdd_Stat_Req;$Game['defending']=$NextStatPt_De;$ShowCompl="¨¾¿m¯à¤OÅÜ¦¨ $Game[defending] ¤F¡C";break;
-	case 're': $stat_added = 'reacting';if ($Game['reacting'] >= 150){echo "¯à¤O¹L°ª¡I";exit;}$NextStatPt_Re=$Game['reacting']+1; CalcStatReq('ReAdd',"$NextStatPt_Re");if ($Gen['growth']-$ReAdd_Stat_Req < 0){echo "ÂI¼Æ¤£¨¬¡I";exit;}$Gen['growth']-=$ReAdd_Stat_Req;$Game['reacting'] =$NextStatPt_Re;$ShowCompl="¤ÏÀ³ÅÜ¦¨ $Game[reacting] ¤F¡C";break;
-	case 'ta': $stat_added = 'targeting';if ($Game['targeting'] >= 150){echo "¯à¤O¹L°ª¡I";exit;}$NextStatPt_Ta=$Game['targeting']+1;CalcStatReq('TaAdd',"$NextStatPt_Ta");if ($Gen['growth']-$TaAdd_Stat_Req < 0){echo "ÂI¼Æ¤£¨¬¡I";exit;}$Gen['growth']-=$TaAdd_Stat_Req;$Game['targeting']=$NextStatPt_Ta;$ShowCompl="©R¤¤¯à¤OÅÜ¦¨ $Game[targeting] ¤F¡C";break;
-	case 'sp': $stat_added = 'spmax';if ($Gen['growth'] - $SP_Stat_Req < 0){echo "ÂI¼Æ¤£¨¬¡I";exit;}$Gen['growth'] -= $SP_Stat_Req;$Game['spmax'] += 10;$ShowCompl="SP¼W¥[¤F 10 ÂI¡C";break;
-	default : echo "¥¼©w¸q¾Ş§@¡I";
+	case 'at': $stat_added = 'attacking';if ($Game['attacking'] >= 150){echo "èƒ½åŠ›éé«˜ï¼";exit;}$NextStatPt_At=$Game['attacking']+1;CalcStatReq('AtAdd',"$NextStatPt_At");if ($Gen['growth']-$AtAdd_Stat_Req < 0){echo "é»æ•¸ä¸è¶³ï¼";exit;}$Gen['growth']-=$AtAdd_Stat_Req;$Game['attacking']=$NextStatPt_At;$ShowCompl="æ”»æ“ŠæŠ€è¡“è®Šæˆ $Game[attacking] äº†ã€‚";break;
+	case 'de': $stat_added = 'defending';if ($Game['defending'] >= 150){echo "èƒ½åŠ›éé«˜ï¼";exit;}$NextStatPt_De=$Game['defending']+1;CalcStatReq('DeAdd',"$NextStatPt_De");if ($Gen['growth']-$DeAdd_Stat_Req < 0){echo "é»æ•¸ä¸è¶³ï¼";exit;}$Gen['growth']-=$DeAdd_Stat_Req;$Game['defending']=$NextStatPt_De;$ShowCompl="é˜²ç¦¦èƒ½åŠ›è®Šæˆ $Game[defending] äº†ã€‚";break;
+	case 're': $stat_added = 'reacting';if ($Game['reacting'] >= 150){echo "èƒ½åŠ›éé«˜ï¼";exit;}$NextStatPt_Re=$Game['reacting']+1; CalcStatReq('ReAdd',"$NextStatPt_Re");if ($Gen['growth']-$ReAdd_Stat_Req < 0){echo "é»æ•¸ä¸è¶³ï¼";exit;}$Gen['growth']-=$ReAdd_Stat_Req;$Game['reacting'] =$NextStatPt_Re;$ShowCompl="åæ‡‰è®Šæˆ $Game[reacting] äº†ã€‚";break;
+	case 'ta': $stat_added = 'targeting';if ($Game['targeting'] >= 150){echo "èƒ½åŠ›éé«˜ï¼";exit;}$NextStatPt_Ta=$Game['targeting']+1;CalcStatReq('TaAdd',"$NextStatPt_Ta");if ($Gen['growth']-$TaAdd_Stat_Req < 0){echo "é»æ•¸ä¸è¶³ï¼";exit;}$Gen['growth']-=$TaAdd_Stat_Req;$Game['targeting']=$NextStatPt_Ta;$ShowCompl="å‘½ä¸­èƒ½åŠ›è®Šæˆ $Game[targeting] äº†ã€‚";break;
+	case 'sp': $stat_added = 'spmax';if ($Gen['growth'] - $SP_Stat_Req < 0){echo "é»æ•¸ä¸è¶³ï¼";exit;}$Gen['growth'] -= $SP_Stat_Req;$Game['spmax'] += 10;$ShowCompl="SPå¢åŠ äº† 10 é»ã€‚";break;
+	default : echo "æœªå®šç¾©æ“ä½œï¼";
 	}
 	$sqlgen = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `growth` = '$Gen[growth]' WHERE `username` = '$Gen[username]' LIMIT 1;");
-	mysql_query($sqlgen) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]1:' . mysql_error() . '<br>' . postFooter());
+	mysql_query($sqlgen) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› 1:' . mysql_error() . '<br>' . postFooter());
 	$sqlgame = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET ");
 	$sqlgame .=("`$stat_added` = '$Game[$stat_added]' ");
 	$sqlgame .=("WHERE `username` = '$Game[username]' LIMIT 1;");
-	mysql_query($sqlgame) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]2:' . mysql_error() . '<br>' . postFooter());
+	mysql_query($sqlgame) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› 2:' . mysql_error() . '<br>' . postFooter());
 
 	if ($Game_Scrn_Type == 1){
 	echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-	echo "<div align=left style=\"font-size: 16pt;height: 100%\">§¹¦¨¤F¡I<br>²{¦b§Aªº$ShowCompl<br>";
-	echo "<input type=submit value=\"ªğ¦^\">";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	echo "<div align=left style=\"font-size: 16pt;height: 100%\">å®Œæˆäº†ï¼<br>ç¾åœ¨ä½ çš„$ShowCompl<br>";
+	echo "<input type=submit value=\"è¿”å›\">";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</div>";
 	echo "</form>";
@@ -106,7 +106,7 @@ function getHPModBasePrice($Current, $Default){
 		return $Current * 30 + $Mod_HP_Cost;
 	}
 	else{
-		return $Current * 50 + $Mod_HP_UCost;
+		return $Current * 40 + $Mod_HP_UCost;
 	}
 }
 function getENModBasePrice($Current, $Default){
@@ -116,13 +116,13 @@ function getENModBasePrice($Current, $Default){
 		return $Current * 150 + $Mod_EN_Cost;
 	}
 	elseif($Current / $Default < 0.5){
-		return $Current * 300 + $Mod_EN_Cost;
+		return $Current * 250 + $Mod_EN_Cost;
 	}
 	elseif($Current / $Default < 0.75){
-		return $Current * 600 + $Mod_EN_UCost;
+		return $Current * 350 + $Mod_EN_UCost;
 	}
 	else{
-		return $Current * 1200 + $Mod_EN_UCost;
+		return $Current * 450 + $Mod_EN_UCost;
 	}
 }
 function getExtStat($EqF){
@@ -140,15 +140,15 @@ function getExtStat($EqF){
 }
 
 if ($mode == 'modms'){
-	echo "¾÷Åé§ï³y<hr>";
-	if(!$Gen['msuit']){echo "§A¨S¦³¾÷Åé¡I¤£¯à¶i¦æ§ï³y¤uµ{¡I";exit;}
+	echo "æ©Ÿé«”æ”¹é€ <hr>";
+	if(!$Gen['msuit']){echo "ä½ æ²’æœ‰æ©Ÿé«”ï¼ä¸èƒ½é€²è¡Œæ”¹é€ å·¥ç¨‹ï¼";exit;}
 
 	echo "<br><table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#FFFFFF\" width=\"300\">";
 	echo "<form action=statsmod.php?action=prcmodms method=post name=modmsform>";
 	echo "<input type=hidden value='' name=actionb>";
 	echo "<input type=hidden value='validcode2' name=slot_sw>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	GetMsDetails("$Gen[msuit]",'Pl_Ms');
 
@@ -197,48 +197,52 @@ if ($mode == 'modms'){
 	echo "else{document.modmsform.en_mod_submit.disabled=false;}";
 	echo "if (price == $Gen[cash]){enmodprice.style.color='yellow';}}";
 	echo "function returnCheckHP(){var resulthpadd=(document.modmsform.mod_hp_muiltiple.value)*100;";
-	echo "if (hpmodprice.innerHTML > $Gen[cash]){alert('ª÷¿ú¤£¨¬¡I');return false;}";
-	echo "if (document.modmsform.mod_hp_muiltiple.value > 10){alert('ª÷¿ú¤£¨¬¡I');return false;}";
-	echo "if (confirm('¥Î'+hpmodprice.innerHTML+'¤¸§ï³y'+resulthpadd+'ÂIHP\\n¸P©w¶Ü¡H') == true){document.modmsform.actionb.value='hpmodding';return true;}else{return false;}";
+	echo "if (hpmodprice.innerHTML > $Gen[cash]){alert('é‡‘éŒ¢ä¸è¶³ï¼');return false;}";
+	echo "if (document.modmsform.mod_hp_muiltiple.value > 10){alert('é‡‘éŒ¢ä¸è¶³ï¼');return false;}";
+	echo "if (confirm('ç”¨'+hpmodprice.innerHTML+'å…ƒæ”¹é€ '+resulthpadd+'é»HP\\nç¢“å®šå—ï¼Ÿ') == true){document.modmsform.actionb.value='hpmodding';return true;}else{return false;}";
 	echo "}function returnCheckEN(){var resultenadd=(document.modmsform.mod_en_muiltiple.value)*10;";
-	echo "if (enmodprice.innerHTML > $Gen[cash]){alert('ª÷¿ú¤£¨¬¡I');return false;}";
-	echo "if (document.modmsform.mod_en_muiltiple.value > 10){alert('ª÷¿ú¤£¨¬¡I');return false;}";
-	echo "if (confirm('¥Î'+enmodprice.innerHTML+'¤¸§ï³y'+resultenadd+'ÂIEN\\n¸P©w¶Ü¡H') == true){document.modmsform.actionb.value='enmodding';return true;}else{return false;}";
+	echo "if (enmodprice.innerHTML > $Gen[cash]){alert('é‡‘éŒ¢ä¸è¶³ï¼');return false;}";
+	echo "if (document.modmsform.mod_en_muiltiple.value > 10){alert('é‡‘éŒ¢ä¸è¶³ï¼');return false;}";
+	echo "if (confirm('ç”¨'+enmodprice.innerHTML+'å…ƒæ”¹é€ '+resultenadd+'é»EN\\nç¢“å®šå—ï¼Ÿ') == true){document.modmsform.actionb.value='enmodding';return true;}else{return false;}";
 	echo "}</script>";
-	echo "<tr align=center><td><b>¾÷Åé§ï³y: </b></td></tr>";
+	echo "<tr align=center><td><b>æ©Ÿé«”æ”¹é€ : </b></td></tr>";
 	if($Game['hpmax'] + 1000 <= $Game['hpmax'] * $Max_HP){
 		echo "<tr align=left>";
-		echo "<td width=\"300\"><b>ªş¥[¸Ë¥Ò:</b><br>¨C¥I¥[¤@¦¸¼W¥[100ÂIHP<br>";
-		echo "©Ò»İª÷¿ú: $<span id=hpmodprice>$HP_Mod_Base_Price</span><br>";
-		echo "§ï³y¦¸¼Æ: <select size=1 name=\"mod_hp_muiltiple\" onChange=\"calchp()\">";
+		echo "<td width=\"300\"><b>é™„åŠ è£ç”²:</b><br>æ¯ä»˜åŠ ä¸€æ¬¡å¢åŠ 100é»HP<br>";
+		echo "æ‰€éœ€é‡‘éŒ¢: $<span id=hpmodprice>$HP_Mod_Base_Price</span><br>";
+		echo "æ”¹é€ æ¬¡æ•¸: <select size=1 name=\"mod_hp_muiltiple\" onChange=\"calchp()\">";
 		echo "<option value='1'>1<option value='2'>2<option value='3'>3<option value='4'>4<option value='5'>5<option value='6'>6<option value='7'>7<option value='8'>8<option value='9'>9<option value='10'>10";
-		echo "</select>¦¸";
-		echo "<input type=submit name=hp_mod_submit $modhp_dis value='½T»{§ï³y' onClick=\"return returnCheckHP()\">";
+		echo "</select>æ¬¡";
+		echo "<input type=submit name=hp_mod_submit $modhp_dis value='ç¢ºèªæ”¹é€ ' onClick=\"return returnCheckHP()\">";
 		echo "</td>";
 		echo "</tr>";
 	}
-	else echo "<tr align=left><td width=\"300\">§Aªº¾÷Åé¤£¯à¦A¶i¦æªş¥[¸Ë¥Ò¤uµ{¤F¡I<input type=hidden name=\"mod_hp_muiltiple\" value=1></td></tr>";
+	else echo "<tr align=left><td width=\"300\">ä½ çš„æ©Ÿé«”ä¸èƒ½å†é€²è¡Œé™„åŠ è£ç”²å·¥ç¨‹äº†ï¼<input type=hidden name=\"mod_hp_muiltiple\" value=1></td></tr>";
 	if($Game['enmax'] + 100 < $Game['enmax'] * $Max_EN){
 		echo "<tr align=left>";
-		echo "<td width=\"300\"><b>ªş¥[¯à·½CAP:</b><br>¨C¥I¥[¤@¦¸¼W¥[10ÂIEN<br>";
-		echo "©Ò»İª÷¿ú: $<span id=enmodprice>$EN_Mod_Base_Price</span><br>";
-		echo "§ï³y¦¸¼Æ: <select size=1 name=\"mod_en_muiltiple\" onChange=\"calcen()\">";
+		echo "<td width=\"300\"><b>é™„åŠ èƒ½æºCAP:</b><br>æ¯ä»˜åŠ ä¸€æ¬¡å¢åŠ 10é»EN<br>";
+		echo "æ‰€éœ€é‡‘éŒ¢: $<span id=enmodprice>$EN_Mod_Base_Price</span><br>";
+		echo "æ”¹é€ æ¬¡æ•¸: <select size=1 name=\"mod_en_muiltiple\" onChange=\"calcen()\">";
 		echo "<option value='1'>1<option value='2'>2<option value='3'>3<option value='4'>4<option value='5'>5<option value='6'>6<option value='7'>7<option value='8'>8<option value='9'>9<option value='10'>10";
-		echo "</select>¦¸";
-		echo "<input type=submit name=en_mod_submit $modhp_dis value='½T»{§ï³y' onClick=\"return returnCheckEN()\">";
+		echo "</select>æ¬¡";
+		echo "<input type=submit name=en_mod_submit $modhp_dis value='ç¢ºèªæ”¹é€ ' onClick=\"return returnCheckEN()\">";
 		echo "</td>";
 		echo "</tr>";
 	}
-	else echo "<tr align=left><td width=\"300\">§Aªº¾÷Åé¤£¯à¦A¶i¦æ¯à·½CAP¤uµ{¤F¡I<input type=hidden name=\"mod_en_muiltiple\" value=1></td></tr>";
+	else echo "<tr align=left><td width=\"300\">ä½ çš„æ©Ÿé«”ä¸èƒ½å†é€²è¡Œèƒ½æºCAPå·¥ç¨‹äº†ï¼<input type=hidden name=\"mod_en_muiltiple\" value=1></td></tr>";
 
 	//MS Customization & Permanant Equipment
 	echo "<tr align=left>";
-	echo "<td width=\"300\"><b>±M¥Î¤Æ§ï³y:</b><br>±M¥Î¤Æ§ï³y¤uµ{¤À¬°¨â¶µ:<br>";
-	echo "1: °ò¥»§ï³y¤uµ{<br>¡@¡@- ³z¹L¤@¨Ç§Ş³N, §ï¨}¾÷Åé, ´£¤Éªº¯à¤O<br>";
-	echo "2: ¾÷Åé¸Ë³Æ¦X¦¨¤uµ{<br>¡@¡@- §â»²§U¸Ë³Æ, ¥Ã¤[¦X¦¨¦b¾÷Åé¤W<br>¡@¡@- ¥i¨Ï¾÷Åé¥i¥H¦h«ù¤@ºØ»²§U¸Ë³Æ<br>";
-	echo "¨â¶µ¤uµ{µLª½±µÃö«Y, ¥i¥H¦P®É±Ä¥Î, <Br>¦ı¨C³¡¾÷Åé¨C¶µ¤uµ{<b>¥u¯à¶i¦æ¤@¦¸</b><br>";
-	echo "<input type=submit name=ms_custom_submit value='°ò¥»§ï³y¤uµ{' onClick=\"modmsform.action='ms_custom.php?action=ms_custom';modmsform.actionb.value='GUI';\">";
-	echo "<input type=submit name=ms_pequip_submit value='¾÷Åé¸Ë³Æ¦X¦¨¤uµ{' onClick=\"modmsform.action='ms_custom.php?action=ms_pequip';modmsform.actionb.value='GUI';\">";
+	echo "<td width=\"300\"><b>å°ˆç”¨åŒ–æ”¹é€ :</b><br>å°ˆç”¨åŒ–æ”¹é€ å·¥ç¨‹åˆ†ç‚ºå…©é …:<br>";
+	echo "1: åŸºæœ¬æ”¹é€ å·¥ç¨‹<br>ã€€ã€€- é€éä¸€äº›æŠ€è¡“, æ”¹è‰¯æ©Ÿé«”, æå‡çš„èƒ½åŠ›<br>";
+	echo "2: æ©Ÿé«”è£å‚™åˆæˆå·¥ç¨‹<br>ã€€ã€€- æŠŠè¼”åŠ©è£å‚™, æ°¸ä¹…åˆæˆåœ¨æ©Ÿé«”ä¸Š<br>ã€€ã€€- å¯ä½¿æ©Ÿé«”å¯ä»¥å¤šæŒä¸€ç¨®è¼”åŠ©è£å‚™<br>";
+	echo "å…©é …å·¥ç¨‹ç„¡ç›´æ¥é—œä¿‚, å¯ä»¥åŒæ™‚æ¡ç”¨, <Br>ä½†æ¯éƒ¨æ©Ÿé«”æ¯é …å·¥ç¨‹<b>åªèƒ½é€²è¡Œä¸€æ¬¡</b><br>";
+	if (!$Game['ms_custom']){
+		echo "<input type=submit name=ms_custom_submit value='åŸºæœ¬æ”¹é€ å·¥ç¨‹' onClick=\"modmsform.action='ms_custom.php?action=ms_custom';modmsform.actionb.value='GUI';\">";
+	}
+	if ($Game['p_equip'] == '0<!>0'){
+		echo "<input type=submit name=ms_pequip_submit value='æ©Ÿé«”è£å‚™åˆæˆå·¥ç¨‹' onClick=\"modmsform.action='ms_custom.php?action=ms_pequip';modmsform.actionb.value='GUI';\">";
+	}
 	echo "</td>";
 	echo "</tr>";
 
@@ -251,8 +255,8 @@ postFooter();exit;
 //
 
 elseif ($mode == 'prcmodms' && $actionb && $mod_hp_muiltiple && $mod_en_muiltiple){
-if ($mod_hp_muiltiple > 10 || $mod_en_muiltiple > 10){echo "¤@¤§¹L³Ì¦h¥u¯à§ï¤Q¦¸!!<br>";PostFooter();exit;}
-if ($mod_hp_muiltiple <= 0 || $mod_en_muiltiple <= 0){echo "§ï³y¦¸¼Æ¥X¤F°İÃD!!<br>";PostFooter();exit;}
+if ($mod_hp_muiltiple > 10 || $mod_en_muiltiple > 10){echo "ä¸€æ¬¡éæœ€å¤šåªèƒ½æ”¹åæ¬¡!!<br>";PostFooter();exit;}
+if ($mod_hp_muiltiple <= 0 || $mod_en_muiltiple <= 0){echo "æ”¹é€ æ¬¡æ•¸å‡ºäº†å•é¡Œ!!<br>";PostFooter();exit;}
 GetMsDetails("$Gen[msuit]",'Pl_Ms');
 
 	$Ext = array('HP' => 0, 'EN' => 0);
@@ -274,14 +278,14 @@ if ($actionb == 'hpmodding'){
 	
 	$RealMax = $Max_HP * $Pl_Ms['hpfix'];
 	
-	if ($Game['hpmax'] >= $RealMax){echo "<center>HP§ï³y¹F¨ì¤W­­¤F¡C<br></center>";PostFooter();exit;}
+	if ($Game['hpmax'] >= $RealMax){echo "<center>HPæ”¹é€ é”åˆ°ä¸Šé™äº†ã€‚<br></center>";PostFooter();exit;}
 
 	$HP_Mod_Base_Price = getHPModBasePrice($Game['hpmax'], $Pl_Ms['hpfix']);
 	
 	$Mod_Cost = $mod_hp_muiltiple * $HP_Mod_Base_Price;
 	$Mod_Amnt = $mod_hp_muiltiple * 100;
 	
-	if ($Gen['cash'] - $Mod_Cost < 0){echo "ª÷¿ú¤£¨¬!!<br>";PostFooter();exit;}
+	if ($Gen['cash'] - $Mod_Cost < 0){echo "é‡‘éŒ¢ä¸è¶³!!<br>";PostFooter();exit;}
 	if ($Game['hpmax'] + $Mod_Amnt > $RealMax){
 		$mod_hp_muiltiple = ceil(($RealMax - $Game['hpmax'])/100);
 		$Mod_Cost = $mod_hp_muiltiple * $HP_Mod_Base_Price;
@@ -300,14 +304,14 @@ if ($actionb == 'enmodding'){
 	
 	$RealMax = $Max_EN * $Pl_Ms['enfix'];
 	
-	if ($Game['enmax'] >= $RealMax){echo "<center>EN§ï³y¹F¨ì¤W­­¤F¡C<br></center>";PostFooter();exit;}
+	if ($Game['enmax'] >= $RealMax){echo "<center>ENæ”¹é€ é”åˆ°ä¸Šé™äº†ã€‚<br></center>";PostFooter();exit;}
 
 	$EN_Mod_Base_Price = getENModBasePrice($Game['enmax'], $Pl_Ms['enfix']);
 
 	$Mod_Cost = $mod_en_muiltiple * $EN_Mod_Base_Price;
 	$Mod_Amnt = $mod_en_muiltiple * 10;
 	
-	if ($Gen['cash'] - $Mod_Cost < 0){echo "ª÷¿ú¤£¨¬!!<br>";PostFooter();exit;}
+	if ($Gen['cash'] - $Mod_Cost < 0){echo "é‡‘éŒ¢ä¸è¶³!!<br>";PostFooter();exit;}
 	if ($Game['enmax'] + $Mod_Amnt > $RealMax){
 		$mod_en_muiltiple = ceil(($RealMax - $Game['enmax'])/10);
 		$Mod_Cost = $mod_en_muiltiple * $EN_Mod_Base_Price;
@@ -321,21 +325,21 @@ if ($actionb == 'enmodding'){
 $Game['hpmax'] += $Ext['HP'];
 $Game['enmax'] += $Ext['EN'];
 
-$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `hpmax` = '".($Game['hpmax'])."', `enmax` = '".($Game['enmax'])."' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `hpmax` = '".($Game['hpmax'])."', `enmax` = '".($Game['enmax'])."' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 mysql_query($sql) or die(mysql_error());
 
-$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = '".($Gen['cash'])."' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = '".($Gen['cash'])."' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 mysql_query($sql);
 
 echo "<form action=statsmod.php?action=modms method=post name=frmmodms target=$SecTarget>";
-echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+
+
 echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 echo "</form>";
 echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-echo "<p align=center style=\"font-size: 16pt\">§ï³y§¹¦¨¤F¡I<br><input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
-echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+echo "<p align=center style=\"font-size: 16pt\">æ”¹é€ å®Œæˆäº†ï¼<br><input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
+
+
 echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 echo "</form>";
 postFooter();
@@ -357,61 +361,61 @@ $War_State = checkWartime($Gen['coordinates']);
 		$RepairHPCost = ceil($RepairHPCost * 0.5);
 		$RepairENCost = ceil($RepairENCost * 0.5);
 		$RepairEqCondCost = ceil($RepairEqCondCost * 0.5);
-		$showOccupied = '¥»¦a©~¥Á¥ç¥i¨É¦³50%§é¦©Àu´f¡C<br>';
+		$showOccupied = 'æœ¬åœ°å±…æ°‘äº¦å¯äº«æœ‰50%æŠ˜æ‰£å„ªæƒ ã€‚<br>';
 	}
 
-	echo "­×²z¤u³õ<hr>";
+	echo "ä¿®ç†å·¥å ´<hr>";
 	if (isset($Otp_TellTime) && $Otp_TellTime){echo "$Otp_TellTime<hr>";}
-	if(!$Gen['msuit']){echo "<center>§A¨S¦³¾÷Åé¡I¤£¯à¶i¦æ­×²z¡I";exit;}
+	if(!$Gen['msuit']){echo "<center>ä½ æ²’æœ‰æ©Ÿé«”ï¼ä¸èƒ½é€²è¡Œä¿®ç†ï¼";exit;}
 	echo "<br><table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#FFFFFF\" width=\"400\">";
 	echo "<form action=statsmod.php?action=repairms method=post name=repairmsform>";
 	echo "<input type=hidden value='reppro' name=actionb>";
 	echo "<input type=hidden value='reppro' name=actionc>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
-	echo "<tr align=center><td><b>­×²z¾÷Åé</b></td></tr>";
+	echo "<tr align=center><td><b>ä¿®ç†æ©Ÿé«”</b></td></tr>";
 	GetMSDetails($Gen['msuit'],'NowMS');
-	echo "<tr><td>§Aªº¾÷Åé:<br><p align=center><img src='".$Unit_Image_Dir."/$NowMS[image]'><br>$NowMS[msname]</p>";
-	echo "¥»¤u³õ©ó°ê¾Ô¶i¦æ®É¤£·|¶}±Ò¡A".$showOccupied."¦^´_»ù¿ú¦p¤U:<br>¦^´_1ÂIHP»İ­n $RepairHPCost ¤¸¡C<br>¦^´_1ÂIEN»İ­n $RepairENCost ¤¸¡C<br>¦^´_ 0.01% ¸Ë³Æª¬ºA­È, °ò¥»»ù¿ú $RepairEqCondCost ¤¸, ¨Ã¨Ì·ÓªZ¾¹µ¥¯Å¤W½Õ»ù®æ¡C";
+	echo "<tr><td>ä½ çš„æ©Ÿé«”:<br><p align=center><img src='".$Unit_Image_Dir."/$NowMS[image]'><br>$NowMS[msname]</p>";
+	echo "æœ¬å·¥å ´æ–¼åœ‹æˆ°é€²è¡Œæ™‚ä¸æœƒé–‹å•Ÿï¼Œ".$showOccupied."å›å¾©åƒ¹éŒ¢å¦‚ä¸‹:<br>å›å¾©1é»HPéœ€è¦ $RepairHPCost å…ƒã€‚<br>å›å¾©1é»ENéœ€è¦ $RepairENCost å…ƒã€‚<br>å›å¾© 0.01% è£å‚™ç‹€æ…‹å€¼, åŸºæœ¬åƒ¹éŒ¢ $RepairEqCondCost å…ƒ, ä¸¦ä¾ç…§æ­¦å™¨ç­‰ç´šä¸Šèª¿åƒ¹æ ¼ã€‚";
 	echo "</td></tr>";
-	echo "<script langauge=\"Javascript\">function CheckRepHP(){if (hprepcost.innerHTML > $Gen[cash]){alert('ª÷¿ú¤£¨¬¡I');return false;}if (confirm('¦^´_HP¡A½T©w­×²z¶Ü¡H') == true){repairmsform.actionc.value='hprec';return true}else {return false}}";
+	echo "<script langauge=\"Javascript\">function CheckRepHP(){if (hprepcost.innerHTML > $Gen[cash]){alert('é‡‘éŒ¢ä¸è¶³ï¼');return false;}if (confirm('å›å¾©HPï¼Œç¢ºå®šä¿®ç†å—ï¼Ÿ') == true){repairmsform.actionc.value='hprec';return true}else {return false}}";
 	echo "function ChangePriceHP(typerepair){if (typerepair == 'pc'){var rephpamt = ($Game[hpmax] - document.getElementById('hp_show').innerHTML) * document.repairmsform.hp_rep_pc_amount.value ;document.getElementById('hppcrep').innerHTML = Math.round(rephpamt);var rehpprc = Math.round($RepairHPCost * rephpamt);";
 	echo "document.getElementById('hprepcost').innerHTML = rehpprc;}if (typerepair == 'pt'){var rephpamt = document.repairmsform.hp_rep_amount.value;if (rephpamt > ($Game[hpmax] - document.getElementById('hp_show').innerHTML)){rephpamt = ($Game[hpmax] - document.getElementById('hp_show').innerHTML);}var rehpprc = Math.round($RepairHPCost * rephpamt);";
-	echo "document.getElementById('hprepcost').innerHTML = rehpprc;}}function CheckEmergency(){if (".($EmergencyCost*$NowMS['needlv'])." > ".($Gen['cash'])."){alert('ª÷¿ú¤£¨¬¡I');return false;}if (confirm('ºò«æ¥XÀ», ½T©w¶Ü¡H') == true){document.repairmsform.actionc.value='emergency';return true}else {return false}}</script>";
-	echo "<tr><td><b>¦^´_HP:</b><br>HP: <span id=hp_show>$Game[hp]</span> / $Game[hpmax]";
+	echo "document.getElementById('hprepcost').innerHTML = rehpprc;}}function CheckEmergency(){if (".($EmergencyCost*$NowMS['needlv'])." > ".($Gen['cash'])."){alert('é‡‘éŒ¢ä¸è¶³ï¼');return false;}if (confirm('ç·Šæ€¥å‡ºæ“Š, ç¢ºå®šå—ï¼Ÿ') == true){document.repairmsform.actionc.value='emergency';return true}else {return false}}</script>";
+	echo "<tr><td><b>å›å¾©HP:</b><br>HP: <span id=hp_show>$Game[hp]</span> / $Game[hpmax]";
 	if ($Game['hp'] < $Game['hpmax']){
 		if(!$War_State){
-			echo "<br>¥H¦Ê¤À¤ñ¦^´_¾l¤Uªº <input type=radio checked name='hp_rep_type' value='pc' OnClick=\"hp_rep_pc_amount.disabled=false;hp_rep_amount.disabled=true;hprepcost.innerHTML='0';hp_rep_pc_amount.value='0';\">: ¦^´_ <select name='hp_rep_pc_amount' onChange=\"ChangePriceHP('pc')\"><option value=0>--¿ï¾Ü--<option value=0.1>10%<option value=0.2>20%<option value=0.3>30%<option value=0.4>40%<option value=0.5>50%<option value=0.6>60%<option value=0.7>70%<option value=0.8>80%<option value=0.9>90%<option value=1.0 selected>100%</select>(<span id=hppcrep>0</span>ÂI)";
-			echo "<br>¤â°Ê¿é¤J¦^´_¶q <input type=radio value='pt' name='hp_rep_type' OnClick=\"hp_rep_pc_amount.disabled=true;hp_rep_amount.disabled=false;hprepcost.innerHTML='0';hppcrep.innerHTML='0';\">: ¦^´_ <input type=text size=4 maxlength=5 name='hp_rep_amount' value=0 disabled onChange=\"ChangePriceHP('pt')\">ÂI";
-			echo "<br>©Ò»İª÷¿ú: <span id=hprepcost>0</span> ¤¸¡C<br><input type=submit name=hp_rep_submit value='¦^´_HP' onClick=\"return CheckRepHP();\">";
+			echo "<br>ä»¥ç™¾åˆ†æ¯”å›å¾©é¤˜ä¸‹çš„ <input type=radio checked name='hp_rep_type' value='pc' OnClick=\"hp_rep_pc_amount.disabled=false;hp_rep_amount.disabled=true;hprepcost.innerHTML='0';hp_rep_pc_amount.value='0';\">: å›å¾© <select name='hp_rep_pc_amount' onChange=\"ChangePriceHP('pc')\"><option value=0>--é¸æ“‡--<option value=0.1>10%<option value=0.2>20%<option value=0.3>30%<option value=0.4>40%<option value=0.5>50%<option value=0.6>60%<option value=0.7>70%<option value=0.8>80%<option value=0.9>90%<option value=1.0 selected>100%</select>(<span id=hppcrep>0</span>é»)";
+			echo "<br>æ‰‹å‹•è¼¸å…¥å›å¾©é‡ <input type=radio value='pt' name='hp_rep_type' OnClick=\"hp_rep_pc_amount.disabled=true;hp_rep_amount.disabled=false;hprepcost.innerHTML='0';hppcrep.innerHTML='0';\">: å›å¾© <input type=text size=4 maxlength=5 name='hp_rep_amount' value=0 disabled onChange=\"ChangePriceHP('pt')\">é»";
+			echo "<br>æ‰€éœ€é‡‘éŒ¢: <span id=hprepcost>0</span> å…ƒã€‚<br><input type=submit name=hp_rep_submit value='å›å¾©HP' onClick=\"return CheckRepHP();\">";
 			
 		}
-		else	echo "<br>¡@ - °ê¾Ô¶i¦æ¤¤";
+		else	echo "<br>ã€€ - åœ‹æˆ°é€²è¡Œä¸­";
 		if($Game['hp'] > $NowMS['hpfix']*0.8){
-			echo "<br> - ºò«æ¥XÀ»: ";
-			echo "<br>¡@- HP¹F¨ì­ì¦³ªº 80% ®É (".number_format(ceil($NowMS['hpfix']*0.8))."), ¯à¨Ï¾÷Åé¶i¤J¥iµo¶iª¬ºA";
-			echo "<br>©Ò»İª÷¿ú: ".number_format($EmergencyCost*$NowMS['needlv'])." ¤¸¡C<br><input type=submit name=hp_rep_submit value='ºò«æ¥XÀ»' onClick=\"return CheckEmergency();\">";
+			echo "<br> - ç·Šæ€¥å‡ºæ“Š: ";
+			echo "<br>ã€€- HPé”åˆ°åŸæœ‰çš„ 80% æ™‚ (".number_format(ceil($NowMS['hpfix']*0.8))."), èƒ½ä½¿æ©Ÿé«”é€²å…¥å¯ç™¼é€²ç‹€æ…‹";
+			echo "<br>æ‰€éœ€é‡‘éŒ¢: ".number_format($EmergencyCost*$NowMS['needlv'])." å…ƒã€‚<br><input type=submit name=hp_rep_submit value='ç·Šæ€¥å‡ºæ“Š' onClick=\"return CheckEmergency();\">";
 		}
 		echo "</td></tr>";
-	}else{echo "<br>¡@ - §AµL»İ¦^´_HP</td></tr>";}
-	echo "<script langauge=\"Javascript\">function CheckRepEN(){if (document.getElementById('enrepcost').innerHTML > $Gen[cash]){alert('ª÷¿ú¤£¨¬¡I');return false;}if (confirm('¦^´_EN¡A½T©w­×²z¶Ü¡H') == true){repairmsform.actionc.value='enrec';return true}else {return false}}";
+	}else{echo "<br>ã€€ - ä½ ç„¡éœ€å›å¾©HP</td></tr>";}
+	echo "<script langauge=\"Javascript\">function CheckRepEN(){if (document.getElementById('enrepcost').innerHTML > $Gen[cash]){alert('é‡‘éŒ¢ä¸è¶³ï¼');return false;}if (confirm('å›å¾©ENï¼Œç¢ºå®šä¿®ç†å—ï¼Ÿ') == true){repairmsform.actionc.value='enrec';return true}else {return false}}";
 	echo "function ChangePriceEN(typerepair){if (typerepair == 'pc'){var repenamt = ($Game[enmax] - document.getElementById('en_show').innerHTML) * document.repairmsform.en_rep_pc_amount.value ;document.getElementById('enpcrep').innerHTML = Math.round(repenamt);var reenprc = Math.round($RepairENCost * repenamt);";
 	echo "document.getElementById('enrepcost').innerHTML = reenprc;}if (typerepair == 'pt'){var repenamt = document.repairmsform.en_rep_amount.value;if (repenamt > ($Game[enmax] - document.getElementById('en_show').innerHTML)){repenamt = ($Game[enmax] - document.getElementById('en_show').innerHTML);}var reenprc = Math.round($RepairENCost * repenamt);";
 	echo "document.getElementById('enrepcost').innerHTML = reenprc;}}</script>";
-	echo "<tr><td><b>¦^´_EN:</b><br>EN: <span id=en_show>$Game[en]</span> / $Game[enmax]";
-	if($War_State){echo "<br>¡@ - °ê¾Ô¶i¦æ¤¤</td></tr>";}
+	echo "<tr><td><b>å›å¾©EN:</b><br>EN: <span id=en_show>$Game[en]</span> / $Game[enmax]";
+	if($War_State){echo "<br>ã€€ - åœ‹æˆ°é€²è¡Œä¸­</td></tr>";}
 	elseif ($Game['en'] < $Game['enmax']){
-	echo "<br>¥H¦Ê¤À¤ñ¦^´_¾l¤Uªº <input type=radio checked name='en_rep_type' value='pc' OnClick=\"en_rep_pc_amount.disabled=false;en_rep_amount.disabled=true;document.getElementById('enrepcost').innerHTML='0';en_rep_pc_amount.value='0';\">: ¦^´_ <select name='en_rep_pc_amount' onChange=\"ChangePriceEN('pc')\"><option value=0>--¿ï¾Ü--<option value=0.1>10%<option value=0.2>20%<option value=0.3>30%<option value=0.4>40%<option value=0.5>50%<option value=0.6>60%<option value=0.7>70%<option value=0.8>80%<option value=0.9>90%<option value=1.0 selected>100%</select>(<span id=enpcrep>0</span>ÂI)";
-	echo "<br>¤â°Ê¿é¤J¦^´_¶q <input type=radio value='pt' name='en_rep_type' OnClick=\"en_rep_pc_amount.disabled=true;en_rep_amount.disabled=false;document.getElementById('enrepcost').innerHTML='0';document.getElementById('enpcrep').innerHTML='0';\">: ¦^´_ <input type=text size=4 maxlength=5 name='en_rep_amount' value=0 disabled onChange=\"ChangePriceEN('pt')\">ÂI";
-	echo "<br>©Ò»İª÷¿ú: <span id=enrepcost>0</span> ¤¸¡C<br><input type=submit name=en_rep_submit value='¦^´_EN' onClick=\"return CheckRepEN();\">";
+	echo "<br>ä»¥ç™¾åˆ†æ¯”å›å¾©é¤˜ä¸‹çš„ <input type=radio checked name='en_rep_type' value='pc' OnClick=\"en_rep_pc_amount.disabled=false;en_rep_amount.disabled=true;document.getElementById('enrepcost').innerHTML='0';en_rep_pc_amount.value='0';\">: å›å¾© <select name='en_rep_pc_amount' onChange=\"ChangePriceEN('pc')\"><option value=0>--é¸æ“‡--<option value=0.1>10%<option value=0.2>20%<option value=0.3>30%<option value=0.4>40%<option value=0.5>50%<option value=0.6>60%<option value=0.7>70%<option value=0.8>80%<option value=0.9>90%<option value=1.0 selected>100%</select>(<span id=enpcrep>0</span>é»)";
+	echo "<br>æ‰‹å‹•è¼¸å…¥å›å¾©é‡ <input type=radio value='pt' name='en_rep_type' OnClick=\"en_rep_pc_amount.disabled=true;en_rep_amount.disabled=false;document.getElementById('enrepcost').innerHTML='0';document.getElementById('enpcrep').innerHTML='0';\">: å›å¾© <input type=text size=4 maxlength=5 name='en_rep_amount' value=0 disabled onChange=\"ChangePriceEN('pt')\">é»";
+	echo "<br>æ‰€éœ€é‡‘éŒ¢: <span id=enrepcost>0</span> å…ƒã€‚<br><input type=submit name=en_rep_submit value='å›å¾©EN' onClick=\"return CheckRepEN();\">";
 	echo "</td></tr>";
-	}else{echo "<br>¡@ - §AµL»İ¦^´_EN</td></tr>";}
-		//ª¬ºA­È¬ÛÃö
+	}else{echo "<br>ã€€ - ä½ ç„¡éœ€å›å¾©EN</td></tr>";}
+		//ç‹€æ…‹å€¼ç›¸é—œ
 			//echo "<input type=hidden name=cond_pos value=0>";
 			echo "<script language=\"Javascript\">function CheckCond(pos,cost){";
-			echo "if (cost > $Gen[cash]){alert('ª÷¿ú¤£¨¬¡I');return false;}";
-			echo "if (confirm('½T©w¦^´_ª¬ºA­È¶Ü¡H') == true){repairmsform.actionb.value='eq_condrep';repairmsform.actionc.value=pos;return true}else {return false}";
+			echo "if (cost > $Gen[cash]){alert('é‡‘éŒ¢ä¸è¶³ï¼');return false;}";
+			echo "if (confirm('ç¢ºå®šå›å¾©ç‹€æ…‹å€¼å—ï¼Ÿ') == true){repairmsform.actionb.value='eq_condrep';repairmsform.actionc.value=pos;return true}else {return false}";
 			echo "}</script>";
 			//Process All Weapons
 				$Id_Phrase = '';
@@ -457,18 +461,18 @@ $War_State = checkWartime($Gen['coordinates']);
 				}
 			//End of Processing
 			//UI
-			echo "<tr><td><b>¦^´_ªZ¾¹ª¬ºA­È:</b><br>";
+			echo "<tr><td><b>å›å¾©æ­¦å™¨ç‹€æ…‹å€¼:</b><br>";
 			$i = 0;
 			foreach($EqD as $e) {
 				if($e['exp'] < $RepairEqCondMax){
 					$DisplayXp = ($e['exp'] >= 0) ? '+'.($e['exp']/100) : ($e['exp']/100);
 					$CondRepCost = ($RepairEqCondMax - $e['exp'])*$RepairEqCondCost*($e['complexity']+1);
-					echo $e['name'].":<br>¡@ - ª¬ºA­È: <font color=red> ".$DisplayXp.'%</font><br>';
-					echo "¡@ - ©Ò»İª÷¿ú: ".number_format($CondRepCost)." ¤¸¡C<Br>";
-					echo "¡@ - <input type=submit name=en_rep_submit value='­×²z¦¹ªZ¾¹' onClick=\"return CheckCond('".$e['pos']."',$CondRepCost);\"><br>";
+					echo $e['name'].":<br>ã€€ - ç‹€æ…‹å€¼: <font color=red> ".$DisplayXp.'%</font><br>';
+					echo "ã€€ - æ‰€éœ€é‡‘éŒ¢: ".number_format($CondRepCost)." å…ƒã€‚<Br>";
+					echo "ã€€ - <input type=submit name=en_rep_submit value='ä¿®ç†æ­¤æ­¦å™¨' onClick=\"return CheckCond('".$e['pos']."',$CondRepCost);\"><br>";
 				}else $i++;
 			}
-			if ($i == 5) echo "¡@ - ¨S¦³¥i¦^´_ª¬ºA­ÈªºªZ¾¹";
+			if ($i == 5) echo "ã€€ - æ²’æœ‰å¯å›å¾©ç‹€æ…‹å€¼çš„æ­¦å™¨";
 			echo "</td></tr>";
 
 
@@ -497,7 +501,7 @@ elseif ($mode == 'repairms' && $actionb == 'reppro'){
 	$War_State = checkWartime($Gen['coordinates']);
 
 	if(($actionc == 'hprec' || $actionc == 'enrec') && $War_State){
-		echo "°ê¾Ô¶i¦æ¤¤, µLªk¶i¦æ­×²z¡I";
+		echo "åœ‹æˆ°é€²è¡Œä¸­, ç„¡æ³•é€²è¡Œä¿®ç†ï¼";
 		postFooter();
 		exit;
 	}
@@ -511,7 +515,7 @@ elseif ($mode == 'repairms' && $actionb == 'reppro'){
 	}
 
 		$plr = array(
-		"name" => $Pl_Value['USERNAME'],
+		"name" => $_SESSION['username'],
 		"hp" => $Game['hp'],
 		"hpmax" => $Game['hpmax'],
 		"en" => $Game['en'],
@@ -533,63 +537,63 @@ elseif ($mode == 'repairms' && $actionb == 'reppro'){
 
 	$RepairAmt=0;$PriceRepair=0;
 	if ($actionc == 'hprec' && ($Game['hpmax'] != $Game['hp'])){
-		if ($hp_rep_type == 'pc'){if ($hp_rep_pc_amount > 1.0 || $hp_rep_pc_amount <= 0 ){echo "¦^´_¶q¥X¿ù";postFooter();exit;}$RepairAmt = floor(($Game['hpmax'] - $Game['hp']) * $hp_rep_pc_amount);if ($RepairAmt > ($Game['hpmax'] - $Game['hp']))$RepairAmt = ($Game['hpmax'] - $Game['hp']);
+		if ($hp_rep_type == 'pc'){if ($hp_rep_pc_amount > 1.0 || $hp_rep_pc_amount <= 0 ){echo "å›å¾©é‡å‡ºéŒ¯";postFooter();exit;}$RepairAmt = floor(($Game['hpmax'] - $Game['hp']) * $hp_rep_pc_amount);if ($RepairAmt > ($Game['hpmax'] - $Game['hp']))$RepairAmt = ($Game['hpmax'] - $Game['hp']);
 		$PriceRepair = floor($RepairAmt * $RepairHPCost);
 		}elseif ($hp_rep_type == 'pt'){
-		if ($hp_rep_amount > $Game['hpmax'] || $hp_rep_amount <= 0 ){echo "¦^´_¶q¥X¿ù";postFooter();exit;}
+		if ($hp_rep_amount > $Game['hpmax'] || $hp_rep_amount <= 0 ){echo "å›å¾©é‡å‡ºéŒ¯";postFooter();exit;}
 		$RepairAmt = $hp_rep_amount; if ($RepairAmt > ($Game['hpmax'] - $Game['hp']))$RepairAmt = ($Game['hpmax'] - $Game['hp']);
 		$PriceRepair = floor($RepairAmt * $RepairHPCost);
-		}else {echo "¤£©úªº«ü¥O¡I";postFooter();exit;}
+		}else {echo "ä¸æ˜çš„æŒ‡ä»¤ï¼";postFooter();exit;}
 		if ($PriceRepair < 0)$PriceRepair = 0;
-		if ($Gen['cash'] - $PriceRepair < 0){echo "ª÷¿ú¤£¨¬¡I";postFooter();exit;}
+		if ($Gen['cash'] - $PriceRepair < 0){echo "é‡‘éŒ¢ä¸è¶³ï¼";postFooter();exit;}
 		$Gen['cash'] -= $PriceRepair;
 		$Game['hp'] += $RepairAmt;
 		if ($Game['hp'] > $Game['hpmax'])$Game['hp'] = $Game['hpmax'];
-		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `hp` = '$Game[hp]', `en` = '$Game[en]', `sp` = '$Game[sp]', `status` = '$Game[status]' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `hp` = '$Game[hp]', `en` = '$Game[en]', `sp` = '$Game[sp]', `status` = '$Game[status]' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 		mysql_query($sql) or die (mysql_error());
-		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = '$Gen[cash]', `time1` = '$Gen[time1]' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = '$Gen[cash]', `time1` = '$Gen[time1]' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 		mysql_query($sql) or die (mysql_error());
 		if($Use_Behavior_Checker){
-			$sql = "UPDATE `{$GLOBALS[DBPrefix]}phpeb_behaviour_check` SET `last_rtime` = {$GLOBALS[CFU_Time]} WHERE `username` = '{$Pl_Value[USERNAME]}';";
+			$sql = "UPDATE `{$GLOBALS[DBPrefix]}phpeb_behaviour_check` SET `last_rtime` = {$GLOBALS[CFU_Time]} WHERE `username` = '{$_SESSION[username]}';";
 			$query = mysql_query($sql) or die('Behavior Checker Error! Cannot Update RTime!');
 		}
-		$RepMsg = "¥H $PriceRepair ¤¸¦^´_¤F $RepairAmt ÂIHP¡C";
+		$RepMsg = "ä»¥ $PriceRepair å…ƒå›å¾©äº† $RepairAmt é»HPã€‚";
 		}
-	elseif ($actionc == 'hprec' && ($Game['hpmax'] <= $Game['hp'])){echo "HP¤w¸gº¡¤F¡I";postFooter();exit;}
+	elseif ($actionc == 'hprec' && ($Game['hpmax'] <= $Game['hp'])){echo "HPå·²ç¶“æ»¿äº†ï¼";postFooter();exit;}
 	elseif ($actionc == 'enrec' && ($Game['enmax'] != $Game['en'])){
-		if ($en_rep_type == 'pc'){if ($en_rep_pc_amount > 1.0 || $en_rep_pc_amount <= 0 ){echo "¦^´_¶q¥X¿ù";postFooter();exit;}$RepairAmt = floor(($Game['enmax'] - $Game['en']) * $en_rep_pc_amount);if ($RepairAmt > ($Game['enmax'] - $Game['en']))$RepairAmt = ($Game['enmax'] - $Game['en']);
+		if ($en_rep_type == 'pc'){if ($en_rep_pc_amount > 1.0 || $en_rep_pc_amount <= 0 ){echo "å›å¾©é‡å‡ºéŒ¯";postFooter();exit;}$RepairAmt = floor(($Game['enmax'] - $Game['en']) * $en_rep_pc_amount);if ($RepairAmt > ($Game['enmax'] - $Game['en']))$RepairAmt = ($Game['enmax'] - $Game['en']);
 		$PriceRepair = floor($RepairAmt * $RepairENCost);
 		}elseif ($en_rep_type == 'pt'){
-		if ($en_rep_amount > $Game['enmax'] || $en_rep_amount <= 0 ){echo "¦^´_¶q¥X¿ù";postFooter();exit;}
+		if ($en_rep_amount > $Game['enmax'] || $en_rep_amount <= 0 ){echo "å›å¾©é‡å‡ºéŒ¯";postFooter();exit;}
 		$RepairAmt = $en_rep_amount; if ($RepairAmt > ($Game['enmax'] - $Game['en']))$RepairAmt = ($Game['enmax'] - $Game['en']);
 		$PriceRepair = floor($RepairAmt * $RepairENCost);
-		}else {echo "¤£©úªº«ü¥O¡I";postFooter();exit;}
+		}else {echo "ä¸æ˜çš„æŒ‡ä»¤ï¼";postFooter();exit;}
 		if ($PriceRepair < 0)$PriceRepair = 0;
-		if ($Gen['cash'] - $PriceRepair < 0){echo "ª÷¿ú¤£¨¬¡I";postFooter();exit;}
+		if ($Gen['cash'] - $PriceRepair < 0){echo "é‡‘éŒ¢ä¸è¶³ï¼";postFooter();exit;}
 		$Gen['cash'] -= $PriceRepair;
 		$Game['en'] += $RepairAmt;
 		if ($Game['en'] > $Game['enmax'])$Game['en'] = $Game['enmax'];
-		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `hp` = '$Game[hp]', `en` = '$Game[en]', `sp` = '$Game[sp]', `status` = '$Game[status]' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `hp` = '$Game[hp]', `en` = '$Game[en]', `sp` = '$Game[sp]', `status` = '$Game[status]' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 		mysql_query($sql) or die (mysql_error());
-		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = '$Gen[cash]', `time1` = '$Gen[time1]' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = '$Gen[cash]', `time1` = '$Gen[time1]' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 		mysql_query($sql) or die (mysql_error());
-		$RepMsg = "¥H $PriceRepair ¤¸¦^´_¤F $RepairAmt ÂIEN¡C";
+		$RepMsg = "ä»¥ $PriceRepair å…ƒå›å¾©äº† $RepairAmt é»ENã€‚";
 		}
-	elseif ($actionc == 'enrec' && ($Game['enmax'] <= $Game['en'])){echo "EN¤w¸gº¡¤F¡I";postFooter();exit;}
+	elseif ($actionc == 'enrec' && ($Game['enmax'] <= $Game['en'])){echo "ENå·²ç¶“æ»¿äº†ï¼";postFooter();exit;}
 	elseif ($actionc == 'emergency'){
 		GetMSDetails($Gen['msuit'],'NowMS');
 		$PriceRepair = $EmergencyCost*$NowMS['needlv'];
-		if($Game['hp'] < $NowMS['hpfix']*0.8){echo "HP¤£¨¬¡I ¥¼¯àºò«æ¥XÀ»¡I";postFooter();exit;}
-		if ($Gen['cash'] - $PriceRepair < 0){echo "ª÷¿ú¤£¨¬¡I";postFooter();exit;}
+		if($Game['hp'] < $NowMS['hpfix']*0.8){echo "HPä¸è¶³ï¼ æœªèƒ½ç·Šæ€¥å‡ºæ“Šï¼";postFooter();exit;}
+		if ($Gen['cash'] - $PriceRepair < 0){echo "é‡‘éŒ¢ä¸è¶³ï¼";postFooter();exit;}
 		$Gen['cash'] -= $PriceRepair;
 		$Game['status'] = 0;
-		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `hp` = '$Game[hp]', `en` = '$Game[en]', `sp` = '$Game[sp]', `status` = '0' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `hp` = '$Game[hp]', `en` = '$Game[en]', `sp` = '$Game[sp]', `status` = '0' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 		mysql_query($sql) or die (mysql_error());
-		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = '$Gen[cash]', `time1` = '$Gen[time1]' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = '$Gen[cash]', `time1` = '$Gen[time1]' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 		mysql_query($sql) or die (mysql_error());
-		$RepMsg = "²{¦b¥i¥H¥XÀ»¤F¡I";
+		$RepMsg = "ç¾åœ¨å¯ä»¥å‡ºæ“Šäº†ï¼";
 	}
-	else {echo "HP/EN¤w¸gº¡¤F¡I";postFooter();exit;}
+	else {echo "HP/ENå·²ç¶“æ»¿äº†ï¼";postFooter();exit;}
 
 	if ($Game_Scrn_Type == 0) {
 		echo "<script language=\"JavaScript\">";
@@ -598,28 +602,20 @@ elseif ($mode == 'repairms' && $actionb == 'reppro'){
 		echo "parent.m_time = parent.mh_time = parent.me_time = TheNewDate.getTime();";
 		echo "parent.document.getElementById('current_hp').innerHTML = parent.i_h = parent.h = ".$Game['hp'].";";
 		echo "parent.document.getElementById('current_en').innerHTML = parent.i_e = parent.e = ".$Game['en'].";";
-		if ($Game['status'] == '1') echo "parent.document.getElementById('status_now').innerHTML = '­×²z¶i¦æ¤¤';parent.document.getElementById('status_now').style.color='#FF2200';";
-		else echo " parent.document.getElementById('status_now').innerHTML='µo¶iµn¿ı¥i¯à';parent.document.getElementById('status_now').style.color='#016CFE';";
+		if ($Game['status'] == '1') echo "parent.document.getElementById('status_now').innerHTML = 'ä¿®ç†é€²è¡Œä¸­';parent.document.getElementById('status_now').style.color='#FF2200';";
+		else echo " parent.document.getElementById('status_now').innerHTML='å¯æˆ°é¬¥';parent.document.getElementById('status_now').style.color='#016CFE';";
 		echo "parent.document.getElementById('pl_cash').innerHTML = '".number_format($Gen['cash'])."';";
 		if ($Gen['fame'] >= 0)
-		echo "parent.document.getElementById('type_fame').innerHTML = '¦WÁn';";
-		else echo "parent.document.getElementById('type_fame').innerHTML = '´c¦W';";
+		echo "parent.document.getElementById('type_fame').innerHTML = 'åè²';";
+		else echo "parent.document.getElementById('type_fame').innerHTML = 'æƒ¡å';";
 		echo "parent.document.getElementById('pl_fame').innerHTML = '".abs($Gen['fame'])."';";
 		echo "</script>";
 	}
 
 echo "<form action=statsmod.php?action=repairms method=post name=frmrp target=$SecTarget>";
-echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
 echo "<input type=hidden value='sel' name=actionb>";
 echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
-echo "<p align=center style=\"font-size: 16pt\"><br><br><br><br>$RepMsg<br><input type=button value=\"Ãö³¬¦¹µøµ¡\" onClick=\"parent.$SecTarget.location.replace('about:blank');parent.document.getElementById('STiF').style.left = -1150;\"><input type=submit value=\"Ä~Äò­×²z\">";
-echo "</form>";
-echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
-echo "<input type=submit value=\"­«·s¾ã²z\" onClick=\"parent.$SecTarget.location.replace('about:blank')\">";
-echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
+echo "<p align=center style=\"font-size: 16pt\"><br><br><br><br>$RepMsg<br><input type=button value=\"é—œé–‰æ­¤è¦–çª—\" onClick=\"parent.$SecTarget.location.replace('about:blank');parent.document.getElementById('STiF').style.left = -1150;\"><input type=submit value=\"ç¹¼çºŒä¿®ç†\">";
 echo "</form>";
 
 postFooter();exit;
@@ -687,16 +683,16 @@ if ($Game['organization'] == $AreaORG['occupied']) $RepairEqCondCost = ceil($Rep
 $Error_Flag = 0;
 $CondRepCost = -1;
 $DisMaxXp = '';
-if($RepairEqCondMax == 0) $DisMaxXp = "¡Ó0%";
+if($RepairEqCondMax == 0) $DisMaxXp = "Â±0%";
 else $DisMaxXp = ($RepairEqCondMax >= 0) ? '+'.$RepairEqCondMax.'%' : $RepairEqCondMax.'%';
 
 $isValidSlot = ($actionc == 'wepa' || $actionc == 'wepb' || $actionc == 'wepc' || $actionc == 'eqwep' || $actionc == 'p_equip');
-if (!$isValidSlot) {$RepMsg = "¦ì¸m¥X¿ù¡I<br>";$Error_Flag = 1;}
+if (!$isValidSlot) {$RepMsg = "ä½ç½®å‡ºéŒ¯ï¼<br>";$Error_Flag = 1;}
 else {
 	$CondRepCost = ($RepairEqCondMax - $EqD[$actionc]['exp'])*$RepairEqCondCost*($EqD[$actionc]['complexity']+1);
-	if ($EqD[$actionc]['exp'] >= $RepairEqCondMax) {$RepMsg = "ª¬ºA­È¹L°ª¡I<br>";$Error_Flag = 1;}
-	elseif ($CondRepCost > $Gen['cash'] || $CondRepCost < 0) {$RepMsg = "½Ğ¯d·N¤@¤U»ù¿ú¡I<br>";$Error_Flag = 1;}
-	else $RepMsg = $EqD[$actionc]['name'].' ªº­×²z§¹¦¨¤F¡I<br>ª¬ºA­È¦^´_¦Ü '.$DisMaxXp;
+	if ($EqD[$actionc]['exp'] >= $RepairEqCondMax) {$RepMsg = "ç‹€æ…‹å€¼éé«˜ï¼<br>";$Error_Flag = 1;}
+	elseif ($CondRepCost > $Gen['cash'] || $CondRepCost < 0) {$RepMsg = "è«‹ç•™æ„ä¸€ä¸‹åƒ¹éŒ¢ï¼<br>";$Error_Flag = 1;}
+	else $RepMsg = $EqD[$actionc]['name'].' çš„ä¿®ç†å®Œæˆäº†ï¼<br>ç‹€æ…‹å€¼å›å¾©è‡³ '.$DisMaxXp;
 }
 
 if ($Error_Flag === 0){
@@ -706,9 +702,9 @@ if ($Error_Flag === 0){
 		$Eq_Update[1] = $RepairEqCondMax;
 		$Game[$actionc] = implode('<!>',$Eq_Update);
 	//Update Database
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `$actionc` = '$Game[$actionc]' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `$actionc` = '$Game[$actionc]' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 	mysql_query($sql) or die (mysql_error());
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = '$Gen[cash]' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = '$Gen[cash]' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 	mysql_query($sql) or die (mysql_error());
 }
 echo "<script language=\"Javascript\">";
@@ -716,17 +712,11 @@ echo "parent.document.getElementById('pl_cash').innerHTML = '".number_format($Ge
 echo "parent.document.getElementById('".$EqD[$actionc]['txt']."').innerHTML = '".$DisMaxXp."';";
 echo "</script>";
 echo "<form action=statsmod.php?action=repairms method=post name=frmrp target=$SecTarget>";
-echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+
+
 echo "<input type=hidden value='sel' name=actionb>";
 echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
-echo "<p align=center style=\"font-size: 16pt\"><br><br><br><br>$RepMsg<br><br><input type=button value=\"Ãö³¬¦¹µøµ¡\" onClick=\"parent.$SecTarget.location.replace('about:blank');parent.document.getElementById('STiF').style.left = -1150;\"><input type=submit value=\"Ä~Äò­×²z\">";
-echo "</form>";
-echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
-echo "<input type=submit value=\"­«·s¾ã²z\" onClick=\"parent.$SecTarget.location.replace('about:blank')\">";
-echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
+echo "<p align=center style=\"font-size: 16pt\"><br><br><br><br>$RepMsg<br><br><input type=button value=\"é—œé–‰æ­¤è¦–çª—\" onClick=\"parent.$SecTarget.location.replace('about:blank');parent.document.getElementById('STiF').style.left = -1150;\"><input type=submit value=\"ç¹¼çºŒä¿®ç†\">";
 echo "</form>";
 
 postFooter();
@@ -739,36 +729,36 @@ exit;
 //
 
 elseif ($mode == 'modtypech' && $actionb == 'A'){
-	echo "¤HºØ§ï³y<hr>";
-	if($Gen['typech'] != 'nat'){echo "§A¤£¬O¤@¯ë¤H¡I¤£¯à¶i¦æ§ï³y¡I";exit;}
+	echo "äººç¨®æ”¹é€ <hr>";
+	if($Gen['typech'] != 'nat'){echo "ä½ ä¸æ˜¯ä¸€èˆ¬äººï¼ä¸èƒ½é€²è¡Œæ”¹é€ ï¼";exit;}
 
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#FFFFFF\" width=\"300\">";
 
 	echo "<form action=statsmod.php?action=modtypech method=post name=modchform>";
 	echo "<input type=hidden value='B' name=actionb>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 
 	echo "<script langauge=\"Javascript\">function cfmModCh(){";
-	echo "if ($Gen[cash] < $ModChType_Cost) {alert('²{ª÷¤£¨¬!!');return false;}";
-	echo "else if (confirm('¯uªº­n¶i¦æ§ï³y¶Ü¡H') == true) {return true;} else {return false;}";
+	echo "if ($Gen[cash] < $ModChType_Cost) {alert('ç¾é‡‘ä¸è¶³!!');return false;}";
+	echo "else if (confirm('çœŸçš„è¦é€²è¡Œæ”¹é€ å—ï¼Ÿ') == true) {return true;} else {return false;}";
 	echo "}</script>";
 
-	echo "<tr><td align=center><b>¤HºØ§ï³y</b></td></tr>";
+	echo "<tr><td align=center><b>äººç¨®æ”¹é€ </b></td></tr>";
 	echo "<tr><td>";
-	echo "<b>Â²¤¶:</b><br>¤HºØ§ï³y¬O¤@­Ó¬°Ãş«¬(Type)¬° ¤@¯ë(Natural) ªº¤H¡A<br>§ï³y¨­Åé¡A¨Ï¦Û¤v¦¨¬°:<br><br>1. Enhanced (±j¤Æ¤H¶¡)<br>©Î<br>2. Extended (©µ¦ù¤H)<br>";
-	echo "<br>§ï³y¦³¤°»ò¦n³B¡H<br>¬İ§A·|¤£·|»{¬°Enhanced©ÎExtended¤ñ¤@¯ë¤H±j§a¡I<Br>¦ı½Ğºò°O¡A¤@¸g§ï³y¡AµLªkÁÙ­ì¡A¥çµLªk¦A§ï³y¡I";
+	echo "<b>ç°¡ä»‹:</b><br>äººç¨®æ”¹é€ æ˜¯ä¸€å€‹ç‚ºé¡å‹(Type)ç‚º ä¸€èˆ¬(Natural) çš„äººï¼Œ<br>æ”¹é€ èº«é«”ï¼Œä½¿è‡ªå·±æˆç‚ºå…¶ä»–äººç¨®ã€‚<br>";
+	echo "<Br>ä½†è«‹ç·Šè¨˜ï¼Œä¸€ç¶“æ”¹é€ ï¼Œç„¡æ³•é‚„åŸï¼Œäº¦ç„¡æ³•å†æ”¹é€ ï¼";
 	echo "</td></tr>";
 
 	echo "<tr><td>";
-	echo "<b>¤HºØ§ï³y:</b><br>";
-	echo "§ï³y¬°:<br>";
-	echo "<input type=radio name=dtype value=1 checked> Enhanced (±j¤Æ¤H¶¡)<br><input type=radio name=dtype value=2> Extended (©µ¦ù¤H)<br>";
-	echo "<b>¶O¥Î:</b> ".number_format($ModChType_Cost)." ¤¸<br>";
+	echo "<b>äººç¨®æ”¹é€ :</b><br>";
+	echo "æ”¹é€ ç‚º:<br>";
+	echo "<input type=radio name=dtype value=1 checked> ä¸€èˆ¬äºº<br><input type=radio name=dtype value=2> å¼·åŒ–äººé–“<br><input type=radio name=dtype value=3> Extended<br><input type=radio name=dtype value=4> å¿µå‹•åŠ›<br><input type=radio name=dtype value=5> New Type<br><input type=radio name=dtype value=6> CO<br>";
+	echo "<b>è²»ç”¨:</b> ".number_format($ModChType_Cost)." å…ƒ<br>";
 	echo "</td></tr>";
 	echo "<tr><td align=center>";
-	echo "<input type=submit value=§ï³y½T©w onClick=\"return cfmModCh();\">";
+	echo "<input type=submit value=æ”¹é€ ç¢ºå®š onClick=\"return cfmModCh();\">";
 	echo "</td></tr>";
 
 	echo "</form></table>";
@@ -780,30 +770,34 @@ postFooter();exit;
 //
 
 elseif ($mode == 'modtypech' && $actionb == 'B'){
-	echo "¤HºØ§ï³y<hr>";
+	echo "äººç¨®æ”¹é€ <hr>";
 	$Dest_Type = $ModChMsg = (string) '';
 	switch($dtype){
-		case 1: $Dest_Type = 'enh'; $ModChMsg = '±j¤Æ¤H¶¡';break;
-		case 2: $Dest_Type = 'ext'; $ModChMsg = 'Extended';break;
-		default: echo "¥Ø¼Ğ¤HºØ¥X¿ù!!";exit;
+		case 1: $Dest_Type = 'nat'; $ModChMsg = 'ä¸€èˆ¬äºº';break;
+		case 2: $Dest_Type = 'enh'; $ModChMsg = 'å¼·åŒ–äººé–“';break;
+		case 3: $Dest_Type = 'ext'; $ModChMsg = 'Extended';break;
+		case 4: $Dest_Type = 'psy'; $ModChMsg = 'å¿µå‹•åŠ›';break;
+		case 5: $Dest_Type = 'nt'; $ModChMsg = 'New Type';break;
+		case 6: $Dest_Type = 'co'; $ModChMsg = 'CO';break;
+		default: echo "ç›®æ¨™äººç¨®å‡ºéŒ¯!!";exit;
 	}
-	if($Gen['typech'] != 'nat'){echo "§A¤£¬O¤@¯ë¤H¡I¤£¯à¶i¦æ§ï³y¡I";exit;}
+	if($Gen['typech'] != 'nat'){echo "ä½ ä¸æ˜¯ä¸€èˆ¬äººï¼ä¸èƒ½é€²è¡Œæ”¹é€ ï¼";exit;}
 	else {
-		if($Gen['cash'] < $ModChType_Cost){echo "²{ª÷¤£¨¬!!";exit;}
+		if($Gen['cash'] < $ModChType_Cost){echo "ç¾é‡‘ä¸è¶³!!";exit;}
 		else {
 			$Gen['cash'] -= $ModChType_Cost;
 			$Gen['typech'] = $Dest_Type;
 			$SQL = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = '$Gen[cash]', `typech` = '$Gen[typech]', `hypermode` = 0 ");
-			$SQL .= ("WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+			$SQL .= ("WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 			mysql_query($SQL) or die(mysql_error());
 		}
 
 	}
 
 echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-echo "<p align=center style=\"font-size: 16pt\">§ï³y§¹¦¨¤F¡I<br>§A¤w§ï³y¦¨ $ModChMsg ¡I<br><input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
-echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+echo "<p align=center style=\"font-size: 16pt\">æ”¹é€ å®Œæˆäº†ï¼<br>ä½ å·²æ”¹é€ æˆ $ModChMsg ï¼<br><input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
+
+
 echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 echo "</form>";
 postFooter();exit;

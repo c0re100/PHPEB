@@ -1,10 +1,10 @@
 <?php
 // Turn this on (set to true) or delete this file when not using!!
-// ¤£¨Ï¥Î®É, °O±o³]©w¬°¡uTrue¡v ©Î §R°£³o­ÓÀÉ®×!!
-$UseAuth = true;
+// ä¸ä½¿ç”¨æ™‚, è¨˜å¾—è¨­å®šç‚ºã€ŒTrueã€ æˆ– åˆªé™¤é€™å€‹æª”æ¡ˆ!!
+$UseAuth = false;
 // Initialize Organizations
-include('../../cfu.php');
-postHead('','../../phpeb_session_dir');
+include('cfu.php');
+postHead('');
 
 $mode = ( isset($_POST['action']) ) ? $_POST['action'] : '';
 
@@ -33,7 +33,7 @@ if($UseAuth){
 		
 	if($Gen['acc_status'] >= 0){
 		
-		echo "¨S¦³Åv­­¦s¨ú¡C<br>¦p±z¬OºŞ²z­û, ½Ğ¥ı³]©wºŞ²z­û¨­¥÷¡C<BR>";
+		echo "æ²’æœ‰æ¬Šé™å­˜å–ã€‚<br>å¦‚æ‚¨æ˜¯ç®¡ç†å“¡, è«‹å…ˆè¨­å®šç®¡ç†å“¡èº«ä»½ã€‚<BR>";
 		postFooter();
 		exit;
 	
@@ -69,13 +69,13 @@ if($mode == 'process'){
 		$pos = '';
 		$lastChar = substr($u['map_id'],-1,1);
 		switch($lastChar){
-			case 'N': $pos = "¥_"; break;
-			case 'E': $pos = "ªF"; break;
-			case 'S': $pos = "«n"; break;
-			case 'W': $pos = "¦è"; break;
+			case 'N': $pos = "åŒ—"; break;
+			case 'E': $pos = "æ±"; break;
+			case 'S': $pos = "å—"; break;
+			case 'W': $pos = "è¥¿"; break;
 			default: $pos = $lastChar;
 		}
-		$u['aname'] = "{$coord}°Ï°ì - {$pos}³¡"; 
+		$u['aname'] = "{$coord}å€åŸŸ - {$pos}éƒ¨"; 
 		$u['development'] = 0;
 		$u['hp'] = $Sys[$mid]['hpmax'];
 		$u['hpmax'] = $Sys[$mid]['hpmax'];

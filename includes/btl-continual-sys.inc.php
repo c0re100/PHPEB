@@ -7,12 +7,11 @@
 //Start
 echo "<form action=battle.php?action=attack_target method=post name=battle_continual>";
 echo "<input type=hidden value='process' name=actionb>";
-echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
 echo "<input type=hidden value=0 name='enc'>";
 echo "<input type=hidden value=0 name='spc'>";
 echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 echo "<input type=hidden name=\"Op_Name\" value=\"".$Op_Name."\">";
+echo "<script type=\"text/javascript\" src=\"js/battle.js\"></script>";
 
 //Boolean Variables
 $bctlHasExam = (strpos($Pl->Player['spec'],'EXAMSystem') !== false);
@@ -24,24 +23,24 @@ $bctlHasPrsg = (strpos($Pl->Player['spec'],'NTPresage') !== false);
 
 $baseSpCost = 0;
 if($bctlHasExam){
-	echo "¶}±ÒEXAM System<input type=checkbox name=EXAMStat";
+	echo "é–‹å•ŸEXAM System<input type=checkbox name=EXAMStat";
 	if($Pl->Player['hypermode'] >= 4 && $Pl->Player['hypermode'] <= 6) echo " checked";
-	echo ">(SP®ø¯Ó: 20)<br>";
+	echo ">(SPæ¶ˆè€—: 20)<br>";
 	$baseSpCost += 20;
 }
 if($bctlHasSEED && $bctlSEEDTypeCh){
-	echo "¶i¤JSEED Mode<input type=checkbox name=SEEDStat";
+	echo "é€²å…¥SEED Mode<input type=checkbox name=SEEDStat";
 	if($Pl->Player['hypermode'] == 1 || $Pl->Player['hypermode'] == 5) echo " checked";
-	echo ">(SP®ø¯Ó: 20)<br>";
+	echo ">(SPæ¶ˆè€—: 20)<br>";
 	$baseSpCost += 20;
 }
 if($Pl->Player['hypermode'] == 2 && $Pl->Player['typech'] == 'nt' && $Pl->Eq['D']['exp'] >= 2500){
-	echo "¹w·P <input type=checkbox name=NTPresage";
+	echo "é æ„Ÿ <input type=checkbox name=NTPresage";
 	if($bctlHasPrsg) echo " checked";
 	echo ">";
 }
-echo "¥H<select $BStyleB style=\"$BStyleA\" name=\"Pl_GTctcs\" onchange='changeEnc();changeSpc();'>";
-echo "<option value='0'>³q±`§ğÀ»";
+echo "ä»¥<select $BStyleB style=\"$BStyleA\" name=\"Pl_GTctcs\" onchange='changeEnc();changeSpc();'>";
+echo "<option value='0'>é€šå¸¸æ”»æ“Š";
 $Cont_TactSpc_Format = '<input type=hidden name=Tact_%s value=%u>';
 $Cont_TactSpc = sprintf($Cont_TactSpc_Format,'0',0);
 if ($Pl->Player['tactics']){
@@ -53,18 +52,22 @@ if ($Pl->Player['tactics']){
 		if (!$Tactics) unset($Tactics);
 		else{	echo "<option value='$Tactics'";
 			if ($Tactics == $Pl->Player['last_tact']) {echo " selected";$baseSpCost += $TactInf['spc'];}
-			echo ">$TactInf[name] (SP®ø¯Ó: $TactInf[spc])";
+			echo ">$TactInf[name] (SPæ¶ˆè€—: $TactInf[spc])";
 			$Cont_TactSpc .= sprintf($Cont_TactSpc_Format,$Tactics,$TactInf['spc']);
 		}
 	}
 }
 echo "</select>";
 echo $Cont_TactSpc;
-echo "<input type=submit $BStyleB style=\"$BStyleA\" name=battle_submit value='°lÀ»¥Ø¼Ğ(".$Btl_Intv.")' OnClick=\"this.style.visibility='hidden';return checkAtk();\" disabled><br>";
-echo "©Ò»İEN: <span id=need_en></span> ¡@¡@  ©Ò»İSP: <span id=need_sp>$baseSpCost</span>";
+if($version){
+	echo "<input type=hidden value='old' name='version'>";
+}
+echo "<input type=submit $BStyleB style=\"$BStyleA\" name=battle_submit id=battle_submit value='è¿½æ“Šç›®æ¨™ (3)' OnClick=\"this.style.visibility='hidden';return checkAtk();\" disabled><br>";
+if(!$version){
+	echo "æ‰€éœ€EN: <span id=need_en></span> ã€€ã€€  æ‰€éœ€SP: <span id=need_sp>$baseSpCost</span>";
+}
 echo "</form></td>";
 echo "<script language=\"JavaScript\">";
-echo "var countdown=".$Btl_Intv.";";
 echo "function changeEnc(){";
 echo "document.battle_continual.enc.value = parseInt(eval(\"parent.document.getElementById('EqmEnc_A').innerHTML;\"))+parseInt(eval(\"parent.document.getElementById('EqmEnc_D').innerHTML;\"))+parseInt(eval(\"parent.document.getElementById('EqmEnc_E').innerHTML;\"));";
 echo "document.getElementById('need_en').innerHTML = document.battle_continual.enc.value;";
@@ -77,14 +80,13 @@ if($bctlHasExam)
 echo "if(document.battle_continual.EXAMStat.checked == true) tspc += 20;";
 if($bctlHasSEED && $bctlSEEDTypeCh)
 echo "if(document.battle_continual.SEEDStat.checked == true) tspc += 20;";
-echo "document.getElementById('need_sp').innerHTML = document.battle_continual.spc.value = tspc;";
-echo "}function refreshReq(){";
-echo "if(countdown > 0) {document.battle_continual.battle_submit.value='°lÀ»¥Ø¼Ğ('+countdown+')';countdown--;}";
-echo "else if(countdown == 0) {document.battle_continual.battle_submit.value='°lÀ»¥Ø¼Ğ';document.battle_continual.battle_submit.disabled=false;}";
-echo "changeEnc();changeSpc();setTimeout(\"refreshReq()\",1000);";
+echo "document.getElementById('need_sp').innerHTML = document.battle_continual.spc.value = tspc;}";
+if(!$version){
+	echo "changeEnc();changeSpc();";
+}
 echo "}function checkAtk(){";
-echo "if(parseInt(document.battle_continual.enc.value) > parseInt(parent.document.getElementById('current_en').innerHTML)) {alert('ENÁÙ¥¼¨¬°÷¡I');document.battle_continual.battle_submit.style.visibility='visible';return false;}";
-echo "if(parseInt(document.battle_continual.spc.value) > parseInt(parent.document.getElementById('current_sp').innerHTML)) {alert('SPÁÙ¥¼¨¬°÷¡I');document.battle_continual.battle_submit.style.visibility='visible';return false;}";
+echo "if(parseInt(document.battle_continual.enc.value) > parseInt(parent.document.getElementById('current_en').innerHTML)) {alert('ENé‚„æœªè¶³å¤ ï¼');document.battle_continual.battle_submit.style.visibility='visible';return false;}";
+echo "if(parseInt(document.battle_continual.spc.value) > parseInt(parent.document.getElementById('current_sp').innerHTML)) {alert('SPé‚„æœªè¶³å¤ ï¼');document.battle_continual.battle_submit.style.visibility='visible';return false;}";
 echo "return true;";
-echo "}refreshReq();</script>";
+echo "}</script>";
 ?>

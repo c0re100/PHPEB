@@ -5,7 +5,8 @@ include('cfu.php');
 include('includes/repairplayer-f.inc.php');
 if (empty($PriTarget)) $PriTarget = 'Alpha';
 if (empty($SecTarget)) $SecTarget = 'Beta';
-AuthUser("$Pl_Value[USERNAME]","$Pl_Value[PASSWORD]");
+if (empty($ThrTarget)) $ThrTarget = 'Chat';
+AuthUser();
 
 //Online Limit Connection
 if ($OLimit){
@@ -14,12 +15,31 @@ $OnlineSQL = ("SELECT count(time2) FROM `".$GLOBALS['DBPrefix']."phpeb_user_gene
 $OnlineSQL_Query = mysql_query($OnlineSQL);
 $OnlinePlNum = mysql_fetch_row($OnlineSQL_Query);
 if ($OnlinePlNum[0] >= $OLimit && $CFU_Time-$UsrGenrl['time2'] < $Offline_Time){
-	echo "<center><br><br>¤W½u¤H¼Æ¤Ó¦h¡C<br>²{¤W½u¤H¼Æ: $OnlinePlNum[0]<br>¤W½u¤H¼Æ¤W­­: $OLimit<br><a href=\"index2.php\" target='_top' style=\"text-decoration: none\">¦^¨ì­º­¶</a><br><br>";
+	echo "<center><br><br>ä¸Šç·šäººæ•¸å¤ªå¤šã€‚<br>ç¾ä¸Šç·šäººæ•¸: $OnlinePlNum[0]<br>ä¸Šç·šäººæ•¸ä¸Šé™: $OLimit<br><a href=\"index.php\" target='_top' style=\"text-decoration: none\">å›åˆ°é¦–é </a><br><br>";
 	postFooter();exit;
 }
 }
 
-if ( $mode == 'proc' && $Game_Scrn_Type == 0) include('gmscrn_base.php');
-else echo "<br><br><br>Undefined Action<br><br><br>";
-postFooter();
+function check_user_agent() {
+	$user_agent = $_SERVER['HTTP_USER_AGENT'];
+	if (preg_match ( "/phone|iphone|itouch|ipod|symbian|android|htc_|htc-|palmos|blackberry|opera mini|iemobile|windows ce|nokia|fennec|hiptop|kindle|mot |mot-|webos\/|samsung|sonyericsson|^sie-|nintendo/i", $user_agent)){
+		return true;
+    }else{
+		return false;
+	}
+}
+
+$ismobile = check_user_agent();
+
+if($ismobile){
+	header("Location: gmscrn_old.php?action=proc");
+}
+elseif ( $mode == 'proc' && !$ismobile ){
+	include('gmscrn_base.php');
+}
+else
+{
+	echo "<br><br><br>Undefined Action<br><br><br>";
+	postFooter();
+}
 ?>

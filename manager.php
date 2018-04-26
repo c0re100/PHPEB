@@ -1,79 +1,73 @@
 <?php
-//½s¼g: fra
-//ÁcÅé¤Æ: ­·¤§²Ş
+//ç·¨å¯«: fra
+//ç¹é«”åŒ–: é¢¨ä¹‹ç¿
 include('cfu.php');
+AuthUser();
 postHead('');
 $_POST['action'] = ( isset($_POST['action']) ) ? $_POST['action'] : 0;
 $mode = ( isset($_GET['action']) ) ? $_GET['action'] : $_POST['action'];
 $_POST["operation"] = ( isset($_POST["operation"]) ) ? $_POST["operation"] : false;
-if ($CFU_Time >= $TIMEAUTH+$TIME_OUT_TIME || $TIMEAUTH <= $CFU_Time-$TIME_OUT_TIME){echo "³s½u¶W®É¡I<br>½Ğ­«·sµn¤J¡I";exit;}
-$db = mysql_connect($DBHost, $DBUser, $DBPass);
-mysql_select_db($DBName,$db);
 
-$SQL = ("SELECT `password`,`acc_status` FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` where `username` = '".$Pl_Value['USERNAME']."'");
-$Query = mysql_query($SQL);
-$Ac = mysql_fetch_array($Query);
-
-if ( ( $Ac['acc_status'] >= 0 && "fra" != $Pl_Value['USERNAME'] ) || ($Ac['password'] != md5($Pl_Value['PASSWORD']) && $Ac['password'] != $Pl_Value['PASSWORD']) ) {
-	echo "¤£¬OºŞ²z­û©Î±K½X¿ù»~¡I";
+GetUsrDetails("$_SESSION[username]",'Gen','Game');
+if ($Gen['acc_status'] != '9') {
+	echo "æ‚¨ä¸æ˜¯ç®¡ç†å“¡ï¼";
 	$mcfu_time = explode(' ', microtime());
 	$cfu_ptime = number_format(($mcfu_time[1] + $mcfu_time[0] - $GLOBALS['cfu_stime']), 6);
-	echo "<p align=center style=\"font-size: 10pt\">php-eb &copy; 2005-2008 v2Alliance. All Rights Reserved.¡@ª©Åv©Ò¦³ ¤£±oÂà¸ü<br>";
-	echo "<p align=center style=\"font-size: 10pt\">Manager Script &copy; fra. All Rights Reserved.¡@ª©Åv©Ò¦³ ¤£±oÂà¸ü<br>";
+	echo "<p align=center style=\"font-size: 10pt\">php-eb &copy; 2005-2008 v2Alliance. All Rights Reserved.ã€€ç‰ˆæ¬Šæ‰€æœ‰ ä¸å¾—è½‰è¼‰<br>";
+	echo "<p align=center style=\"font-size: 10pt\">Manager Script &copy; fra. All Rights Reserved.ã€€ç‰ˆæ¬Šæ‰€æœ‰ ä¸å¾—è½‰è¼‰<br>";
 	if ($GLOBALS['Show_ptime'])
 	echo "<font style=\"font-size: 7pt\">Processed in ".$cfu_ptime." second(s).</font></p>";
 exit;
 }
-//½Ğ§âfra§ï¦¨§Aªº¦W¦r
-//©Î¨ì phpeb_user_general_info ¸ê®Æªí¤¤, §â¥Ø¼Ğ GM ªº±b¤á¸ê®Æ¤¤, acc_status ¤@¶µ³]¬°­t¼Æ
+//è«‹æŠŠfraæ”¹æˆä½ çš„åå­—
+//æˆ–åˆ° phpeb_user_general_info è³‡æ–™è¡¨ä¸­, æŠŠç›®æ¨™ GM çš„å¸³æˆ¶è³‡æ–™ä¸­, acc_status ä¸€é …è¨­ç‚ºè² æ•¸
 
 
-//¶}©l¤¶­±¡A¥i¿ï¾Ş§@
+//é–‹å§‹ä»‹é¢ï¼Œå¯é¸æ“ä½œ
 echo "<table align=center width=30% height=20% cellspacing=0 cellpadding=0 style=\"font-size:16px;\" border=0>";
 echo "<tr><td colspan=3><center><form action=manager.php?action=main method=post target=_self>";
-echo "<tr><td colspan=3><center><input type=radio name=operation value =1>¥Î¤á¾Ş§@<input type=radio name=operation value =2>¾÷Åé¾Ş§@<input type=radio name=operation value =3>ªZ¾¹¾Ş§@<input type=radio name=operation value =4>¦X¦¨¾Ş§@</center></td></tr>";
-echo "<tr><td colspan=3><center><input type=radio name=operation value =5>§å§R¥Î¤á<input type=radio name=operation value =6>§å¼W¾÷Åé<input type=radio name=operation value =7>§å¼WNPC<input type=radio name=operation value =8>SQL©R¥O</center></td></tr>";
-echo "<tr><td colspan=3><center><input type=radio name=operation value =9>¼W¥[ªZ¾¹<input type=radio name=operation value =A>¼W¥[¤½¦¡</center></td></tr>";
+echo "<tr><td colspan=3><center><input type=radio name=operation value =1>ç”¨æˆ¶æ“ä½œ<input type=radio name=operation value =2>æ©Ÿé«”æ“ä½œ<input type=radio name=operation value =3>æ­¦å™¨æ“ä½œ</center></td></tr>";
+echo "<tr><td colspan=3><center><input type=radio name=operation value =4>åˆæˆæ“ä½œ<input type=radio name=operation value =5>æ‰¹åˆªç”¨æˆ¶<input type=radio name=operation value =6>æ‰¹å¢æ©Ÿé«”</center></td></tr>";
+echo "<tr><td colspan=3><center><input type=radio name=operation value =9>å¢åŠ æ­¦å™¨<input type=radio name=operation value =10>å¢åŠ é€²åŒ–<input type=radio name=operation value =A>å¢åŠ åˆæˆ</center></td></tr>";
 
-echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+
+
 echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
-echo "<tr><td colspan=3><center><input type=submit value='½T©w'></center></td></tr>";
+echo "<tr><td colspan=3><center><input type=submit value='ç¢ºå®š'></center></td></tr>";
 echo "</form></center></td></tr>";
-echo "<tr><td colspan=3><center>¥»«á»O¥Ñfra»s§@¡A¦³°İÃD©M«ØÄ³½Ğ¦Üphpeb©x¤èºô¯¸´£¥X</center></td></tr>";
-//§A¥i¥Hª`ÄÀ±¼¤W­±¤@¦æ¡A¦ı¤£¥i§R±¼©Î§ï°Ê¦W¦r¡C§Ú¤£·Q¦³¤H¦³°İÃD©M«ØÄ³«o§ä¤£¨ì¦a¤è¡C©x¤è½×¾Â¡Ghttp://forum.dai-ngai.net/
+//ä½ å¯ä»¥æ³¨é‡‹æ‰ä¸Šé¢ä¸€è¡Œï¼Œä½†ä¸å¯åˆªæ‰æˆ–æ”¹å‹•åå­—ã€‚æˆ‘ä¸æƒ³æœ‰äººæœ‰å•é¡Œå’Œå»ºè­°å»æ‰¾ä¸åˆ°åœ°æ–¹ã€‚å®˜æ–¹è«–å£‡ï¼šhttp://forum.dai-ngai.net/
 echo "<tr><td colspan=3><center>__________________________________________________</center></td></tr>";
 
-//¿é¤J¥Î¤á¦W
+//è¼¸å…¥ç”¨æˆ¶å
 if ("1" == $_POST["operation"] ) {
 	echo "<tr><td colspan=3><center><form action=manager.php?action=main method=post target=_self>";
-	echo "<tr><td colspan=3><center>½Ğ¿é¤J§A­n¾Ş§@ªº¥Î¤áªº¹CÀ¸¦W¡]¯dªÅ¬°¦C¥X©Ò¦³¥Î¤á¡^<br></center></td></tr>";
+	echo "<tr><td colspan=3><center>è«‹è¼¸å…¥ä½ è¦æ“ä½œçš„ç”¨æˆ¶çš„éŠæˆ²åï¼ˆç•™ç©ºç‚ºåˆ—å‡ºæ‰€æœ‰ç”¨æˆ¶ï¼‰<br></center></td></tr>";
 	echo "<tr><td colspan=3><center><input type=text name='ugamename' size='40' maxlength=50></center></td></tr>";
 	echo "<input type=hidden value='11' name=operation>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
-	echo "<tr><td colspan=3><center><input type=submit value='½T©w'></center></td></tr>";
+	echo "<tr><td colspan=3><center><input type=submit value='ç¢ºå®š'></center></td></tr>";
 	echo "</form></center></td></tr>";
 }
 
-//µ¹¥X¥Î¤áÄİ©Ê
+//çµ¦å‡ºç”¨æˆ¶å±¬æ€§
 if ("11" == $_POST["operation"] ) {
 	$operuser = $_POST["ugamename"];
 	$ouserpage = ( isset($ouserpage) ) ? $ouserpage : false;
 	if(!$operuser) {
 		if ( $ouserpage ) $ouserstart = $_POST["$ouserpage"];	
 		else $ouserstart = 0;
-		$result1 = mysql_query("SELECT username,gamename,level FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info`",$db);
+		$result1 = mysql_query("SELECT username,gamename,level FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info`");
 		$num_rows = mysql_num_rows($result1);
 		
 		echo "<tr><td colspan=3><center><form action=manager.php?action=main method=post target=_self>";
 		echo "<table align=center width=500 border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-		echo "<tr align=center><td width=50>§Ç¸¹</td>";
+		echo "<tr align=center><td width=50>åºè™Ÿ</td>";
 		echo "<td width=150>ID</td>";
-		echo "<td width=250>¹CÀ¸¦W</td>";
-		echo "<td width=50>µ¥¯Å</td>";
-		echo "<td width=50>¿ï¾Ü</td>";
+		echo "<td width=250>éŠæˆ²å</td>";
+		echo "<td width=50>ç­‰ç´š</td>";
+		echo "<td width=50>é¸æ“‡</td>";
 		$i = 1;
   		while($num_rows--) {
 			$myrow1 = mysql_fetch_object($result1); 
@@ -85,10 +79,10 @@ if ("11" == $_POST["operation"] ) {
 			$i++;			
 		}
 		echo "<input type=hidden value='11' name=operation>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		
+		
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
-		echo "<tr><td colspan=3><center><input type=submit value='½T©w'></center></td></tr>";
+		echo "<tr><td colspan=3><center><input type=submit value='ç¢ºå®š'></center></td></tr>";
 
 		echo "</tr>";
 		echo "</form></center></td></tr>";
@@ -97,40 +91,40 @@ if ("11" == $_POST["operation"] ) {
 		exit;
 	}
 	
-	$result2 = mysql_query("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `gamename` = '$operuser'",$db);
+	$result2 = mysql_query("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `gamename` = '$operuser'");
 	$myrow2 = mysql_fetch_object($result2);
 	
 	$ousername = $myrow2->username;	
 	
-	$result1 = mysql_query("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` WHERE `username` = '$ousername'",$db);
+	$result1 = mysql_query("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` WHERE `username` = '$ousername'");
 	$myrow1 = mysql_fetch_object($result1);
 
-	$result3 = mysql_query("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_bank` WHERE `username` = '$ousername'",$db);
+	$result3 = mysql_query("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_bank` WHERE `username` = '$ousername'");
 	$myrow3 = mysql_fetch_object($result3);
 	if (!$ousername) {
-		echo "<tr><td colspan=3><center>¬dµL¦¹¤H<br></center></td></tr>";
+		echo "<tr><td colspan=3><center>æŸ¥ç„¡æ­¤äºº<br></center></td></tr>";
 		exit;
 	}
 	echo "<tr><td colspan=3><center><form action=manager.php?action=main method=post target=_self>";	
-	echo "<tr><td colspan=3><center>­×§ï¥Î¤á $operuser ¸ê®Æ¡G<br></center></td></tr>";
+	echo "<tr><td colspan=3><center>ä¿®æ”¹ç”¨æˆ¶ $operuser è³‡æ–™ï¼š<br></center></td></tr>";
 
 	echo "<table align=center width=400 border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr align=center><td width=100>Äæ¦ì</td>";
-	echo "<td width=200>¼Æ­È</td>";
-	echo "<td width=50>¿ï¾Ü</td>";
+	echo "<tr align=center><td width=100>æ¬„ä½</td>";
+	echo "<td width=200>æ•¸å€¼</td>";
+	echo "<td width=50>é¸æ“‡</td>";
 	
 	$UsrWepA = explode('<!>',$myrow2->wepa);
 	$UsrWepB = explode('<!>',$myrow2->wepb);
 	$UsrWepC = explode('<!>',$myrow2->wepc);
 
-$ouser = array("µn³°¦W","²{ª÷","¾÷Åé","Ãş«¬","Äa½àª÷","ÃC¦â","hypermode","¦¨ªøÂI¼Æ","¦WÁn´c¦W","¦a°Ï","±b¤áª¬ºA","¾Ô°««Å¨¥","¹CÀ¸¦W","hpmax","enmax","spmax",
-"attacking","defending","reacting","targeting","µ¥¯Å","¸gÅç","¨Ï¥ÎªZ¾¹","³Æ¥Î¤@","³Æ¥Î¤G","¸Ë³Æ","±`³W","spec","²ÕÂ´»â¾É¤H",
-"²ÕÂ´","¹ï¾Ô«Å¨¥","¬O§_¶}¤á","¦s´Ú","¯S®í","¯S®í","¯S®í");
+$ouser = array("ç™»é™¸å","ç¾é‡‘","æ©Ÿé«”","é¡å‹","æ‡¸è³é‡‘","é¡è‰²","hypermode","æˆé•·é»æ•¸","åè²æƒ¡å","åœ°å€","å¸³æˆ¶ç‹€æ…‹","æˆ°é¬¥å®£è¨€","éŠæˆ²å","hpmax","enmax","spmax",
+"attacking","defending","reacting","targeting","ç­‰ç´š","ç¶“é©—","ä½¿ç”¨æ­¦å™¨","å‚™ç”¨ä¸€","å‚™ç”¨äºŒ","è£å‚™","å¸¸è¦","spec","çµ„ç¹”é ˜å°äºº",
+"çµ„ç¹”","å°æˆ°å®£è¨€","æ˜¯å¦é–‹æˆ¶","å­˜æ¬¾","ç‰¹æ®Š","ç‰¹æ®Š","ç‰¹æ®Š");
 $ofield = array("$myrow1->username","$myrow1->cash","$myrow1->msuit","$myrow1->typech","$myrow1->bounty","$myrow1->color","$myrow1->hypermode","$myrow1->growth","$myrow1->fame",
 "$myrow1->coordinates","$myrow1->acc_status","$myrow1->atkword","$myrow2->gamename","$myrow2->hpmax","$myrow2->enmax","$myrow2->spmax",
-"$myrow2->attacking","$myrow2->defending","$myrow2->reacting","$myrow2->targeting","$myrow2->level","$myrow2->expr","$UsrWepA[0]¡A¸gÅç$UsrWepA[1]",
-"$UsrWepB[0]¡A¸gÅç$UsrWepB[1]","$UsrWepC[0]¡A¸gÅç$UsrWepC[1]","$myrow2->eqwep","$myrow2->p_equip","$myrow2->spec","$myrow2->rights","$myrow2->organization",
-"$myrow2->speech","$myrow3->status","$myrow3->savings","§ó§ï¥Î¤á±K½X","§R°£¦¹¥Î¤á","®É¶¡­«¸m");
+"$myrow2->attacking","$myrow2->defending","$myrow2->reacting","$myrow2->targeting","$myrow2->level","$myrow2->expr","$UsrWepA[0]ï¼Œç¶“é©—$UsrWepA[1]",
+"$UsrWepB[0]ï¼Œç¶“é©—$UsrWepB[1]","$UsrWepC[0]ï¼Œç¶“é©—$UsrWepC[1]","$myrow2->eqwep","$myrow2->p_equip","$myrow2->spec","$myrow2->rights","$myrow2->organization",
+"$myrow2->speech","$myrow3->status","$myrow3->savings","æ›´æ”¹ç”¨æˆ¶å¯†ç¢¼","åˆªé™¤æ­¤ç”¨æˆ¶","æ™‚é–“é‡ç½®");
 
 
 	$i = 0;
@@ -145,23 +139,23 @@ $ofield = array("$myrow1->username","$myrow1->cash","$myrow1->msuit","$myrow1->t
 
 	echo "<input type=hidden value='$myrow1->username' name=ousername>";
 	echo "<input type=hidden value='12' name=operation>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
-	echo "<tr><td colspan=3><center><input type=submit value='½T©w'></center></td></tr>";
+	echo "<tr><td colspan=3><center><input type=submit value='ç¢ºå®š'></center></td></tr>";
 	echo "</form></center></td></tr>";
 	echo "</table>";	
 		 
 }
 
-//­×§ï¥Î¤áÄİ©Ê
+//ä¿®æ”¹ç”¨æˆ¶å±¬æ€§
 if ("12" == $_POST["operation"] ) {
 	$ouserfield = $_POST["ouserfield"];
 	$ouservalue = $_POST["ouserchange"];
 	$ousername = $_POST["ousername"];
 
 	if (!$ouserfield) {
-		echo "<tr><td colspan=3><center>¿ï¶µ¥¼ª¾<br></center></td></tr>";
+		echo "<tr><td colspan=3><center>é¸é …æœªçŸ¥<br></center></td></tr>";
 		exit;
 	}
 	if ( $ouserfield <= 11 || 33 == $ouserfield ) {
@@ -207,29 +201,29 @@ if ("12" == $_POST["operation"] ) {
 		case 31: $ousrfield = "status";break;
 		case 32: $ousrfield = "savings";break;
 		case 33: $ousrfield = "password";$ouservalue = md5($ouservalue);break;
-		case 34: echo "<tr><td colspan=3><center>§R°£¥Î¤áªº¾Ş§@¬O¤£¥i°fªº<br>½Ğ¾¨¶q¨Ï¥Î¸T¥Î±b¸¹¥\¯à<br></center></td></tr>";
-			 echo "<tr><td colspan=3><center>½Ğ¦A¦¸½T»{¡I<br></center></td></tr>";
+		case 34: echo "<tr><td colspan=3><center>åˆªé™¤ç”¨æˆ¶çš„æ“ä½œæ˜¯ä¸å¯é€†çš„<br>è«‹å„˜é‡ä½¿ç”¨ç¦ç”¨å¸³è™ŸåŠŸèƒ½<br></center></td></tr>";
+			 echo "<tr><td colspan=3><center>è«‹å†æ¬¡ç¢ºèªï¼<br></center></td></tr>";
 			 echo "<tr><td colspan=3><center><form action=manager.php?action=main method=post target=_self>";
 			 echo "<input type=hidden value='13' name=operation>";
 			 echo "<input type=hidden value='$ousername' name=ousername>";		
-			 echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-			 echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+			 
+			 
 			 echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
-			 echo "<tr><td colspan=3><center><input type=submit value='½T©w'></center></td></tr>";
+			 echo "<tr><td colspan=3><center><input type=submit value='ç¢ºå®š'></center></td></tr>";
 			 echo "</form></center></td></tr>";
 			 exit;	
 		case 35: mysql_query("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `time1` = '0',`time2` = '0',`btltime` = '0' WHERE `".$GLOBALS['DBPrefix']."phpeb_user_general_info`.`username` = '$ousername' LIMIT 1 ;");
-			 echo "<tr><td colspan=3><center>¾Ş§@§¹¦¨<br></center></td></tr>";
+			 echo "<tr><td colspan=3><center>æ“ä½œå®Œæˆ<br></center></td></tr>";
 			 exit;
 	}
 
 	$sqlouser = "UPDATE `$sqlop` SET `$ousrfield` = '$ouservalue' WHERE `$sqlop`.`username` = '$ousername' LIMIT 1;";
 	echo "<tr><td colspan=3><center>$sqlouser<br></center></td></tr>";
 	mysql_query($sqlouser);
-	echo "<tr><td colspan=3><center>¾Ş§@§¹¦¨<br></center></td></tr>";
+	echo "<tr><td colspan=3><center>æ“ä½œå®Œæˆ<br></center></td></tr>";
 }
 
-//§R°£¥Î¤á¾Ş§@
+//åˆªé™¤ç”¨æˆ¶æ“ä½œ
 if ("13" == $_POST["operation"] ) {
 	$ousername = $_POST["ousername"];
 	mysql_query("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` WHERE `username` = '$ousername' Limit 1;");
@@ -241,34 +235,34 @@ if ("13" == $_POST["operation"] ) {
 	mysql_query("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` WHERE `username` = '$ousername' Limit 1;");
 	mysql_query("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_hangar` WHERE `username` = '$ousername' Limit 1;");  
 	mysql_query("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_chat` WHERE `c_user` = '$ousername';");
-	echo "<tr><td colspan=3><center>¾Ş§@§¹¦¨¡A¥Î¤á$ousername ¤w§R°£<br></center></td></tr>";
+	echo "<tr><td colspan=3><center>æ“ä½œå®Œæˆï¼Œç”¨æˆ¶$ousername å·²åˆªé™¤<br></center></td></tr>";
 }
 
-//¿é¤J¾÷Åé¦W
+//è¼¸å…¥æ©Ÿé«”å
 
 if ("2" == $_POST["operation"] ) {
 	echo "<tr><td colspan=3><center><form action=manager.php?action=main method=post target=_self>";
-	echo "<tr><td colspan=3><center>½Ğ¿é¤J§A­n¾Ş§@ªº¾÷Åé¦W¡]¯dªÅ¬°¦C¥X©Ò¦³¾÷Åé¡^<br></center></td></tr>";
+	echo "<tr><td colspan=3><center>è«‹è¼¸å…¥ä½ è¦æ“ä½œçš„æ©Ÿé«”åï¼ˆç•™ç©ºç‚ºåˆ—å‡ºæ‰€æœ‰æ©Ÿé«”ï¼‰<br></center></td></tr>";
 	echo "<tr><td colspan=3><center><input type=text name='omsname' size='40' maxlength=50></center></td></tr>";
 	echo "<input type=hidden value='21' name=operation>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
-	echo "<tr><td colspan=3><center><input type=submit value='½T©w'></center></td></tr>";
+	echo "<tr><td colspan=3><center><input type=submit value='ç¢ºå®š'></center></td></tr>";
 	echo "</form></center></td></tr>";
 }
-//Åã¥Ü¾÷Åé¾Ş§@
+//é¡¯ç¤ºæ©Ÿé«”æ“ä½œ
 if ("21" == $_POST["operation"] ) {
 	$omsname = $_POST["omsname"];
 	if(!$omsname) {
-		$result1 = mysql_query("SELECT id,msname,price FROM `".$GLOBALS['DBPrefix']."phpeb_sys_ms`",$db);
+		$result1 = mysql_query("SELECT id,msname,price FROM `".$GLOBALS['DBPrefix']."phpeb_sys_ms`");
 		$num_rows = mysql_num_rows($result1);
 		echo "<tr><td colspan=3><center><form action=manager.php?action=main method=post target=_self>";
 		echo "<table align=center width=400 border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
 		echo "<tr align=center><td width=50>ID</td>";
-		echo "<td width=150>¾÷Åé¦W</td>";
-		echo "<td width=80>»ù®æ</td>";
-		echo "<td width=50>¿ï¾Ü</td>"; 
+		echo "<td width=150>æ©Ÿé«”å</td>";
+		echo "<td width=80>åƒ¹æ ¼</td>";
+		echo "<td width=50>é¸æ“‡</td>"; 
 		$i = 1;
   		while($num_rows--) {
 			$myrow1 = mysql_fetch_object($result1); 
@@ -279,33 +273,33 @@ if ("21" == $_POST["operation"] ) {
 			$i++;	
 			}
 		echo "<input type=hidden value='21' name=operation>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		
+		
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
-		echo "<tr><td colspan=3><center><input type=submit value='½T©w'></center></td></tr>";
+		echo "<tr><td colspan=3><center><input type=submit value='ç¢ºå®š'></center></td></tr>";
 		echo "</tr>";
 		echo "</form></center></td></tr>";
 		echo "</table>";
 		exit;
 	}
-	$result1 = mysql_query("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_sys_ms` WHERE `msname` = '$omsname'",$db);
+	$result1 = mysql_query("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_sys_ms` WHERE `msname` = '$omsname'");
 	$myrow1 = mysql_fetch_object($result1);
 	if (!$myrow1->id) {
-		echo "<tr><td colspan=3><center>¬dµL¦¹¾÷Åé<br></center></td></tr>";
+		echo "<tr><td colspan=3><center>æŸ¥ç„¡æ­¤æ©Ÿé«”<br></center></td></tr>";
 		exit;
 	}
 
 	echo "<tr><td colspan=3><center><form action=manager.php?action=main method=post target=_self>";	
-	echo "<tr><td colspan=3><center>­×§ï¾÷Åé $omsname ¸ê®Æ¡G<br></center></td></tr>";
+	echo "<tr><td colspan=3><center>ä¿®æ”¹æ©Ÿé«” $omsname è³‡æ–™ï¼š<br></center></td></tr>";
 
 
-$omslist = array("½s¸¹","¾÷Åé¦W","»ù®æ","att","def","rct","taf","HP¼W¶q","EN¼W¶q","HP¦^´_","EN¦^´_","¯S®Ä","»İ­nµ¥¯Å","¹Ï¤ù¥Ø¿ı","¯S®í");
+$omslist = array("ç·¨è™Ÿ","æ©Ÿé«”å","åƒ¹æ ¼","att","def","rct","taf","HPå¢é‡","ENå¢é‡","HPå›å¾©","ENå›å¾©","ç‰¹æ•ˆ","éœ€è¦ç­‰ç´š","åœ–ç‰‡ç›®éŒ„","ç‰¹æ®Š");
 $omsfield = array("$myrow1->id","$myrow1->msname","$myrow1->price","$myrow1->atf","$myrow1->def","$myrow1->ref","$myrow1->taf",
-"$myrow1->hpfix","$myrow1->enfix","$myrow1->hprec","$myrow1->enrec","$myrow1->spec","$myrow1->needlv","$myrow1->image","§R°£¾÷Åé");
+"$myrow1->hpfix","$myrow1->enfix","$myrow1->hprec","$myrow1->enrec","$myrow1->spec","$myrow1->needlv","$myrow1->image","åˆªé™¤æ©Ÿé«”");
 	echo "<table align=center width=400 border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr align=center><td width=100>Äæ¦ì</td>";
-	echo "<td width=200>¼Æ­È</td>";
-	echo "<td width=50>¿ï¾Ü</td>";
+	echo "<tr align=center><td width=100>æ¬„ä½</td>";
+	echo "<td width=200>æ•¸å€¼</td>";
+	echo "<td width=50>é¸æ“‡</td>";
 
 	$i = 0;
 	while($i<=14) {
@@ -319,15 +313,15 @@ $omsfield = array("$myrow1->id","$myrow1->msname","$myrow1->price","$myrow1->atf
 
 	echo "<input type=hidden value='$myrow1->id' name=omsid>";
 	echo "<input type=hidden value='22' name=operation>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
-	echo "<tr><td colspan=3><center><input type=submit value='½T©w'></center></td></tr>";
+	echo "<tr><td colspan=3><center><input type=submit value='ç¢ºå®š'></center></td></tr>";
 	echo "</form></center></td></tr>";
 	echo "</table>";	
 }
 
-//­×§ï¾÷Åé¸ê®Æ
+//ä¿®æ”¹æ©Ÿé«”è³‡æ–™
 if ("22" == $_POST["operation"] ) {
 	$omsid = $_POST["omsid"];
 	$omsfield = $_POST["omsfield"];
@@ -346,56 +340,56 @@ if ("22" == $_POST["operation"] ) {
 		case 11: $omsfield = "spec";break;		
 		case 12: $omsfield = "needlv";break;
 		case 13: $omsfield = "image";break;
-		case 14: echo "<tr><td colspan=3><center>§R°£¾÷Åéªº¾Ş§@¬O¤£¥i°fªº¡C½Ğ¦A¦¸½T»{¡I<br></center></td></tr>";	
+		case 14: echo "<tr><td colspan=3><center>åˆªé™¤æ©Ÿé«”çš„æ“ä½œæ˜¯ä¸å¯é€†çš„ã€‚è«‹å†æ¬¡ç¢ºèªï¼<br></center></td></tr>";	
 			 echo "<tr><td colspan=3><center><form action=manager.php?action=main method=post target=_self>";
 			 echo "<input type=hidden value='23' name=operation>";
 			 echo "<input type=hidden value='$omsid' name=omsid>";		
-			 echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-			 echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+			 
+			 
 			 echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
-			 echo "<tr><td colspan=3><center><input type=submit value='½T©w'></center></td></tr>";
+			 echo "<tr><td colspan=3><center><input type=submit value='ç¢ºå®š'></center></td></tr>";
 			 echo "</form></center></td></tr>";
 			 exit;		
 	}
 	$sqloms = "UPDATE `".$GLOBALS['DBPrefix']."phpeb_sys_ms` SET `$omsfield` = '$omsvalue' WHERE `id` = '$omsid' LIMIT 1;";
 	mysql_query($sqloms);
-	echo "<tr><td colspan=3><center>¾Ş§@§¹¦¨<br></center></td></tr>";
+	echo "<tr><td colspan=3><center>æ“ä½œå®Œæˆ<br></center></td></tr>";
 }
 
-//§R°£¾÷Åé¾Ş§@
+//åˆªé™¤æ©Ÿé«”æ“ä½œ
 if ("23" == $_POST["operation"] ) {
 	$omsid = $_POST["omsid"];
 	mysql_query("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_sys_ms` WHERE `id` = '$omsid' Limit 1;");
-	echo "<tr><td colspan=3><center>¾Ş§@§¹¦¨¡A¾÷Åé $omsid ¤w§R°£<br></center></td></tr>";
+	echo "<tr><td colspan=3><center>æ“ä½œå®Œæˆï¼Œæ©Ÿé«” $omsid å·²åˆªé™¤<br></center></td></tr>";
 }
 
 
-//¿é¤JªZ¾¹¦W
+//è¼¸å…¥æ­¦å™¨å
 if ("3" == $_POST["operation"] ) {
 	echo "<tr><td colspan=3><center><form action=manager.php?action=main method=post target=_self>";
-	echo "<tr><td colspan=3><center>½Ğ¿é¤JªZ¾¹¦W¡]¯dªÅ¬°¦C¥X©Ò¦³ªZ¾¹¡^<br></center></td></tr>";
+	echo "<tr><td colspan=3><center>è«‹è¼¸å…¥æ­¦å™¨åï¼ˆç•™ç©ºç‚ºåˆ—å‡ºæ‰€æœ‰æ­¦å™¨ï¼‰<br></center></td></tr>";
 	echo "<tr><td colspan=3><center><input type=text name='owepname' size='40' maxlength=50></center></td></tr>";
 	echo "<input type=hidden value='31' name=operation>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
-	echo "<tr><td colspan=3><center><input type=submit value='½T©w'></center></td></tr>";
+	echo "<tr><td colspan=3><center><input type=submit value='ç¢ºå®š'></center></td></tr>";
 	echo "</form></center></td></tr>";
 }
 
-//Åã¥ÜªZ¾¹¸ê®Æ
+//é¡¯ç¤ºæ­¦å™¨è³‡æ–™
 if ("31" == $_POST["operation"] ) {
 	$owepname = $_POST["owepname"];
 	if(!$owepname) {
-		$result1 = mysql_query("SELECT id,name,price FROM `".$GLOBALS['DBPrefix']."phpeb_sys_wep`",$db);
+		$result1 = mysql_query("SELECT id,name,price FROM `".$GLOBALS['DBPrefix']."phpeb_sys_wep`");
 		$num_rows = mysql_num_rows($result1);
 
 		echo "<tr><td colspan=3><center><form action=manager.php?action=main method=post target=_self>";
 		echo "<table align=center width=500 border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
 		echo "<tr align=center><td width=50>ID</td>";
-		echo "<td width=250>ªZ¾¹¦Cªí</td>";
-		echo "<td width=100>»ù®æ</td>";
-		echo "<td width=50>¿ï¾Ü</td>";
+		echo "<td width=250>æ­¦å™¨åˆ—è¡¨</td>";
+		echo "<td width=100>åƒ¹æ ¼</td>";
+		echo "<td width=50>é¸æ“‡</td>";
 		$i = 1;
   		while($num_rows--) {
 			$myrow1 = mysql_fetch_object($result1); 
@@ -406,34 +400,34 @@ if ("31" == $_POST["operation"] ) {
 			$i++;			
 			}
 		echo "<input type=hidden value='31' name=operation>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		
+		
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
-		echo "<tr><td colspan=3><center><input type=submit value='½T©w'></center></td></tr>";
+		echo "<tr><td colspan=3><center><input type=submit value='ç¢ºå®š'></center></td></tr>";
 		echo "</tr>";
 		echo "</form></center></td></tr>";
 		echo "</table>";
 		exit;
 	}
-	$result1 = mysql_query("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_sys_wep` WHERE `name` = '$owepname'",$db);
+	$result1 = mysql_query("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_sys_wep` WHERE `name` = '$owepname'");
 	$myrow1 = mysql_fetch_object($result1);
 	if (!$myrow1->id) {
-		echo "<tr><td colspan=3><center>¬dµL¦¹ªZ¾¹<br></center></td></tr>";
+		echo "<tr><td colspan=3><center>æŸ¥ç„¡æ­¤æ­¦å™¨<br></center></td></tr>";
 		exit;
 	}
 
 
 	echo "<tr><td colspan=3><center><form action=manager.php?action=main method=post target=_self>";	
-	echo "<tr><td colspan=3><center>­×§ïªZ¾¹ $owepname ¸ê®Æ¡G<br></center></td></tr>";
+	echo "<tr><td colspan=3><center>ä¿®æ”¹æ­¦å™¨ $owepname è³‡æ–™ï¼š<br></center></td></tr>";
 
 
-$oweplist = array("½s¸¹","¦W¦r","¥@¥N","©Ê½èBDI","ªì§ï","§ï³y¥i¯à","¯S®í§ï³y","§ğÀ»","©R¤¤","¦^¼Æ","EN®ø¯Ó","»ù®æ","¥i¦¨»²§U","¯S®Ä","¯S®í");
-$owepvalue = array("$myrow1->id","$myrow1->name","$myrow1->grade","$myrow1->kind","$myrow1->familyid","$myrow1->nextev","$myrow1->specev",
-"$myrow1->atk","$myrow1->hit","$myrow1->rd","$myrow1->enc","$myrow1->price","$myrow1->equip","$myrow1->spec","§R°£");
+$oweplist = array("ç·¨è™Ÿ","åå­—","è¤‡é›œæ€§","ç­‰ç´š","è·é›¢","å±¬æ€§","å¯è³¼è²·","æ”»æ“Š","å‘½ä¸­","å›æ•¸","ENæ¶ˆè€—","åƒ¹æ ¼","å¯æˆè¼”åŠ©","ç‰¹æ•ˆ","ç‰¹æ®Š");
+$owepvalue = array("$myrow1->id","$myrow1->name","$myrow1->complexity","$myrow1->tier","$myrow1->range","$myrow1->attrb","$myrow1->buy",
+"$myrow1->atk","$myrow1->hit","$myrow1->rd","$myrow1->enc","$myrow1->price","$myrow1->equip","$myrow1->spec","åˆªé™¤");
 	echo "<table align=center width=400 border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr align=center><td width=100>Äæ¦ì</td>";
-	echo "<td width=200>¼Æ­È</td>";
-	echo "<td width=50>¿ï¾Ü</td>";
+	echo "<tr align=center><td width=100>æ¬„ä½</td>";
+	echo "<td width=200>æ•¸å€¼</td>";
+	echo "<td width=50>é¸æ“‡</td>";
 
 	$i = 0;
 	while($i<=14) {
@@ -447,27 +441,27 @@ $owepvalue = array("$myrow1->id","$myrow1->name","$myrow1->grade","$myrow1->kind
 
 	echo "<input type=hidden value='$myrow1->id' name=owepid>";
 	echo "<input type=hidden value='32' name=operation>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
-	echo "<tr><td colspan=3><center><input type=submit value='½T©w'></center></td></tr>";
+	echo "<tr><td colspan=3><center><input type=submit value='ç¢ºå®š'></center></td></tr>";
 	echo "</form></center></td></tr>";
 	echo "</table>";		
 	wepspec();
 }
                         
-//­×§ïªZ¾¹¸ê®Æ
+//ä¿®æ”¹æ­¦å™¨è³‡æ–™
 if ("32" == $_POST["operation"] ) {
 	$owepid = $_POST["owepid"];
 	$owepfield = $_POST["owepfield"];
 	$owepvalue = $_POST["owepvalue"];
 	switch ($owepfield) {
 		case 1: $owepfield = "name";break;
-		case 2: $owepfield = "grade";break;
-		case 3: $owepfield = "kind";break;	
-		case 4: $owepfield = "familyid";break;
-		case 5: $owepfield = "nextev";break;
-		case 6: $owepfield = "specev";break;	
+		case 2: $owepfield = "complexity";break;
+		case 3: $owepfield = "tier";break;	
+		case 4: $owepfield = "range";break;
+		case 5: $owepfield = "attrb";break;
+		case 6: $owepfield = "buy";break;	
 		case 7: $owepfield = "atk";break;
 		case 8: $owepfield = "hit";break;
 		case 9: $owepfield = "rd";break;	
@@ -475,56 +469,56 @@ if ("32" == $_POST["operation"] ) {
 		case 11: $owepfield = "price";break;
 		case 12: $owepfield = "equip";break;	
 		case 13: $owepfield = "spec";break;
-		case 14: echo "<tr><td colspan=3><center>§R°£ªZ¾¹ªº¾Ş§@¬O¤£¥i°fªº¡C½Ğ¦A¦¸½T»{¡I<br></center></td></tr>";	
+		case 14: echo "<tr><td colspan=3><center>åˆªé™¤æ­¦å™¨çš„æ“ä½œæ˜¯ä¸å¯é€†çš„ã€‚è«‹å†æ¬¡ç¢ºèªï¼<br></center></td></tr>";	
 			 echo "<tr><td colspan=3><center><form action=manager.php?action=main method=post target=_self>";
 			 echo "<input type=hidden value='33' name=operation>";
 			 echo "<input type=hidden value='$owepid' name=owepid>";		
-			 echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-			 echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+			 
+			 
 			 echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
-			 echo "<tr><td colspan=3><center><input type=submit value='½T©w'></center></td></tr>";
+			 echo "<tr><td colspan=3><center><input type=submit value='ç¢ºå®š'></center></td></tr>";
 			 echo "</form></center></td></tr>";
 			 exit;		
 	}
 	$sqlowep = "UPDATE `".$GLOBALS['DBPrefix']."phpeb_sys_wep` SET `$owepfield` = '$owepvalue' WHERE `id` = '$owepid' LIMIT 1;";
 //	echo "$sqlowep";
 	mysql_query($sqlowep);
-	echo "<tr><td colspan=3><center>¾Ş§@§¹¦¨<br></center></td></tr>";	
+	echo "<tr><td colspan=3><center>æ“ä½œå®Œæˆ<br></center></td></tr>";	
 
 }
 
-//§R°£ªZ¾¹¾Ş§@
+//åˆªé™¤æ­¦å™¨æ“ä½œ
 if ("33" == $_POST["operation"] ) {
 	$owepid = $_POST["owepid"];
 	mysql_query("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_sys_wep` WHERE `id` = '$owepid' Limit 1;");
-	echo "<tr><td colspan=3><center>¾Ş§@§¹¦¨¡AªZ¾¹ $owepid ¤w§R°£<br></center></td></tr>";
+	echo "<tr><td colspan=3><center>æ“ä½œå®Œæˆï¼Œæ­¦å™¨ $owepid å·²åˆªé™¤<br></center></td></tr>";
 }
 
-//Åã¥Ü¦X¦¨¦Cªí
+//é¡¯ç¤ºåˆæˆåˆ—è¡¨
 if ("4" == $_POST["operation"] ) {
-	echo "<tr><td colspan=3><center>½Ğ¿é¤J§A­n¾Ş§@ªºªZ¾¹¡]¯dªÅ¬°¦C¥X©Ò¦³¦X¦¨¤½¦¡¡^<br></center></td></tr>";
+	echo "<tr><td colspan=3><center>è«‹è¼¸å…¥ä½ è¦æ“ä½œçš„æ­¦å™¨ï¼ˆç•™ç©ºç‚ºåˆ—å‡ºæ‰€æœ‰åˆæˆå…¬å¼ï¼‰<br></center></td></tr>";
 	echo "<tr><td colspan=3><form action=manager.php?action=main method=post target=_self>";
 	echo "<tr><td colspan=3><center><input type=text name='otatname' size='40' maxlength=50></center></td></tr>";
 	echo "<input type=hidden value='41' name=operation>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
-	echo "<tr><td colspan=3><center><input type=submit value='½T©w'></center></td></tr>";
+	echo "<tr><td colspan=3><center><input type=submit value='ç¢ºå®š'></center></td></tr>";
 	echo "</form></td></tr>";
 }
 
-//Åã¥Ü¦X¦¨¸ê®Æ
+//é¡¯ç¤ºåˆæˆè³‡æ–™
 if ("41" == $_POST["operation"] ) {
 	$otatname = $_POST["otatname"];
 	if(!$otatname) {
-		$result1 = mysql_query("SELECT tact_id,wep_id,grade FROM `".$GLOBALS['DBPrefix']."phpeb_sys_tactfactory`",$db);
+		$result1 = mysql_query("SELECT tact_id,wep_id,grade FROM `".$GLOBALS['DBPrefix']."phpeb_sys_tactfactory`");
 		$num_rows = mysql_num_rows($result1);
 		echo "<tr><td colspan=3><center><form action=manager.php?action=main method=post target=_self>";
 		echo "<table align=center width=250 border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-		echo "<tr align=center><td width=50>½s¸¹</td>";
-		echo "<td width=100>ªZ¾¹ID</td>";
-		echo "<td width=50>¯Å§O</td>";
-		echo "<td width=50>¿ï¾Ü</td>";
+		echo "<tr align=center><td width=50>ç·¨è™Ÿ</td>";
+		echo "<td width=100>æ­¦å™¨ID</td>";
+		echo "<td width=50>ç´šåˆ¥</td>";
+		echo "<td width=50>é¸æ“‡</td>";
 		$i = 1;
   		while($num_rows--) {
 			$myrow1 = mysql_fetch_object($result1); 
@@ -535,35 +529,35 @@ if ("41" == $_POST["operation"] ) {
 			$i++;			
 			}
 		echo "<input type=hidden value='41' name=operation>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		
+		
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
-		echo "<tr><td colspan=3><center><input type=submit value='½T©w'></center></td></tr>";
+		echo "<tr><td colspan=3><center><input type=submit value='ç¢ºå®š'></center></td></tr>";
 		echo "</tr>";
 		echo "</form></center></td></tr>";
 		echo "</table>";
 		exit;
 	}
-	$result1 = mysql_query("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_sys_tactfactory` WHERE `wep_id` = '$otatname'",$db);
+	$result1 = mysql_query("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_sys_tactfactory` WHERE `wep_id` = '$otatname'");
 	$myrow1 = mysql_fetch_object($result1);
 	if (!$myrow1->tact_id) {
-		echo "<tr><td colspan=3><center>¬dµL¦¹ªZ¾¹<br></center></td></tr>";
+		echo "<tr><td colspan=3><center>æŸ¥ç„¡æ­¤æ­¦å™¨<br></center></td></tr>";
 		exit;
 	}
 
 	echo "<tr><td colspan=3><center><form action=manager.php?action=main method=post target=_self>";	
-	echo "<tr><td colspan=3><center>­×§ïªZ¾¹ $owepname ¸ê®Æ¡G<br></center></td></tr>";
+	echo "<tr><td colspan=3><center>ä¿®æ”¹æ­¦å™¨ $owepname è³‡æ–™ï¼š<br></center></td></tr>";
 
 
-$otatlist = array("½s¸¹","ªZ¾¹½s¸¹","µ¥¯Å","¹ï¸Ü","1¸¹Äl","2¸¹Äl","3¸¹Äl","4¸¹Äl","5¸¹Äl","6¸¹Äl","7¸¹Äl","8¸¹Äl","9¸¹Äl","10¸¹Äl",
-"11¸¹Äl","12¸¹Äl","13¸¹Äl","14¸¹Äl","15¸¹Äl","16¸¹Äl","17¸¹Äl","18¸¹Äl","19¸¹Äl","20¸¹Äl","¯S®í");
+$otatlist = array("ç·¨è™Ÿ","æ­¦å™¨ç·¨è™Ÿ","ç­‰ç´š","å°è©±","1è™Ÿçˆ","2è™Ÿçˆ","3è™Ÿçˆ","4è™Ÿçˆ","5è™Ÿçˆ","6è™Ÿçˆ","7è™Ÿçˆ","8è™Ÿçˆ","9è™Ÿçˆ","10è™Ÿçˆ",
+"11è™Ÿçˆ","12è™Ÿçˆ","13è™Ÿçˆ","14è™Ÿçˆ","15è™Ÿçˆ","16è™Ÿçˆ","17è™Ÿçˆ","18è™Ÿçˆ","19è™Ÿçˆ","20è™Ÿçˆ","ç‰¹æ®Š");
 $otatvalue = array("$myrow1->tact_id","$myrow1->wep_id","$myrow1->grade","$myrow1->directions",
 "$myrow1->m1","$myrow1->m2","$myrow1->m3","$myrow1->m4","$myrow1->m5","$myrow1->m6","$myrow1->m7","$myrow1->m8","$myrow1->m9","$myrow1->m10",
-"$myrow1->m11","$myrow1->m12","$myrow1->m13","$myrow1->m14","$myrow1->m15","$myrow1->m16","$myrow1->m17","$myrow1->m18","$myrow1->m19","$myrow1->m20","§R°£¤½¦¡");
+"$myrow1->m11","$myrow1->m12","$myrow1->m13","$myrow1->m14","$myrow1->m15","$myrow1->m16","$myrow1->m17","$myrow1->m18","$myrow1->m19","$myrow1->m20","åˆªé™¤å…¬å¼");
 	echo "<table align=center width=400 border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr align=center><td width=100>Äæ¦ì</td>";
-	echo "<td width=200>¼Æ­È</td>";
-	echo "<td width=50>¿ï¾Ü</td>";
+	echo "<tr align=center><td width=100>æ¬„ä½</td>";
+	echo "<td width=200>æ•¸å€¼</td>";
+	echo "<td width=50>é¸æ“‡</td>";
 
 	$i = 0;
 	while($i<=24) {
@@ -577,17 +571,17 @@ $otatvalue = array("$myrow1->tact_id","$myrow1->wep_id","$myrow1->grade","$myrow
 
 	echo "<input type=hidden value='$myrow1->tact_id' name=otatid>";
 	echo "<input type=hidden value='42' name=operation>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
-	echo "<tr><td colspan=3><center><input type=submit value='½T©w'></center></td></tr>";
+	echo "<tr><td colspan=3><center><input type=submit value='ç¢ºå®š'></center></td></tr>";
 	echo "</form></center></td></tr>";
 	echo "</table>";	
 	
 	
 }
 
-//­×§ï¦X¦¨¸ê®Æ
+//ä¿®æ”¹åˆæˆè³‡æ–™
 if ("42" == $_POST["operation"] ) {
 	$otatid = $_POST["otatid"];
 	$otatfield = $_POST["otatfield"];
@@ -616,73 +610,61 @@ if ("42" == $_POST["operation"] ) {
 		case 21: $otatfield = "m18";break;
 		case 22: $otatfield = "m19";break;
 		case 23: $otatfield = "m20";break;
-		case 24: echo "<tr><td colspan=3><center>§R°£¤½¦¡ªº¾Ş§@¬O¤£¥i°fªº¡C½Ğ¦A¦¸½T»{¡I<br></center></td></tr>";	
+		case 24: echo "<tr><td colspan=3><center>åˆªé™¤å…¬å¼çš„æ“ä½œæ˜¯ä¸å¯é€†çš„ã€‚è«‹å†æ¬¡ç¢ºèªï¼<br></center></td></tr>";	
 			 echo "<tr><td colspan=3><center><form action=manager.php?action=main method=post target=_self>";
 			 echo "<input type=hidden value='43' name=operation>";
 			 echo "<input type=hidden value='$otatid' name=otatid>";		
-			 echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-			 echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+			 
+			 
 			 echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
-			 echo "<tr><td colspan=3><center><input type=submit value='½T©w'></center></td></tr>";
+			 echo "<tr><td colspan=3><center><input type=submit value='ç¢ºå®š'></center></td></tr>";
 			 echo "</form></center></td></tr>";
 			 exit;		
 	}
 	$sqlowep = "UPDATE `".$GLOBALS['DBPrefix']."phpeb_sys_tactfactory` SET `$otatfield` = '$otatvalue' WHERE `tact_id` = '$otatid' LIMIT 1;";
 	echo "$sqlowep";
 	mysql_query($sqlowep);
-	echo "<tr><td colspan=3><center>¾Ş§@§¹¦¨<br></center></td></tr>";	
+	echo "<tr><td colspan=3><center>æ“ä½œå®Œæˆ<br></center></td></tr>";	
 
 }
 
-//§R°£¦X¦¨¦Cªí¾Ş§@
+//åˆªé™¤åˆæˆåˆ—è¡¨æ“ä½œ
 if ("43" == $_POST["operation"] ) {
 	$otatid = $_POST["otatid"];
 	mysql_query("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_sys_tactfactory` WHERE `tact_id` = '$otatid' Limit 1;");
-	echo "<tr><td colspan=3><center>¾Ş§@§¹¦¨¡A½s¸¹ $otatid ¤w§R°£<br></center></td></tr>";
+	echo "<tr><td colspan=3><center>æ“ä½œå®Œæˆï¼Œç·¨è™Ÿ $otatid å·²åˆªé™¤<br></center></td></tr>";
 }
 
 
-//§å¶q§R°£¥Î¤á
+//æ‰¹é‡åˆªé™¤ç”¨æˆ¶
 if ("5" == $_POST["operation"] ) {
-	$deletelv = $_POST["deletelv"];
-	$deletetime = $_POST["deletetime"];
+	$deletestatus = $_POST["deletestatus"];
 	$predel = $_POST["predel"];
 	$deadline = time() - 86400*$deletetime;
-	if(!$deletelv &&!$deletetime && !$predel) {
+	if(!$deletestatus &&!$deletetime && !$predel) {
 		echo "<tr><td colspan=3><center><form action=manager.php?action=main method=post target=_self>";
-		echo "<tr><td colspan=3><center>§R°£±ø¥ó¡C¨â¿ï¤@¡A¦P®É¿ïªº´N·Ó¯Å§O¨Óºâ<br></center></td></tr>";
-		echo "<tr><td colspan=3><center><input type=text name='deletelv' size='20' maxlength=50>¯Å§O</center></td></tr>";
-		echo "<tr><td colspan=3><center><input type=text name='deletetime' value = 10 size='20' maxlength=50>¤Ñ¼Æ</center></td></tr>";
+		echo "<tr><td colspan=3><center>åˆªé™¤æ¢ä»¶ã€‚<br></center></td></tr>";
+		echo "<tr><td colspan=3><center>å¸³æˆ¶ç‹€æ…‹: <input type=text name='deletestatus' value = 2 size='20' maxlength=50></center></td></tr>";
 		echo "<input type=hidden value='5' name=operation>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
-		echo "<tr><td colspan=3><center><input type=submit value='½T©w'></center></td></tr>";
+		echo "<tr><td colspan=3><center><input type=submit value='ç¢ºå®š'></center></td></tr>";
 		echo "</form></center></td></tr>";
 		exit;	
 	}	
-        if($deletelv) {
-		$result1=mysql_query("SELECT `username` , `gamename` , `level` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `level` <= $deletelv ");
-	}
-	else {
-		$result1=mysql_query("SELECT `username` FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` WHERE `time2` < $deadline ");
-	
+    if($deletestatus) {
+		$result1=mysql_query("SELECT `username` FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` WHERE `acc_status` = $deletestatus ");
 	}
 	$num_rows = mysql_num_rows($result1);
 	if (!$num_rows){
-		if($deletelv){
-			echo "<tr><td colspan=3><center>·í«e¨S¦³$deletelv ¯Å¥H¤U¤Hª«<br></center></td></tr>";
+		if($deletestatus){
+			echo "<tr><td colspan=3><center>ç•¶å‰æ²’æœ‰ç‹€æ…‹ç‚º $deletestatus çš„å¸³æˆ¶ã€‚<br></center></td></tr>";
 		}
-		else 	{	
-				echo "<tr><td colspan=3><center>·í«e¨S¦³$deletetime ¤Ñ¡] $deadline ¬í¡^¥H¤W¥¼¤W½uªº¤Hª«<br></center></td></tr>";
-			}
 		exit;	
 	} 
 	echo "<table align=center width=250 border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr align=center><td width=50>§Ç¸¹</td>";
+	echo "<tr align=center><td width=50>åºè™Ÿ</td>";
 	echo "<td width=100>ID</td>";
-	echo "<td width=150>¦W¦r</td>";
-	echo "<td width=50>lv</td>";
 	$i = 1;
 	while($num_rows--){
 		$myrow1 = mysql_fetch_object($result1);
@@ -690,54 +672,53 @@ if ("5" == $_POST["operation"] ) {
 			mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` WHERE `username` = '$myrow1->username' Limit 1;");
 			mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `username` = '$myrow1->username' Limit 1;");
 			mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_bank` WHERE `username` = '$myrow1->username' Limit 1;");
+			mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_bank_log` WHERE `username` = '$myrow1->username' Limit 1;");
+			mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_market` WHERE `username` = '$myrow1->username' Limit 1;");
 			mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_log` WHERE `username` = '$myrow1->username' Limit 1;");
 			mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` WHERE `username` = '$myrow1->username' Limit 1;");
 			mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_settings` WHERE `username` = '$myrow1->username' Limit 1;");
 			mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_warehouse` WHERE `username` = '$myrow1->username' Limit 1;");
 			mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_hangar` WHERE `username` = '$myrow1->username' Limit 1;");
-			mysql_query ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_chat` WHERE `c_user` = '$myrow1->username';");
 		}
 		echo "<tr align=center><td width=50>$i</td>";
-		echo "<td width=100>$myrow1->username</td>";
-		echo "<td width=150>$myrow1->gamename</td>";
-		echo "<td width=50>$myrow1->level</td>";		
+		echo "<td width=100>$myrow1->username</td>";	
                 $i++;
 	}
 	echo "</tr>";
 	echo "</table>";
 	if (1 == $predel) {
-		echo "<tr><td colspan=3><center>§R°£§¹²¦<br></center></td></tr>";	
+		echo "<tr><td colspan=3><center>åˆªé™¤å®Œç•¢<br></center></td></tr>";	
 	}
 	
 	if (!$predel) {
-		echo "<tr><td colspan=3><center>½T©w¥H¤W¤Hª«§R°£¡H<br></center></td></tr>";	
+		echo "<tr><td colspan=3><center>ç¢ºå®šåˆªé™¤ä»¥ä¸Šå¸³æˆ¶ï¼Ÿ<br></center></td></tr>";	
 		echo "<tr><td colspan=3><center><form action=manager.php?action=main method=post target=_self>";
 		echo "<input type=hidden value='5' name=operation>";
 		echo "<input type=hidden value='1' name=predel>";		
-		echo "<input type=hidden value='$deletelv' name=deletelv>";
+		echo "<input type=hidden value='$deletestatus' name=deletestatus>";
 		echo "<input type=hidden value='$deletetime' name=deletetime>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		
+		
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
-		echo "<tr><td colspan=3><center><input type=submit value='½T©w'></center></td></tr>";
+		echo "<tr><td colspan=3><center><input type=submit value='ç¢ºå®š'></center></td></tr>";
 		echo "</form></center></td></tr>";
 		exit;	
 	}
 }
 
-//§å¶q¼W¥[¾÷Åé
+//æ‰¹é‡å¢åŠ æ©Ÿé«”
 if ("6" == $_POST["operation"] ) {
-	echo "<tr><td colspan=3><center>¾÷Åé®æ¦¡¬°¾÷Åé¦W¥[¤@­Ó¼Æ¦ì¡A¾÷Åéªº¹Ï¤ù½s¸¹¤]¬O¦p¦¹<br></center></td></tr>";
+	echo "<tr><td colspan=3><center>æ©Ÿé«”æ ¼å¼ç‚ºæ©Ÿé«”ååŠ ä¸€å€‹æ•¸ä½ï¼Œæ©Ÿé«”çš„åœ–ç‰‡ç·¨è™Ÿä¹Ÿæ˜¯å¦‚æ­¤<br></center></td></tr>";
 	echo "<tr><td colspan=3><center><form action=manager.php?action=main method=post target=_self>";
 	
 	echo "<table align=center width=250 border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr align=center><td width=100>¾÷Åé¦W</td>";
-	echo "<td width=150><input type=text name='newmsname' value = ·s¾÷Åé size='20' maxlength=20></td>";		
-	echo "<tr align=center><td width=100>¾÷Åé¼Æ¶q</td>";
+	echo "<tr align=center><td width=100>æ©Ÿé«”å</td>";
+	echo "<td width=150><input type=text name='newmsname' value = æ–°æ©Ÿé«” size='20' maxlength=20></td>";		
+	echo "<tr align=center><td width=100>æ©Ÿé«”æ•¸é‡</td>";
 	echo "<td width=150><input type=text name='newmsq' value = 10 size='20' maxlength=3></td>";		
-	echo "<tr align=center><td width=100>ªì©l¼Æ¦r</td>";
+	echo "<tr align=center><td width=100>åˆå§‹æ•¸å­—</td>";
 	echo "<td width=150><input type=text name='newmsnum' value = 1000 size='20' maxlength=5></td>";	
-	echo "<tr align=center><td width=100>»ù®æ</td>";
+	echo "<tr align=center><td width=100>åƒ¹æ ¼</td>";
 	echo "<td width=150><input type=text name='newmsprice' value = 10000 size='20' maxlength=10></td>";		
 	echo "<tr align=center><td width=100>atk</td>";
 	echo "<td width=150><input type=text name='newmsatk' value = 10 size='20' maxlength=3></td>";	
@@ -757,17 +738,17 @@ if ("6" == $_POST["operation"] ) {
 	echo "<td width=150><input type=text name='newmsenrec' value = 5 size='20' maxlength=6></td>";		
 	echo "<tr align=center><td width=100>spec</td>";
 	echo "<td width=150><input type=text name='newmsspec' size='20' maxlength=20></td>";	
-	echo "<tr align=center><td width=100>»İ­nµ¥¯Å</td>";
+	echo "<tr align=center><td width=100>éœ€è¦ç­‰ç´š</td>";
 	echo "<td width=150><input type=text name='newmslevel' value = 10 size='20' maxlength=2></td>";		
-	echo "<tr align=center><td width=100>¹Ï¤ù¥Ø¿ı</td>";
+	echo "<tr align=center><td width=100>åœ–ç‰‡ç›®éŒ„</td>";
 	echo "<td width=150><input type=text name='newmspicdir' value = 0/ size='20' maxlength=20></td>";	
-	echo "<tr align=center><td width=100>¹Ï¤ù®æ¦¡</td>";
+	echo "<tr align=center><td width=100>åœ–ç‰‡æ ¼å¼</td>";
 	echo "<td width=150><input type=text name='newmspicformat' value = .jpg size='20' maxlength=5></td>";
 	echo "<input type=hidden value='61' name=operation>";	
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
-	echo "<tr><td colspan=3><center><input type=submit value='½T©w'></center></td></tr>";
+	echo "<tr><td colspan=3><center><input type=submit value='ç¢ºå®š'></center></td></tr>";
 	echo "</form></center></td></tr>";
 }
 
@@ -790,7 +771,7 @@ if ("61" == $_POST["operation"]) {
 	$newmspicdir = $_POST["newmspicdir"];
 	$newmsnewmspicformat = $_POST["newmspicformat"];
 	if (!$newmsname || !$newmsq || !$newmsnum || !$newmsprice || !$newmsatk || !$newmsdef || !$newmsref || !$newmstaf || !$newmshpfix || !$newmsenfix || !$newmshprec || !$newmsenrec || !$newmspicdir || !$newmsnewmspicformat) {
-		echo "<tr><td colspan=3><center>¿ï¶µ¦³©Ò¿òº|<br></center></td></tr>";	
+		echo "<tr><td colspan=3><center>é¸é …æœ‰æ‰€éºæ¼<br></center></td></tr>";	
 		exit;
 	}
 	if (!$newmslevel) { $newmslevel = 0; }
@@ -802,30 +783,30 @@ if ("61" == $_POST["operation"]) {
 		mysql_query("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_sys_ms` (`id` ,`msname` ,`price` ,`atf` ,`def` ,`ref` ,`taf` ,`hpfix` ,`enfix` ,`hprec` ,`enrec` ,`spec` ,`needlv` ,`image`) VALUES ('$imsnum', '$iname', '$newmsprice', '$newmsatk', '$newmsdef', '$newmsref', '$newmstaf', '$newmshpfix', '$newmsenfix', '$newmshprec', '$newmsenrec', '$newmsspec', '$newmslevel', '$ipic');");
 		$i++;
         }
-	echo "<tr><td colspan=3><center>$newmsq ³¡$newmsname ¾÷Åé¼W¥[§¹¦¨<br></center></td></tr>";
+	echo "<tr><td colspan=3><center>$newmsq éƒ¨$newmsname æ©Ÿé«”å¢åŠ å®Œæˆ<br></center></td></tr>";
 }
 
-//§å¶q¼W¥[NPC
+//æ‰¹é‡å¢åŠ NPC
 if ("7" == $_POST["operation"] ) {
-	echo "<tr><td colspan=3><center>NPCªº®æ¦¡¬°NPC¥[¤@­Ó¼Æ¦r<br></center></td></tr>";
+	echo "<tr><td colspan=3><center>NPCçš„æ ¼å¼ç‚ºNPCåŠ ä¸€å€‹æ•¸å­—<br></center></td></tr>";
 	echo "<tr><td colspan=3><center><form action=manager.php?action=main method=post target=_self>";	
 	echo "<table align=center width=250 border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr align=center><td width=100>NPC¦W¦r</td>";
+	echo "<tr align=center><td width=100>NPCåå­—</td>";
 	echo "<td width=150><input type=text name='nname' value = NPC size='20' maxlength=15></td>";
-	echo "<tr align=center><td width=100>±K½X</td>";
+	echo "<tr align=center><td width=100>å¯†ç¢¼</td>";
 	echo "<td width=150><input type=text name='npassword' size='20' maxlength=15></td>";
-	echo "<tr align=center><td width=100>°_©l¼Æ¦r</td>";
+	echo "<tr align=center><td width=100>èµ·å§‹æ•¸å­—</td>";
 	echo "<td width=150><input type=text name='nstart' value = 100 size='20' maxlength=10></td>";		
-	echo "<tr align=center><td width=100>NPC¼Æ¶q</td>";
+	echo "<tr align=center><td width=100>NPCæ•¸é‡</td>";
 	echo "<td width=150><input type=text name='nq' value = 10 size='20' maxlength=3></td>";		
-	echo "<tr align=center><td width=100>µ¥¯Å</td>";	
+	echo "<tr align=center><td width=100>ç­‰ç´š</td>";	
 	echo "<td width=150><input type=text name='nlevel' value = 10 size='20' maxlength=2></td>";
-	echo "<tr align=center><td width=100>ºØ±Ú</td>";	
+	echo "<tr align=center><td width=100>ç¨®æ—</td>";	
 	echo "<td width=150><input type=text name='ntype' value = psy4 size='20' maxlength=5></td>";
-	echo "<tr align=center><td width=100>¾÷Åé</td>";
+	echo "<tr align=center><td width=100>æ©Ÿé«”</td>";
 	echo "<td width=150><input type=text name='nms' value = 101 size='20' maxlength=5></td>";
-	echo "<tr align=center><td width=100>ªZ¾¹</td>";
-	echo "<td width=150><input type=text name='nwep' value = 701 size='20' maxlength=5></td>";
+	echo "<tr align=center><td width=100>æ­¦å™¨</td>";
+	echo "<td width=150><input type=text name='nwep' value = \"10001<!>0\" size='20' maxlength=5></td>";
 	echo "<tr align=center><td width=100>atk</td>";
 	echo "<td width=150><input type=text name='natk' value = 20 size='20' maxlength=3></td>";	
 	echo "<tr align=center><td width=100>def</td>";
@@ -840,17 +821,17 @@ if ("7" == $_POST["operation"] ) {
 	echo "<td width=150><input type=text name='nen' value = 10000 size='20' maxlength=8></td>";		
 	echo "<tr align=center><td width=100>sp</td>";
 	echo "<td width=150><input type=text name='nsp' value = 50 size='20' maxlength=6></td>";		
-	echo "<tr align=center><td width=100>¿ß«×</td>";
+	echo "<tr align=center><td width=100>è²“åº¦</td>";
 	echo "<td width=150><input type=text name='nfame' value = -50 size='20' maxlength=5></td>";		
-	echo "<tr align=center><td width=100>Äa½à</td>";
+	echo "<tr align=center><td width=100>æ‡¸è³</td>";
 	echo "<td width=150><input type=text name='nbounty' value = 100000 size='20' maxlength=10></td>";	
-	echo "<tr align=center><td width=100>¦a°Ï</td>";
+	echo "<tr align=center><td width=100>åœ°å€</td>";
 	echo "<td width=150><input type=text name='narea' value = A1 size='20' maxlength=5></td>";
 	echo "<input type=hidden value='71' name=operation>";	
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
-	echo "<tr><td colspan=3><center><input type=submit value='½T©w'></center></td></tr>";
+	echo "<tr><td colspan=3><center><input type=submit value='ç¢ºå®š'></center></td></tr>";
 	echo "</form></center></td></tr>";
 }
 
@@ -875,7 +856,7 @@ if ("71" == $_POST["operation"]) {
 	$narea = $_POST["narea"];
 	
 	if (!$npassword || !$nstart || !$nq || !$nlevel || !$ntype || !$nms || !$nwep || !$natk || !$ndef || !$nref || !$ntaf || !$nhp || !$nen || !$nsp || !$nfame || !$nbounty || !$narea) {
-		echo "<tr><td colspan=3><center>¿ï¶µ¦³©Ò¿òº|<br></center></td></tr>";	
+		echo "<tr><td colspan=3><center>é¸é …æœ‰æ‰€éºæ¼<br></center></td></tr>";	
 		exit;
 	}
 	$npassword = md5($npassword);
@@ -885,81 +866,64 @@ if ("71" == $_POST["operation"]) {
 		$npcname = "$nname"."$npcnum";
 		
 		$sql = ("INSERT INTO ".$GLOBALS['DBPrefix']."phpeb_user_general_info (username, password,color,msuit,typech,growth,time1,time2,btltime,coordinates,fame) VALUES('$npcname','$npassword','#FF5050','$nms','$ntype','0','$t_now' ,'$t_now' ,'','$narea','$nfame')");
-		mysql_query($sql) or die ('<br><center>¥¼¯à§¹¦¨µù¥U (Location ID: Register01)<br>­ì¦]:' . mysql_error() . '<br>');
+		mysql_query($sql) or die ('<br><center>æœªèƒ½å®Œæˆè¨»å†Š (Location ID: Register01)<br>åŸå› :' . mysql_error() . '<br>');
 
-		$sql = ("INSERT INTO ".$GLOBALS['DBPrefix']."phpeb_user_game_info (username, gamename,attacking,defending,reacting,targeting,hpmax,enmax,spmax,level,wepa) VALUES('$npcname','$npcname','$natk','$ndef','$nref','$ntaf','$nhp','$nen','$nsp','$nlevel','$nwep')");
-		mysql_query($sql) or die ('<br><center>¥¼¯à§¹¦¨µù¥U (Location ID: Register02)<br>­ì¦]:' . mysql_error() . '<br>');
+		$sql = ("INSERT INTO ".$GLOBALS['DBPrefix']."phpeb_user_game_info (username, gamename,attacking,defending,reacting,targeting,hp,hpmax,en,enmax,sp,spmax,level,wepa) VALUES('$npcname','$npcname','$natk','$ndef','$nref','$ntaf','$nhp','$nhp','$nen','$nen','$nsp','$nsp','$nlevel','$nwep')");
+		mysql_query($sql) or die ('<br><center>æœªèƒ½å®Œæˆè¨»å†Š (Location ID: Register02)<br>åŸå› :' . mysql_error() . '<br>');
 
 		$sql = ("INSERT INTO ".$GLOBALS['DBPrefix']."phpeb_user_settings (username) VALUES('$npcname')");
-		mysql_query($sql) or die ('<br><center>¥¼¯à§¹¦¨µù¥U (Location ID: Register05)<br>­ì¦]:' . mysql_error() . '<br>');
+		mysql_query($sql) or die ('<br><center>æœªèƒ½å®Œæˆè¨»å†Š (Location ID: Register05)<br>åŸå› :' . mysql_error() . '<br>');
 
 		$sql = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_bank` (username) VALUES('$npcname')");
-		mysql_query($sql) or die ('<br><center>¥¼¯à§¹¦¨µù¥U (Location ID: Register04)<br>­ì¦]:' . mysql_error() . '<br>');
+		mysql_query($sql) or die ('<br><center>æœªèƒ½å®Œæˆè¨»å†Š (Location ID: Register04)<br>åŸå› :' . mysql_error() . '<br>');
+
+		$sql = ("INSERT INTO ".$GLOBALS['DBPrefix']."phpeb_user_log (username,log1, time1) VALUES('$npcname','æ­¡è¿ä¾†åˆ°php-ebçš„ä¸–ç•Œï¼',UNIX_TIMESTAMP())");
+		mysql_query($sql) or die ('<br><center>æœªèƒ½å®Œæˆè¨»å†Š (Location ID: Register03)<br>åŸå› :' . mysql_error() . '<br>');
 
 		$i++;
         }
-	echo "<tr><td colspan=3><center>$nq ­ÓNPC¼W¥[§¹¦¨<br></center></td></tr>";
+	echo "<tr><td colspan=3><center>$nq å€‹NPCå¢åŠ å®Œæˆ<br></center></td></tr>";
 }
 
-//ª½±µ¸ê®Æ®w¾Ş§@
-if ("8" == $_POST["operation"] ) {
-	echo "<tr><td colspan=3><center>½Ğ¿é¤JSQL»y¥y<br></center></td></tr>";	
-	echo "<tr><td colspan=3><center><form action=manager.php?action=main method=post target=_self>";
-	echo "<tr><td colspan=3><center><input type=text name='sql' size='100' maxlength=400><br></center></td></tr>";
-	echo "<input type=hidden value='81' name=operation>";	
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
-	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
-	echo "<tr><td colspan=3><center><input type=submit value='½T©w'></center></td></tr>";
-	echo "</form></center></td></tr>";
-}
-
-if ("81" == $_POST["operation"] ) {
-	$sql = $_POST["sql"];
-	mysql_query("$sql");
-	echo "<tr><td colspan=3><center>$sql<br></center></td></tr>";		
-	echo "<tr><td colspan=3><center>¤£ºŞ»y¥y¥¿½T»P§_¡A¥¦¤w¸g³Q°õ¦æ¤F<br></center></td></tr>";	
-}
-
-//¼W¥[ªZ¾¹
+//å¢åŠ æ­¦å™¨
 if ("9" == $_POST["operation"] ) {
-	echo "<tr><td colspan=3><center>ªZ¾¹ID¤£¥i­«½Æ<br></center></td></tr>";
+	echo "<tr><td colspan=3><center>æ­¦å™¨IDä¸å¯é‡è¤‡<br></center></td></tr>";
 	echo "<tr><td colspan=3><center><form action=manager.php?action=main method=post target=_self>";	
 	echo "<table align=center width=250 border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr align=center><td width=100>ªZ¾¹ID</td>";
+	echo "<tr align=center><td width=100>æ­¦å™¨ID</td>";
 	echo "<td width=150><input type=text name='owid' value = 10000 size='20' maxlength=10></td>";
-	echo "<tr align=center><td width=100>ªZ¾¹¦W</td>";
-	echo "<td width=150><input type=text name='owname' value = ·sªZ¾¹ size='20' maxlength=20></td>";
-	echo "<tr align=center><td width=100>grade</td>";
-	echo "<td width=150><input type=text name='owgrade' value = 1 size='20' maxlength=2></td>";		
-	echo "<tr align=center><td width=100>kind(BDI)</td>";
-	echo "<td width=150><input type=text name='owkind' value = I size='20' maxlength=4></td>";		
-	echo "<tr align=center><td width=100>familyid</td>";	
-	echo "<td width=150><input type=text name='owfamilyid' value = 0 size='20' maxlength=6></td>";
-	echo "<tr align=center><td width=100>nextev</td>";	
-	echo "<td width=150><input type=text name='ownextev' size='20' maxlength=6></td>";
-	echo "<tr align=center><td width=100>specev</td>";
-	echo "<td width=150><input type=text name='owspecev' size='20' maxlength=6></td>";
-	echo "<tr align=center><td width=100>§ğÀ»</td>";
+	echo "<tr align=center><td width=100>æ­¦å™¨å</td>";
+	echo "<td width=150><input type=text name='owname' value = æ–°æ­¦å™¨ size='20' maxlength=20></td>";
+	echo "<tr align=center><td width=100>è¤‡é›œæ€§</td>";
+	echo "<td width=150><input type=text name='owcomplexity' value = 1 size='20' maxlength=2></td>";		
+	echo "<tr align=center><td width=100>ç­‰ç´š</td>";
+	echo "<td width=150><input type=text name='owtier' value = I size='20' maxlength=4></td>";		
+	echo "<tr align=center><td width=100>è·é›¢</td>";	
+	echo "<td width=150><input type=text name='owrange' value = 0 size='20' maxlength=6></td>";
+	echo "<tr align=center><td width=100>å±¬æ€§</td>";	
+	echo "<td width=150><input type=text name='owattrb' size='20' maxlength=6></td>";
+	echo "<tr align=center><td width=100>å¯è³¼è²·</td>";
+	echo "<td width=150><input type=text name='owbuy' size='20' maxlength=6></td>";
+	echo "<tr align=center><td width=100>æ”»æ“Š</td>";
 	echo "<td width=150><input type=text name='owatk' value = 100 size='20' maxlength=10></td>";
-	echo "<tr align=center><td width=100>©R¤¤</td>";
+	echo "<tr align=center><td width=100>å‘½ä¸­</td>";
 	echo "<td width=150><input type=text name='owhit' value = 50 size='20' maxlength=5></td>";	
-	echo "<tr align=center><td width=100>¦^¼Æ</td>";
+	echo "<tr align=center><td width=100>å›æ•¸</td>";
 	echo "<td width=150><input type=text name='owrd' value = 10 size='20' maxlength=3></td>";		
-	echo "<tr align=center><td width=100>®ø¯ÓEN</td>";
+	echo "<tr align=center><td width=100>æ¶ˆè€—EN</td>";
 	echo "<td width=150><input type=text name='owenc' value = 50 size='20' maxlength=10></td>";	
-	echo "<tr align=center><td width=100>»ù®æ</td>";
+	echo "<tr align=center><td width=100>åƒ¹æ ¼</td>";
 	echo "<td width=150><input type=text name='owprice' value = 50000 size='20' maxlength=10></td>";		
-	echo "<tr align=center><td width=100>¬O§_¥i¸Ë³Æ</td>";
+	echo "<tr align=center><td width=100>æ˜¯å¦å¯è£å‚™</td>";
 	echo "<td width=150><input type=text name='owequip' value = 0 size='20' maxlength=3></td>";	
-	echo "<tr align=center><td width=100>¯S®Ä</td>";
+	echo "<tr align=center><td width=100>ç‰¹æ•ˆ</td>";
 	echo "<td width=150><input type=text name='owspec' size='20' maxlength=20></td>";		
 
 	echo "<input type=hidden value='91' name=operation>";	
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
-	echo "<tr><td colspan=3><center><input type=submit value='½T©w'></center></td></tr>";
+	echo "<tr><td colspan=3><center><input type=submit value='ç¢ºå®š'></center></td></tr>";
 	echo "</form></center></td></tr>";
 	wepspec();
 }
@@ -967,11 +931,11 @@ if ("9" == $_POST["operation"] ) {
 if ("91" == $_POST["operation"]) {
 	$id = $_POST["owid"];
 	$name = $_POST["owname"];
-	$grade = $_POST["owgrade"];
-	$kind = $_POST["owkind"];		
-	$familyid = $_POST["owfamilyid"];
-	$nextev = $_POST["ownextev"];	
-	$specev = $_POST["owspecev"];
+	$complexity = $_POST["owcomplexity"];
+	$tier = $_POST["owtier"];		
+	$range = $_POST["owrange"];
+	$attrb = $_POST["owattrb"];	
+	$buy = $_POST["owbuy"];
 	$atk = $_POST["owatk"];
 	$hit = $_POST["owhit"];	
 	$rd = $_POST["owrd"];		
@@ -979,43 +943,83 @@ if ("91" == $_POST["operation"]) {
 	$price = $_POST["owprice"];
 	$equip = $_POST["owequip"];
 	$spec = $_POST["owspec"];	
-	if ( !$id || !$name || !$atk || !$hit || !$rd || !$enc ) {
-		echo "<tr><td colspan=3><center>¿ï¶µ¦³©Ò¿òº|<br></center></td></tr>";	
+	if ( !$id || !$name || !$atk || !$hit || !$rd || !$enc || !$complexity || $tier || !$range || $attrb || $buy) {
+		echo "<tr><td colspan=3><center>é¸é …æœ‰æ‰€éºæ¼<br></center></td></tr>";	
 		exit;
 	}
 	if ( !$price) { $price = 0; }
 	if ( !$equip) { $equip = 0; }
-	mysql_query("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_sys_wep` (`id` ,`name` ,`grade` ,`kind` ,`familyid` ,`nextev` ,`specev` ,`atk` ,`hit` ,`rd` ,`enc` ,`price` ,`equip` ,`spec` ) VALUES ('$id', '$name', '$grade', '$kind', '$familyid', '$nextev', '$specev', '$atk', '$hit', '$rd', '$enc', '$price', '$equip', '$spec');");
-	echo "<tr><td colspan=3><center>ªZ¾¹ $name ¼W¥[§¹¦¨<br></center></td></tr>";                        
+	mysql_query("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_sys_wep` (`id` ,`name` ,`complexity` ,`tier` ,`range` ,`attrb` ,`buy` ,`atk` ,`hit` ,`rd` ,`enc` ,`price` ,`equip` ,`spec` ) VALUES ('$id', '$name', '$complexity', '$tier', '$range', '$attrb', '$buy', '$atk', '$hit', '$rd', '$enc', '$price', '$equip', '$spec');");
+	echo "<tr><td colspan=3><center>æ­¦å™¨ $name å¢åŠ å®Œæˆ<br></center></td></tr>";                        
 }
-//¼W¥[¤½¦¡
+
+//å¢åŠ é€²åŒ–
+if ("10" == $_POST["operation"] ) {
+	echo "<tr><td colspan=3><center>é€²åŒ–IDä¸å¯é‡è¤‡<br></center></td></tr>";
+	echo "<tr><td colspan=3><center><form action=manager.php?action=main method=post target=_self>";	
+	echo "<table align=center width=250 border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
+	echo "<tr align=center><td width=100>é€²åŒ–ID</td>";
+	echo "<td width=150><input type=text name='owevid' value = 100000 size='20' maxlength=10></td>";
+	echo "<tr align=center><td width=100>é€²åŒ–å‰ID</td>";
+	echo "<td width=150><input type=text name='owevfromid' value = 100000 size='20' maxlength=10></td>";
+	echo "<tr align=center><td width=100>é€²åŒ–å¾ŒID</td>";
+	echo "<td width=150><input type=text name='owevtoid' value = 100000 size='20' maxlength=10></td>";		
+	echo "<tr align=center><td width=100>æ‰€éœ€ç¶“é©—</td>";
+	echo "<td width=150><input type=text name='owevxp' value = 1000 size='20' maxlength=10></td>";		
+	echo "<tr align=center><td width=100>é€²åŒ–è²»ç”¨</td>";	
+	echo "<td width=150><input type=text name='owevcost' value = 0 size='20' maxlength=10></td>";
+
+	echo "<input type=hidden value='101' name=operation>";	
+	
+	
+	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
+	echo "<tr><td colspan=3><center><input type=submit value='ç¢ºå®š'></center></td></tr>";
+	echo "</form></center></td></tr>";
+}
+
+if ("101" == $_POST["operation"]) {
+	$evid = $_POST["owevid"];
+	$evfromid = $_POST["owevfromid"];
+	$evtoid = $_POST["owevtoid"];
+	$evxp = $_POST["owevxp"];		
+	$evcost = $_POST["owevcost"];
+	if ( !$evid || !$evfromid || !$evtoid || !$evxp) {
+		echo "<tr><td colspan=3><center>é¸é …æœ‰æ‰€éºæ¼<br></center></td></tr>";	
+		exit;
+	}
+	if ( !$evcost) { $evcost = 0; }
+	mysql_query("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_sys_wep_ev` (`ev_id` ,`from_id` ,`to_id` ,`ev_xp` ,`ev_cost`) VALUES ('$evid', '$evfromid', '$evtoid', '$evxp', '$evcost');");
+	echo "<tr><td colspan=3><center>é€²åŒ–ID $evid å¢åŠ å®Œæˆ<br></center></td></tr>";                        
+}
+
+//å¢åŠ å…¬å¼
 if ("A" == $_POST["operation"] ) {
-	echo "<tr><td colspan=3><center>¬İµÛ¿ì§a<br></center></td></tr>";
+	echo "<tr><td colspan=3><center>çœ‹è‘—è¾¦å§<br></center></td></tr>";
 	echo "<tr><td colspan=3><center><form action=manager.php?action=main method=post target=_self>";	
 	echo "<table align=center width=250 border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
 
-	$result1 = mysql_query("SELECT tact_id,wep_id,grade FROM `".$GLOBALS['DBPrefix']."phpeb_sys_tactfactory`",$db);
+	$result1 = mysql_query("SELECT tact_id,wep_id,grade FROM `".$GLOBALS['DBPrefix']."phpeb_sys_tactfactory`");
 	$num_rows = mysql_num_rows($result1);
 
-	echo "<tr align=center><td width=100>¤½¦¡ID</td>";
+	echo "<tr align=center><td width=100>å…¬å¼ID</td>";
 	echo "<td width=150>$num_rows</td>";
-	echo "<tr align=center><td width=100>ªZ¾¹ID</td>";
+	echo "<tr align=center><td width=100>æ­¦å™¨ID</td>";
 	echo "<td width=150><input type=text name='otwep' value = 101 size='20' maxlength=10></td>";
-	echo "<tr align=center><td width=100>¤½¦¡µ¥¯Å</td>";
+	echo "<tr align=center><td width=100>å…¬å¼ç­‰ç´š</td>";
 	echo "<td width=150><input type=text name='otgrade' value = 5 size='20' maxlength=2></td>";
-	echo "<tr align=center><td width=100>ªZ¾¹¤¶²Ğ</td>";
+	echo "<tr align=center><td width=100>æ­¦å™¨ä»‹ç´¹</td>";
 	echo "<td width=150><input type=text name='otintro' size='20' maxlength=200></td>";		
 	for($i = 0;$i<20;$i++){
-		echo "<tr align=center><td width=100>²Ä $i ¸¹Äl</td>";
+		echo "<tr align=center><td width=100>ç¬¬ $i è™Ÿçˆ</td>";
 		echo "<td width=150><input type=text name='ot$i' size='20' maxlength=10></td>";		
 	}
 
 	echo "<input type=hidden value='A1' name=operation>";
 	echo "<input type=hidden value='$num_rows' name=otid>";		
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\"><br>";
-	echo "<tr><td colspan=3><center><input type=submit value='½T©w'></center></td></tr>";
+	echo "<tr><td colspan=3><center><input type=submit value='ç¢ºå®š'></center></td></tr>";
 	echo "</form></center></td></tr>";
 }
 
@@ -1026,34 +1030,34 @@ if ("A1" == $_POST["operation"]) {
 	$otintro = $_POST["otintro"];
 	for($i = 0;$i<20;$i++){ $ot[$i] = $_POST["ot$i"]; }
 	if ( !$otwep || !$ot0 ) {
-		echo "<tr><td colspan=3><center>¿ï¶µ¦³©Ò¿òº|<br></center></td></tr>";	
+		echo "<tr><td colspan=3><center>é¸é …æœ‰æ‰€éºæ¼<br></center></td></tr>";	
 		exit;
 	}
 	
 	mysql_query("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_sys_tactfactory` (`tact_id` ,`wep_id` ,`grade` ,`directions` ,`m1` ,`m2` ,`m3` ,`m4` ,`m5` ,`m6` ,`m7` ,`m8` ,`m9` ,`m10` ,`m11` ,`m12` ,`m13` ,`m14` ,`m15` ,`m16` ,`m17` ,`m18` ,`m19` ,`m20` ) VALUES ('$otid', '$otwep', '$otgrade', '$otintro', '$ot0', '$ot1', '$ot2', '$ot3', '$ot4', '$ot5', '$ot6', '$ot7', '$ot8', '$ot9', '$ot10', '$ot11', '$ot12', '$ot13', '$ot14', '$ot15', '$ot16', '$ot17', '$ot18', '$ot19');");
-	echo "<tr><td colspan=3><center>ªZ¾¹ $name ¼W¥[¨ì¦X¦¨¤½¦¡<br></center></td></tr>";                        
+	echo "<tr><td colspan=3><center>æ­¦å™¨ $name å¢åŠ åˆ°åˆæˆå…¬å¼<br></center></td></tr>";                        
 }
 
 
 echo "</table>";
 
 function wepspec() {
-	echo "<tr><td colspan=3><center>ªZ¾¹¯S®Ä¤@Äıªí<br></center></td></tr>";
-$ospeclist = array("DamA","¾÷Åé·lÃa","DamB","¾Ô°«¤£¯à","MobA","¥[³t","MobB","¶W«e","MobC","°{Á×","MobD","°kÂ÷","Moba","Â²³æ±À¶i","Mobb","±j¤O±À¶i",
-"Mobc","³Ì¨Î¤Æ±À¶i","Mobd","°ª¯Å±À¶i","Mobe","·¥¯Å±À¶i","TarA","®Õ·Ç","TarB","ºË·Ç","TarC","¶°¤¤","TarD","¹w´ú","Tara","¦Û°ÊÂê©w",
-"Tarb","°ª¯Å®Õ·Ç","Tarc","µL»~®Õ·Ç","Tard","¦h­«Âê©w","Tare","§¹¬üÂê©w","DefA","Â²³æ¨¾¿m","DefB","¥¿±`¨¾¿m","DefC","±j¤Æ¨¾¿m",
-"DefD","°ª¯Å¨¾¿m","DefE","³Ì²×¨¾¿m","Defa","®æ¾×","Defb","§Ü¿Å","Defc","¤z¯A","Defd","°í¾À","Defe","ªÅ¶¡¬Û¹ï¦ì²¾","PerfDef","§¹¥ş¨¾¿m",
-"AntiDam","¦Û°Ê­×´_","DoubleExp","¸gÅçÂù­¿","DoubleMon","ª÷¿úÂù­¿","DefX","©³¤O","AtkA","¿³¾Ä","MeltA","º²¸Ñ","MeltB","º²¸Ñ",
-"Cease","¸TÀD","AntiPDef","³e¬ï","AntiMobS","ºô¸ô¤zÂZ","AntiTarS","¹p¹F¤zÂZ","MirrorDam","Ãè","NTCustom","ºëÆF±M¥Î",
-"NTRequired","»İ­nºëÆF¤O¶q","COCustom","¦å±Ú±M¥Î","PsyRequired","Å]ªk®v±M¥Î","SeedMode","SEED Mode","EXAMSystem","EXAM¨t²Î±Ò°Ê¥i¯à",
-"CostSP","®ø¯ÓSP","HPPcRecA","HP¦^´_","ENPcRecA","EN¦^´_(¤p)","ENPcRecB","EN¦^´_(¤j)","ExtHP","HPªş¥[","ExtEN","ENªş¥[",
-"FortressOnly","­n¶ë±M¥Î","RawMaterials","­ì®Æ","CannotEquip","µLªk¸Ë³Æ","DoubleStrike","¤G³sÀ»","TripleStrike","¤T³sÀ»",
-"AllWepStirke","¥ş¼uµo®g","CounterStrike","¤ÏÀ»","FirstStrike","¥ı¨î§ğÀ»");
+	echo "<tr><td colspan=3><center>æ­¦å™¨ç‰¹æ•ˆä¸€è¦½è¡¨<br></center></td></tr>";
+$ospeclist = array("DamA","æ©Ÿé«”æå£","DamB","æˆ°é¬¥ä¸èƒ½","MobA","åŠ é€Ÿ","MobB","è¶…å‰","MobC","é–ƒé¿","MobD","é€ƒé›¢","Moba","ç°¡å–®æ¨é€²","Mobb","å¼·åŠ›æ¨é€²",
+"Mobc","æœ€ä½³åŒ–æ¨é€²","Mobd","é«˜ç´šæ¨é€²","Mobe","æ¥µç´šæ¨é€²","TarA","æ ¡æº–","TarB","ç„æº–","TarC","é›†ä¸­","TarD","é æ¸¬","Tara","è‡ªå‹•é–å®š",
+"Tarb","é«˜ç´šæ ¡æº–","Tarc","ç„¡èª¤æ ¡æº–","Tard","å¤šé‡é–å®š","Tare","å®Œç¾é–å®š","DefA","ç°¡å–®é˜²ç¦¦","DefB","æ­£å¸¸é˜²ç¦¦","DefC","å¼·åŒ–é˜²ç¦¦",
+"DefD","é«˜ç´šé˜²ç¦¦","DefE","æœ€çµ‚é˜²ç¦¦","Defa","æ ¼æ“‹","Defb","æŠ—è¡¡","Defc","å¹²æ¶‰","Defd","å …å£","Defe","ç©ºé–“ç›¸å°ä½ç§»","PerfDef","å®Œå…¨é˜²ç¦¦",
+"AntiDam","è‡ªå‹•ä¿®å¾©","DoubleExp","ç¶“é©—é›™å€","DoubleMon","é‡‘éŒ¢é›™å€","DefX","åº•åŠ›","AtkA","èˆˆå¥®","MeltA","ç†”è§£","MeltB","ç†”è§£",
+"Cease","ç¦éŒ®","AntiPDef","è²«ç©¿","AntiMobS","ç¶²è·¯å¹²æ“¾","AntiTarS","é›·é”å¹²æ“¾","MirrorDam","é¡","NTCustom","ç²¾éˆå°ˆç”¨",
+"NTRequired","éœ€è¦ç²¾éˆåŠ›é‡","COCustom","è¡€æ—å°ˆç”¨","PsyRequired","é­”æ³•å¸«å°ˆç”¨","SeedMode","SEED Mode","EXAMSystem","EXAMç³»çµ±å•Ÿå‹•å¯èƒ½",
+"CostSP","æ¶ˆè€—SP","HPPcRecA","HPå›å¾©","ENPcRecA","ENå›å¾©(å°)","ENPcRecB","ENå›å¾©(å¤§)","ExtHP","HPé™„åŠ ","ExtEN","ENé™„åŠ ",
+"FortressOnly","è¦å¡å°ˆç”¨","RawMaterials","åŸæ–™","CannotEquip","ç„¡æ³•è£å‚™","DoubleStrike","äºŒé€£æ“Š","TripleStrike","ä¸‰é€£æ“Š",
+"AllWepStirke","å…¨å½ˆç™¼å°„","CounterStrike","åæ“Š","FirstStrike","å…ˆåˆ¶æ”»æ“Š");
 	echo "<table align=center width=500 border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr align=center><td width=100>¥N½X</td>";
-	echo "<td width=150>¯S®Ä</td>";
-	echo "<td width=100>¥N½X</td>";
-	echo "<td width=150>¯S®Ä</td>";
+	echo "<tr align=center><td width=100>ä»£ç¢¼</td>";
+	echo "<td width=150>ç‰¹æ•ˆ</td>";
+	echo "<td width=100>ä»£ç¢¼</td>";
+	echo "<td width=150>ç‰¹æ•ˆ</td>";
 	$i = 0;
 	while($i<=130) {
 		echo "<tr align=center><td width=100>$ospeclist[$i]</td>";

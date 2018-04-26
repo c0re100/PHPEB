@@ -1,14 +1,14 @@
 <?php
 //Battle Filter - Part 2: Display Column Headings - Default
 
-	echo "<tr align=center><td colspan=7><b>¹ï¤â¦Cªí: </b></td></tr>";
+	echo "<tr align=center><td colspan=7><b>å°æ‰‹åˆ—è¡¨: </b></td></tr>";
 	echo "<tr align=center>";
 	echo "<td width=\"20\">No.</td>";
-	echo "<td width=\"250\">¹ï¤â¦WºÙ</td>";
-	echo "<td width=\"30\">µ¥¯Å</td>";
-	echo "<td width=\"80\">Ãþ«¬</td>";
-	echo "<td width=\"200\">¾÷Åé</td>";
-	echo "<td width=\"75\">ª¬ºA</td>";
-	echo "<td width=\"30\">¾Ô°«</td>";
+	echo "<td width=\"250\">å°æ‰‹åç¨±</td>";
+	echo "<td width=\"30\">ç­‰ç´š</td>";
+	echo "<td width=\"80\">é¡žåž‹</td>";
+	echo "<td width=\"200\">æ©Ÿé«”</td>";
+	echo "<td width=\"75\">ç‹€æ…‹</td>";
+	echo "<td width=\"30\">æˆ°é¬¥</td>";
 	echo "</tr>";
 ?>

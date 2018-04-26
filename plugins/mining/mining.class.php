@@ -150,7 +150,7 @@ function makePayment($cash,$org,$tax){
 	$bills = &$this->schedule['mining_bills'];
 	
 	if($bills > $cash){
-		echo "ª÷¿ú¤£¨¬¡IµLªk¤ä¥I´Ú¶µ¡I<hr>";
+		echo "é‡‘éŒ¢ä¸è¶³ï¼ç„¡æ³•æ”¯ä»˜æ¬¾é …ï¼<hr>";
 		return;
 	}
 	
@@ -170,7 +170,7 @@ function makePayment($cash,$org,$tax){
 		$sql .= "`funds` = `funds` + ".$orgTax." ";
 		$sql .= " WHERE `id` = '".$org."' LIMIT 1;";
 		$query = mysql_query($sql);
-		echo "¤w¤ä¥I¥ş³¡´Ú¶µ, ·í¤¤ \$".number_format($orgTax)." ¤w¼·¤J²ÕÂ´¸êª÷¡C<hr>";
+		echo "å·²æ”¯ä»˜å…¨éƒ¨æ¬¾é …, ç•¶ä¸­ \$".number_format($orgTax)." å·²æ’¥å…¥çµ„ç¹”è³‡é‡‘ã€‚<hr>";
 	}
 	
 	echo "<script language='JavaScript'>parent.document.getElementById('pl_cash').innerHTML = '".number_format($cash)."';</script>";

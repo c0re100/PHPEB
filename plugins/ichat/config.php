@@ -1,10 +1,10 @@
 <?php
 
 $DBHost = 'localhost';			//資料庫設定, 必須跟 php-eb 一樣
-$DBUser = 'phpeb_official';
-$DBPass = 'ccgcky';
-$DBName = 'phpeb_test';
-$DBPrefix = 'vsqa_';
+$DBUser = 'root';
+$DBPass = 'wfc';
+$DBName = 'phpeb';
+$DBPrefix = 'v2a_';
 
 // iChat Settings
 $iChatTable = 'phpeb_ichat';	//iChat 即時聊天的 table 名稱, 安裝前可以更改

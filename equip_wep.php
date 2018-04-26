@@ -3,7 +3,7 @@
 	$AvailEvFlag = $AvailSevFlag = $CEqOpt = false;
 	$SellW_Options = '';
 	//Start Program
-	echo "¸Ë³Æ<hr>";
+	echo "è£å‚™<hr>";
 	
 	include_once('includes/sfo.class.php');
 
@@ -13,11 +13,11 @@
 		// $EvTo: Listing Array, i.e. $NextEv[$BelongsTo]
 		// $EvFrom: SFO Eq Array
 		$i = 0;
-		echo "<tr align=center><td colspan=10><b><font color='yellow'>{$EvFrom[name]} (".expToStatus($EvFrom['exp']).")</font> §ï³yªº¥i¯à©Ê: </b></td></tr>";
+		echo "<tr align=center><td colspan=10><b><font color='yellow'>{$EvFrom[name]} (".expToStatus($EvFrom['exp']).")</font> æ”¹é€ çš„å¯èƒ½æ€§: </b></td></tr>";
 		foreach($EvTo as $EvEntry){
 			$i += printEvWepInfRow($EvEntry, $slot, $EvFrom['exp'], $cash);
 		}
-		if (!$i){echo "<tr align=center><td colspan=10>¨S¦³¡C</td></tr>";}
+		if (!$i){echo "<tr align=center><td colspan=10>æ²’æœ‰ã€‚</td></tr>";}
 		return $i;
 	}
 	
@@ -32,10 +32,10 @@
 		printf("<td width=\"120\">%s</td>", ReturnSpecs($Wep['spec']));
 		echo "<td width=\"85\">".expToStatus($Wep['ev_xp'])."</td>";
 		echo "<td width=\"85\">".number_format($Wep['ev_cost'])."</td>";
-		$BtnLabel = '½T»{§ï³y';
+		$BtnLabel = 'ç¢ºèªæ”¹é€ ';
 		$DisableFlag = false;
 		if($Wep['ev_xp'] > $xp || $Wep['ev_cost'] > $cash){
-			$BtnLabel = '¥¼¥i§ï³y';
+			$BtnLabel = 'æœªå¯æ”¹é€ ';
 			$DisableFlag = true;
 		}
 		elseif(!canEquipAsWep($Wep,true) && $slot == 'wepa') $DisableFlag = true;
@@ -45,7 +45,7 @@
 		return 1;
 	}
 	
-	function printWepInfRow($Wep,$slot,$str='¸Ë³Æ¦¹ªZ¾¹',$form='equipwepform'){
+	function printWepInfRow($Wep,$slot,$str='è£å‚™æ­¤æ­¦å™¨',$form='equipwepform'){
 		echo "<tr align=center>";
 		echo "<td width=\"195\">$Wep[name]</td>";
 		echo "<td width=\"80\">". number_format($Wep[atk]) ."</td>";
@@ -75,7 +75,7 @@
 
 	// Create Objects
 	$Pl = new player_stats();
-	$Pl->SetUser($Pl_Value['USERNAME']);
+	$Pl->SetUser($_SESSION['username']);
 	$Pl->FetchPlayer(true);
 	$Pl->ProcessAllWeapon();
 
@@ -83,7 +83,7 @@
 	$EqListing = array('A' => $Pl->Eq['A']['id'], 'B' => $Pl->Eq['B']['id'], 'C' => $Pl->Eq['C']['id']);
 	$slotConv = array('A' => 'wepa', 'B' => 'wepb', 'C' => 'wepc', 'D' => 'eqwep');
 
-	//§ï³yªZ¾¹(Ev)
+	//æ”¹é€ æ­¦å™¨(Ev)
 	echo "<br><table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#FFFFFF\" width=\"665\">";
 	echo "<form action=equip.php?action=evolution method=post name=evwepform>";
 	echo "<input type=hidden value='evolution' name=actionb>";
@@ -91,24 +91,24 @@
 	echo "<input type=hidden value='validcode2' name=evfrom>";
 	echo "<input type=hidden value='validcode3' name=evto>";
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
-	echo "<tr align=center><td colspan=10><b>§ï³yªZ¾¹: </b></td></tr>";
+	
+	
+	echo "<tr align=center><td colspan=10><b>æ”¹é€ æ­¦å™¨: </b></td></tr>";
 	echo "<tr align=center>";
-	echo "<td width=\"195\">ªZ¾¹¦WºÙ</td>";
-	echo "<td width=\"80\">§ğÀ»¤O</td>";
-	echo "<td width=\"30\">©R¤¤</td>";
-	echo "<td width=\"30\">¦^¼Æ</td>";
-	echo "<td width=\"40\">EN®ø¶O</td>";
-	echo "<td width=\"80\">¶ZÂ÷/Äİ©Ê</td>";
-	echo "<td width=\"120\">¯S®í®ÄªG</td>";
-	echo "<td width=\"85\">ª¬ºA­È»İ¨D</td>";
-	echo "<td width=\"85\">§ï³y»ù®æ</td>";
-	echo "<td width=\"85\">§ï³yªZ¾¹</td>";
+	echo "<td width=\"195\">æ­¦å™¨åç¨±</td>";
+	echo "<td width=\"80\">æ”»æ“ŠåŠ›</td>";
+	echo "<td width=\"30\">å‘½ä¸­</td>";
+	echo "<td width=\"30\">å›æ•¸</td>";
+	echo "<td width=\"40\">ENæ¶ˆè²»</td>";
+	echo "<td width=\"80\">è·é›¢/å±¬æ€§</td>";
+	echo "<td width=\"120\">ç‰¹æ®Šæ•ˆæœ</td>";
+	echo "<td width=\"85\">ç‹€æ…‹å€¼éœ€æ±‚</td>";
+	echo "<td width=\"85\">æ”¹é€ åƒ¹æ ¼</td>";
+	echo "<td width=\"85\">æ”¹é€ æ­¦å™¨</td>";
 	echo "</tr>";
 	echo "<script language=\"Javascript\">";
 	echo "function cfmev(slot,aevto){";
-	echo "if (confirm('½T©w­n§ï³y¦¹ªZ¾¹¶Ü¡H') == true){evwepform.evfrom.value=slot;evwepform.evto.value=aevto;evwepform.submit();}else{return false}";
+	echo "if (confirm('ç¢ºå®šè¦æ”¹é€ æ­¤æ­¦å™¨å—ï¼Ÿ') == true){evwepform.evfrom.value=slot;evwepform.evto.value=aevto;evwepform.submit();}else{return false}";
 	echo "}";
 	echo "</script>";
 
@@ -142,25 +142,25 @@
 
 if ($Pl->Player['msuit'] != 0){
 	if (($Pl->Eq['B']['id'])||($Pl->Eq['C']['id'])||($Pl->Eq['D']['id'])){
-		//¸Ë³ÆªZ¾¹
+		//è£å‚™æ­¦å™¨
 		echo "<br><table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#FFFFFF\" width=\"580\">";
 		echo "<form action=equip.php?action=equipwep method=post name=equipwepform>";
 		echo "<input type=hidden value='equip' name=actionb>";
 		echo "<input type=hidden value='validcode' name=actionc>";
 		echo "<input type=hidden value='validcode2' name=slot_sw>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		
+		
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
-		echo "<tr align=center><td colspan=9><b>¸Ë³ÆªZ¾¹: </b></td></tr>";
+		echo "<tr align=center><td colspan=9><b>è£å‚™æ­¦å™¨: </b></td></tr>";
 		echo "<tr align=center>";
-		echo "<td width=\"195\">ªZ¾¹¦WºÙ</td>";
-		echo "<td width=\"80\">§ğÀ»¤O</td>";
-		echo "<td width=\"30\">©R¤¤</td>";
-		echo "<td width=\"30\">¦^¼Æ</td>";
-		echo "<td width=\"40\">EN®ø¶O</td>";
-		echo "<td width=\"80\">¶ZÂ÷/Äİ©Ê</td>";
-		echo "<td width=\"120\">¯S®í®ÄªG</td>";
-		echo "<td width=\"85\">¸Ë³Æ</td>";
+		echo "<td width=\"195\">æ­¦å™¨åç¨±</td>";
+		echo "<td width=\"80\">æ”»æ“ŠåŠ›</td>";
+		echo "<td width=\"30\">å‘½ä¸­</td>";
+		echo "<td width=\"30\">å›æ•¸</td>";
+		echo "<td width=\"40\">ENæ¶ˆè²»</td>";
+		echo "<td width=\"80\">è·é›¢/å±¬æ€§</td>";
+		echo "<td width=\"120\">ç‰¹æ®Šæ•ˆæœ</td>";
+		echo "<td width=\"85\">è£å‚™</td>";
 		echo "</tr>";
 	
 		$AvailEqWFlag = 0;
@@ -176,53 +176,53 @@ if ($Pl->Player['msuit'] != 0){
 		}
 		if ($Pl->Eq['D']['id']){
 			if (canEquipAsWep($Pl->Eq['D']) && $Pl->Eq['A']['equip']){
-				$AvailEqWFlag += printWepInfRow($Pl->Eq['D'],$slotConv['D'],'¦ì¸mÂà´«');
+				$AvailEqWFlag += printWepInfRow($Pl->Eq['D'],$slotConv['D'],'ä½ç½®è½‰æ›');
 			}
 		}
-		if (!$AvailEqWFlag){echo "<tr align=center><td colspan=8>¼È®É¨S¦³¥ô¦ó¥H¸Ë³ÆªºªZ¾¹¡C</td></tr>";}
+		if (!$AvailEqWFlag){echo "<tr align=center><td colspan=8>æš«æ™‚æ²’æœ‰ä»»ä½•ä»¥è£å‚™çš„æ­¦å™¨ã€‚</td></tr>";}
 		echo "</form></table>";
 		echo "<br><hr width=75%><br>";
 	}
 	
 	
-	//»²§U¸Ë³Æ
+	//è¼”åŠ©è£å‚™
 	echo "<br><table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#FFFFFF\" width=\"580\">";
 	echo "<form action=equip.php?action=equipwep method=post name=equipdefform>";
 	echo "<input type=hidden value='equipdef' name=actionb>";
 	echo "<input type=hidden value='validcode' name=actionc>";
 	echo "<input type=hidden value='validcode2' name=slot_sw>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
-	echo "<tr align=center><td colspan=9><b>»²§U¸Ë³Æ: </b></td></tr>";
+	echo "<tr align=center><td colspan=9><b>è¼”åŠ©è£å‚™: </b></td></tr>";
 	echo "<tr align=center>";
-	echo "<td width=\"195\">ªZ¾¹¦WºÙ</td>";
-	echo "<td width=\"80\">§ğÀ»¤O</td>";
-	echo "<td width=\"30\">©R¤¤</td>";
-	echo "<td width=\"30\">¦^¼Æ</td>";
-	echo "<td width=\"40\">EN®ø¶O</td>";
-	echo "<td width=\"80\">¶ZÂ÷/Äİ©Ê</td>";
-	echo "<td width=\"120\">¯S®í®ÄªG</td>";
-	echo "<td width=\"85\">¸Ë³Æ</td>";
+	echo "<td width=\"195\">æ­¦å™¨åç¨±</td>";
+	echo "<td width=\"80\">æ”»æ“ŠåŠ›</td>";
+	echo "<td width=\"30\">å‘½ä¸­</td>";
+	echo "<td width=\"30\">å›æ•¸</td>";
+	echo "<td width=\"40\">ENæ¶ˆè²»</td>";
+	echo "<td width=\"80\">è·é›¢/å±¬æ€§</td>";
+	echo "<td width=\"120\">ç‰¹æ®Šæ•ˆæœ</td>";
+	echo "<td width=\"85\">è£å‚™</td>";
 	echo "</tr>";
 
 	$AvailEqEFlag = 0;
 	if ($Pl->Eq['D']['id']){
 		if (!$Pl->Eq['B']['id'] || !$Pl->Eq['C']['id']){
-			$AvailEqEFlag += printWepInfRow($Pl->Eq['D'],$slotConv['D'],'¨ø¤U¦¹¸Ë³Æ','equipdefform');
+			$AvailEqEFlag += printWepInfRow($Pl->Eq['D'],$slotConv['D'],'å¸ä¸‹æ­¤è£å‚™','equipdefform');
 		}
 	}
 	if ($Pl->Eq['B']['id']){
 		if (canEquipAsWep($Pl->Eq['B'],true) && $Pl->Eq['B']['equip']){
-			$AvailEqEFlag += printWepInfRow($Pl->Eq['B'],$slotConv['B'],'¸Ë³Æ','equipdefform');
+			$AvailEqEFlag += printWepInfRow($Pl->Eq['B'],$slotConv['B'],'è£å‚™','equipdefform');
 		}
 	}
 	if ($Pl->Eq['C']['id']){
 		if (canEquipAsWep($Pl->Eq['C'],true) && $Pl->Eq['C']['equip']){
-			$AvailEqEFlag += printWepInfRow($Pl->Eq['C'],$slotConv['C'],'¸Ë³Æ','equipdefform');
+			$AvailEqEFlag += printWepInfRow($Pl->Eq['C'],$slotConv['C'],'è£å‚™','equipdefform');
 		}
 	}
-	if (!$AvailEqEFlag){echo "<tr align=center><td colspan=8>¼È®É¨S¦³¥ô¦ó¥H¦¨¬°»²§U¸Ë³ÆªºªZ¾¹¡C</td></tr>";}
+	if (!$AvailEqEFlag){echo "<tr align=center><td colspan=8>æš«æ™‚æ²’æœ‰ä»»ä½•ä»¥æˆç‚ºè¼”åŠ©è£å‚™çš„æ­¦å™¨ã€‚</td></tr>";}
 	echo "</form></table>";
 	echo "<br><hr width=75%><br>";
 	
@@ -230,23 +230,23 @@ if ($Pl->Player['msuit'] != 0){
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#FFFFFF\" width=\"600\">";
 	echo "<form action=equip.php?action=buywep method=post name=buywepform>";
 	echo "<input type=hidden value='process' name=actionb>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
-	echo "<tr align=center><td colspan=9><b>ªZ¾¹¦Cªí: </b></td></tr>";
+	echo "<tr align=center><td colspan=9><b>æ­¦å™¨åˆ—è¡¨: </b></td></tr>";
 	echo "<tr align=center>";
 	echo "<td width=\"20\">No.</td>";
-	echo "<td width=\"195\">ªZ¾¹¦WºÙ</td>";
-	echo "<td width=\"80\">§ğÀ»¤O</td>";
-	echo "<td width=\"30\">©R¤¤</td>";
-	echo "<td width=\"30\">¦^¼Æ</td>";
-	echo "<td width=\"40\">EN®ø¶O</td>";
-	echo "<td width=\"80\">¶ZÂ÷/Äİ©Ê</td>";
-	echo "<td width=\"120\">¯S®í®ÄªG</td>";
-	echo "<td width=\"85\">»ù¿ú</td>";
+	echo "<td width=\"195\">æ­¦å™¨åç¨±</td>";
+	echo "<td width=\"80\">æ”»æ“ŠåŠ›</td>";
+	echo "<td width=\"30\">å‘½ä¸­</td>";
+	echo "<td width=\"30\">å›æ•¸</td>";
+	echo "<td width=\"40\">ENæ¶ˆè²»</td>";
+	echo "<td width=\"80\">è·é›¢/å±¬æ€§</td>";
+	echo "<td width=\"120\">ç‰¹æ®Šæ•ˆæœ</td>";
+	echo "<td width=\"85\">åƒ¹éŒ¢</td>";
 	echo "</tr>";
 	if (!$Pl->Player['wepa']) $CEqOpt = "AND `equip` != '2'";
-	$wepsqlsel = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_sys_wep` WHERE `buy` = '1' AND `price` <= '{$Pl->Player[cash]}' $CEqOpt ORDER BY price, id");
+	$wepsqlsel = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_sys_wep` WHERE `buy` = '1' AND `price` <= '{$Pl->Player[cash]}' AND `noshow` = '0' $CEqOpt ORDER BY price, id");
 	$reswep = mysql_query($wepsqlsel);
 	$syswepbuyinfo = mysql_fetch_array($reswep);
 	$syswepbuynumsrows = mysql_num_rows($reswep);
@@ -272,72 +272,90 @@ if ($Pl->Player['msuit'] != 0){
 		}
 		while ( $syswepbuyinfo = mysql_fetch_array($reswep) );
 
-		echo "<tr align=center><td colspan=8><b>¿ïÁÊ·sªZ¾¹: </b>";
+		echo "<tr align=center><td colspan=8><b>é¸è³¼æ–°æ­¦å™¨: </b>";
 		if ($Pl->Eq['A']['id'] && $Pl->Eq['B']['id'] && $Pl->Eq['C']['id']){
 			$disBW = 'disabled';
-			$disBW_mes = '<br>§A¨S¦³¦h¥X¨ÓªºªÅ¶¡¥i¥H©ñ¸m·sªZ¾¹¡C';
+			$disBW_mes = '<br>ä½ æ²’æœ‰å¤šå‡ºä¾†çš„ç©ºé–“å¯ä»¥æ”¾ç½®æ–°æ­¦å™¨ã€‚';
 		}
 		else {$disBW = 'enabled';$disBW_mes = '';}
 
 		echo "<script language=\"Javascript\">";
 		echo "function cfmbuy(){";
-		echo "if (confirm('½T©w­nÁÊ¶R¶Ü¡H') == true){buywepform.BuyWepDesired.disabled=false;buywepform.submit()}else{buywepform.BuyWepDesired.disabled=false;buywepform.cfmbuybutton.disabled=false;return false}";
+		echo "if (confirm('ç¢ºå®šè¦è³¼è²·å—ï¼Ÿ') == true){buywepform.BuyWepDesired.disabled=false;buywepform.submit()}else{buywepform.BuyWepDesired.disabled=false;buywepform.cfmbuybutton.disabled=false;return false}";
 		echo "}";
 		echo "</script>";
 		echo "<select name=BuyWepDesired $disBW>";
 		echo $wepbuyoptions ;
 		echo "</select>";
-		echo "<input type=button value='ÁÊ¶R' name=cfmbuybutton OnClick=\"buywepform.BuyWepDesired.disabled=true;this.disabled=true;cfmbuy()\" $disBW>$disBW_mes";
+		echo "<input type=button value='è³¼è²·' name=cfmbuybutton OnClick=\"buywepform.BuyWepDesired.disabled=true;this.disabled=true;cfmbuy()\" $disBW>$disBW_mes";
 		echo "</td></tr>";
 		echo "</form></table>";
 	}
-}else echo "¨S¦³¾÷Åé¡A¤£¯àÁÊ¤J·sªZ¾¹¡I";
+}else echo "æ²’æœ‰æ©Ÿé«”ï¼Œä¸èƒ½è³¼å…¥æ–°æ­¦å™¨ï¼";
 
 if (($Pl->Eq['A']['id'])||($Pl->Eq['B']['id'])||($Pl->Eq['C']['id'])){
 	echo "<br><hr width=75%><br>";
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#FFFFFF\" width=\"580\">";
 
-	echo "<tr align=center><td colspan=8><b>§A¥i¥X°âªºªZ¾¹¦Cªí: </b></td></tr>";
+	echo "<tr align=center><td colspan=8><b>ä½ å¯å‡ºå”®çš„æ­¦å™¨åˆ—è¡¨: </b></td></tr>";
 	echo "<tr align=center>";
-	echo "<td width=\"195\">ªZ¾¹¦WºÙ</td>";
-	echo "<td width=\"80\">§ğÀ»¤O</td>";
-	echo "<td width=\"30\">©R¤¤</td>";
-	echo "<td width=\"30\">¦^¼Æ</td>";
-	echo "<td width=\"40\">EN®ø¶O</td>";
-	echo "<td width=\"80\">¶ZÂ÷/Äİ©Ê</td>";
-	echo "<td width=\"120\">¯S®í®ÄªG</td>";
-	echo "<td width=\"85\">¦^¦¬»ù¿ú</td>";
+	echo "<td width=\"195\">æ­¦å™¨åç¨±</td>";
+	echo "<td width=\"80\">æ”»æ“ŠåŠ›</td>";
+	echo "<td width=\"30\">å‘½ä¸­</td>";
+	echo "<td width=\"30\">å›æ•¸</td>";
+	echo "<td width=\"40\">ENæ¶ˆè²»</td>";
+	echo "<td width=\"80\">è·é›¢/å±¬æ€§</td>";
+	echo "<td width=\"120\">ç‰¹æ®Šæ•ˆæœ</td>";
+	echo "<td width=\"85\">å›æ”¶åƒ¹éŒ¢</td>";
 	echo "</tr>";
 
 	$SellW_Options ='';
 	if ($Pl->Eq['A']['id']){
-		$SellW_Options .= printSellInfRow($Pl->Eq['A'],'WepA','¨Ï¥Î¤¤ªZ¾¹');
+		$SellW_Options .= printSellInfRow($Pl->Eq['A'],'WepA','ä½¿ç”¨ä¸­æ­¦å™¨');
 	}
 	if ($Pl->Eq['B']['id']){
-		$SellW_Options .= printSellInfRow($Pl->Eq['B'],'WepB','³Æ¥ÎªZ¾¹¤@');
+		$SellW_Options .= printSellInfRow($Pl->Eq['B'],'WepB','å‚™ç”¨æ­¦å™¨ä¸€');
 	}
 	if ($Pl->Eq['C']['id']){	
-		$SellW_Options .= printSellInfRow($Pl->Eq['C'],'WepC','³Æ¥ÎªZ¾¹¤G');
+		$SellW_Options .= printSellInfRow($Pl->Eq['C'],'WepC','å‚™ç”¨æ­¦å™¨äºŒ');
 	}
 
 	echo "<form action=equip.php?action=sellwep method=post name=sellwepform>";
 	echo "<input type=hidden value='process' name=actionb>";
 	echo "<input type=hidden value='validcode' name=actionc>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
-	echo "<tr align=center><td colspan=7><b>°â¥XªZ¾¹: </b>";
+	echo "<tr align=center><td colspan=7><b>å”®å‡ºæ­¦å™¨: </b>";
 	if ($SellW_Options){
 		echo "<select name=SellWepDesired>";
 		echo $SellW_Options;
 		echo "</select>";
 		echo "<script language=\"Javascript\">";
 		echo "function cfmsell(){";
-		echo "if (confirm('½T©w­n°â¥X¶Ü¡H') == true){sellwepform.SellWepDesired.disabled=false;sellwepform.submit()}else{sellwepform.SellWepDesired.disabled=false;sellwepform.cfmsellbutton.disabled=false;return false}";
+		echo "if (confirm('ç¢ºå®šè¦å”®å‡ºå—ï¼Ÿ') == true){sellwepform.SellWepDesired.disabled=false;sellwepform.submit()}else{sellwepform.SellWepDesired.disabled=false;sellwepform.cfmsellbutton.disabled=false;return false}";
 		echo "}";
 		echo "</script>";
-		echo "<input type=button value='½T©w' OnClick=\"sellwepform.SellWepDesired.disabled=true;this.disabled=true;cfmsell()\" name=cfmsellbutton>";
-	}else echo "¨S¦³¥i¥H°â¥XªºªZ¾¹¡C";
+		echo "<input type=button value='ç¢ºå®š' OnClick=\"sellwepform.SellWepDesired.disabled=true;this.disabled=true;cfmsell()\" name=cfmsellbutton>";
+	}else echo "æ²’æœ‰å¯ä»¥å”®å‡ºçš„æ­¦å™¨ã€‚";
+	echo "</form><form action=equip.php?action=sellwep2 method=post name=sellwepform2>";
+        echo "<input type=hidden value='process' name=actionb>";
+        echo "<input type=hidden value='validcode' name=actionc>";
+        echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";    
+        echo "<b>æ”¾åˆ°äºŒæ‰‹å¸‚å ´: </b>";
+        if ($SellW_Options){
+        echo "<select name=SellWepDesired2>";
+        echo $SellW_Options;
+        echo "</select>";
+        echo "åƒ¹æ ¼ï¼š<input type=text name='price' size=10 >";
+        echo "<script language=\"Javascript\">";
+        echo "function cfmsell2(){";
+        echo "if (confirm('ç¢ºå®šè¦ä»¥é€™å€‹åƒ¹æ ¼æ”¾åˆ°äºŒæ‰‹å¸‚å ´å—ï¼Ÿ') == true){sellwepform2.SellWepDesired2.disabled=false;sellwepform2.submit()}else{sellwepform2.SellWepDesired2.disabled=false;sellwepform2.cfmsellbutton2.disabled=false;return false}";
+        echo "}";
+        echo "</script>";
+        echo "<input type=button value='ç¢ºå®š' OnClick=\"sellwepform2.SellWepDesired2.disabled=true;this.disabled=true;cfmsell2()\" name=cfmsellbutton2>";
+        }else echo "æ²’æœ‰å¯ä»¥æ”¾åˆ°äºŒæ‰‹å¸‚å ´çš„æ­¦å™¨ã€‚";
+		
 	echo "</td></tr></form></table><br>";
 }
 postFooter();

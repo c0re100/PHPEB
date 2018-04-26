@@ -4,25 +4,25 @@ include('cfu.php');
 if (empty($PriTarget)) $PriTarget = 'Alpha';
 if (empty($SecTarget)) $SecTarget = 'Beta';
 postHead('');
-AuthUser("$Pl_Value[USERNAME]","$Pl_Value[PASSWORD]");
-if ($CFU_Time >= $TIMEAUTH+$TIME_OUT_TIME || $TIMEAUTH <= $CFU_Time-$TIME_OUT_TIME){echo "³s½u¹O®É¡I<br>½Ğ­«·sµn¤J¡I";exit;}
-GetUsrDetails("$Pl_Value[USERNAME]",'Gen','Game');
+AuthUser();
+if ($CFU_Time >= $_SESSION['timeauth']+$TIME_OUT_TIME || $_SESSION['timeauth'] <= $CFU_Time-$TIME_OUT_TIME){echo "é€£ç·šé€¾æ™‚ï¼<br>è«‹é‡æ–°ç™»å…¥ï¼";exit;}
+GetUsrDetails("$_SESSION[username]",'Gen','Game');
 $t_now = time();
-if ($Gen['btltime'] == $t_now){echo "°Ê§@¹L§Ö¡C";postFooter();mysql_query("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `btltime` = ".intval($t_now+10)." WHERE `username` = '$Gen[username]' LIMIT 1;");exit;}
+if ($Gen['btltime'] == $t_now){echo "å‹•ä½œéå¿«ã€‚";postFooter();mysql_query("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `btltime` = ".intval($t_now+10)." WHERE `username` = '$Gen[username]' LIMIT 1;");exit;}
 if ($Game['organization'])
 $Pl_Org = ReturnOrg("$Game[organization]");
 
 //Set DataTable
-$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_bank` WHERE username='". $Pl_Value['USERNAME'] ."'");
+$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_bank` WHERE username='". $_SESSION['username'] ."'");
 $query_bnk = mysql_query($sql);
 $defineuserc = 0;
 $defineuserc = mysql_num_rows($query_bnk);
 
 if ($defineuserc == 0){
-	$sqldfbk = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_bank` (username) VALUES('$Pl_Value[USERNAME]')");
-	mysql_query($sqldfbk) or die ('<br><center>¥¼¯à«Ø¥ß»È¦æ¸ê®Æ<br>­ì¦]:' . mysql_error() . '<br>');
-	$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_bank` WHERE username='". $Pl_Value['USERNAME'] ."'");
-	$query_bnk = mysql_query($sql) or die ('<br><center>¥¼¯à«Ø¥ß»È¦æ¸ê®Æ<br>­ì¦]:' . mysql_error() . '<br>');
+	$sqldfbk = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_bank` (username) VALUES('$_SESSION[username]')");
+	mysql_query($sqldfbk) or die ('<br><center>æœªèƒ½å»ºç«‹éŠ€è¡Œè³‡æ–™<br>åŸå› :' . mysql_error() . '<br>');
+	$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_bank` WHERE username='". $_SESSION['username'] ."'");
+	$query_bnk = mysql_query($sql) or die ('<br><center>æœªèƒ½å»ºç«‹éŠ€è¡Œè³‡æ–™<br>åŸå› :' . mysql_error() . '<br>');
 }
 $Bank = mysql_fetch_array($query_bnk);
 
@@ -30,12 +30,12 @@ include('includes/bank.inc.php');
 
 //Bank GUI
 if ($mode=='main' && $actionb=='none'){
-	echo "»È¦æ<hr>";
+	echo "éŠ€è¡Œ<hr>";
 	echo "<br>";
 	echo "<form action=bank.php?action=main method=post name=bkmainform>";
 	echo "<input type=hidden value='none' name=actionb>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "<script language=\"Javascript\">";
 	echo "function numberFormat(num){";
@@ -55,52 +55,52 @@ if ($mode=='main' && $actionb=='none'){
 	echo "	return numF;";
 	echo "}function ConfirmBanking(){";
 	echo "if (bkmainform.actionb.value == 'deposit'){";
-	echo "if (bkmainform.d_amount.value > $Gen[cash]){alert('§A¨S¦³¨º¦h¿ú©O...'+numberFormat(bkmainform.d_amount.value)+'¤¸...');bkmainform.banking.style.visibility='visible';return false;}";
-	echo "else {if (confirm('½T©w­n§â '+numberFormat(bkmainform.d_amount.value)+'¤¸ ¦s¤J»È¦æ¶Ü¡H') == true)";
+	echo "if (bkmainform.d_amount.value > $Gen[cash]){alert('ä½ æ²’æœ‰é‚£å¤šéŒ¢å‘¢...'+numberFormat(bkmainform.d_amount.value)+'å…ƒ...');bkmainform.banking.style.visibility='visible';return false;}";
+	echo "else {if (confirm('ç¢ºå®šè¦æŠŠ '+numberFormat(bkmainform.d_amount.value)+'å…ƒ å­˜å…¥éŠ€è¡Œå—ï¼Ÿ') == true)";
 	echo "{bkmainform.submit();return true}";
 	echo "else {bkmainform.banking.style.visibility='visible';}}}";
 	echo "else if(bkmainform.actionb.value == 'withdrawl'){";
-	echo "if (bkmainform.w_amount.value > $Bank[savings]){alert('§A¤á¤f¸Ì¨S¦³¨º¦h¿ú©O...');bkmainform.banking.style.visibility='visible';return false;}";
-	echo "else {if(confirm('½T©w­n§â '+numberFormat(bkmainform.w_amount.value)+'¤¸ ¨ú¥X¨Ó¶Ü¡H') == true){bkmainform.submit();return true}";
+	echo "if (bkmainform.w_amount.value > $Bank[savings]){alert('ä½ æˆ¶å£è£¡æ²’æœ‰é‚£å¤šéŒ¢å‘¢...');bkmainform.banking.style.visibility='visible';return false;}";
+	echo "else {if(confirm('ç¢ºå®šè¦æŠŠ '+numberFormat(bkmainform.w_amount.value)+'å…ƒ å–å‡ºä¾†å—ï¼Ÿ') == true){bkmainform.submit();return true}";
 	echo "else {bkmainform.banking.style.visibility='visible';}}}";
-	echo "else if(!bkmainform.actionb.value){alert('§A¤£¬O·Q¥´§T»È¦æ§a?');return false;}";
+	echo "else if(!bkmainform.actionb.value){alert('ä½ ä¸æ˜¯æƒ³æ‰“åŠ«éŠ€è¡Œå§?');return false;}";
 	echo "}function ConfirmAccValid(){";
-	echo "if ($Gen[cash] < 1500000){alert('±zªº©Ò«ùª÷¤£¨¬©O¡I½Ğ¥[ªo§a¡I');bkmainform.AccountValiding.style.visibility='visible';return false;}";
-	echo "else if ($Game[level] < 30){alert('±zªºµ¥¤£¨¬©O¡I½Ğ¥[ªo§a¡I');bkmainform.AccountValiding.style.visibility='visible';return false;}";
-	echo "else {if (confirm('½T©w­n¥Î10¸U¶}¤á¶Ü¡H') == true){bkmainform.submit();return true}";
+	echo "if ($Gen[cash] < 150000){alert('æ‚¨çš„æ‰€æŒé‡‘ä¸è¶³å‘¢ï¼è«‹åŠ æ²¹å§ï¼');bkmainform.AccountValiding.style.visibility='visible';return false;}";
+	echo "else if ($Game[level] < 30){alert('æ‚¨çš„ç­‰ä¸è¶³å‘¢ï¼è«‹åŠ æ²¹å§ï¼');bkmainform.AccountValiding.style.visibility='visible';return false;}";
+	echo "else {if (confirm('ç¢ºå®šè¦ç”¨10è¬é–‹æˆ¶å—ï¼Ÿ') == true){bkmainform.submit();return true}";
 	echo "else {bkmainform.AccountValiding.style.visibility='visible';return false;}}";
 	echo "}function ConfirmRemit(){";
-	echo "if ($Bank[savings] < bkmainform.c_amount.value){alert('±zªº¦s´Ú¤£¨¬©O¡I');bkmainform.remit.style.visibility='visible';return false;}";
-	echo "else if (bkmainform.c_amount.value <= 0){alert('½Ğ­«·s¿é¤Jª÷ÃB¡C');bkmainform.remit.style.visibility='visible';return false;}";
-	echo "else if (bkmainform.c_target.value == '0'){alert('½Ğ¥ı«ü©w±z­n¶×µ¹½Ö¡C');bkmainform.remit.style.visibility='visible';return false;}";
-	echo "else {if (confirm('½T©w­n¶× '+numberFormat(bkmainform.c_amount.value)+'¤¸¶Ü¡H') == true){bkmainform.submit();return true}";
+	echo "if ($Bank[savings] < bkmainform.c_amount.value){alert('æ‚¨çš„å­˜æ¬¾ä¸è¶³å‘¢ï¼');bkmainform.remit.style.visibility='visible';return false;}";
+	echo "else if (bkmainform.c_amount.value <= 0){alert('è«‹é‡æ–°è¼¸å…¥é‡‘é¡ã€‚');bkmainform.remit.style.visibility='visible';return false;}";
+	echo "else if (bkmainform.c_target.value == '0'){alert('è«‹å…ˆæŒ‡å®šæ‚¨è¦åŒ¯çµ¦èª°ã€‚');bkmainform.remit.style.visibility='visible';return false;}";
+	echo "else {if (confirm('ç¢ºå®šè¦åŒ¯ '+numberFormat(bkmainform.c_amount.value)+'å…ƒå—ï¼Ÿ') == true){bkmainform.submit();return true}";
 	echo "else {bkmainform.remit.style.visibility='visible';return false;}}";
 	echo "}function ConfirmBounty(){";
-	echo "if ($Bank[savings] < bkmainform.t_amount.value){alert('±zªº¦s´Ú¤£¨¬©O¡I');bkmainform.bounty.style.visibility='visible';return false;}";
-	echo "else if (bkmainform.t_amount.value <= 0){alert('½Ğ­«·s¿é¤Jª÷ÃB¡C');bkmainform.bounty.style.visibility='visible';return false;}";
-	echo "else if (bkmainform.t_target.value == '0'){alert('½Ğ¥ı«ü©w±z­n³q½rµ¹½Ö¡C');bkmainform.bounty.style.visibility='visible';return false;}";
-	echo "else {if (confirm('½T©w­n¥H '+numberFormat(bkmainform.t_amount.value)+'¤¸ ³q½r¶Ü¡H') == true){bkmainform.submit();return true}";
+	echo "if ($Bank[savings] < bkmainform.t_amount.value){alert('æ‚¨çš„å­˜æ¬¾ä¸è¶³å‘¢ï¼');bkmainform.bounty.style.visibility='visible';return false;}";
+	echo "else if (bkmainform.t_amount.value <= 0){alert('è«‹é‡æ–°è¼¸å…¥é‡‘é¡ã€‚');bkmainform.bounty.style.visibility='visible';return false;}";
+	echo "else if (bkmainform.t_target.value == '0'){alert('è«‹å…ˆæŒ‡å®šæ‚¨è¦é€šç·çµ¦èª°ã€‚');bkmainform.bounty.style.visibility='visible';return false;}";
+	echo "else {if (confirm('ç¢ºå®šè¦ä»¥ '+numberFormat(bkmainform.t_amount.value)+'å…ƒ é€šç·å—ï¼Ÿ') == true){bkmainform.submit();return true}";
 	echo "else {bkmainform.bounty.style.visibility='visible';return false;}}";
 	echo "}</script>";
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr align=center><td colspan=9><b style=\"font-size: 12	pt;\">»È¦æªA°È¦Cªí: </b></td></tr>";
+	echo "<tr align=center><td colspan=9><b style=\"font-size: 12	pt;\">éŠ€è¡Œæœå‹™åˆ—è¡¨: </b></td></tr>";
 	if($Bank['status']){
 	echo "<tr align=center>";
-	echo "<td width=\"100\"><b style=\"font-size: 12pt;\">ª÷¿ÄªA°È</b></td>";
-	echo "<td width=\"300\" align=left>±zªº²{ª÷: ".number_format($Gen['cash']);
-	echo "<br>±zªº¦s´Ú: ".number_format($Bank['savings'])."<hr align=center width=80%>";
-	echo "¦s´Ú <input type=radio name=actionc value=deposit onClick=\"bkmainform.actionb.value='deposit';banking.disabled=false;c_amount.disabled=true;remit.disabled=true;depamt.disabled=false;whdlamt.disabled=true;t_amount.disabled=true;bounty.disabled=true;\"> : <input id=depamt disabled type=text maxlength=10 name=d_amount value=0>";
-	echo "<br>´£´Ú <input type=radio name=actionc value=withdrawl onClick=\"bkmainform.actionb.value='withdrawl';banking.disabled=false;c_amount.disabled=true;remit.disabled=true;whdlamt.disabled=false;depamt.disabled=true;t_amount.disabled=true;bounty.disabled=true;\"> : <input id=whdlamt disabled type=text maxlength=10 name=w_amount value=0>";
-	echo "<br><input type=button disabled name=banking value=½T©w¦s¨ú onClick=\"banking.style.visibility='hidden';ConfirmBanking()\">";
+	echo "<td width=\"100\"><b style=\"font-size: 12pt;\">é‡‘èæœå‹™</b></td>";
+	echo "<td width=\"300\" align=left>æ‚¨çš„ç¾é‡‘: ".number_format($Gen['cash']);
+	echo "<br>æ‚¨çš„å­˜æ¬¾: ".number_format($Bank['savings'])."<hr align=center width=80%>";
+	echo "å­˜æ¬¾ <input type=radio name=actionc value=deposit onClick=\"bkmainform.actionb.value='deposit';banking.disabled=false;c_amount.disabled=true;remit.disabled=true;depamt.disabled=false;whdlamt.disabled=true;t_amount.disabled=true;bounty.disabled=true;\"> : <input id=depamt disabled type=text maxlength=10 name=d_amount value=0>";
+	echo "<br>ææ¬¾ <input type=radio name=actionc value=withdrawl onClick=\"bkmainform.actionb.value='withdrawl';banking.disabled=false;c_amount.disabled=true;remit.disabled=true;whdlamt.disabled=false;depamt.disabled=true;t_amount.disabled=true;bounty.disabled=true;\"> : <input id=whdlamt disabled type=text maxlength=10 name=w_amount value=0>";
+	echo "<br><input type=button disabled name=banking value=ç¢ºå®šå­˜å– onClick=\"banking.style.visibility='hidden';ConfirmBanking()\">";
 	echo "</td>";
 	echo "</tr>";
 	echo "<tr align=center>";
-	echo "<td width=\"100\"><b style=\"font-size: 12pt;\">¶×´ÚªA°È</b></td>";
-	echo "<td width=\"300\" align=left>±zªº¦s´Ú: ".number_format($Bank['savings'])."<br>";
-	echo "§â<input type=text disabled name=c_amount value=0 maxlength=10 size=10>¤¸¶×µ¹:<br><select name=c_target>";
-	echo "<option value='0'>¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡e½Ğ¿ï¾Ü¡f¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ";
+	echo "<td width=\"100\"><b style=\"font-size: 12pt;\">åŒ¯æ¬¾æœå‹™</b></td>";
+	echo "<td width=\"300\" align=left>æ‚¨çš„å­˜æ¬¾: ".number_format($Bank['savings'])."<br>";
+	echo "æŠŠ<input type=text disabled name=c_amount value=0 maxlength=10 size=10>å…ƒåŒ¯çµ¦:<br><select name=c_target>";
+	echo "<option value='0'>ï¼ï¼ï¼ï¼ï¼ã€”è«‹é¸æ“‡ã€•ï¼ï¼ï¼ï¼ï¼";
 	if ($Game['organization'])
-	echo "<option value='<±z©ÒÄİªº²ÕÂ´>' style=\"background: $Pl_Org[color]\">$Pl_Org[name] (²ÕÂ´¸êª÷)";
+	echo "<option value='<æ‚¨æ‰€å±¬çš„çµ„ç¹”>' style=\"background: $Pl_Org[color]\">$Pl_Org[name] (çµ„ç¹”è³‡é‡‘)";
 	unset($sql,$query,$BankUsers,$c_rcb);
 	$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_bank` WHERE `status` = '1' AND `username` != '$Bank[username]'");
 	$query = mysql_query($sql);
@@ -113,15 +113,15 @@ if ($mode=='main' && $actionb=='none'){
 	unset($sql,$query);
 	echo "</select>";
 	$remit_disabledtrue = (!$c_rcb) ? 'disabled' : '';
-	echo "<br>¨Ï¥Î¶×´ÚªA°È<input type=radio $remit_disabledtrue name=actionc value=remit onClick=\"bkmainform.actionb.value='remit';c_amount.disabled=false;remit.disabled=false;t_amount.disabled=true;bounty.disabled=true;banking.disabled=true;depamt.disabled=true;whdlamt.disabled=true;\">";
-	echo "<br><input type=button name=remit disabled value=½T©w¶×´Ú onClick=\"remit.style.visibility='hidden';ConfirmRemit()\">";
+	echo "<br>ä½¿ç”¨åŒ¯æ¬¾æœå‹™<input type=radio $remit_disabledtrue name=actionc value=remit onClick=\"bkmainform.actionb.value='remit';c_amount.disabled=false;remit.disabled=false;t_amount.disabled=true;bounty.disabled=true;banking.disabled=true;depamt.disabled=true;whdlamt.disabled=true;\">";
+	echo "<br><input type=button name=remit disabled value=ç¢ºå®šåŒ¯æ¬¾ onClick=\"remit.style.visibility='hidden';ConfirmRemit()\">";
 	echo "</td>";
 	echo "</tr>";
 	echo "<tr align=center>";
-	echo "<td width=\"100\"><b style=\"font-size: 12pt;\">³q½rªA°È</b></td>";
-	echo "<td width=\"300\" align=left>±zªº¦s´Ú: ".number_format($Bank['savings'])."<br>";
-	echo "¥H<input type=text disabled name=t_amount value=0 maxlength=10 size=10>¤¸³q½r:<br><select name=t_target>";
-	echo "<option value='0'>¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡e½Ğ¿ï¾Ü¡f¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ";
+	echo "<td width=\"100\"><b style=\"font-size: 12pt;\">é€šç·æœå‹™</b></td>";
+	echo "<td width=\"300\" align=left>æ‚¨çš„å­˜æ¬¾: ".number_format($Bank['savings'])."<br>";
+	echo "ä»¥<input type=text disabled name=t_amount value=0 maxlength=10 size=10>å…ƒé€šç·:<br><select name=t_target>";
+	echo "<option value='0'>ï¼ï¼ï¼ï¼ï¼ã€”è«‹é¸æ“‡ã€•ï¼ï¼ï¼ï¼ï¼";
 	unset($sql,$query,$BankUsers,$c_rcb);
 	$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` WHERE `username` != '$Bank[username]'");
 	$query = mysql_query($sql);
@@ -134,31 +134,31 @@ if ($mode=='main' && $actionb=='none'){
 	unset($sql,$query);
 	echo "</select>";
 	$bounty_disabledtrue = (!$c_rcb) ? 'disabled' : '';
-	echo "<br>¨Ï¥Î³q½rªA°È<input type=radio $bounty_disabledtrue name=actionc value=bounty onClick=\"bkmainform.actionb.value='bounty';t_amount.disabled=false;bounty.disabled=false;c_amount.disabled=true;remit.disabled=true;banking.disabled=true;depamt.disabled=true;whdlamt.disabled=true;\">";
-	echo "<br><input type=button name=bounty disabled value=½T©w³q½r onClick=\"bounty.style.visibility='hidden';ConfirmBounty()\">";
+	echo "<br>ä½¿ç”¨é€šç·æœå‹™<input type=radio $bounty_disabledtrue name=actionc value=bounty onClick=\"bkmainform.actionb.value='bounty';t_amount.disabled=false;bounty.disabled=false;c_amount.disabled=true;remit.disabled=true;banking.disabled=true;depamt.disabled=true;whdlamt.disabled=true;\">";
+	echo "<br><input type=button name=bounty disabled value=ç¢ºå®šé€šç· onClick=\"bounty.style.visibility='hidden';ConfirmBounty()\">";
 	echo "</td>";
 	echo "</tr>";
 	echo "<tr align=center>";
-	echo "<td width=\"100\"><b style=\"font-size: 12pt;\">¬ö¿ıªA°È</b></td>";
+	echo "<td width=\"100\"><b style=\"font-size: 12pt;\">ç´€éŒ„æœå‹™</b></td>";
 	echo "<td width=\"300\" align=left>";
-	echo "ÀË¬d»È¦æ¬ö¿ı: ";
-	echo "<br><input type=submit value=¬ö¿ıªA°È onClick=\"document.bkmainform.action='bank.php?action=CheckLog&actionb=0';bkmainform.actionb.value='GUI'\">";
+	echo "æª¢æŸ¥éŠ€è¡Œç´€éŒ„: ";
+	echo "<br><input type=submit value=ç´€éŒ„æœå‹™ onClick=\"document.bkmainform.action='bank.php?action=CheckLog&actionb=0';bkmainform.actionb.value='GUI'\">";
 	echo "</td>";
 	echo "</tr>";
 	echo "<tr align=center>";
-	echo "<td width=\"100\"><b style=\"font-size: 12pt;\">¥æ©öªA°È</b></td>";
+	echo "<td width=\"100\"><b style=\"font-size: 12pt;\">äº¤æ˜“æœå‹™</b></td>";
 	echo "<td width=\"300\" align=left>";
-	echo "³Â·Ğ»Õ¤U½Ğ¨ì«OÀI®w³¡ªù: ";
-	echo "<br><input type=submit value=«OÀI®w³¡ªù onClick=\"document.bkmainform.action='bank.php?action=SafeHouse';bkmainform.actionb.value='GUI'\">";
+	echo "éº»ç…©é–£ä¸‹è«‹åˆ°ä¿éšªåº«éƒ¨é–€: ";
+	echo "<br><input type=submit value=ä¿éšªåº«éƒ¨é–€ onClick=\"document.bkmainform.action='bank.php?action=SafeHouse';bkmainform.actionb.value='GUI'\">";
 	echo "</td>";
 	echo "</tr>";
 	}else {
 	echo "<input type=hidden value='AccValidation' name=actionc>";
 	echo "<tr align=center>";
-	echo "<td width=\"100\"><b style=\"font-size: 12pt;\">¶}¤áªA°È</b></td>";
-	echo "<td width=\"300\" align=left>¥ô¦óµ¥¯Å¹F¨ì".$BankRqLv."¯Å¡B²{ª÷¦³".ceil($BankRqMoney/10000)."¸U (".number_format($BankRqMoney).") ªº¤H¤]¥i¥H¶}»È¦æ¤á¤fªº¡C<br>¶}¤á·|¦¬¨ú±z¤@¦¸©Êªº¤âÄò¶O".ceil($BankFee/10000)."¸U (".number_format($BankFee).") ¡A¤§«á±z«K¥i¥H¨É¨ü¥»»È¦æªºªA°È¡I";
-	echo "<br>±zªº²{ª÷: ".number_format($Gen['cash'])."<hr align=center width=80%>";
-	echo "<center><input type=submit name=AccountValiding value=½T©w¶}¤á onClick=\"AccountValiding.style.visibility='hidden';bkmainform.actionb.value='AccValidation';return ConfirmAccValid();\">";
+	echo "<td width=\"100\"><b style=\"font-size: 12pt;\">é–‹æˆ¶æœå‹™</b></td>";
+	echo "<td width=\"300\" align=left>ä»»ä½•ç­‰ç´šé”åˆ°".$BankRqLv."ç´šã€ç¾é‡‘æœ‰".ceil($BankRqMoney/10000)."è¬ (".number_format($BankRqMoney).") çš„äººä¹Ÿå¯ä»¥é–‹éŠ€è¡Œæˆ¶å£çš„ã€‚<br>é–‹æˆ¶æœƒæ”¶å–æ‚¨ä¸€æ¬¡æ€§çš„æ‰‹çºŒè²»".ceil($BankFee/10000)."è¬ (".number_format($BankFee).") ï¼Œä¹‹å¾Œæ‚¨ä¾¿å¯ä»¥äº«å—æœ¬éŠ€è¡Œçš„æœå‹™ï¼";
+	echo "<br>æ‚¨çš„ç¾é‡‘: ".number_format($Gen['cash'])."<hr align=center width=80%>";
+	echo "<center><input type=submit name=AccountValiding value=ç¢ºå®šé–‹æˆ¶ onClick=\"AccountValiding.style.visibility='hidden';bkmainform.actionb.value='AccValidation';return ConfirmAccValid();\">";
 	echo "</td>";
 	echo "</tr>";
 	}
@@ -172,19 +172,20 @@ $log_amount = $log_tsaving = $log_tcash = $log_amount = $log_type = 0;
 $log_target = $log_tg_name = (string) '';
 
 if ($actionb == 'AccValidation'){
-	if (1500000 > $Gen['cash']){echo "©êºp, ±zªºª÷¿ú¤£¨¬¡C";postFooter();exit;}
-	if (30 > $Game['level']){echo "©êºp, ±zªºµ¥¯Å¤£¨¬¡C";postFooter();exit;}
+	if (150000 > $Gen['cash']){echo "æŠ±æ­‰, æ‚¨çš„é‡‘éŒ¢ä¸è¶³ã€‚";postFooter();exit;}
+	if (30 > $Game['level']){echo "æŠ±æ­‰, æ‚¨çš„ç­‰ç´šä¸è¶³ã€‚";postFooter();exit;}
 	$Gen['cash'] -= 100000;
 	$log_type = 5;
 	}
 else{
-	if($Bank['status'] == '0'){echo "©êºp, ¥»»È¦æ¼È®É¥¼¯à´£¨ÑªA°Èµ¹¥¼¶}¤áªº¤H¤h¡C";postFooter();exit;}
-	if($Bank['status'] == '-1'){echo "©êºp, »Õ¤Uªº»È¦æ±b¤á¼È®É³Q­áµ²¤F¡C";postFooter();exit;}
+	if($Bank['status'] == '0'){echo "æŠ±æ­‰, æœ¬éŠ€è¡Œæš«æ™‚æœªèƒ½æä¾›æœå‹™çµ¦æœªé–‹æˆ¶çš„äººå£«ã€‚";postFooter();exit;}
+	if($Bank['status'] == '-1'){echo "æŠ±æ­‰, é–£ä¸‹çš„éŠ€è¡Œå¸³æˆ¶æš«æ™‚è¢«å‡çµäº†ã€‚";postFooter();exit;}
 
 
 if ($actionb == 'deposit'){
-	if($d_amount>$Gen['cash']){echo "©êºp, ¥»»È¦æ¼È®É¥¼¯à´£¨Ñ­É´ÚªA°È, ¤×¨ä¬O­É´Úµ¹«È¤á¥Î¨Ó¦s´Úªº¡C";postFooter();exit;}
-	if($d_amount <= 0){echo "³Â·Ğ»Õ¤U­«·s¿é¤Jª÷ÃB¡C";postFooter();exit;}
+	if($d_amount>$Gen['cash']){echo "æŠ±æ­‰, æœ¬éŠ€è¡Œæš«æ™‚æœªèƒ½æä¾›å€Ÿæ¬¾æœå‹™, å°¤å…¶æ˜¯å€Ÿæ¬¾çµ¦å®¢æˆ¶ç”¨ä¾†å­˜æ¬¾çš„ã€‚";postFooter();exit;}
+	if($d_amount <= 0){echo "éº»ç…©é–£ä¸‹é‡æ–°è¼¸å…¥é‡‘é¡ã€‚";postFooter();exit;}
+	$d_amount = mysql_real_escape_string($d_amount);
 	$d_amount = intval($d_amount);
 	$Gen['cash'] -= $d_amount;
 	$Bank['savings'] += $d_amount;
@@ -192,8 +193,9 @@ if ($actionb == 'deposit'){
 	$log_type = 1;
 }
 elseif ($actionb == 'withdrawl'){
-	if($w_amount>$Bank['savings']){echo "©êºp, ¥»»È¦æ¼È®É¥¼¯à´£¨Ñ­É´ÚªA°È¡C";postFooter();exit;}
-	if($w_amount <= 0){echo "³Â·Ğ»Õ¤U­«·s¿é¤Jª÷ÃB¡C";postFooter();exit;}
+	if($w_amount>$Bank['savings']){echo "æŠ±æ­‰, æœ¬éŠ€è¡Œæš«æ™‚æœªèƒ½æä¾›å€Ÿæ¬¾æœå‹™ã€‚";postFooter();exit;}
+	if($w_amount <= 0){echo "éº»ç…©é–£ä¸‹é‡æ–°è¼¸å…¥é‡‘é¡ã€‚";postFooter();exit;}
+	$w_amount = mysql_real_escape_string($w_amount);
 	$w_amount = intval($w_amount);
 	$Gen['cash'] += $w_amount;
 	$Bank['savings'] -= $w_amount;
@@ -201,18 +203,20 @@ elseif ($actionb == 'withdrawl'){
 	$log_type = 2;
 }
 elseif ($actionb == 'remit'){
+	$c_amount = mysql_real_escape_string($c_amount);
+	$c_target = mysql_real_escape_string($c_target);
 	$c_amount = intval($c_amount);
-	if($c_amount > $Bank['savings']){echo "©êºp, ±zªº¦s´Ú¤£¨¬, §Ú­ÌµLªkÀ°§A¶×´Ú¡C";postFooter();exit;}
-	if($c_amount <= 0){echo "³Â·Ğ»Õ¤U­«·s¿é¤Jª÷ÃB¡C";postFooter();exit;}
-	if ($c_target && $c_target != '<±z©ÒÄİªº²ÕÂ´>'){
+	if($c_amount > $Bank['savings']){echo "æŠ±æ­‰, æ‚¨çš„å­˜æ¬¾ä¸è¶³, æˆ‘å€‘ç„¡æ³•å¹«ä½ åŒ¯æ¬¾ã€‚";postFooter();exit;}
+	if($c_amount <= 0){echo "éº»ç…©é–£ä¸‹é‡æ–°è¼¸å…¥é‡‘é¡ã€‚";postFooter();exit;}
+	if ($c_target && $c_target != '<æ‚¨æ‰€å±¬çš„çµ„ç¹”>'){
 	$sql = ("SELECT `bank`.`status` AS `AcStatus`, `gamename`, `savings`, `cash` FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` `gen`,`".$GLOBALS['DBPrefix']."phpeb_user_bank` `bank`,`".$GLOBALS['DBPrefix']."phpeb_user_game_info` `game`  WHERE `bank`.`username` = `game`.`username` AND `bank`.`username` = `gen`.`username` AND `bank`.`username` = '$c_target'");
 	$query = mysql_query($sql);
 	$BankUser = mysql_fetch_array($query);
 	}
-	if ($c_target != '<±z©ÒÄİªº²ÕÂ´>'){
-	if ($BankUser['AcStatus'] != '1'){echo "©êºp, ±z¥Ø¼Ğªº¤Hª«¨S¦³¦³®Äªº»È¦æ±b¤á¡C$BankUser[AcStatus]";postFooter();exit;}
+	if ($c_target != '<æ‚¨æ‰€å±¬çš„çµ„ç¹”>'){
+	if ($BankUser['AcStatus'] != '1'){echo "æŠ±æ­‰, æ‚¨ç›®æ¨™çš„äººç‰©æ²’æœ‰æœ‰æ•ˆçš„éŠ€è¡Œå¸³æˆ¶ã€‚$BankUser[AcStatus]";postFooter();exit;}
 	$Bank['savings'] -= $c_amount;
-	}else $BankUser = array('savings' => $Pl_Org['funds'], 'cash' => 0, 'gamename' => $Pl_Org['name']."(²ÕÂ´)");
+	}else $BankUser = array('savings' => $Pl_Org['funds'], 'cash' => 0, 'gamename' => $Pl_Org['name']."(çµ„ç¹”)");
 	$log_target = $c_target;
 	$log_amount = $c_amount;
 	$log_tsaving = $BankUser['savings'] + $c_amount;
@@ -221,10 +225,12 @@ elseif ($actionb == 'remit'){
 	$log_type = 3;
 }
 elseif ($actionb == 'bounty'){
+	$t_amount = mysql_real_escape_string($t_amount);
+	$t_target = mysql_real_escape_string($t_target);
 	$t_amount = intval($t_amount);
-	if($t_amount > $Bank['savings']){echo "©êºp, ±zªº¦s´Ú¤£¨¬, §Ú­ÌµLªkÀ°§A¶×´Ú³q½r¡C";postFooter();exit;}
-	if($t_amount <= 0){echo "³Â·Ğ»Õ¤U­«·s¿é¤Jª÷ÃB¡C";postFooter();exit;}
-	if($t_target == $Pl_Value['USERNAME']){echo "³Â·Ğ»Õ¤U¤£­n¶Ã¨Ó¡C";postFooter();exit;}
+	if($t_amount > $Bank['savings']){echo "æŠ±æ­‰, æ‚¨çš„å­˜æ¬¾ä¸è¶³, æˆ‘å€‘ç„¡æ³•å¹«ä½ åŒ¯æ¬¾é€šç·ã€‚";postFooter();exit;}
+	if($t_amount <= 0){echo "éº»ç…©é–£ä¸‹é‡æ–°è¼¸å…¥é‡‘é¡ã€‚";postFooter();exit;}
+	if($t_target == $_SESSION['username']){echo "éº»ç…©é–£ä¸‹ä¸è¦äº‚ä¾†ã€‚";postFooter();exit;}
 	$sql = ("SELECT `bounty`,`gamename` FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` `gen`,`".$GLOBALS['DBPrefix']."phpeb_user_game_info` `game` WHERE `gen`.`username` = `game`.`username` AND `gen`.`username` = '$t_target'");
 	$query = mysql_query($sql) or die(mysql_error());
 	$BntyTrgt = mysql_fetch_array($query);
@@ -235,44 +241,43 @@ elseif ($actionb == 'bounty'){
 	$log_amount = $t_amount;
 	$log_tg_name = $BntyTrgt['gamename'];
 	$log_type = 4;
-}else{echo "¥¼©w¸q°Ê§@¡I";postFooter();exit;}
+}else{echo "æœªå®šç¾©å‹•ä½œï¼";postFooter();exit;}
 }
-if ($actionb == 'remit' && $c_target == '<±z©ÒÄİªº²ÕÂ´>'){
-$Bank['savings'] -= $c_amount;
+if ($actionb == 'remit' && $c_target == '<æ‚¨æ‰€å±¬çš„çµ„ç¹”>'){
+	$c_amount = mysql_real_escape_string($c_amount);
+	$c_target = mysql_real_escape_string($c_target);
+	$Bank['savings'] -= $c_amount;
 	unset($sql);
 	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_organization` SET `funds` = `funds`+$c_amount WHERE `id` = '$Game[organization]' LIMIT 1;");
 	mysql_query($sql);
 }
 	unset($sql);
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = '$Gen[cash]' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = '$Gen[cash]' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 	mysql_query($sql);unset($sql);
 if ($actionb != 'AccValidation')
-$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_bank` SET `savings` = '$Bank[savings]' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_bank` SET `savings` = '$Bank[savings]' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 else
-$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_bank` SET `status` = '1' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_bank` SET `status` = '1' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 mysql_query($sql);unset($sql);
-if ($actionb == 'remit' && $c_target != '<±z©ÒÄİªº²ÕÂ´>'){
+if ($actionb == 'remit' && $c_target != '<æ‚¨æ‰€å±¬çš„çµ„ç¹”>'){
 $sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_bank` SET `savings` = `savings`+'$c_amount' WHERE `username` = '$c_target' LIMIT 1;");
 mysql_query($sql);unset($sql);}
 if ($actionb == 'bounty'){
 $sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `bounty` = '$BntyTrgt[bounty]' WHERE `username` = '$t_target' LIMIT 1;");
 mysql_query($sql);unset($sql);}
 
-$sql = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_bank_log` (`time`, `user`, `g_name`, `type`, `amount`, `cash`, `bankamt`, `t_cash`, `t_bankamt`, `target`, `tg_name`) VALUES ('".$CFU_Time."', '$Pl_Value[USERNAME]', '$Game[gamename]', '$log_type', '$log_amount', '$Gen[cash]', '$Bank[savings]', '$log_tcash', '$log_tsaving', '$log_target', '$log_tg_name');");
+$sql = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_bank_log` (`time`, `user`, `g_name`, `type`, `amount`, `cash`, `bankamt`, `t_cash`, `t_bankamt`, `target`, `tg_name`) VALUES ('".$CFU_Time."', '$_SESSION[username]', '$Game[gamename]', '$log_type', '$log_amount', '$Gen[cash]', '$Bank[savings]', '$log_tcash', '$log_tsaving', '$log_target', '$log_tg_name');");
 mysql_query($sql) or die(mysql_error());unset($sql);
-
-	echo "<form action=bank.php?action=main method=post name=frmct target=$SecTarget>";
+	
+	echo "<form action=bank.php?action=main method=post name=frmbk target=$SecTarget>";
 	echo "<input type=hidden value='none' name=actionb>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 	echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-	echo "<p align=center style=\"font-size: 16pt\">§¹¦¨¡I<br><input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"><input type=submit value=\"Ä~Äò¨Ï¥Î»È¦æ\" onClick=\"frmct.submit()\"></p>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	echo "<p align=center style=\"font-size: 16pt\">å®Œæˆï¼<br><input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"><input type=button value=\"ç¹¼çºŒä½¿ç”¨éŠ€è¡Œ\" onClick=\"frmbk.submit()\"></p>";
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
+	
 }
 
 //
@@ -284,30 +289,30 @@ elseif($mode == 'SafeHouse' && $actionb=='GUI'){
 	//Plugin Mining System
 	include('plugins/mining/mining.config.php');
 
-	echo "»È¦æ«OÀI®w<hr>";
+	echo "éŠ€è¡Œä¿éšªåº«<hr>";
 	echo "<br>";
 	echo "<form action=bank.php?action=SafeHouse method=post name=bkmainform>";
 	echo "<input type=hidden value='none' name=actionb>";
 	echo "<input type=hidden value='' name=actionc>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "<script langauge=\"Javascript\">";
 	echo "function MakeDeal(){";
-	echo "if (confirm('«Ø¥ß³o¤@³æ¥æ©ö¡A¥i¥H¶Ü¡H')==true){bkmainform.actionb.value='MakeDeal';bkmainform.actionc.value= 'none';}";
+	echo "if (confirm('å»ºç«‹é€™ä¸€å–®äº¤æ˜“ï¼Œå¯ä»¥å—ï¼Ÿ')==true){bkmainform.actionb.value='MakeDeal';bkmainform.actionc.value= 'none';}";
 	echo "else {return false}}";
 	echo "function ConfirmDeal(deal){";
-	echo "if (confirm('½T»{³o¤@³æ¥æ©ö¡A¥i¥H¶Ü¡H')==true){bkmainform.actionb.value='PayDeal';bkmainform.actionc.value= deal;}";
+	echo "if (confirm('ç¢ºèªé€™ä¸€å–®äº¤æ˜“ï¼Œå¯ä»¥å—ï¼Ÿ')==true){bkmainform.actionb.value='PayDeal';bkmainform.actionc.value= deal;}";
 	echo "else {return false}}";
 	echo "function RejectDeal(deal){";
-	echo "if (confirm('©Úµ´³o¤@³æ¥æ©ö¡A¥i¥H¶Ü¡H')==true){bkmainform.actionb.value='RejectDeal';bkmainform.actionc.value= deal;}";
+	echo "if (confirm('æ‹’çµ•é€™ä¸€å–®äº¤æ˜“ï¼Œå¯ä»¥å—ï¼Ÿ')==true){bkmainform.actionb.value='RejectDeal';bkmainform.actionc.value= deal;}";
 	echo "else {return false}}";
 	echo "function CancelDeal(deal){";
-	echo "if (confirm('¤¤¤î³o¤@³æ¥æ©ö¡A¥i¥H¶Ü¡H')==true){bkmainform.actionb.value='CancelDeal';bkmainform.actionc.value= deal;}";
+	echo "if (confirm('ä¸­æ­¢é€™ä¸€å–®äº¤æ˜“ï¼Œå¯ä»¥å—ï¼Ÿ')==true){bkmainform.actionb.value='CancelDeal';bkmainform.actionc.value= deal;}";
 	echo "else {return false}}</script>";
 	echo "<table align=center width=750 border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
 
-	$EmptyMsg = '<Br><center>¨S¦³¥ô¦óª««~</center><Br><Br>';
+	$EmptyMsg = '<Br><center>æ²’æœ‰ä»»ä½•ç‰©å“</center><Br><Br>';
 
 	$Pl_WepB = explode('<!>',$Game['wepb']);
 	$Pl_WepC = explode('<!>',$Game['wepc']);
@@ -320,17 +325,17 @@ elseif($mode == 'SafeHouse' && $actionb=='GUI'){
 	echo "<tr align=center><td colspan=3><b style=\"font-size: 12pt;\">Inbox: </b></td>";
 	echo "</tr><tr valign=top>";
 
-	echo "<td width=33%><b style=\"font-size: 12pt;\">¤@¸¹½c: </b><br>";
+	echo "<td width=33%><b style=\"font-size: 12pt;\">ä¸€è™Ÿç®±: </b><br>";
 	if ($Bank['sh_ina']) getInbox($Bank['sh_ina'],'a');
 	else echo "$EmptyMsg";
 	echo "</td>";
 
-	echo "<td width=34%><b style=\"font-size: 12pt;\">¤G¸¹½c: </b><br>";
+	echo "<td width=34%><b style=\"font-size: 12pt;\">äºŒè™Ÿç®±: </b><br>";
 	if ($Bank['sh_inb']) getInbox($Bank['sh_inb'],'b');
 	else echo "$EmptyMsg";
 	echo "</td>";
 
-	echo "<td width=33%><b style=\"font-size: 12pt;\">¤T¸¹½c: </b><br>";
+	echo "<td width=33%><b style=\"font-size: 12pt;\">ä¸‰è™Ÿç®±: </b><br>";
 	if ($Bank['sh_inc']) getInbox($Bank['sh_inc'],'c');
 	else echo "$EmptyMsg";
 	echo "</td>";
@@ -343,17 +348,17 @@ elseif($mode == 'SafeHouse' && $actionb=='GUI'){
 	echo "<tr align=center><td colspan=3><b style=\"font-size: 12pt;\">Outbox: </b></td>";
 	echo "</tr><tr valign=top>";
 
-	echo "<td width=33%><b style=\"font-size: 12pt;\">¤@¸¹½c: </b><br>";
+	echo "<td width=33%><b style=\"font-size: 12pt;\">ä¸€è™Ÿç®±: </b><br>";
 	if ($Bank['sh_outa']) getOutbox($Bank['sh_outa'],'a',$Game['username']);
 	else echo "$EmptyMsg";
 	echo "</td>";
 
-	echo "<td width=34%><b style=\"font-size: 12pt;\">¤G¸¹½c: </b><br>";
+	echo "<td width=34%><b style=\"font-size: 12pt;\">äºŒè™Ÿç®±: </b><br>";
 	if ($Bank['sh_outb']) getOutbox($Bank['sh_outb'],'b',$Game['username']);
 	else echo "$EmptyMsg";
 	echo "</td>";
 
-	echo "<td width=33%><b style=\"font-size: 12pt;\">¤T¸¹½c: </b><br>";
+	echo "<td width=33%><b style=\"font-size: 12pt;\">ä¸‰è™Ÿç®±: </b><br>";
 	if ($Bank['sh_outc']) getOutbox($Bank['sh_outc'],'c',$Game['username']);
 	else echo "$EmptyMsg";
 	echo "</td>";
@@ -382,32 +387,32 @@ elseif($mode == 'SafeHouse' && $actionb=='GUI'){
 	if (!$c_rcb) $exch_disabledtrue = 'disabled';
 
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-	echo "<tr><td align=center width=500 colspan=2><b style=\"font-size: 12pt;\">«Ø¥ß¥æ©ö: </b></td></tr>";
-	echo "<tr><td align=left width=250 valign=top><font style=\"font-size: 11pt; font-weight: Bold\">±z±N´£¨Ñªº:</font><br>";
+	echo "<tr><td align=center width=500 colspan=2><b style=\"font-size: 12pt;\">å»ºç«‹äº¤æ˜“: </b></td></tr>";
+	echo "<tr><td align=left width=250 valign=top><font style=\"font-size: 11pt; font-weight: Bold\">æ‚¨å°‡æä¾›çš„:</font><br>";
 
-	echo "<br><b>ªZ¸Ë:</b>";
+	echo "<br><b>æ­¦è£:</b>";
 
-	if ($Pl_WepB[0]) echo "<br>¡@³Æ¥ÎªZ¾¹¤@:<br>¡@¡@".getSHWepName($Pl_WepB)." <input type=radio value='wepb' name=sellslot><br>";
-	if ($Pl_WepC[0]) echo "<br>¡@³Æ¥ÎªZ¾¹¤G:<br>¡@¡@".getSHWepName($Pl_WepC)." <input type=radio value='wepc' name=sellslot><br>";
-	if (!$Pl_WepB[0] && !$Pl_WepC[0]) echo "¨S¦³<br>";
+	if ($Pl_WepB[0]) echo "<br>ã€€å‚™ç”¨æ­¦å™¨ä¸€:<br>ã€€ã€€".getSHWepName($Pl_WepB)." <input type=radio value='wepb' name=sellslot><br>";
+	if ($Pl_WepC[0]) echo "<br>ã€€å‚™ç”¨æ­¦å™¨äºŒ:<br>ã€€ã€€".getSHWepName($Pl_WepC)." <input type=radio value='wepc' name=sellslot><br>";
+	if (!$Pl_WepB[0] && !$Pl_WepC[0]) echo "æ²’æœ‰<br>";
 
 	echo "<br><hr>";
 	printProductTable('provide_raw');
 
-	echo "</td><td align=left width=250 valign=top><font style=\"font-size: 11pt; font-weight: Bold\">±z·Q´«¨úªº:</font><br>";
+	echo "</td><td align=left width=250 valign=top><font style=\"font-size: 11pt; font-weight: Bold\">æ‚¨æƒ³æ›å–çš„:</font><br>";
 
 
-	echo "¸êª÷: <input type=text name=price_sell maxlength=10 size=10><br><br><hr>";
+	echo "è³‡é‡‘: <input type=text name=price_sell maxlength=10 size=10><br><br><hr>";
 
 	printProductTable('offer_raw');
 
 	echo "</td></tr>";
-	echo "<tr><td align=center width=500 colspan=2><b style=\"font-size: 11pt;\">¥Ø¼Ğ¶R®a: </b>";
+	echo "<tr><td align=center width=500 colspan=2><b style=\"font-size: 11pt;\">ç›®æ¨™è²·å®¶: </b>";
 	echo "<select name=exch_target $exch_disabledtrue>";
-	echo "<option value='0'>¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ¡e½Ğ¿ï¾Ü¡f¡Ğ¡Ğ¡Ğ¡Ğ¡Ğ";
+	echo "<option value='0'>ï¼ï¼ï¼ï¼ï¼ã€”è«‹é¸æ“‡ã€•ï¼ï¼ï¼ï¼ï¼";
 	echo "$Exch_Avail";
 	echo "</select>";
-	echo "<input type=submit onClick=\"return MakeDeal()\" value=«Ø¥ß¥æ©ö>";
+	echo "<input type=submit onClick=\"return MakeDeal()\" value=å»ºç«‹äº¤æ˜“>";
 	echo "</td></tr>";
 	echo "</table>";
 	echo "</form>";
@@ -433,10 +438,10 @@ elseif($mode == 'SafeHouse' && $actionb && $actionc){
 		if ($actionc=='a'){$SafeIN = explode('<#>',$Bank['sh_ina']);$InS = 'sh_ina';}
 		elseif ($actionc=='b'){$SafeIN = explode('<#>',$Bank['sh_inb']);$InS = 'sh_inb';}
 		elseif ($actionc=='c'){$SafeIN = explode('<#>',$Bank['sh_inc']);$InS = 'sh_inc';}
-		else {echo "©êºp, ¥¼¯à§ä¨ì»İ­nªº¸ê°T¡C6";postFooter();exit;}
+		else {echo "æŠ±æ­‰, æœªèƒ½æ‰¾åˆ°éœ€è¦çš„è³‡è¨Šã€‚6";postFooter();exit;}
 
 		if (!$SafeIN[0]){
-			echo "<center>©êºp, ¥¼¯à§ä¨ì»İ­nªº¸ê°T¡C7";postFooter();exit;
+			echo "<center>æŠ±æ­‰, æœªèƒ½æ‰¾åˆ°éœ€è¦çš„è³‡è¨Šã€‚7";postFooter();exit;
 		}
 
 		unset($Raw);
@@ -448,36 +453,36 @@ elseif($mode == 'SafeHouse' && $actionb && $actionc){
 		if($SafeIN[2] != '0<!>0'){
 			if (!$Pl_WepB[0]){$FreeSlot = 'wepb';}
 			elseif (!$Pl_WepC[0]){$FreeSlot = 'wepc';}
-			else {echo "<center>±z¨­¤W¸Ë³Æªº¤wº¡¤F¡AµLªk§¹¥ş¥æ©ö¡C";postFooter();exit;}
+			else {echo "<center>æ‚¨èº«ä¸Šè£å‚™çš„å·²æ»¿äº†ï¼Œç„¡æ³•å®Œå…¨äº¤æ˜“ã€‚";postFooter();exit;}
 		}else{
 			$FreeSlot = false;
 		}
 
 		if($Raw['Offeree'][0] > 0){
-			if(checkMBillsPending($Pl_Value['USERNAME'])){
-				echo "½Ğ¥ı¤ä¥I­ì®Æ±Ä¶°¶O¡A¦hÁÂ¦X§@¡C";postFooter();exit;
+			if(checkMBillsPending($_SESSION['username'])){
+				echo "è«‹å…ˆæ”¯ä»˜åŸæ–™æ¡é›†è²»ï¼Œå¤šè¬åˆä½œã€‚";postFooter();exit;
 			}
 			for($i = 1; $i <= 8; $i++){
 				if($Raw['Offeree'][$i] > $Storage['Offeree'][$i]){
-					echo "­ì®Æ¡u".$product_id_list[$i]."¡v¤£¨¬¡C";postFooter();exit;
+					echo "åŸæ–™ã€Œ".$product_id_list[$i]."ã€ä¸è¶³ã€‚";postFooter();exit;
 				}
 			}
 		}
 
-		if ($Bank['savings'] < $SafeIN[1]){echo "<center>±zªº¦s´Ú¤£¨¬¡AµLªk§¹¥ş¥æ©ö¡C";postFooter();exit;}
+		if ($Bank['savings'] < $SafeIN[1]){echo "<center>æ‚¨çš„å­˜æ¬¾ä¸è¶³ï¼Œç„¡æ³•å®Œå…¨äº¤æ˜“ã€‚";postFooter();exit;}
 
 			$sql = ("SELECT `bank`.`status` AS `status`,`$SafeIN[3]`,`gamename`,`savings`,`cash` FROM `".$GLOBALS['DBPrefix']."phpeb_user_bank` `bank`, `".$GLOBALS['DBPrefix']."phpeb_user_game_info` `game`, `".$GLOBALS['DBPrefix']."phpeb_user_general_info` `gen` WHERE `game`.`username`= `bank`.`username` AND `gen`.`username`= `bank`.`username` AND `bank`.`username`='". $SafeIN[0] ."'");
-			$query = mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+			$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 			$SafeIN_Dealer = mysql_fetch_array($query);
 
-		if (!$SafeIN_Dealer[0] || !$SafeIN_Dealer[1]){echo "<center>©êºp, ¥¼¯à§ä¨ì»İ­nªº¸ê°T¡C8";postFooter();exit;}
+		if (!$SafeIN_Dealer[0] || !$SafeIN_Dealer[1]){echo "<center>æŠ±æ­‰, æœªèƒ½æ‰¾åˆ°éœ€è¦çš„è³‡è¨Šã€‚8";postFooter();exit;}
 		else $DealerOUT = explode('<#>',$SafeIN_Dealer[1]);
 
-		if ($DealerOUT[0] != $Game['username']){echo "<center>©êºp, ¹ï¤èªí¥Ü¦¹ª««~¤£¬O°âµ¹±zªº¡C";postFooter();exit;}
-		if ($DealerOUT[1] != $SafeIN[1]){echo "<center>©êºp, ¹ï¤èªí¥Ü¦¹»ù¿úµLªk§¹¦¨¥æ©ö¡C";postFooter();exit;}
-		if ($DealerOUT[2] != $SafeIN[2]){echo "<center>©êºp, ¹ï¤èªí¥Ü¤£¬O¥X°â¦¹ª««~¡C";postFooter();exit;}
-		if ($DealerOUT[4] != $SafeIN[4] || $DealerOUT[5] != $SafeIN[5]){echo "<center>©êºp, ¹ï¤è­ì®Æ¥æ©ö¶q¤£¥¿½T¡C";postFooter();exit;}
-		if ($DealerOUT[3] != $InS){echo "<center>©êºp, «OÀI®wªº¦ì¸m¥X¿ù¡C";postFooter();exit;}
+		if ($DealerOUT[0] != $Game['username']){echo "<center>æŠ±æ­‰, å°æ–¹è¡¨ç¤ºæ­¤ç‰©å“ä¸æ˜¯å”®çµ¦æ‚¨çš„ã€‚";postFooter();exit;}
+		if ($DealerOUT[1] != $SafeIN[1]){echo "<center>æŠ±æ­‰, å°æ–¹è¡¨ç¤ºæ­¤åƒ¹éŒ¢ç„¡æ³•å®Œæˆäº¤æ˜“ã€‚";postFooter();exit;}
+		if ($DealerOUT[2] != $SafeIN[2]){echo "<center>æŠ±æ­‰, å°æ–¹è¡¨ç¤ºä¸æ˜¯å‡ºå”®æ­¤ç‰©å“ã€‚";postFooter();exit;}
+		if ($DealerOUT[4] != $SafeIN[4] || $DealerOUT[5] != $SafeIN[5]){echo "<center>æŠ±æ­‰, å°æ–¹åŸæ–™äº¤æ˜“é‡ä¸æ­£ç¢ºã€‚";postFooter();exit;}
+		if ($DealerOUT[3] != $InS){echo "<center>æŠ±æ­‰, ä¿éšªåº«çš„ä½ç½®å‡ºéŒ¯ã€‚";postFooter();exit;}
 
 		//Input Data
 
@@ -512,29 +517,29 @@ elseif($mode == 'SafeHouse' && $actionb && $actionc){
 
 		// Start Queries
 
-		$sql =	("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_bank` SET `savings` = `savings`-".$SafeIN[1].", `$InS` = '' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
-		mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+		$sql =	("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_bank` SET `savings` = `savings`-".$SafeIN[1].", `$InS` = '' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
+		mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 		$sql =	("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_bank` SET `savings` = `savings`+".$DealerOUT[1].", `$SafeIN[3]` = '' WHERE `username` = '$SafeIN[0]' LIMIT 1;");
-		mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+		mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 		if($FreeSlot){
 			$sql =	("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `$FreeSlot` = '".$SafeIN[2]."' WHERE `username` = '$Game[username]' LIMIT 1;");
-			mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+			mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 		}
-		$sql = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_bank_log` (`time`, `user`, `g_name`, `type`, `amount`, `cash`, `bankamt`, `t_cash`, `t_bankamt`, `target`, `tg_name`, `safehouse`) VALUES ('".$CFU_Time."', '$Pl_Value[USERNAME]', '$Game[gamename]', '6', '$SafeIN[1]', '$Gen[cash]', '".intval($Bank['savings']-$SafeIN[1])."', '$SafeIN_Dealer[cash]', '".intval($SafeIN_Dealer['savings']+$SafeIN[1])."', '$SafeIN[0]', '$SafeIN_Dealer[gamename]', '$Bank[$InS]');");
-		mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+		$sql = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_bank_log` (`time`, `user`, `g_name`, `type`, `amount`, `cash`, `bankamt`, `t_cash`, `t_bankamt`, `target`, `tg_name`, `safehouse`) VALUES ('".$CFU_Time."', '$_SESSION[username]', '$Game[gamename]', '6', '$SafeIN[1]', '$Gen[cash]', '".intval($Bank['savings']-$SafeIN[1])."', '$SafeIN_Dealer[cash]', '".intval($SafeIN_Dealer['savings']+$SafeIN[1])."', '$SafeIN[0]', '$SafeIN_Dealer[gamename]', '$Bank[$InS]');");
+		mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 
 		if(isset($sqlRawOfferee)){
 			foreach($sqlRawOfferee as $sql){
-				mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+				mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 			}
 		}
 		if(isset($sqlRawOfferor)){
 			foreach($sqlRawOfferor as $sql){
-				mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+				mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 			}
 		}
 
-		$Message = "¥æ©ö¶¶§Q§¹¦¨¡I";
+		$Message = "äº¤æ˜“é †åˆ©å®Œæˆï¼";
 
 	}
 
@@ -547,10 +552,10 @@ elseif($mode == 'SafeHouse' && $actionb && $actionc){
 		if ($actionc=='a'){$SafeOUT = explode('<#>',$Bank['sh_outa']);$OutS = 'sh_outa';}
 		elseif ($actionc=='b'){$SafeOUT = explode('<#>',$Bank['sh_outb']);$OutS = 'sh_outb';}
 		elseif ($actionc=='c'){$SafeOUT = explode('<#>',$Bank['sh_outc']);$OutS = 'sh_outc';}
-		else {echo "©êºp, ¥¼¯à§ä¨ì»İ­nªº¸ê°T¡C1";postFooter();exit;}
+		else {echo "æŠ±æ­‰, æœªèƒ½æ‰¾åˆ°éœ€è¦çš„è³‡è¨Šã€‚1";postFooter();exit;}
 
 		if (!$SafeOUT || !$SafeOUT[0] || !$SafeOUT[2] || !$SafeOUT[3])
-		{echo "<center>©êºp, ¥¼¯à§ä¨ì»İ­nªº¸ê°T¡C2";postFooter();exit;}
+		{echo "<center>æŠ±æ­‰, æœªèƒ½æ‰¾åˆ°éœ€è¦çš„è³‡è¨Šã€‚2";postFooter();exit;}
 
 		$Raw = getRaw($SafeOUT[4]);
 		$Storage = getMiningStorage($Game['username']);
@@ -571,13 +576,13 @@ elseif($mode == 'SafeHouse' && $actionb && $actionc){
 		if($SafeOUT[2] != '0<!>0'){
 			if (!$Pl_WepB[0]){$FreeSlot = 'wepb';}
 			elseif (!$Pl_WepC[0]){$FreeSlot = 'wepc';}
-			else {echo "<center>±z¨­¤W¸Ë³Æªº¤wº¡¤F¡AµLªk¤¤¤î¥æ©ö¡C";postFooter();exit;}
+			else {echo "<center>æ‚¨èº«ä¸Šè£å‚™çš„å·²æ»¿äº†ï¼Œç„¡æ³•ä¸­æ­¢äº¤æ˜“ã€‚";postFooter();exit;}
 		}else{
 			$FreeSlot = false;
 		}
 
 			$sql = ("SELECT `gamename`, `$SafeOUT[3]` AS `inbox` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` `g`, `".$GLOBALS['DBPrefix']."phpeb_user_bank` `b` WHERE `g`.`username`='". $SafeOUT[0] ."' AND `g`.`username` = `b`.`username`;");
-			$query = mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+			$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 			$SafeOUT_Dealer = mysql_fetch_array($query);
 
 		$RejectedFlag = false;
@@ -599,26 +604,26 @@ elseif($mode == 'SafeHouse' && $actionb && $actionc){
 		//Input Data
 
 		unset($sql);
-		$sql =	("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_bank` SET `$OutS` = '' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
-		mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');unset($sql);
+		$sql =	("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_bank` SET `$OutS` = '' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
+		mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');unset($sql);
 		if(!$RejectedFlag){
 			$sql =	("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_bank` SET  `$SafeOUT[3]` = '' WHERE `username` = '$SafeOUT[0]' LIMIT 1;");
-			mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');unset($sql);
+			mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');unset($sql);
 		}
 		if($FreeSlot != false){
 			$sql =	("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `$FreeSlot` = '".$SafeOUT[2]."' WHERE `username` = '$Game[username]' LIMIT 1;");
-			mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');unset($sql);
+			mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');unset($sql);
 		}
-		$sql = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_bank_log` (`time`, `user`, `g_name`, `type`, `target`, `tg_name`) VALUES ('".$CFU_Time."', '$Pl_Value[USERNAME]', '$Game[gamename]', '7', '$SafeOUT[0]', '$SafeOUT_Dealer[gamename]');");
-		mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');unset($sql);
+		$sql = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_bank_log` (`time`, `user`, `g_name`, `type`, `target`, `tg_name`) VALUES ('".$CFU_Time."', '$_SESSION[username]', '$Game[gamename]', '7', '$SafeOUT[0]', '$SafeOUT_Dealer[gamename]');");
+		mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');unset($sql);
 
 		if(isset($sqlStorage)){
 			foreach($sqlStorage as $sql){
-				mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+				mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 			}
 		}
 
-		$Message = "¤w¦¨¥\¤¤¤î¥æ©ö¡I";
+		$Message = "å·²æˆåŠŸä¸­æ­¢äº¤æ˜“ï¼";
 
 	}
 
@@ -631,23 +636,23 @@ elseif($mode == 'SafeHouse' && $actionb && $actionc){
 		if ($actionc=='a'){$SafeIN = explode('<#>',$Bank['sh_ina']);$InS = 'sh_ina';}
 		elseif ($actionc=='b'){$SafeIN = explode('<#>',$Bank['sh_inb']);$InS = 'sh_inb';}
 		elseif ($actionc=='c'){$SafeIN = explode('<#>',$Bank['sh_inc']);$InS = 'sh_inc';}
-		else {echo "©êºp, ¥¼¯à§ä¨ì»İ­nªº¸ê°T¡C3";postFooter();exit;}
+		else {echo "æŠ±æ­‰, æœªèƒ½æ‰¾åˆ°éœ€è¦çš„è³‡è¨Šã€‚3";postFooter();exit;}
 
-		if (!$SafeIN[1]) {echo "<center>©êºp, ¥¼¯à§ä¨ì»İ­nªº¸ê°T¡C4";postFooter();exit;}
+		if (!$SafeIN[1]) {echo "<center>æŠ±æ­‰, æœªèƒ½æ‰¾åˆ°éœ€è¦çš„è³‡è¨Šã€‚4";postFooter();exit;}
 
 			$sql = ("SELECT `gamename` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `username`='". $SafeIN[0] ."'");
-			$query = mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+			$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 			$SafeIN_Dealer = mysql_fetch_array($query);
 
 		//Input Data
 
 		unset($sql);
-		$sql =	("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_bank` SET `$InS` = '' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
-		mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');unset($sql);
-		$sql = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_bank_log` (`time`, `user`, `g_name`, `type`, `target`, `tg_name`) VALUES ('".$CFU_Time."', '$Pl_Value[USERNAME]', '$Game[gamename]', '8', '$SafeIN[0]', '$SafeIN_Dealer[gamename]');");
-		mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');unset($sql);
+		$sql =	("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_bank` SET `$InS` = '' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
+		mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');unset($sql);
+		$sql = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_bank_log` (`time`, `user`, `g_name`, `type`, `target`, `tg_name`) VALUES ('".$CFU_Time."', '$_SESSION[username]', '$Game[gamename]', '8', '$SafeIN[0]', '$SafeIN_Dealer[gamename]');");
+		mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');unset($sql);
 
-		$Message = "¥æ©ö¤w³Q©Úµ´¡C";
+		$Message = "äº¤æ˜“å·²è¢«æ‹’çµ•ã€‚";
 
 	}
 
@@ -656,16 +661,17 @@ elseif($mode == 'SafeHouse' && $actionb && $actionc){
 	//
 
 	elseif($actionb=='MakeDeal'){
-
+		$price_sell = mysql_real_escape_string($price_sell);
+		$exch_target = mysql_real_escape_string($exch_target);
 		$price_sell = intval($price_sell);
 		$rawCount = count($offer_raw);
 		$prvCount = count($provide_raw);
 		$tempSum = 0;
 		$tradeRawOnlyFlag = false;
 
-		if (!$exch_target){echo "³Â·Ğ½Ğ¥ı¿é¤J¥Ø¼Ğ¤Hª«¡A¦hÁÂ¦X§@¡C";postFooter();exit;}
-		if ($rawCount <= 0 || $rawCount > 8 || $prvCount <= 0 || $prvCount > 8){echo "­ì®ÆID¥X¿ù¡C";postFooter();exit;}
-		if ($exch_target == $Pl_Value['USERNAME']){echo "³Â·Ğ¤£­n¦b³o·o¶Ã¡A¦hÁÂ¦X§@¡C";postFooter();exit;}
+		if (!$exch_target){echo "éº»ç…©è«‹å…ˆè¼¸å…¥ç›®æ¨™äººç‰©ï¼Œå¤šè¬åˆä½œã€‚";postFooter();exit;}
+		if ($rawCount <= 0 || $rawCount > 8 || $prvCount <= 0 || $prvCount > 8){echo "åŸæ–™IDå‡ºéŒ¯ã€‚";postFooter();exit;}
+		if ($exch_target == $_SESSION['username']){echo "éº»ç…©ä¸è¦åœ¨é€™æ—äº‚ï¼Œå¤šè¬åˆä½œã€‚";postFooter();exit;}
 
 		for($i = 1; $i <= $prvCount; $i++){
 			$provide_raw[$i] = intval($provide_raw[$i]);
@@ -678,14 +684,14 @@ elseif($mode == 'SafeHouse' && $actionb && $actionc){
 		unset($sqlStorage);
 
 		if($tempSum > 0){
-			if(checkMBillsPending($Pl_Value['USERNAME'])){
-				echo "½Ğ¥ı¤ä¥I­ì®Æ±Ä¶°¶O¡A¦hÁÂ¦X§@¡C";postFooter();exit;
+			if(checkMBillsPending($_SESSION['username'])){
+				echo "è«‹å…ˆæ”¯ä»˜åŸæ–™æ¡é›†è²»ï¼Œå¤šè¬åˆä½œã€‚";postFooter();exit;
 			}
 			$Storage = getMiningStorage($Game['username']);
 			$j = 0;
 			for($i = 1; $i <= 8; $i++){
 				if($provide_raw[$i] > $Storage[$i]){
-					echo "­ì®Æ¡u".$product_id_list[$i]."¡v¤£¨¬¡C";postFooter();exit;
+					echo "åŸæ–™ã€Œ".$product_id_list[$i]."ã€ä¸è¶³ã€‚";postFooter();exit;
 				}
 				if($provide_raw[$i] > 0){
 					$Storage[$i] -= $provide_raw[$i];
@@ -701,10 +707,10 @@ elseif($mode == 'SafeHouse' && $actionb && $actionc){
 			$tempSum += $offer_raw[$i];
 		}
 
-		if ($price_sell < 0){echo "©êºp, »ù¿ú¤£¯à¬O­t¼Æ¡C";postFooter();exit;}
+		if ($price_sell < 0){echo "æŠ±æ­‰, åƒ¹éŒ¢ä¸èƒ½æ˜¯è² æ•¸ã€‚";postFooter();exit;}
 		if ($tempSum == 0){
-			if ($price_sell <= 0){echo "©êºp, ¨S¦³¶i¦æ­ì®Æ¥æ©ö®É, »ù¿ú¤£¯à¬O¹s¡C";postFooter();exit;}
-			if ($sellslot !='wepb' && $sellslot !='wepc'){echo "©êºp, ¥¼¯à§ä¨ì»İ­nªº¸ê°T¡C5";postFooter();exit;}
+			if ($price_sell <= 0){echo "æŠ±æ­‰, æ²’æœ‰é€²è¡ŒåŸæ–™äº¤æ˜“æ™‚, åƒ¹éŒ¢ä¸èƒ½æ˜¯é›¶ã€‚";postFooter();exit;}
+			if ($sellslot !='wepb' && $sellslot !='wepc'){echo "æŠ±æ­‰, æœªèƒ½æ‰¾åˆ°éœ€è¦çš„è³‡è¨Šã€‚5";postFooter();exit;}
 		}
 		elseif ($sellslot !='wepb' && $sellslot !='wepc'){
 				$tradeRawOnlyFlag = true;
@@ -712,21 +718,21 @@ elseif($mode == 'SafeHouse' && $actionb && $actionc){
 		}
 
 		$sql = ("SELECT `bank`.`status` AS `status`, `sh_ina`, `sh_inb`, `sh_inc`, `gamename`, `savings`, `cash` FROM `".$GLOBALS['DBPrefix']."phpeb_user_bank` `bank`, `".$GLOBALS['DBPrefix']."phpeb_user_game_info` `game`, `".$GLOBALS['DBPrefix']."phpeb_user_general_info` `gen` WHERE `game`.`username`= `bank`.`username` AND `gen`.`username`= `bank`.`username` AND `bank`.`username`='$exch_target'");
-		$query = mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+		$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 		$BankUser = mysql_fetch_array($query);
 
-		if ($BankUser['status'] != '1'){echo "©êºp, ±z¥Ø¼Ğªº¤Hª«¨S¦³¦³®Äªº»È¦æ±b¤á¡C";postFooter();exit;}
+		if ($BankUser['status'] != '1'){echo "æŠ±æ­‰, æ‚¨ç›®æ¨™çš„äººç‰©æ²’æœ‰æœ‰æ•ˆçš„éŠ€è¡Œå¸³æˆ¶ã€‚";postFooter();exit;}
 
 		unset($PlaceSlotIN,$PlaceSlotOUT);
 		if (!$BankUser['sh_ina']){$PlaceSlotIN = 'sh_ina';}
 		elseif (!$BankUser['sh_inb']){$PlaceSlotIN = 'sh_inb';}
 		elseif (!$BankUser['sh_inc']){$PlaceSlotIN = 'sh_inc';}
-		else {echo "©êºp, ±z¥Ø¼Ğªº¤Hª««OÀI®wªº¨S¦³ªÅ¶¡¤F¡C";postFooter();exit;}
+		else {echo "æŠ±æ­‰, æ‚¨ç›®æ¨™çš„äººç‰©ä¿éšªåº«çš„æ²’æœ‰ç©ºé–“äº†ã€‚";postFooter();exit;}
 
 		if (!$Bank['sh_outa']){$PlaceSlotOUT = 'sh_outa';}
 		elseif (!$Bank['sh_outb']){$PlaceSlotOUT = 'sh_outb';}
 		elseif (!$Bank['sh_outc']){$PlaceSlotOUT = 'sh_outc';}
-		else {echo "©êºp, ±z¥u¯à¦P®É«Ø¥ß¤T³æ¥æ©ö¡C";postFooter();exit;}
+		else {echo "æŠ±æ­‰, æ‚¨åªèƒ½åŒæ™‚å»ºç«‹ä¸‰å–®äº¤æ˜“ã€‚";postFooter();exit;}
 
 		$ProvideRawInfo = '';
 		for($i = 1; $i <= $prvCount; $i++){
@@ -742,37 +748,30 @@ elseif($mode == 'SafeHouse' && $actionb && $actionc){
 
 		//Input Data
 		unset($sql);
-		$sql =	("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_bank` SET `$PlaceSlotOUT` = '$exch_target<#>$price_sell<#>$WepIndfyr<#>$PlaceSlotIN<#>$ProvideRawInfo<#>$RawMaterialInfo' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
-		mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');unset($sql);
-		$sql =	("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_bank` SET  `$PlaceSlotIN` = '".$Pl_Value['USERNAME']."<#>$price_sell<#>$WepIndfyr<#>$PlaceSlotOUT<#>$ProvideRawInfo<#>$RawMaterialInfo' WHERE `username` = '$exch_target' LIMIT 1;");
-		mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');unset($sql);
+		$sql =	("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_bank` SET `$PlaceSlotOUT` = '$exch_target<#>$price_sell<#>$WepIndfyr<#>$PlaceSlotIN<#>$ProvideRawInfo<#>$RawMaterialInfo' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
+		mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');unset($sql);
+		$sql =	("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_bank` SET  `$PlaceSlotIN` = '".$_SESSION['username']."<#>$price_sell<#>$WepIndfyr<#>$PlaceSlotOUT<#>$ProvideRawInfo<#>$RawMaterialInfo' WHERE `username` = '$exch_target' LIMIT 1;");
+		mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');unset($sql);
 		if($sellslot != false){
-			$sql =	("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET  `$sellslot` = '0<!>0' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
-			mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');unset($sql);
+			$sql =	("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET  `$sellslot` = '0<!>0' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
+			mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');unset($sql);
 		}
-		$sql = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_bank_log` (`time`, `user`, `g_name`, `type`, `target`, `tg_name`) VALUES ('".$CFU_Time."', '$Pl_Value[USERNAME]', '$Game[gamename]', '9', '$exch_target', '$BankUser[gamename]');");
-		mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');unset($sql);
+		$sql = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_bank_log` (`time`, `user`, `g_name`, `type`, `target`, `tg_name`) VALUES ('".$CFU_Time."', '$_SESSION[username]', '$Game[gamename]', '9', '$exch_target', '$BankUser[gamename]');");
+		mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');unset($sql);
 		if(isset($sqlStorage)){
 			foreach($sqlStorage as $sql){
-				mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+				mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 			}
 		}
-		$Message = "¤w¦¨¥\«Ø¥ß¥æ©ö¡I";
+		$Message = "å·²æˆåŠŸå»ºç«‹äº¤æ˜“ï¼";
 
 	}
 	// No Action Error
-	else  {$Message = "¥¼©w¸q°Ê§@¡I";}
+	else  {$Message = "æœªå®šç¾©å‹•ä½œï¼";}
 
 	echo "<form action=bank.php?action=SafeHouse method=post name=frmct target=$SecTarget>";
 	echo "<input type=hidden value='GUI' name=actionb>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
-	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
-	echo "</form>";
-	echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-	echo "<p align=center style=\"font-size: 16pt\">$Message<br><input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"><input type=submit value=\"Ä~Äò¨Ï¥Î«OÀI®w\" onClick=\"frmct.submit()\"></p>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	echo "<p align=center style=\"font-size: 16pt\">$Message<br><input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"><input type=submit value=\"ç¹¼çºŒä½¿ç”¨ä¿éšªåº«\" onClick=\"parent.$SecTarget.location.replace('bank.php?action=SafeHouse')\"></p>";
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 
@@ -783,13 +782,13 @@ elseif($mode == 'SafeHouse' && $actionb && $actionc){
 //
 
 elseif($mode == 'CheckLog' && $actionb >= 0){
-	echo "»È¦æ¤é»x¬ö¿ı<hr>";
+	echo "éŠ€è¡Œæ—¥èªŒç´€éŒ„<hr>";
 	echo "<br>";
 
 	$L_Lim = intval($actionb)*$Bank_SLog_Entries;
 	$U_Lim = $L_Lim + $Bank_SLog_Entries;
 
-	if ($Gen['acc_status'] >= 0) $SQL = ("SELECT `id`, `time`, `user`, `g_name`, `type`, `amount`, `cash`, `bankamt`, `t_cash`, `t_bankamt`, `target`, `tg_name` FROM `".$GLOBALS['DBPrefix']."phpeb_user_bank_log` WHERE `user` = '$Pl_Value[USERNAME]' OR (`target` = '$Pl_Value[USERNAME]' AND `type` != 4) ORDER BY `time` DESC Limit $L_Lim,$U_Lim");
+	if ($Gen['acc_status'] >= 0) $SQL = ("SELECT `id`, `time`, `user`, `g_name`, `type`, `amount`, `cash`, `bankamt`, `t_cash`, `t_bankamt`, `target`, `tg_name` FROM `".$GLOBALS['DBPrefix']."phpeb_user_bank_log` WHERE `user` = '$_SESSION[username]' OR (`target` = '$_SESSION[username]' AND `type` != 4) ORDER BY `time` DESC Limit $L_Lim,$U_Lim");
 	else $SQL = ("SELECT `id`, `time`, `user`, `g_name`, `type`, `amount`, `cash`, `bankamt`, `t_cash`, `t_bankamt`, `target`, `tg_name` FROM `".$GLOBALS['DBPrefix']."phpeb_user_bank_log` ORDER BY `time` DESC Limit $L_Lim,$U_Lim");
 
 	$SQL_Query = mysql_query($SQL) or die(mysql_error());
@@ -799,31 +798,31 @@ elseif($mode == 'CheckLog' && $actionb >= 0){
 	echo "<form action=bank.php?action=CheckLog method=post name=frmcl target=$SecTarget>";
 	echo "<input type=hidden value='".intval($actionb+1)."' name=actionb>";
 	echo "<input type=hidden value='' name=log_id>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 
-	echo "<tr align=center><td width=225>¤é´Á®É¶¡</td>";
-	echo "<td width=150>¤ä¥IªÌ</td>";
-	echo "<td width=70>°Ê§@</td>";
-	echo "<td width=150>ª÷ÃB ($)</td>";
-	echo "<td width=140>²{ª÷µ²¾l ($)</td>";
-	echo "<td width=140>±b¤áµ²¾l ($)</td>";
-	echo "<td width=150>¹ï¶H±b¸¹</td>";
+	echo "<tr align=center><td width=225>æ—¥æœŸæ™‚é–“</td>";
+	echo "<td width=150>æ”¯ä»˜è€…</td>";
+	echo "<td width=70>å‹•ä½œ</td>";
+	echo "<td width=150>é‡‘é¡ ($)</td>";
+	echo "<td width=140>ç¾é‡‘çµé¤˜ ($)</td>";
+	echo "<td width=140>å¸³æˆ¶çµé¤˜ ($)</td>";
+	echo "<td width=150>å°è±¡å¸³è™Ÿ</td>";
 	echo "</tr>";
 
 	function TypeBanking($act){
 		switch($act){
-			case 1: $ActionL = '¦s´Ú';break;
-			case 2: $ActionL = '´£´Ú';break;
-			case 3: $ActionL = '¶×´Ú';break;
-			case 4: $ActionL = '³q½r';break;
-			case 5: $ActionL = '¶}¤á';break;
-			case 6: $ActionL = '§¹¦¨¥æ©ö';break;
-			case 7: $ActionL = '¨ú®ø¥æ©ö';break;
-			case 8: $ActionL = '©Úµ´¥æ©ö';break;
-			case 9: $ActionL = '´£¥X¥æ©ö';break;
-			default : $ActionL = '¥¼«ü©w';break;
+			case 1: $ActionL = 'å­˜æ¬¾';break;
+			case 2: $ActionL = 'ææ¬¾';break;
+			case 3: $ActionL = 'åŒ¯æ¬¾';break;
+			case 4: $ActionL = 'é€šç·';break;
+			case 5: $ActionL = 'é–‹æˆ¶';break;
+			case 6: $ActionL = 'å®Œæˆäº¤æ˜“';break;
+			case 7: $ActionL = 'å–æ¶ˆäº¤æ˜“';break;
+			case 8: $ActionL = 'æ‹’çµ•äº¤æ˜“';break;
+			case 9: $ActionL = 'æå‡ºäº¤æ˜“';break;
+			default : $ActionL = 'æœªæŒ‡å®š';break;
 		}
 	return $ActionL;
 	}
@@ -840,7 +839,7 @@ while($Logs = mysql_fetch_array($SQL_Query)){
 	echo "<td>N/A</td>";
 	else
 	echo "<td>".number_format($Logs['amount'])."</td>";
-	if (($Logs['type'] == 3 || $Logs['type'] == 6) && $Logs['target'] == $Pl_Value['USERNAME']){
+	if (($Logs['type'] == 3 || $Logs['type'] == 6) && $Logs['target'] == $_SESSION['username']){
 		echo "<td>".number_format($Logs['t_cash'])."</td>";
 		echo "<td>".number_format($Logs['t_bankamt'])."</td>";
 	}
@@ -862,9 +861,9 @@ while($Logs = mysql_fetch_array($SQL_Query)){
 	echo "<tr align=center>";
 	echo "<td colspan=7>";
 	if (intval($actionb > 0))
-	echo "<input type=button value=\"¤W¤@­¶\" onClick=\"frmcl.actionb.value='".intval($actionb-1)."';frmcl.submit();\">";
-	echo "²Ä<input type=text maxlength=2 style=\"font-size: 10pt; color: #ffffff; background-color: #000000;text-align: center\" size=2 value='".intval($actionb+1)."' onChange=\"frmcl.actionb.value=Math.round(this.value-1);frmcl.submit();\">­¶";
-	echo "<input type=button value=\"¤U¤@­¶\" onClick=\"frmcl.submit();\">";
+	echo "<input type=button value=\"ä¸Šä¸€é \" onClick=\"frmcl.actionb.value='".intval($actionb-1)."';frmcl.submit();\">";
+	echo "ç¬¬<input type=text maxlength=2 style=\"font-size: 10pt; color: #ffffff; background-color: #000000;text-align: center\" size=2 value='".intval($actionb+1)."' onChange=\"frmcl.actionb.value=Math.round(this.value-1);frmcl.submit();\">é ";
+	echo "<input type=button value=\"ä¸‹ä¸€é \" onClick=\"frmcl.submit();\">";
 	echo "</td>";
 	echo "</tr>";
 	echo "</table>";
@@ -872,20 +871,20 @@ while($Logs = mysql_fetch_array($SQL_Query)){
 }
 
 elseif($mode == 'CheckSHLog' && isset($log_id)){
-	echo "»È¦æ«OÀI®w¥æ©ö¶µ¥Ø¬ö¿ı<hr>";
+	echo "éŠ€è¡Œä¿éšªåº«äº¤æ˜“é …ç›®ç´€éŒ„<hr>";
 	echo "<br>";
 	$log_id = intval($log_id);
 
 		unset($query,$sql,$SafeIN,$SafeIN_Wep,$SafeIN_Dealer,$D_Specs);
 		$sql = ("SELECT `g_name`,`tg_name`,`safehouse` FROM `".$GLOBALS['DBPrefix']."phpeb_user_bank_log` WHERE `id` = '".$log_id."'");
-		$query = mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+		$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 		$SafeInf = mysql_fetch_array($query);
 
 		$SafeIN = explode('<#>',$SafeInf['safehouse']);
 		$SafeIN_Wep = explode('<!>',$SafeIN[2]);
 
 		$sql = ("SELECT `name`,`atk`,`hit`,`rd`,`enc`,`spec`,`equip` FROM `".$GLOBALS['DBPrefix']."phpeb_sys_wep` WHERE `id` = '". $SafeIN_Wep[0] ."'");
-		$query = mysql_query($sql) or die ('µLªk¨ú±o¹CÀ¸¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+		$query = mysql_query($sql) or die ('ç„¡æ³•å–å¾—éŠæˆ²è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 		$SafeIN_Dealer = mysql_fetch_array($query);
 			if (isset($SafeIN_Wep[2])){
 				if ($SafeIN_Wep[2]==1) $SafeIN_Dealer['name'] = $SafeIN_Wep[3].$SafeIN_Dealer['name']."<sub>&copy;</sub>";
@@ -896,35 +895,35 @@ elseif($mode == 'CheckSHLog' && isset($log_id)){
 				$SafeIN_Dealer['enc'] = $SafeIN_Wep[7];
 			}
 		echo "<table align=center width=200 border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 10pt;\" bordercolor=\"#FFFFFF\">";
-		echo "<tr align=center><td colspan=3><b style=\"font-size: 12pt;\">¶R½æ¤º®e: </b></td>";
+		echo "<tr align=center><td colspan=3><b style=\"font-size: 12pt;\">è²·è³£å…§å®¹: </b></td>";
 		echo "</tr><tr valign=top><td>";
 
 		if ($SafeIN_Wep[1] > 0) $SafeIN_Wep['displayXp'] = '+'.($SafeIN_Wep[1]/100).'%';
 		elseif ($SafeIN_Wep[1] < 0) $SafeIN_Wep['displayXp'] = ($SafeIN_Wep[1]/100).'%';
-		else $SafeIN_Wep['displayXp'] = '¡Ó0%';
-		echo "½æ®a: $SafeInf[tg_name]<br>¥X»ù: ".number_format($SafeIN[1]);
+		else $SafeIN_Wep['displayXp'] = 'Â±0%';
+		echo "è³£å®¶: $SafeInf[tg_name]<br>å‡ºåƒ¹: ".number_format($SafeIN[1]);
 
 		// Plugin Mining Functions
 		include('plugins/mining/mining.config.php');
-		printRawReq($SafeIN[4], "<br>½æ®a¤ä¥Iªº­ì®Æ:<br>");
-		printRawReq($SafeIN[5], "<br>¶R®a¤ä¥Iªº­ì®Æ:<br>");
+		printRawReq($SafeIN[4], "<br>è³£å®¶æ”¯ä»˜çš„åŸæ–™:<br>");
+		printRawReq($SafeIN[5], "<br>è²·å®¶æ”¯ä»˜çš„åŸæ–™:<br>");
 
 		if($SafeIN_Wep[0]){
-			echo "<br>¸Ë³Æ: $SafeIN_Dealer[name]<br>ª¬ºA­È: $SafeIN_Wep[displayXp]<br>¯à¤O: <br>";
-			echo "¡@§ğÀ»¤O: $SafeIN_Dealer[atk]¡@¡@¡@¦^¼Æ: $SafeIN_Dealer[rd]<br>¡@©R¤¤: $SafeIN_Dealer[hit]¡@¡@¡@EN®ø¶O: $SafeIN_Dealer[enc]<br>";
+			echo "<br>è£å‚™: $SafeIN_Dealer[name]<br>ç‹€æ…‹å€¼: $SafeIN_Wep[displayXp]<br>èƒ½åŠ›: <br>";
+			echo "ã€€æ”»æ“ŠåŠ›: $SafeIN_Dealer[atk]ã€€ã€€ã€€å›æ•¸: $SafeIN_Dealer[rd]<br>ã€€å‘½ä¸­: $SafeIN_Dealer[hit]ã€€ã€€ã€€ENæ¶ˆè²»: $SafeIN_Dealer[enc]<br>";
 			$D_Specs = ReturnSpecs($SafeIN_Dealer['spec']);
-			echo "¯S®í®ÄªG:";
-			if ($SafeIN_Dealer['equip']) echo "¥i¥H¸Ë³Æ<br>";
+			echo "ç‰¹æ®Šæ•ˆæœ:";
+			if ($SafeIN_Dealer['equip']) echo "å¯ä»¥è£å‚™<br>";
 			if ($SafeIN_Dealer['spec']) echo $D_Specs;
-			elseif(!$SafeIN_Dealer['spec'] && !$SafeIN_Dealer['equip']) echo "¨S¦³¥ô¦ó¯S®í®ÄªG<br>";
+			elseif(!$SafeIN_Dealer['spec'] && !$SafeIN_Dealer['equip']) echo "æ²’æœ‰ä»»ä½•ç‰¹æ®Šæ•ˆæœ<br>";
 		}else{
-			echo "<BR>¦¹¥æ©ö¨S¦³¯A¤ÎªZ¸Ë¥æ©ö¡C<BR>";
+			echo "<BR>æ­¤äº¤æ˜“æ²’æœ‰æ¶‰åŠæ­¦è£äº¤æ˜“ã€‚<BR>";
 		}
 		echo "</td></tr>";
 		echo "</table>";
 }
 
 
-else {echo "¥¼©w¸q°Ê§@¡I";}
+else {echo "æœªå®šç¾©å‹•ä½œï¼";}
 postFooter();exit;
 ?>

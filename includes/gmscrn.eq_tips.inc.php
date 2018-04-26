@@ -12,26 +12,26 @@
 
 function returnEqLocation($EqL){
 	switch($EqL){
-	case 'A':return '¨Ï¥ÎªZ¾¹';break;
-	case 'B':return '³Æ¥Î¤@';break;
-	case 'C':return '³Æ¥Î¤G';break;
-	case 'D':return '»²§U¸Ë³Æ';break;
-	case 'E':return '±`³W¸Ë³Æ';break;
+	case 'A':return 'ä½¿ç”¨æ­¦å™¨';break;
+	case 'B':return 'å‚™ç”¨ä¸€';break;
+	case 'C':return 'å‚™ç”¨äºŒ';break;
+	case 'D':return 'è¼”åŠ©è£å‚™';break;
+	case 'E':return 'å¸¸è¦è£å‚™';break;
 	}
 }
 
 function prepBasixEqInfoString($Pl, $I, &$W_Inf){
-	$W_Inf[$I] = "¸Ë³Æ¯à¤O:<br>";
-	$W_Inf[$I] .= "¡@§ğÀ»¤O: ".$Pl->Eq[$I]['atk']."¡@¡@¡@¦^¼Æ: ".$Pl->Eq[$I]['rd']."<br>¡@©R¤¤: ".$Pl->Eq[$I]['hit']."¡@¡@¡@EN®ø¶O: <span id=EqmEnc_".$I.">".$Pl->Eq[$I]['enc']."</span><br>";
+	$W_Inf[$I] = "è£å‚™èƒ½åŠ›:<br>";
+	$W_Inf[$I] .= "ã€€æ”»æ“ŠåŠ›: ".$Pl->Eq[$I]['atk']."ã€€ã€€ã€€å›æ•¸: ".$Pl->Eq[$I]['rd']."<br>ã€€å‘½ä¸­: ".$Pl->Eq[$I]['hit']."ã€€ã€€ã€€ENæ¶ˆè²»: <span id=EqmEnc_".$I.">".$Pl->Eq[$I]['enc']."</span><br>";
 
 	// Prepare Range/Attribute
-	$W_Inf[$I] .= "¶ZÂ÷/Äİ©Ê: ".getRangeAttrb($Pl->Eq[$I]['range'],$Pl->Eq[$I]['attrb'],$Pl->Eq[$I]['equip'],false)."<br>";
+	$W_Inf[$I] .= "è·é›¢/å±¬æ€§: ".getRangeAttrb($Pl->Eq[$I]['range'],$Pl->Eq[$I]['attrb'],$Pl->Eq[$I]['equip'],false)."<br>";
 
 	// Prepare Special Effects
-	$W_Inf[$I] .= "¯S®í®ÄªG:<br>";
-	if (!$Pl->Eq[$I]['spec'] && !$Pl->Eq[$I]['equip']) $W_Inf[$I] .= "¨S¦³";
+	$W_Inf[$I] .= "ç‰¹æ®Šæ•ˆæœ:<br>";
+	if (!$Pl->Eq[$I]['spec'] && !$Pl->Eq[$I]['equip']) $W_Inf[$I] .= "æ²’æœ‰";
 	else{
-		if ($Pl->Eq[$I]['equip']) $W_Inf[$I] .= "¥i¥H¸Ë³Æ<br>";
+		if ($Pl->Eq[$I]['equip']) $W_Inf[$I] .= "å¯ä»¥è£å‚™<br>";
 		if ($Pl->Eq[$I]['spec'])  $W_Inf[$I] .= ReturnSpecs($Pl->Eq[$I]['spec']);
 	}
 }
@@ -48,7 +48,7 @@ function printQuickEquipNamePhrase($I,$id,$name,&$W_Inf){
 
 function printCondLevel($Pl, $I){
 	$Pl->Eq[$I]['displayXp'] = expToStatus($Pl->Eq[$I]['exp']);
-	echo "<br>ª¬ºA­È: <span id=EqmExp_".$I.">".$Pl->Eq[$I]['displayXp']."</span>";
+	echo "<br>ç‹€æ…‹å€¼: <span id=EqmExp_".$I.">".$Pl->Eq[$I]['displayXp']."</span>";
 }
 
 function printQuickEquipSpanTag($V,$I,$j,$k,$actb,$boolTag,$boolStr){

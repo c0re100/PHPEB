@@ -4,11 +4,11 @@ include('cfu.php');
 if (empty($PriTarget)) $PriTarget = 'Alpha';
 if (empty($SecTarget)) $SecTarget = 'Beta';
 postHead('');
-AuthUser("$Pl_Value[USERNAME]","$Pl_Value[PASSWORD]");
-if ($CFU_Time >= $TIMEAUTH+$TIME_OUT_TIME || $TIMEAUTH <= $CFU_Time-$TIME_OUT_TIME){echo "³s½u¹O®É¡I<br>½Ğ­«·sµn¤J¡I";exit;}
-GetUsrDetails("$Pl_Value[USERNAME]",'Gen','Game');
+AuthUser();
+if ($CFU_Time >= $_SESSION['timeauth']+$TIME_OUT_TIME || $_SESSION['timeauth'] <= $CFU_Time-$TIME_OUT_TIME){echo "é€£ç·šé€¾æ™‚ï¼<br>è«‹é‡æ–°ç™»å…¥ï¼";exit;}
+GetUsrDetails("$_SESSION[username]",'Gen','Game');
 $t_now = time();
-if ($t_now - $Gen['btltime'] <= 1){echo "°Ê§@¹L§Ö¡C";postFooter();mysql_query("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `btltime` = ".intval($t_now+10)." WHERE `username` = '$Gen[username]' LIMIT 1;");exit;}
+if ($t_now - $Gen['btltime'] <= 1){echo "å‹•ä½œéå¿«ã€‚";postFooter();mysql_query("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `btltime` = ".intval($t_now+10)." WHERE `username` = '$Gen[username]' LIMIT 1;");exit;}
 
 
 function hasExam($spec){
@@ -85,20 +85,20 @@ $UsWepSpec_E = ReturnSpecs("$UsWep_E[spec]");
 //Hangar GUI
 if ($mode=='main'){
 
-	$SQL_Main = ("SELECT `h_id`, `h_user`, `h_msuit`, `h_hp`, `h_hpmax`, `h_en`, `h_enmax`, `h_ms_custom`, `h_wepa`, `h_wepb`, `h_wepc`, `h_eqwep`, `h_p_equip`, `msname`, `atf`, `def`, `ref`, `taf`  FROM `".$GLOBALS['DBPrefix']."phpeb_user_hangar` `h`, `".$GLOBALS['DBPrefix']."phpeb_sys_ms` `ms` WHERE `h_user` = '$Pl_Value[USERNAME]' AND `id` = `h_msuit` ORDER BY `h_id` ASC;");
+	$SQL_Main = ("SELECT `h_id`, `h_user`, `h_msuit`, `h_hp`, `h_hpmax`, `h_en`, `h_enmax`, `h_ms_custom`, `h_wepa`, `h_wepb`, `h_wepc`, `h_eqwep`, `h_p_equip`, `h_mslv`, `h_msexp`, `msname`, `atf`, `def`, `ref`, `taf` FROM `".$GLOBALS['DBPrefix']."phpeb_user_hangar` `h`, `".$GLOBALS['DBPrefix']."phpeb_sys_ms` `ms` WHERE `h_user` = '$_SESSION[username]' AND `id` = `h_msuit` ORDER BY `h_id` ASC;");
 	$SQL_Query_Main = mysql_query($SQL_Main) or die(mysql_error());
 	$NumHangarMS = mysql_num_rows($SQL_Query_Main);
 
 if ($mode=='main' && $actionb == 'procget'){
 	$actionc = intval($actionc);
-	if ($Gen['msuit']){$ErrorMsg = '½Ğ¥ı¦w¸m¦n¥¿¦b¨Ï¥Îªº¾÷Åé!!';}
-	elseif ($Game['wepa'] != '0<!>0' || $Game['wepb'] != '0<!>0' || $Game['wepc'] != '0<!>0' || $Game['eqwep'] != '0<!>0'){$ErrorMsg = '½Ğ¥ı¦w¸m¦n³Æ¥Î¤¤ªºªZ¾¹©M¸Ë³Æ!!';}
-	elseif (!$actionc){$ErrorMsg = '½Ğ¥ı¿ï©w¥Ø¼Ğ¾÷Åé!!';}
+	if ($Gen['msuit']){$ErrorMsg = 'è«‹å…ˆå®‰ç½®å¥½æ­£åœ¨ä½¿ç”¨çš„æ©Ÿé«”!!';}
+	elseif ($Game['wepa'] != '0<!>0' || $Game['wepb'] != '0<!>0' || $Game['wepc'] != '0<!>0' || $Game['eqwep'] != '0<!>0'){$ErrorMsg = 'è«‹å…ˆå®‰ç½®å¥½å‚™ç”¨ä¸­çš„æ­¦å™¨å’Œè£å‚™!!';}
+	elseif (!$actionc){$ErrorMsg = 'è«‹å…ˆé¸å®šç›®æ¨™æ©Ÿé«”!!';}
 	else {
-		$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_hangar` WHERE `h_id` = '$actionc' AND `h_user` = '$Pl_Value[USERNAME]' LIMIT 1;");
+		$sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_user_hangar` WHERE `h_id` = '$actionc' AND `h_user` = '$_SESSION[username]' LIMIT 1;");
 		$sql_query = mysql_query($sql) or die(mysql_error());
 		$CountResults = mysql_num_rows($sql_query);
-		if ($CountResults != 1) $ErrorMsg = '§ä¤£¨ì¾÷Åé¡C';
+		if ($CountResults != 1) $ErrorMsg = 'æ‰¾ä¸åˆ°æ©Ÿé«”ã€‚';
 		else {
 			$Hangar = mysql_fetch_array($sql_query);
 
@@ -126,19 +126,19 @@ if ($mode=='main' && $actionb == 'procget'){
 				$EXAM_String = ("`spec` = '$Game[spec]', ");
 			}else $EXAM_String = '';
 
-			$SQL = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `msuit` = '$Hangar[h_msuit]' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+			$SQL = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `msuit` = '$Hangar[h_msuit]' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 			mysql_query($SQL) or die(mysql_error());
-			$SQL = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET $EXAM_String `hp` = '$Hangar[h_hp]', `hpmax` = '$Hangar[h_hpmax]', `en` = '$Hangar[h_en]', `enmax` = '$Hangar[h_enmax]', `ms_custom` = '$Hangar[h_ms_custom]', `wepa` = '$Hangar[h_wepa]', `wepb` = '$Hangar[h_wepb]', `wepc` = '$Hangar[h_wepc]', `eqwep` = '$Hangar[h_eqwep]', `p_equip` = '$Hangar[h_p_equip]' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+			$SQL = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET $EXAM_String `hp` = '$Hangar[h_hp]', `hpmax` = '$Hangar[h_hpmax]', `en` = '$Hangar[h_en]', `enmax` = '$Hangar[h_enmax]', `ms_custom` = '$Hangar[h_ms_custom]', `wepa` = '$Hangar[h_wepa]', `wepb` = '$Hangar[h_wepb]', `wepc` = '$Hangar[h_wepc]', `eqwep` = '$Hangar[h_eqwep]', `p_equip` = '$Hangar[h_p_equip]', `mslv` = '$Hangar[h_mslv]', `msexp` = '$Hangar[h_msexp]'  WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 			mysql_query($SQL) or die(mysql_error());
-			$SQL = ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_hangar` WHERE `h_id` = '$actionc' AND `h_user` = '$Pl_Value[USERNAME]' LIMIT 1;");
+			$SQL = ("DELETE FROM `".$GLOBALS['DBPrefix']."phpeb_user_hangar` WHERE `h_id` = '$actionc' AND `h_user` = '$_SESSION[username]' LIMIT 1;");
 			mysql_query($SQL) or die(mysql_error());
 		}
 	}
-	if (empty($ErrorMsg))$ErrorMsg ='¦¨¥\\¨ú¥X¾÷Åé©M¸Ë³Æ¤F¡I';
+	if (empty($ErrorMsg))$ErrorMsg ='æˆåŠŸå–å‡ºæ©Ÿé«”å’Œè£å‚™äº†ï¼';
 	echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-	echo "<p align=center style=\"font-size: 16pt\">$ErrorMsg<br><input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	echo "<p align=center style=\"font-size: 16pt\">$ErrorMsg<br><input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 
@@ -146,9 +146,9 @@ if ($mode=='main' && $actionb == 'procget'){
 }
 if ($mode=='main' && $actionb == 'prockeep'){
 
-	if (!$Gen['msuit']){$ErrorMsg = '§A¨S¦³¾÷Åé¥i¥H¦s¤J®æ¯Ç®w!!';}
-	elseif ($NumHangarMS >= $Hangar_Limit) {$ErrorMsg = '®æ¯Ç®wªÅ¶¡¤£¨¬¡I<Br>¤w¸g¨Ï¥Î¤F$NumHangarMS/$Hangar_Limit­ÓªÅ¶¡¡C';}
-	elseif ($Gen['cash'] - $Hangar_Price < 0) {$ErrorMsg = 'ª÷¿ú¤£¨¬¡I';}
+	if (!$Gen['msuit']){$ErrorMsg = 'ä½ æ²’æœ‰æ©Ÿé«”å¯ä»¥å­˜å…¥æ ¼ç´åº«!!';}
+	elseif ($NumHangarMS >= $Hangar_Limit) {$ErrorMsg = 'æ ¼ç´åº«ç©ºé–“ä¸è¶³ï¼<Br>å·²ç¶“ä½¿ç”¨äº†$NumHangarMS/$Hangar_Limitå€‹ç©ºé–“ã€‚';}
+	elseif ($Gen['cash'] - $Hangar_Price < 0) {$ErrorMsg = 'é‡‘éŒ¢ä¸è¶³ï¼';}
 	else {
 		$sql = ("SELECT `spec` FROM `".$GLOBALS['DBPrefix']."phpeb_sys_ms` WHERE id='". $Gen['msuit'] ."'");
 		$query_r = mysql_query($sql);
@@ -174,18 +174,18 @@ if ($mode=='main' && $actionb == 'prockeep'){
 			$hypmd_sql = ", `hypermode` = $hypmd ";
 		}
 
-		$sql = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_hangar` VALUES('','$Pl_Value[USERNAME]','$Gen[msuit]','$Game[hp]','$Game[hpmax]','$Game[en]','$Game[enmax]','$Game[ms_custom]','$Game[wepa]','$Game[wepb]','$Game[wepc]','$Game[eqwep]','$Game[p_equip]');");
+		$sql = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_hangar` VALUES('','$_SESSION[username]','$Gen[msuit]','$Game[hp]','$Game[hpmax]','$Game[en]','$Game[enmax]','$Game[ms_custom]','$Game[wepa]','$Game[wepb]','$Game[wepc]','$Game[eqwep]','$Game[p_equip]','$Game[mslv]','$Game[msexp]');");
 		mysql_query($sql) or die(mysql_error());
-		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET $EXAM_String `hp` = 0, `hpmax` = 0, `en` = 0 , `enmax` = 0, `ms_custom` = '', `wepa` = '0<!>0', `wepb` = '0<!>0', `wepc` = '0<!>0', `eqwep` = '0<!>0', `p_equip` = '0<!>0' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET $EXAM_String `hp` = 0, `hpmax` = 0, `en` = 0 , `enmax` = 0, `ms_custom` = '', `wepa` = '0<!>0', `wepb` = '0<!>0', `wepc` = '0<!>0', `eqwep` = '0<!>0', `p_equip` = '0<!>0', `mslv` = '1', `msexp` = '0' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 		mysql_query($sql) or die(mysql_error());
-		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `msuit` = 0 $hypmd_sql, `cash` = `cash`-$Hangar_Price WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `msuit` = 0 $hypmd_sql, `cash` = `cash`-$Hangar_Price WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 		mysql_query($sql) or die(mysql_error());
 	}
-	if (empty($ErrorMsg)) $ErrorMsg ='¦¨¥\\¦s¤J¾÷Åé©M¸Ë³Æ¤F¡I';
+	if (empty($ErrorMsg)) $ErrorMsg ='æˆåŠŸå­˜å…¥æ©Ÿé«”å’Œè£å‚™äº†ï¼';
 	echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-	echo "<p align=center style=\"font-size: 16pt\">$ErrorMsg<br><input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	echo "<p align=center style=\"font-size: 16pt\">$ErrorMsg<br><input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 
@@ -195,73 +195,73 @@ if ($mode=='main' && $actionb == 'prockeep'){
 if ($mode=='main' && $actionb == 'procgive'){
 	$actionc = intval($actionc);
 	$entname = str_replace("[\|\`(--)]+",'',$entname);
-	if (!$actionc){$ErrorMsg = '½Ğ¥ı¿ï©w¥Ø¼Ğ¾÷Åé!!';}
-	elseif (!$entname || $entname == '<<¤â°Ê¿é¤J>>'){$ErrorMsg = '½Ğ¥ı¿ï©w¥Ø¼Ğ¤Hª«!!';}
+	if (!$actionc){$ErrorMsg = 'è«‹å…ˆé¸å®šç›®æ¨™æ©Ÿé«”!!';}
+	elseif (!$entname || $entname == '<<æ‰‹å‹•è¼¸å…¥>>'){$ErrorMsg = 'è«‹å…ˆé¸å®šç›®æ¨™äººç‰©!!';}
 	else {
 		$sql = ("SELECT `username`, `level` FROM `".$GLOBALS['DBPrefix']."phpeb_user_game_info` WHERE `gamename` = '".$entname."'");
 		$sql_query = mysql_query($sql) or die(mysql_error());
 		$CountResults = mysql_num_rows($sql_query);
-		if ($CountResults != 1) $ErrorMsg = '§ä¤£¨ì¥Ø¼Ğª±®a¡C';
+		if ($CountResults != 1) $ErrorMsg = 'æ‰¾ä¸åˆ°ç›®æ¨™ç©å®¶ã€‚';
 		else {
 			$result = mysql_fetch_array($sql_query);
 			$entuser = $result['username'];
 			$level = $result['level'];
-			$sql = ("SELECT `needlv` FROM `".$GLOBALS['DBPrefix']."phpeb_user_hangar`, `".$GLOBALS['DBPrefix']."phpeb_sys_ms` WHERE `h_msuit` = `id` AND `h_id` = '$actionc' AND `h_user` = '$Pl_Value[USERNAME]' LIMIT 1;");
+			$sql = ("SELECT `needlv` FROM `".$GLOBALS['DBPrefix']."phpeb_user_hangar`, `".$GLOBALS['DBPrefix']."phpeb_sys_ms` WHERE `h_msuit` = `id` AND `h_id` = '$actionc' AND `h_user` = '$_SESSION[username]' LIMIT 1;");
 			$sql_query = mysql_query($sql) or die(mysql_error());
 			$CountResults = mysql_num_rows($sql_query);
 			unset($result);
 			$result = mysql_fetch_array($sql_query);
-			if ($CountResults < 1) $ErrorMsg = '§ä¤£¨ì¾÷Åé¡C';
+			if ($CountResults < 1) $ErrorMsg = 'æ‰¾ä¸åˆ°æ©Ÿé«”ã€‚';
 			elseif ($result['needlv'] > $level){
-				$ErrorMsg = '¦¬¨ü¤èµ¥¯Å¤£¨¬¡C';
+				$ErrorMsg = 'æ”¶å—æ–¹ç­‰ç´šä¸è¶³ã€‚';
 			}
 			else {
-				$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_hangar` SET `h_user` = '".$entuser."' WHERE `h_id` = '$actionc' AND `h_user` = '$Pl_Value[USERNAME]' LIMIT 1;");
+				$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_hangar` SET `h_user` = '".$entuser."' WHERE `h_id` = '$actionc' AND `h_user` = '$_SESSION[username]' LIMIT 1;");
 				$query = mysql_query($sql);
 			}
 		}
 	}
-	if (empty($ErrorMsg)) $ErrorMsg ='¤wÃØ°e¾÷Åé¡I';
+	if (empty($ErrorMsg)) $ErrorMsg ='å·²è´ˆé€æ©Ÿé«”ï¼';
 	echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-	echo "<p align=center style=\"font-size: 16pt\">$ErrorMsg<br><input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	echo "<p align=center style=\"font-size: 16pt\">$ErrorMsg<br><input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"></p>";
+	
+	
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "</form>";
 
 	postFooter();exit;
 }
 
-echo "<font style=\"font-size: 12pt\">®æ¯Ç®w</font><hr>";
+echo "<font style=\"font-size: 12pt\">æ ¼ç´åº«</font><hr>";
 echo "<br>";
 echo "<form action=hangar.php?action=main method=post name=hnmainform>";
 echo "<input type=hidden value='' name=actionb>";
 echo "<input type=hidden value='' name=actionc>";
-echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+
+
 echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#FFFFFF\" width=\"650\">";
-	echo "<tr align=center><td colspan=10><b>¸Ë³ÆªZ¾¹¦Cªí: </b></td></tr>";
+	echo "<tr align=center><td colspan=10><b>è£å‚™æ­¦å™¨åˆ—è¡¨: </b></td></tr>";
 	echo "<tr align=center>";
 	echo "<td width=\"20\">No.</td>";
-	echo "<td width=\"195\">ªZ¾¹¦WºÙ</td>";
-	echo "<td width=\"80\">§ğÀ»¤O</td>";
-	echo "<td width=\"30\">©R¤¤</td>";
-	echo "<td width=\"30\">¦^¼Æ</td>";
-	echo "<td width=\"40\">EN®ø¶O</td>";
-	echo "<td width=\"80\">¶ZÂ÷/Äİ©Ê</td>";
-	echo "<td width=\"120\">¯S®í®ÄªG</td>";
-	echo "<td width=\"85\">»ù¿ú</td>";
-	echo "<td width=\"50\">ª¬ºA­È</td>";
+	echo "<td width=\"195\">æ­¦å™¨åç¨±</td>";
+	echo "<td width=\"80\">æ”»æ“ŠåŠ›</td>";
+	echo "<td width=\"30\">å‘½ä¸­</td>";
+	echo "<td width=\"30\">å›æ•¸</td>";
+	echo "<td width=\"40\">ENæ¶ˆè²»</td>";
+	echo "<td width=\"80\">è·é›¢/å±¬æ€§</td>";
+	echo "<td width=\"120\">ç‰¹æ®Šæ•ˆæœ</td>";
+	echo "<td width=\"85\">åƒ¹éŒ¢</td>";
+	echo "<td width=\"50\">ç‹€æ…‹å€¼</td>";
 	echo "</tr>";
 
 	if ($UsrWepA[0]){
 	if ($UsrWepA[1] > 0) $UsrWepA['displayXp'] = '+'.($UsrWepA[1]/100).'%';
 	elseif ($UsrWepA[1] < 0) $UsrWepA['displayXp'] = ($UsrWepA[1]/100).'%';
-	else $UsrWepA['displayXp'] = '¡Ó0%';
+	else $UsrWepA['displayXp'] = 'Â±0%';
 	echo "<tr align=center>";
-	echo "<td width=\"20\">²{</td>";
+	echo "<td width=\"20\">ç¾</td>";
 	echo "<td width=\"195\">$UsWep_A[name]</td>";
 	echo "<td width=\"80\">". number_format($UsWep_A['atk']) ."</td>";
 	echo "<td width=\"30\">$UsWep_A[hit]</td>";
@@ -275,9 +275,9 @@ echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	if ($UsrWepB[0]){
 	if ($UsrWepB[1] > 0) $UsrWepB['displayXp'] = '+'.($UsrWepB[1]/100).'%';
 	elseif ($UsrWepB[1] < 0) $UsrWepB['displayXp'] = ($UsrWepB[1]/100).'%';
-	else $UsrWepB['displayXp'] = '¡Ó0%';
+	else $UsrWepB['displayXp'] = 'Â±0%';
 	echo "<tr align=center>";
-	echo "<td width=\"20\">¤@</td>";
+	echo "<td width=\"20\">ä¸€</td>";
 	echo "<td width=\"195\">$UsWep_B[name]</td>";
 	echo "<td width=\"80\">". number_format($UsWep_B['atk']) ."</td>";
 	echo "<td width=\"30\">$UsWep_B[hit]</td>";
@@ -287,14 +287,14 @@ echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "<td width=\"120\">$UsWepSpec_B</td>";
 	echo "<td width=\"85\">". number_format($UsWep_B['price']) ."</td>";
 	echo "<td width=\"50\">$UsrWepB[displayXp]</td>";
-	$b_sel = "<option value='wepb'>³Æ¥Î¤@: $UsWep_B[name]";
+	$b_sel = "<option value='wepb'>å‚™ç”¨ä¸€: $UsWep_B[name]";
 	echo "</tr>";}
 	if ($UsrWepC[0]){
 	if ($UsrWepC[1] > 0) $UsrWepC['displayXp'] = '+'.($UsrWepC[1]/100).'%';
 	elseif ($UsrWepC[1] < 0) $UsrWepC['displayXp'] = ($UsrWepC[1]/100).'%';
-	else $UsrWepC['displayXp'] = '¡Ó0%';
+	else $UsrWepC['displayXp'] = 'Â±0%';
 	echo "<tr align=center>";
-	echo "<td width=\"20\">¤G</td>";
+	echo "<td width=\"20\">äºŒ</td>";
 	echo "<td width=\"195\">$UsWep_C[name]</td>";
 	echo "<td width=\"80\">". number_format($UsWep_C['atk']) ."</td>";
 	echo "<td width=\"30\">$UsWep_C[hit]</td>";
@@ -304,14 +304,14 @@ echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "<td width=\"120\">$UsWepSpec_C</td>";
 	echo "<td width=\"85\">". number_format($UsWep_C['price']) ."</td>";
 	echo "<td width=\"50\">$UsrWepC[displayXp]</td>";
-	$c_sel = "<option value='wepc'>³Æ¥Î¤G: $UsWep_C[name]";
+	$c_sel = "<option value='wepc'>å‚™ç”¨äºŒ: $UsWep_C[name]";
 	echo "</tr>";}
 	if ($UsrWepD[0]){
 	if ($UsrWepD[1] > 0) $UsrWepD['displayXp'] = '+'.($UsrWepD[1]/100).'%';
 	elseif ($UsrWepD[1] < 0) $UsrWepD['displayXp'] = ($UsrWepD[1]/100).'%';
-	else $UsrWepD['displayXp'] = '¡Ó0%';
+	else $UsrWepD['displayXp'] = 'Â±0%';
 	echo "<tr align=center>";
-	echo "<td width=\"20\">»²</td>";
+	echo "<td width=\"20\">è¼”</td>";
 	echo "<td width=\"195\">$UsWep_D[name]</td>";
 	echo "<td width=\"80\">". number_format($UsWep_D['atk']) ."</td>";
 	echo "<td width=\"30\">$UsWep_D[hit]</td>";
@@ -321,14 +321,14 @@ echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "<td width=\"120\">$UsWepSpec_D</td>";
 	echo "<td width=\"85\">". number_format($UsWep_D['price']) ."</td>";
 	echo "<td width=\"50\">$UsrWepD[displayXp]</td>";
-	$c_sel = "<option value='WepD'>»²§U¸Ë³Æ: $UsWep_D[name]";
+	$c_sel = "<option value='WepD'>è¼”åŠ©è£å‚™: $UsWep_D[name]";
 	echo "</tr>";}
 	if ($UsrWepE[0]){
 	if ($UsrWepE[1] > 0) $UsrWepE['displayXp'] = '+'.($UsrWepE[1]/100).'%';
 	elseif ($UsrWepE[1] < 0) $UsrWepE['displayXp'] = ($UsrWepE[1]/100).'%';
-	else $UsrWepE['displayXp'] = '¡Ó0%';
+	else $UsrWepE['displayXp'] = 'Â±0%';
 	echo "<tr align=center>";
-	echo "<td width=\"20\">±`</td>";
+	echo "<td width=\"20\">å¸¸</td>";
 	echo "<td width=\"195\">$UsWep_E[name]</td>";
 	echo "<td width=\"80\">". number_format($UsWep_E['atk']) ."</td>";
 	echo "<td width=\"30\">$UsWep_E[hit]</td>";
@@ -338,24 +338,24 @@ echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 	echo "<td width=\"120\">$UsWepSpec_E</td>";
 	echo "<td width=\"85\">". number_format($UsWep_E['price']) ."</td>";
 	echo "<td width=\"50\">$UsrWepE[displayXp]</td>";
-	$c_sel = "<option value='WepD'>±`³W¸Ë³Æ: $UsWep_E[name]";
+	$c_sel = "<option value='WepD'>å¸¸è¦è£å‚™: $UsWep_E[name]";
 	echo "</tr>";}
 	echo "</table>";
 
 	echo "<script language=\"Javascript\">";
 	echo "function cfmKeep(){
-		if (confirm('ªá $".number_format($Hangar_Price)." ¨Ó¦s©ñ¾÷Åé¶Ü¡H') == true){hnmainform.actionb.value='prockeep';return true;}
+		if (confirm('èŠ± $".number_format($Hangar_Price)." ä¾†å­˜æ”¾æ©Ÿé«”å—ï¼Ÿ') == true){hnmainform.actionb.value='prockeep';return true;}
 		else {return false;}";
 	echo "}</script>";
 
 
 	echo "<hr width=85%>";
-	if (!$Gen['msuit']){echo '<center>§A¨S¦³¾÷Åé¥i¥H¦s¤J®æ¯Ç®w¡C';}
-	elseif ($NumHangarMS > $Hangar_Limit){echo '<center>®æ¯Ç®w¤Ó¦h¾÷Åé¤F¡I¤£¯à¦A¦s¤J®æ¯Ç®w¡C';}
+	if (!$Gen['msuit']){echo '<center>ä½ æ²’æœ‰æ©Ÿé«”å¯ä»¥å­˜å…¥æ ¼ç´åº«ã€‚';}
+	elseif ($NumHangarMS > $Hangar_Limit){echo '<center>æ ¼ç´åº«å¤ªå¤šæ©Ÿé«”äº†ï¼ä¸èƒ½å†å­˜å…¥æ ¼ç´åº«ã€‚';}
 	else {
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#FFFFFF\" width=\"200\">";
-	echo "<tr><td align=center>¦s¶i®æ¯Ç®w:<br>";
-	echo "<input type=submit value=½T©w¦s©ñ onClick=\"return cfmKeep()\" $BStyleB style=\"$BStyleA\"></td></tr>";
+	echo "<tr><td align=center>å­˜é€²æ ¼ç´åº«:<br>";
+	echo "<input type=submit value=ç¢ºå®šå­˜æ”¾ onClick=\"return cfmKeep()\" $BStyleB style=\"$BStyleA\"></td></tr>";
 	echo "</table>";}
 
 
@@ -397,19 +397,19 @@ function offLayer(){
 }
 
 function confirmTake(h_id){
-	if ($Gen[msuit] != 0){alert('½Ğ¥ı¦w¸m¦n¥¿¦b¨Ï¥Îªº¾÷Åé');}
-	else if ('$Game[wepa]' != '0<!>0' || '$Game[wepb]' != '0<!>0' || '$Game[wepc]' != '0<!>0' || '$Game[eqwep]' != '0<!>0'){alert('½Ğ¥ı¦w¸m¦n³Æ¥Î¤¤ªºªZ¾¹©M¸Ë³Æ!!');}
-	else if (confirm('­n¨ú¥XID: '+h_id+' ªº¾÷Åé¶Ü?\\n½Ğª`·N, ªş¥[¯à·½©Mªş¥[¸Ë¥ÒÁÙ¦s¦bªº¸Ü, ±N·|³Q±ó¸m!') == true) {hnmainform.actionb.value='procget';hnmainform.actionc.value=h_id;hnmainform.submit();}
+	if ($Gen[msuit] != 0){alert('è«‹å…ˆå®‰ç½®å¥½æ­£åœ¨ä½¿ç”¨çš„æ©Ÿé«”');}
+	else if ('$Game[wepa]' != '0<!>0' || '$Game[wepb]' != '0<!>0' || '$Game[wepc]' != '0<!>0' || '$Game[eqwep]' != '0<!>0'){alert('è«‹å…ˆå®‰ç½®å¥½å‚™ç”¨ä¸­çš„æ­¦å™¨å’Œè£å‚™!!');}
+	else if (confirm('è¦å–å‡ºID: '+h_id+' çš„æ©Ÿé«”å—?\\nè«‹æ³¨æ„, é™„åŠ èƒ½æºå’Œé™„åŠ è£ç”²é‚„å­˜åœ¨çš„è©±, å°‡æœƒè¢«æ£„ç½®!') == true) {hnmainform.actionb.value='procget';hnmainform.actionc.value=h_id;hnmainform.submit();}
 }
 function confirmGive(h_id,ename){
-	if (!ename || ename == '<<¤â°Ê¿é¤J>>'){alert(\"½Ğ«ü©w¥Ø¼Ğ¤Hª«¡C\");return false;}
-	else if (confirm('­nÃØ°eID: '+h_id+' ªº¾÷Åé¤© '+ename+' ¶Ü?') == true) {hnmainform.actionb.value='procgive';hnmainform.actionc.value=h_id;hnmainform.submit();}
+	if (!ename || ename == '<<æ‰‹å‹•è¼¸å…¥>>'){alert(\"è«‹æŒ‡å®šç›®æ¨™äººç‰©ã€‚\");return false;}
+	else if (confirm('è¦è´ˆé€ID: '+h_id+' çš„æ©Ÿé«”äºˆ '+ename+' å—?') == true) {hnmainform.actionb.value='procgive';hnmainform.actionc.value=h_id;hnmainform.submit();}
 }
 </script>
 ";
 
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#333333\" width=\"680\">";
-	echo "<tr align=center><td colspan=10><b>®æ¯Ç®w¤ºªº¾÷Åé: </b></td></tr>";
+	echo "<tr align=center><td colspan=10><b>æ ¼ç´åº«å…§çš„æ©Ÿé«”: </b></td></tr>";
 
 	$TakeOptions = '';
 
@@ -426,8 +426,8 @@ function confirmGive(h_id,ename){
 	}
 
 	echo "<tr align=center style=\"cursor: pointer\" onClick=\"confirmTake('$Hangar[h_id]');\" onMouseOver=\"this.style.color='yellow'\" onMouseOut=\"this.style.color='white'\">";
-	echo "<td width=\"80\" rowspan=2>®æ¯Ç®w ID</td>";
-	echo "<td width=\"200\" rowspan=2>¾÷Åé¦WºÙ</td>";
+	echo "<td width=\"80\" rowspan=2>æ ¼ç´åº« ID</td>";
+	echo "<td width=\"200\" rowspan=2>æ©Ÿé«”åç¨±</td>";
 	echo "<td width=\"50\">Att</td>";
 	echo "<td width=\"50\">Def</td>";
 	echo "<td width=\"50\">Mob</td>";
@@ -452,11 +452,11 @@ function confirmGive(h_id,ename){
 
 		echo "<table align=center border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#FFFFFF\" width=\"100%\">";
 		echo "<tr align=center>";
-		echo "<td width=\"20%\">ªZ¾¹</td>";
-		echo "<td width=\"20%\">³Æ¥Î¤@</td>";
-		echo "<td width=\"20%\">³Æ¥Î¤G</td>";
-		echo "<td width=\"20%\">»²§U¸Ë³Æ</td>";
-		echo "<td width=\"20%\">±`³W¸Ë³Æ</td>";
+		echo "<td width=\"20%\">æ­¦å™¨</td>";
+		echo "<td width=\"20%\">å‚™ç”¨ä¸€</td>";
+		echo "<td width=\"20%\">å‚™ç”¨äºŒ</td>";
+		echo "<td width=\"20%\">è¼”åŠ©è£å‚™</td>";
+		echo "<td width=\"20%\">å¸¸è¦è£å‚™</td>";
 		echo "</tr><tr align=center>";
 		unset($I);
 		$Eq_Listing = Array('A' => 'h_wepa','B' => 'h_wepb','C' => 'h_wepc','D' => 'h_eqwep','E' => 'h_p_equip');
@@ -478,16 +478,16 @@ function confirmGive(h_id,ename){
 				}
 				if (${$H_Wep}[1] > 0) ${$H_Wep}['displayXp'] = '+'.(${$H_Wep}[1]/100).'%';
 				elseif (${$H_Wep}[1] < 0) ${$H_Wep}['displayXp'] = (${$H_Wep}[1]/100).'%';
-				else ${$H_Wep}['displayXp'] = '¡Ó0%';
-				$$W_Inf = ${$H_SyWep}['name']."<br>ª¬ºA­È: ".${$H_Wep}['displayXp']."<hr width=95%>¯à¤O:<br>";
-				$$W_Inf .= "¡@§ğÀ»¤O: ".${$H_SyWep}['atk']."¡@¡@¡@¦^¼Æ: ".${$H_SyWep}['rd']."<br>¡@©R¤¤: ".${$H_SyWep}['hit']."¡@¡@¡@EN®ø¶O: ".${$H_SyWep}['enc']."<br>";
-				$$W_Inf .= "¶ZÂ÷/Äİ©Ê: ".getRangeAttrb(${$H_SyWep}['range'],${$H_SyWep}['attrb'],${$H_SyWep}['equip'],false)."<br>";
-				$$W_Inf .= "¯S®í®ÄªG:<br>";
-				if (${$H_SyWep}['equip']) $$W_Inf .= "¥i¥H¸Ë³Æ<br>";
+				else ${$H_Wep}['displayXp'] = 'Â±0%';
+				$$W_Inf = ${$H_SyWep}['name']."<br>ç‹€æ…‹å€¼: ".${$H_Wep}['displayXp']."<hr width=95%>èƒ½åŠ›:<br>";
+				$$W_Inf .= "ã€€æ”»æ“ŠåŠ›: ".${$H_SyWep}['atk']."ã€€ã€€ã€€å›æ•¸: ".${$H_SyWep}['rd']."<br>ã€€å‘½ä¸­: ".${$H_SyWep}['hit']."ã€€ã€€ã€€ENæ¶ˆè²»: ".${$H_SyWep}['enc']."<br>";
+				$$W_Inf .= "è·é›¢/å±¬æ€§: ".getRangeAttrb(${$H_SyWep}['range'],${$H_SyWep}['attrb'],${$H_SyWep}['equip'],false)."<br>";
+				$$W_Inf .= "ç‰¹æ®Šæ•ˆæœ:<br>";
+				if (${$H_SyWep}['equip']) $$W_Inf .= "å¯ä»¥è£å‚™<br>";
 				if (${$H_SyWep}['spec']) $$W_Inf .= ReturnSpecs(${$H_SyWep}['spec']);
-				echo "<td OnMouseOver=\"setLayer(event.clientX,event.clientY,200,100,'\'".$$W_Inf."\'')\" OnMouseOut=\"offLayer()\"><img src='$tickImg' alt='¡³'></td>";
+				echo "<td OnMouseOver=\"setLayer(event.clientX,event.clientY,200,100,'\'".$$W_Inf."\'')\" OnMouseOut=\"offLayer()\"><img src='$tickImg' alt='â—‹'></td>";
 			}
-			else echo "<td><img src='$crossImg' alt='¢®'></td>";
+			else echo "<td><img src='$crossImg' alt='â•³'></td>";
 		}
 		echo "</tr></table>";
 
@@ -495,19 +495,19 @@ function confirmGive(h_id,ename){
 
 	}
 	if ($TakeOptions){
-		echo "<tr><td colspan=10 align=left>¥Ø¼Ğ¾÷Åé: <select name=take_id $BStyleB style=\"$BStyleA\">$TakeOptions</select>";
-		echo "<br>¡@- <input type=button onClick=confirmTake(hnmainform.take_id.value) value=\"¨ú¥X\" $BStyleB style=\"$BStyleA\">";
-		echo "<br>¡@- ÃØ°eµ¹<input type=text name=\"entname\" value=\"<<¤â°Ê¿é¤J>>\" style=\"width: 120;font-size: 9pt; color: #ffffff; background-color: #000000;text-align: center\" onfocus=\"this.value='';this.style.textAlign='left'\" onmouseover=\"this.style.color='yellow'\" onmouseout=\"this.style.color='FFFFFF'\">";
-		echo "&nbsp;<input type=button onClick=confirmGive(hnmainform.take_id.value,hnmainform.entname.value) value=\"ÃØ°e\" $BStyleB style=\"$BStyleA\">";
+		echo "<tr><td colspan=10 align=left>ç›®æ¨™æ©Ÿé«”: <select name=take_id $BStyleB style=\"$BStyleA\">$TakeOptions</select>";
+		echo "<br>ã€€- <input type=button onClick=confirmTake(hnmainform.take_id.value) value=\"å–å‡º\" $BStyleB style=\"$BStyleA\">";
+		echo "<br>ã€€- è´ˆé€çµ¦<input type=text name=\"entname\" value=\"<<æ‰‹å‹•è¼¸å…¥>>\" style=\"width: 120;font-size: 9pt; color: #ffffff; background-color: #000000;text-align: center\" onfocus=\"this.value='';this.style.textAlign='left'\" onmouseover=\"this.style.color='yellow'\" onmouseout=\"this.style.color='FFFFFF'\">";
+		echo "&nbsp;<input type=button onClick=confirmGive(hnmainform.take_id.value,hnmainform.entname.value) value=\"è´ˆé€\" $BStyleB style=\"$BStyleA\">";
 		echo "</td></tr>";
 	}
-	else echo "<tr><td colspan=10 align=center>¨S¦³¥i¨ú¥Xªº¾÷Åé¡C</td></tr>";
+	else echo "<tr><td colspan=10 align=center>æ²’æœ‰å¯å–å‡ºçš„æ©Ÿé«”ã€‚</td></tr>";
 	echo "</table>";
 	echo "<hr width=85%>";
 echo "</form>";
 echo "<div id=wepinfo style=\"position:absolute; z-index:10;color: black;\" align=left></div>";
 }//End GUI
 
-else {echo "¥¼©w¸q°Ê§@¡I";}
+else {echo "æœªå®šç¾©å‹•ä½œï¼";}
 postFooter();exit;
 ?>

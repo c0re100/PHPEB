@@ -4,49 +4,49 @@ include('cfu.php');
 if (empty($PriTarget)) $PriTarget = 'Alpha';
 if (empty($SecTarget)) $SecTarget = 'Beta';
 postHead('');
-AuthUser("$Pl_Value[USERNAME]","$Pl_Value[PASSWORD]");
-if ($CFU_Time >= $TIMEAUTH+$TIME_OUT_TIME || $TIMEAUTH <= $CFU_Time-$TIME_OUT_TIME){echo "³s½u¹O®É¡I<br>½Ğ­«·sµn¤J¡I";exit;}
-GetUsrDetails("$Pl_Value[USERNAME]",'Gen','Game');
+AuthUser();
+if ($CFU_Time >= $_SESSION['timeauth']+$TIME_OUT_TIME || $_SESSION['timeauth'] <= $CFU_Time-$TIME_OUT_TIME){echo "é€£ç·šé€¾æ™‚ï¼<br>è«‹é‡æ–°ç™»å…¥ï¼";exit;}
+GetUsrDetails("$_SESSION[username]",'Gen','Game');
 //Tactics Learning center GUI
 if ($mode=='main'){
 	$CancelFlag=$TactMessage=$Tactics='';
-	echo "¾Ô³N¾Ç°|<hr>";
+	echo "æˆ°è¡“å­¸é™¢<hr>";
 	if ($actionb == 'proclearn'){
-		if (!$learndesired) {$TactMessage = '½Ğ¥ı¬D¿ï­n¾Ç²ßªº¾Ô³N¡I';$CancelFlag = 1;}
+		if (!$learndesired) {$TactMessage = 'è«‹å…ˆæŒ‘é¸è¦å­¸ç¿’çš„æˆ°è¡“ï¼';$CancelFlag = 1;}
 		$Tactics = GetTactics($learndesired);
-		if (!$Tactics) {$TactMessage = '¤£©ú¾Ô³N¡I';$CancelFlag = 1;}
-		if ($Tactics['price'] > $Gen['cash']){$TactMessage = 'ª÷¿ú¤£¨¬¡I';$CancelFlag = 1;}
-		if ($Tactics['needlv'] > $Game['level']){$TactMessage .= 'µ¥¯Å¤£¨¬¡I';$CancelFlag = 1;}
-		if (strpos($Game['tactics'],$Tactics['id']) !== false){$TactMessage .= "§A¦­´N¾Ç·|¤F $Tactics[name] ¡C";$CancelFlag = 1;}
+		if (!$Tactics) {$TactMessage = 'ä¸æ˜æˆ°è¡“ï¼';$CancelFlag = 1;}
+		if ($Tactics['price'] > $Gen['cash']){$TactMessage = 'é‡‘éŒ¢ä¸è¶³ï¼';$CancelFlag = 1;}
+		if ($Tactics['needlv'] > $Game['level']){$TactMessage .= 'ç­‰ç´šä¸è¶³ï¼';$CancelFlag = 1;}
+		if (strpos($Game['tactics'],$Tactics['id']) !== false){$TactMessage .= "ä½ æ—©å°±å­¸æœƒäº† $Tactics[name] ã€‚";$CancelFlag = 1;}
 		if (!$CancelFlag) {
-			$TactMessage = "¦¨¥\\¥H ".number_format($Tactics['price'])." ¤¸¾Ç²ß¤F $Tactics[name] ¡C";
+			$TactMessage = "æˆåŠŸä»¥ ".number_format($Tactics['price'])." å…ƒå­¸ç¿’äº† $Tactics[name] ã€‚";
 		}
 	}else $CancelFlag = 1;
-	if (empty($TactMessage) || !$TactMessage) $TactMessage = 'Æ[ªï¨Ó¨ì¥»¾Ç°|¡I';
+	if (empty($TactMessage) || !$TactMessage) $TactMessage = 'è§€è¿ä¾†åˆ°æœ¬å­¸é™¢ï¼';
 	echo "$TactMessage<hr>";
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\"  style=\"border-collapse: collapse;font-size: 9pt;\" bordercolor=\"#FFFFFF\" width=\"740\">";
 	echo "<form action=tacticslearn.php?action=main method=post name=mainform target=$SecTarget>";
 	echo "<input type=hidden value='none' name=actionb>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+	
+	
 	echo "<input type=hidden value='' name=learndesired>";
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
-	echo "<tr align=center><td colspan=14><b>¾Ô³N¦Cªí: </b></td></tr>";
+	echo "<tr align=center><td colspan=14><b>æˆ°è¡“åˆ—è¡¨: </b></td></tr>";
 	echo "<tr align=center>";
 	echo "<td width=\"20\">No.</td>";
-	echo "<td width=\"100\">¾Ô³N¦WºÙ</td>";
-	echo "<td width=\"50\">Attacking ­×¥¿</td>";
-	echo "<td width=\"50\">Defending ­×¥¿</td>";
-	echo "<td width=\"50\">Reacting ­×¥¿</td>";
-	echo "<td width=\"50\">Targeting ­×¥¿</td>";
-	echo "<td width=\"60\">©R¤¤­×¥¿</td>";
-	echo "<td width=\"60\">¦^Á×­×¥¿</td>";
-	echo "<td width=\"100\">¨ä¥L®ÄªG</td>";
-	echo "<td width=\"30\">HP®ø¯Ó¶q</td>";
-	echo "<td width=\"30\">EN®ø¯Ó¶q</td>";
-	echo "<td width=\"30\">SP®ø¯Ó¶q</td>";
-	echo "<td width=\"30\">©Ò»İµ¥¯Å</td>";
-	echo "<td width=\"80\">»ù¿ú</td>";
+	echo "<td width=\"100\">æˆ°è¡“åç¨±</td>";
+	echo "<td width=\"50\">Attacking ä¿®æ­£</td>";
+	echo "<td width=\"50\">Defending ä¿®æ­£</td>";
+	echo "<td width=\"50\">Reacting ä¿®æ­£</td>";
+	echo "<td width=\"50\">Targeting ä¿®æ­£</td>";
+	echo "<td width=\"60\">å‘½ä¸­ä¿®æ­£</td>";
+	echo "<td width=\"60\">å›é¿ä¿®æ­£</td>";
+	echo "<td width=\"100\">å…¶ä»–æ•ˆæœ</td>";
+	echo "<td width=\"30\">HPæ¶ˆè€—é‡</td>";
+	echo "<td width=\"30\">ENæ¶ˆè€—é‡</td>";
+	echo "<td width=\"30\">SPæ¶ˆè€—é‡</td>";
+	echo "<td width=\"30\">æ‰€éœ€ç­‰ç´š</td>";
+	echo "<td width=\"80\">åƒ¹éŒ¢</td>";
 	echo "</tr>";
 
 	unset ($sql,$query);
@@ -54,12 +54,12 @@ if ($mode=='main'){
 	$query = mysql_query($sql);
 
 	echo "<script language=\"Javascript\">";
-	echo "function cmLearn(name,cost,id,needlv){if (needlv > $Game[level]){alert('§Aªºµ¥¯Å¤£¨¬¡C');return false;}if (cost > $Gen[cash]){alert('©Ò«ùª÷¤£¨¬!!');}else{";
-	echo "if (confirm('¾Ç²ß¾Ô³N¡u'+name+'¡v»İ­n '+numberFormat(cost)+' ¤¸¡C\\n½T©w­n¾Ç²ß¶Ü¡H') == true)";
+	echo "function cmLearn(name,cost,id,needlv){if (needlv > $Game[level]){alert('ä½ çš„ç­‰ç´šä¸è¶³ã€‚');return false;}if (cost > $Gen[cash]){alert('æ‰€æŒé‡‘ä¸è¶³!!');}else{";
+	echo "if (confirm('å­¸ç¿’æˆ°è¡“ã€Œ'+name+'ã€éœ€è¦ '+numberFormat(cost)+' å…ƒã€‚\\nç¢ºå®šè¦å­¸ç¿’å—ï¼Ÿ') == true)";
 	echo "{mainform.actionb.value='proclearn';mainform.learndesired.value=id;mainform.submit();return true}";
 	echo "else{return false}}}";
-	echo "function cmLearnAlt(name,cost,id,needlv){if (needlv > $Game[level]){alert('§Aªºµ¥¯Å¤£¨¬¡C');return false;}if (cost > $Gen[cash]){alert('©Ò«ùª÷¤£¨¬!!');}else{";
-	echo "if (confirm('¾Ç²ß¾Ô³N¡u'+name+'¡v»İ­n '+numberFormat(cost)+' ¤¸¡C\\n½T©w­n¾Ç²ß¶Ü¡H') == true) return true;";
+	echo "function cmLearnAlt(name,cost,id,needlv){if (needlv > $Game[level]){alert('ä½ çš„ç­‰ç´šä¸è¶³ã€‚');return false;}if (cost > $Gen[cash]){alert('æ‰€æŒé‡‘ä¸è¶³!!');}else{";
+	echo "if (confirm('å­¸ç¿’æˆ°è¡“ã€Œ'+name+'ã€éœ€è¦ '+numberFormat(cost)+' å…ƒã€‚\\nç¢ºå®šè¦å­¸ç¿’å—ï¼Ÿ') == true) return true;";
 	echo "else{return false}}}";
 	echo "function numberFormat(num){";
 	echo "	var numF = '';";
@@ -114,18 +114,18 @@ if ($mode=='main'){
 	}
 
 	echo "</form></table>";
-	echo "<p style=\"font-size: 10pt\" align=center>½ĞÂIÀ»±ı¾Ç²ßªº¾Ô³N¡C";
+	echo "<p style=\"font-size: 10pt\" align=center>";
 	if($TacticsOptions != ''){
 		echo "<form action=tacticslearn.php?action=main method=post name=alternate target=$SecTarget>";
 		echo "<input type=hidden value='proclearn' name=actionb>";
-		echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-		echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+		
+		
 		echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
-		echo "¥t¥~¥ç¥i±q³o­Ó¿ï³æ¬D¿ï:";
+		echo "è«‹å¾é€™å€‹é¸å–®æŒ‘é¸:";
 		echo "<select name=learndesired>";
 		echo $TacticsOptions;
 		echo "</select>";
-		echo "<input type=submit value=¾Ç²ß onClick=\"return cmLearnAlt(";
+		echo "<input type=submit value=å­¸ç¿’ onClick=\"return cmLearnAlt(";
 		echo	"eval(alternate.learndesired.value+'_name.innerHTML'),",
 			"eval('parseInt('+ alternate.learndesired.value + '_price.innerHTML)'),",
 			"alternate.learndesired.value,",
@@ -149,15 +149,15 @@ if ($mode=='main'){
 		}
 		sort($Game['tactics']);
 		$Game['tactics'] = implode("\n",$Game['tactics']);
-		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `tactics` = '$Game[tactics]' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `tactics` = '$Game[tactics]' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 		mysql_query($sql);
-		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = '$Gen[cash]' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_general_info` SET `cash` = '$Gen[cash]' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 		mysql_query($sql);
 		unset($sql,$Tactics,$TactMessage,$i,$t);
 	}
 unset ($sql,$query,$Gen,$Game);
 }
-else {echo "¥¼©w¸q°Ê§@¡I";}
+else {echo "æœªå®šç¾©å‹•ä½œï¼";}
 postFooter();
 echo "</body>";
 echo "</html>";

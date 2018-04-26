@@ -3,24 +3,24 @@
 
 	$CustomColumns = '';
 	$ColumnNum = 3;
-	if ($Pl->Player['fdis_lv'])	{$CustomColumns .= "<td width=\"30\">µ¥¯Å</td>";$ColumnNum++;}
-	if ($Pl->Player['fdis_at'])	{$CustomColumns .= "<td width=\"30\">§ğÀ»</td>";$ColumnNum++;}
-	if ($Pl->Player['fdis_de'])	{$CustomColumns .= "<td width=\"30\">¨¾¿m</td>";$ColumnNum++;}
-	if ($Pl->Player['fdis_re'])	{$CustomColumns .= "<td width=\"30\">¤ÏÀ³</td>";$ColumnNum++;}
-	if ($Pl->Player['fdis_ta'])	{$CustomColumns .= "<td width=\"30\">©R¤¤</td>";$ColumnNum++;}
-	if ($Pl->Player['fdis_tch'])	{$CustomColumns .= "<td width=\"80\">Ãş«¬</td>";$ColumnNum++;}
-	if ($Pl->Player['fdis_ms'])	{$CustomColumns .= "<td width=\"200\">¾÷Åé</td>";$ColumnNum++;}
+	if ($Pl->Player['fdis_lv'])	{$CustomColumns .= "<td width=\"30\">ç­‰ç´š</td>";$ColumnNum++;}
+	if ($Pl->Player['fdis_at'])	{$CustomColumns .= "<td width=\"30\">æ”»æ“Š</td>";$ColumnNum++;}
+	if ($Pl->Player['fdis_de'])	{$CustomColumns .= "<td width=\"30\">é˜²ç¦¦</td>";$ColumnNum++;}
+	if ($Pl->Player['fdis_re'])	{$CustomColumns .= "<td width=\"30\">åæ‡‰</td>";$ColumnNum++;}
+	if ($Pl->Player['fdis_ta'])	{$CustomColumns .= "<td width=\"30\">å‘½ä¸­</td>";$ColumnNum++;}
+	if ($Pl->Player['fdis_tch'])	{$CustomColumns .= "<td width=\"80\">é¡å‹</td>";$ColumnNum++;}
+	if ($Pl->Player['fdis_ms'])	{$CustomColumns .= "<td width=\"200\">æ©Ÿé«”</td>";$ColumnNum++;}
 	if ($Pl->Player['fdis_hp'])	{$CustomColumns .= "<td width=\"100\">HP</td>";$ColumnNum++;}
-	if ($Pl->Player['fdis_fame'])	{$CustomColumns .= "<td width=\"40\">¦WÁn</td>";$ColumnNum++;}
-	if ($Pl->Player['fdis_bty'])	{$CustomColumns .= "<td width=\"60\">Äa½àª÷</td>";$ColumnNum++;}
-	if ($Pl->Player['fdis_con'])	{$CustomColumns .= "<td width=\"75\">ª¬ºA</td>";$ColumnNum++;}
+	if ($Pl->Player['fdis_fame'])	{$CustomColumns .= "<td width=\"40\">åè²</td>";$ColumnNum++;}
+	if ($Pl->Player['fdis_bty'])	{$CustomColumns .= "<td width=\"60\">æ‡¸è³é‡‘</td>";$ColumnNum++;}
+	if ($Pl->Player['fdis_con'])	{$CustomColumns .= "<td width=\"75\">ç‹€æ…‹</td>";$ColumnNum++;}
 
-	echo "<tr align=center><td colspan=$ColumnNum><b>¹ï¤â¦Cªí: </b></td></tr>";
+	echo "<tr align=center><td colspan=$ColumnNum><b>å°æ‰‹åˆ—è¡¨: </b></td></tr>";
 	echo "<tr align=center>";
 	echo "<td width=\"20\">No.</td>";
-	echo "<td width=\"250\">¹ï¤â¦WºÙ</td>";
+	echo "<td width=\"250\">å°æ‰‹åç¨±</td>";
 	echo $CustomColumns;
-	echo "<td width=\"30\">¾Ô°«</td>";
+	echo "<td width=\"30\">æˆ°é¬¥</td>";
 	echo "</tr>";
 
 ?>

@@ -8,11 +8,11 @@ class sSpc_9914 extends setSpecSuperClass{
 	
 	const cName = 'sSpc_9914';
 
-	// Class Variables - ¨Ï¥ÎªÌÅÜ¼Æ
+	// Class Variables - ä½¿ç”¨è€…è®Šæ•¸
 	var $Rq_MS;
 	var $Rq_Wep;
 
-	// System Variables - sfo.class/obattle.ext ªºÅÜ¼Æ
+	// System Variables - sfo.class/obattle.ext çš„è®Šæ•¸
 	var $Pl;
 	var $Op;
 
@@ -23,16 +23,16 @@ class sSpc_9914 extends setSpecSuperClass{
 	
 	function sSpc_9914($Pl, $Op){
 		$this->Activated = false;
-		$this->Rq_MS = '9914';        // »Ý­nMS ID
-		$this->Rq_Wep['A'] = '';  // »Ý­n¥DªZ¾¹ ID, ³]¬° false «h¤£­­¨î
-		$this->Rq_Wep['B'] = '';  // »Ý­n³Æ¥Î 1 ID, ¦P¤W
-		$this->Rq_Wep['C'] = '';  // »Ý­n³Æ¥Î 2 ID, ¦P¤W
-		$this->Rq_Wep['D'] = '';  // »Ý­n»²§U¸Ë³Æ ID, ¦P¤W
+		$this->Rq_MS = '9914';        // éœ€è¦MS ID
+		$this->Rq_Wep['A'] = '';  // éœ€è¦ä¸»æ­¦å™¨ ID, è¨­ç‚º false å‰‡ä¸é™åˆ¶
+		$this->Rq_Wep['B'] = '';  // éœ€è¦å‚™ç”¨ 1 ID, åŒä¸Š
+		$this->Rq_Wep['C'] = '';  // éœ€è¦å‚™ç”¨ 2 ID, åŒä¸Š
+		$this->Rq_Wep['D'] = '';  // éœ€è¦è¼”åŠ©è£å‚™ ID, åŒä¸Š
 		$this->Pl = $Pl;
 		$this->Op = $Op;
 	}
 
-	// Check Set Activation - °ò¥»±ø¥óÀË´ú
+	// Check Set Activation - åŸºæœ¬æ¢ä»¶æª¢æ¸¬
 	// Checks whether MS and Equipment match required.
 	public function checkSetActivation(){
 		$this->Activated = true;

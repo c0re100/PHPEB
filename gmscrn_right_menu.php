@@ -1,72 +1,87 @@
 <?php
 
 	//Button 4: Battle
-	drawButton(10,'¾Ô°«', '¾Ô°«µe­±','movebattle();');
+	drawButton(10,'æˆ°é¬¥', 'æˆ°é¬¥ç•«é¢','movebattle();');
 
 	//Button 5: Movement
-	drawButton(3,'²¾°Ê', '²¾°Êµe­±',"act.action='map.php?action=Move';act.actionb.value='A';act.target='$SecTarget';act.submit();");
+	drawButton(3,'ç§»å‹•', 'ç§»å‹•ç•«é¢',"act.action='map.php?action=Move';act.actionb.value='A';act.target='$SecTarget';act.submit();");
 	
 	//Button 6: Occupy City
+	
+	if ($Player['rights'] == '1' && $atkMissionFlag == 1){
+		drawButton(3,'æ”¾æ£„ä½”é ˜', 'æ”¾æ£„ä½”é ˜',"act.action='organization.php?action=GiveUp';act.actionb.value='A';act.target='$SecTarget';act.submit();");
+	}
+	
 	if ($Player['rights'] == '1' && $atkMissionFlag == 1 && $Pl_Mission['victory'] == 1){
-		drawButton(3,'¦û»â¦a°Ï', '¦û»â¦a°Ï',"act.action='organization.php?action=TakeCity';act.actionb.value='A';act.target='$SecTarget';act.submit();");
+		drawButton(3,'ä½”é ˜åœ°å€', 'ä½”é ˜åœ°å€',"act.action='organization.php?action=TakeCity';act.actionb.value='A';act.target='$SecTarget';act.submit();");
 	}
 
 	//Button 7: Equip
-	drawButton(10,'¸Ë³Æ', '¸Ë³Æ',"act.action='equip.php?action=equip';act.target='$SecTarget';act.submit();");
+	drawButton(10,'è£å‚™', 'è£å‚™',"act.action='equip.php?action=equip';act.target='$SecTarget';act.submit();");
 
 	//Button 8: Buy MS
-	drawButton(3,'¾÷Åé¥Í²£¤u³õ', '¾÷Åé¥Í²£¤u³õ',"act.action='equip.php?action=buyms';act.actionb.value='buyms';act.target='$SecTarget';act.submit();");
+	drawButton(3,'æ©Ÿé«”ç”Ÿç”¢å·¥å ´', 'æ©Ÿé«”ç”Ÿç”¢å·¥å ´',"act.action='equip.php?action=buyms';act.actionb.value='buyms';act.target='$SecTarget';act.submit();");
 
 	//Button 9: Mod MS
-	drawButton(3,'¾÷Åé§ï³y¤u³õ', '¾÷Åé§ï³y¤u³õ',"act.action='statsmod.php?action=modms';act.actionb.value='buyms';act.target='$SecTarget';act.submit();");
+	drawButton(3,'æ©Ÿé«”æ”¹é€ å·¥å ´', 'æ©Ÿé«”æ”¹é€ å·¥å ´',"act.action='statsmod.php?action=modms';act.actionb.value='buyms';act.target='$SecTarget';act.submit();");
 
 	//Button 10: Tactical Weapon Factory
-	drawButton(3,'§L¾¹»s³y¤u³õ', '§L¾¹»s³y¤u³õ',"act.action='tactfactory.php?action=main';act.actionb.value='none';act.target='$SecTarget';act.submit();");
+	drawButton(3,'å…µå™¨è£½é€ å·¥å ´', 'å…µå™¨è£½é€ å·¥å ´',"act.action='tactfactory.php?action=main';act.actionb.value='none';act.target='$SecTarget';act.submit();");
 
 	//Button 11: Repair
-	drawButton(3,'­×²z¤u³õ', '­×²z¤u³õ',"act.action='statsmod.php?action=repairms';act.actionb.value='sel';act.target='$SecTarget';act.submit();");
+	drawButton(3,'ä¿®ç†å·¥å ´', 'ä¿®ç†å·¥å ´',"act.action='statsmod.php?action=repairms';act.actionb.value='sel';act.target='$SecTarget';act.submit();");
 
 
 	//Button 12: Tactics Academy
-	drawButton(10,'¾Ô³N¾Ç°|', '¾Ô³N¾Ç°|',"act.action='tacticslearn.php?action=main';act.actionb.value='none';act.target='$SecTarget';act.submit();");
+	drawButton(10,'æˆ°è¡“å­¸é™¢', 'æˆ°è¡“å­¸é™¢',"act.action='tacticslearn.php?action=main';act.actionb.value='none';act.target='$SecTarget';act.submit();");
 
 	// Mining
-	drawButton(3,'­ì®Æ±Ä¶°', '­ì®Æ±Ä¶°',"act.action='plugins/mining/mining.php';act.actionb.value='none';act.target='$SecTarget';act.submit();");
+	drawButton(3,'åŽŸæ–™æŽ¡é›†', 'åŽŸæ–™æŽ¡é›†',"act.action='plugins/mining/mining.php';act.actionb.value='none';act.target='$SecTarget';act.submit();");
 
 	//Button 13: Warehouses
-	drawButton(10,'­Ü®w', '­Ü®w',"act.action='warehouse.php?action=selection';act.actionb.value='none';act.target='$SecTarget';act.submit();");
+	drawButton(10,'å€‰åº«', 'å€‰åº«',"act.action='warehouse.php?action=selection';act.actionb.value='none';act.target='$SecTarget';act.submit();");
 
 	//Button 14: Bank
-	drawButton(3,'»È¦æ', '»È¦æ',"act.action='bank.php?action=main';act.actionb.value='none';act.target='$SecTarget';act.submit();");
+	drawButton(3,'éŠ€è¡Œ', 'éŠ€è¡Œ',"act.action='bank.php?action=main';act.actionb.value='none';act.target='$SecTarget';act.submit();");
 
+	//Button 15: Exchange
+	drawButton(3,'äºŒæ‰‹å¸‚å ´', 'äºŒæ‰‹å¸‚å ´',"act.action='market.php?action=main';act.actionb.value='none';act.target='$SecTarget';act.submit();");
+	
 	//Button 16: Special Commands
-	drawButton(3,'¯S®í«ü¥O', '¯S®í«ü¥O',"act.action='scommand.php?action=main';act.actionb.value='none';act.target='$SecTarget';act.submit();");
+	drawButton(3,'ç‰¹æ®ŠæŒ‡ä»¤', 'ç‰¹æ®ŠæŒ‡ä»¤',"act.action='scommand.php?action=main';act.actionb.value='none';act.target='$SecTarget';act.submit();");
 
 	//Button 17: Information
-	drawButton(3,'±¡³ø', '±¡³ø',"act.action='information.php?action=Main';act.actionb.value='';act.target='$SecTarget';act.submit();");
+	drawButton(3,'æƒ…å ±', 'æƒ…å ±',"act.action='information.php?action=Main';act.actionb.value='';act.target='$SecTarget';act.submit();");
 
 
 	//Button 18: Rankings
-	drawButton(3,'±Æ¦W', '±Æ¦W',"act.action='gen_info.php?action=ranks';act.actionb.value='none';act.target='$SecTarget';act.submit();");
+	drawButton(3,'æŽ’å', 'æŽ’å',"act.action='gen_info.php?action=ranks';act.actionb.value='none';act.target='$SecTarget';act.submit();");
 
 	//Button 19: Refresh - Disable
-	drawSButton(10,'¡Ð¡Ð¡Ð¡Ð','return false;','ig_refresh_d');
+	drawSButton(10,'ï¼ï¼ï¼ï¼','return false;','ig_refresh_d');
 
 	//Button 20: Refresh - Enabled
-	drawSButton(0,'­«·s¾ã²z','refreshWindow();',"ig_refresh_e' style='position: absolute;visibility: hidden;");
+	drawSButton(0,'é‡æ–°æ•´ç†','refreshWindow();',"ig_refresh_e' style='position: absolute;visibility: hidden;");
 
 	//Button 21: Chat Board
-	drawSButton(10,'¯d¨¥ªO',"window.open('','$CFU_Time','resizable=1,width=800,height=600');act.action='chat.php';act.target='$CFU_Time';act.submit();");
+	drawCButton(10,'èŠå¤©å®¤', 'èŠå¤©å®¤',"act.action='chat.php';act.target='$ThrTarget';act.submit();");
+	
+	//Button 22: Forum Button
+	drawSButton(10,'è¨Žè«–å€',"window.open('http://ext4.me/forum.php');");
+	
+	//Button 23: Forum Button
+	drawSButton(10,'åˆ‡æ›è‡³èˆŠä»‹é¢',"window.location.replace('gmscrn_old.php?action=proc');");
 
-	//Button 22: Instant Chatroom
-	drawSButton(10,'²á¤Ñ«Ç','openChatWindow();');
+	/*//Button 22: Instant Chatroom
+	drawSButton(10,'èŠå¤©å®¤','openChatWindow();');*/
 
-	//Button 23: Logout
-	drawSButton(3,'µn¥X',"location.replace('index2.php');");
+	//Button 24: Logout
+	drawSButton(3,'ç™»å‡º',"location.replace('logout.php');");
 
-	//Button 24: Manager Script
-if ( $Player['acc_status'] < 0 ) {
-	drawButton(3,'ºÞ²z', 'ºÞ²z',"act.action='manager.php';act.actionb.value='none';act.target='$SecTarget';act.submit();");
+	//Button 25: Manager Script
+if ( $Player['acc_status'] == 9 ) {
+	drawButton(3,'æ–°ç®¡ç†å¹³å°', 'æ–°ç®¡ç†å¹³å°',"act.action='manager.php';act.actionb.value='none';act.target='$ThrTarget';act.submit();");
+	drawButton(3,'èˆŠç®¡ç†å¹³å°', 'èˆŠç®¡ç†å¹³å°',"act.action='admin.php?action=panel';act.actionb.value='A';act.target='$ThrTarget';act.submit();");
 }
 
 ?>

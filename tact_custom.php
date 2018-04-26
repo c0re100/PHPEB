@@ -23,17 +23,17 @@ if($actionc == 'rawMaterials'){
 	
 	$j = 0;
 	$SQL_Format = 'UPDATE `'.$GLOBALS['DBPrefix'].'phpeb_mining_storage` SET `quantity` = %d WHERE `m_store_user` = \''.$Game['username'].'\' AND `item` = %d ;';
-	if($raw[0] <= 0){echo "½Ğ¶ñ¤J­ì®Æ¼Æ¶q";postFooter();exit;}
+	if($raw[0] <= 0){echo "è«‹å¡«å…¥åŸæ–™æ•¸é‡";postFooter();exit;}
 	else{
 		if(checkMBillsPending($Game['username'])){
-			echo "½Ğ¥ı¤ä¥I­ì®Æ±Ä¶°¶O¡A¦hÁÂ¦X§@¡C";postFooter();exit;
+			echo "è«‹å…ˆæ”¯ä»˜åŸæ–™æ¡é›†è²»ï¼Œå¤šè¬åˆä½œã€‚";postFooter();exit;
 		}
 		$Storage = getMiningStorage($Game['username']);
 		for($i = 1; $i <= 8; $i++){
 			if($raw[$i] > 0){
 				$Storage[$i] -= $raw[$i];
 				if($Storage[$i] < 0){
-					echo "<br><p align=center style='font-size: 12pt'>­ì®Æ¤£¨¬¡I</p>";
+					echo "<br><p align=center style='font-size: 12pt'>åŸæ–™ä¸è¶³ï¼</p>";
 					postFooter();
 					exit;
 				}
@@ -46,27 +46,27 @@ if($actionc == 'rawMaterials'){
 else{
 	$TargetPutWep = explode('<!>',$Game[$actionc]);
 	$TargetPutWep[2] = (isset($TargetPutWep[2])) ? $TargetPutWep[2]: 0;
-	if ($TactFactory['c_wep'] && $TargetPutWep[0] != $AlloyID){echo "½Ğ¥ı¦^¦¬¤§«eªºªZ¾¹¡C";postFooter();exit;}
-	if (!$Game[$actionc] || !$TargetPutWep[0]){echo "¨S¦³¦¹¸Ë³Æ¦s¦b¡C";postFooter();exit;}
-	if ($actionc == 'wepa'){echo "¦³¦¹¸Ë³Æ¦s¦b¡A¥i¬O§Ú­ÌµLªk§âªZ¾¹±q±z¾÷Åéªº¤â¤¤©î¤U¨Ó¡C";postFooter();exit;}
-	if ($actionc != 'wepb' && $actionc != 'wepc'){echo "±z·Q§â§A¦Û¤v·í§@­ì®Æ¶Ü¡H";postFooter();exit;}
+	if ($TactFactory['c_wep'] && $TargetPutWep[0] != $AlloyID){echo "è«‹å…ˆå›æ”¶ä¹‹å‰çš„æ­¦å™¨ã€‚";postFooter();exit;}
+	if (!$Game[$actionc] || !$TargetPutWep[0]){echo "æ²’æœ‰æ­¤è£å‚™å­˜åœ¨ã€‚";postFooter();exit;}
+	if ($actionc == 'wepa'){echo "æœ‰æ­¤è£å‚™å­˜åœ¨ï¼Œå¯æ˜¯æˆ‘å€‘ç„¡æ³•æŠŠæ­¦å™¨å¾æ‚¨æ©Ÿé«”çš„æ‰‹ä¸­æ‹†ä¸‹ä¾†ã€‚";postFooter();exit;}
+	if ($actionc != 'wepb' && $actionc != 'wepc'){echo "æ‚¨æƒ³æŠŠä½ è‡ªå·±ç•¶ä½œåŸæ–™å—ï¼Ÿ";postFooter();exit;}
 	
-	if ($TargetPutWep[2]){echo "¤w¶i¦æ¹L±M¥Î¤Æ§ï³yªº¸Ë³ÆµLªk¦A¦¸¶i¦æ§ï³y¡C";postFooter();exit;}
-	if ($TargetPutWep[1] < $Max_Wep_Exp && $TargetPutWep[0] != $AlloyID){echo "ªZ¾¹ª¬ºA­È¤£¨¬¡I";postFooter();exit;}
+	if ($TargetPutWep[2]){echo "å·²é€²è¡Œéå°ˆç”¨åŒ–æ”¹é€ çš„è£å‚™ç„¡æ³•å†æ¬¡é€²è¡Œæ”¹é€ ã€‚";postFooter();exit;}
+	if ($TargetPutWep[1] < $Max_Wep_Exp && $TargetPutWep[0] != $AlloyID){echo "æ­¦å™¨ç‹€æ…‹å€¼ä¸è¶³ï¼";postFooter();exit;}
 	
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `$actionc` = '0<!>0' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `$actionc` = '0<!>0' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 	mysql_query($sql);unset($sql);
 
 	if ($TargetPutWep[0] == $AlloyID){$CustomPoint = $AlloyPoints;}
 	else {
-		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` SET `time` = '$CFU_Time', `c_wep` = '$TargetPutWep[0]' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` SET `time` = '$CFU_Time', `c_wep` = '$TargetPutWep[0]' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 		mysql_query($sql);
 	}
 }
 
 
 if ($CustomPoint > 0){
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` SET `time` = '$CFU_Time', `c_point` = `c_point`+$CustomPoint WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` SET `time` = '$CFU_Time', `c_point` = `c_point`+$CustomPoint WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 	mysql_query($sql);
 	if(count($sqlStorage) > 0){
 		foreach($sqlStorage As $sql) mysql_query($sql);
@@ -76,56 +76,81 @@ if ($CustomPoint > 0){
 echo "<form action=tactfactory.php?action=custom method=post name=freect target=$SecTarget>";
 echo "<input type=hidden value='none' name=actionb>";
 echo "<input type=hidden value='none' name=actionc>";
-echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
 echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 echo "</form>";
 echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-echo "<p align=center style=\"font-size: 16pt\">¸m©ñ§¹¦¨¤F¡I<br><input type=submit value=\"­«·s¾ãÅé\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"><input type=button value=\"Ä~Äò\" onClick=\"freect.submit()\"></p>";
-echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+echo "<p align=center style=\"font-size: 16pt\">ç½®æ”¾å®Œæˆäº†ï¼<br><input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"><input type=button value=\"ç¹¼çºŒ\" onClick=\"freect.submit()\"></p>";
+
+
 echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 echo "</form>";	
 }
 //Start Customing
 elseif ($actionb=='start' && $actionc){
-if (!$TactFactory['c_wep']){echo "§ä¤£¨ì©Ò»İ§ï³yªºªZ¾¹¡C";postFooter();exit;}
+if (!$TactFactory['c_wep']){echo "æ‰¾ä¸åˆ°æ‰€éœ€æ”¹é€ çš„æ­¦å™¨ã€‚";postFooter();exit;}
 if (!$UsrWepB[0]){$TargetRec = 'wepb';}
 elseif (!$UsrWepC[0]){$TargetRec = 'wepc';}
-else{echo "¨SªÅ¦ì¸Ë³Æ¡C";postFooter();exit;}
+else{echo "æ²’ç©ºä½è£å‚™ã€‚";postFooter();exit;}
 
 unset($sql);
+$atkc_pt = mysql_real_escape_string($atkc_pt);
+$hitc_pt = mysql_real_escape_string($hitc_pt);
+$rdc_pt = mysql_real_escape_string($rdc_pt);
+$encc_pt = mysql_real_escape_string($encc_pt);
+$namefix = mysql_real_escape_string($namefix);
+$ttlused_pt = mysql_real_escape_string($ttlused_pt);
+
 $atkc_pt = intval($atkc_pt);if ($atkc_pt < 0) $atkc_pt = 0;
 $hitc_pt = intval($hitc_pt);if ($hitc_pt < 0) $hitc_pt = 0;
 $rdc_pt = intval($rdc_pt);if ($rdc_pt < 0) $rdc_pt = 0;
 $encc_pt = intval($encc_pt);if ($encc_pt < 0) $encc_pt = 0;
 $namefix = intval($namefix);
 $ttlused_pt = intval($atkc_pt+$hitc_pt+$rdc_pt+$encc_pt);
-if ($ttlused_pt > $TactFactory['c_point'] || $ttlused_pt <= 0){echo "§ï³yÂI¼Æ¤£¨¬©Î¥X¿ù¡I";postFooter();exit;}
+if ($ttlused_pt > $TactFactory['c_point'] || $ttlused_pt <= 0){echo "æ”¹é€ é»æ•¸ä¸è¶³æˆ–å‡ºéŒ¯ï¼";postFooter();exit;}
 
 GetWeaponDetails("$TactFactory[c_wep]",'CustWepS');
 
 if (isset($secureCustom)){
 	$secureCustom = 1;
-	if ($ttlused_pt+($CustWepS['complexity']*10) > $TactFactory['c_point'] || $ttlused_pt <= 0){echo "§ï³yÂI¼Æ¤£¨¬©Î¥X¿ù¡I";postFooter();exit;}
+	if ($ttlused_pt+($CustWepS['complexity']*10) > $TactFactory['c_point'] || $ttlused_pt <= 0){echo "æ”¹é€ é»æ•¸ä¸è¶³æˆ–å‡ºéŒ¯ï¼";postFooter();exit;}
 }
 else $secureCustom = 0;
 
-$CustomedAtk = Floor($CustWepS['atk']*$atkc_pt*0.005);
-$CustomedHit = Floor($CustWepS['hit']*$hitc_pt*0.005);
-$CustomedRd = Floor($CustWepS['rd']*$rdc_pt*0.005);
-$CustomedENCc = $CustWepS['enc']*(1+($atkc_pt)*0.01)*(1+($rdc_pt)*0.01)*(1+($hitc_pt)*0.01);
-$CustomedENC = Ceil($CustomedENCc-($CustomedENCc*$encc_pt*0.005));
+if($CustWepS['rd'] != 1){
+	$CustomedAtk = Floor($CustWepS['atk']*$atkc_pt*0.005);
+	$CustomedHit = Floor($CustWepS['hit']*$hitc_pt*0.005);
+	$CustomedRd = Floor($CustWepS['rd']*$rdc_pt*0.005);
+	$CustomedENCc = $CustWepS['enc']*(1+($atkc_pt)*0.01)*(1+($rdc_pt)*0.01)*(1+($hitc_pt)*0.01);
+	$CustomedENC = Ceil($CustomedENCc-($CustomedENCc*$encc_pt*0.005));
+}else{
+	if($rdc_pt >= 100){
+		$CustomedAtk = 0;
+		$CustomedHit = Floor($CustWepS['hit']*$hitc_pt*0.005);
+		$CustomedRd = 1;
+		$CustomedENCc = $CustWepS['enc']*(1+(0)*0.01)*(1+($rdc_pt)*0.01)*(1+($hitc_pt)*0.01);
+		$CustomedENC = Ceil($CustomedENCc);
+		$ttlused_pt = $ttlused_pt-$atkc_pt;
+	}
+	elseif($rdc_pt < 100){
+		$CustomedAtk = Floor($CustWepS['atk']*$atkc_pt*0.005);
+		$CustomedHit = Floor($CustWepS['hit']*$hitc_pt*0.005);
+		$CustomedRd = 0;
+		$CustomedENCc = $CustWepS['enc']*(1+($atkc_pt)*0.01)*(1+(0)*0.01)*(1+($hitc_pt)*0.01);
+		$CustomedENC = Ceil($CustomedENCc-($CustomedENCc*$encc_pt*0.005));
+		$ttlused_pt = $ttlused_pt-$rdc_pt;
+	}
+}
 
+$fixedname = mysql_real_escape_string($fixedname);
 $fixedname = preg_replace('/([!@#$%^&*()[\]\\{}\'",.\/<>?|]|--)+/','',$fixedname);
 
 if($namefix > 2 || $namefix < 1){echo "Cannot Get Fix Type";postFooter();exit;}
 
 unset($sql);
-if(strlen($fixedname) > 32){echo "±M¥Î¦WºÙ¹Lªø¡I";postFooter();exit;}
+if(strlen($fixedname) > 32){echo "å°ˆç”¨åç¨±éé•·ï¼";postFooter();exit;}
 $costPt = $ttlused_pt;
 if ($secureCustom) $costPt += intval($CustWepS['complexity']*10);
-$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` SET `time` = '$CFU_Time', `c_wep` = '', `c_point`=`c_point`-$costPt WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_tactfactory` SET `time` = '$CFU_Time', `c_wep` = '', `c_point`=`c_point`-$costPt WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 mysql_query($sql) or die(mysql_error());unset($sql);
 
 $pt_use_max = (100-($CustWepS['complexity']-1)*2)+(50-($CustWepS['complexity']-1)*2)+100+60;
@@ -133,138 +158,138 @@ $pc_cust_suc = floor(($pt_use_max-$ttlused_pt)/$pt_use_max*100+50-($CustWepS['co
 $pc_res_suc = mt_rand(0,100);
 if($pc_res_suc <= $pc_cust_suc){
 unset($sql);
-$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `$TargetRec` = '".$TactFactory['c_wep']."<!>0<!>".$namefix."<!>".$fixedname."<!>".$CustomedAtk."<!>".$CustomedHit."<!>".$CustomedRd."<!>".$CustomedENC."' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `$TargetRec` = '".$TactFactory['c_wep']."<!>0<!>".$namefix."<!>".$fixedname."<!>".$CustomedAtk."<!>".$CustomedHit."<!>".$CustomedRd."<!>".$CustomedENC."' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 $sql = preg_replace("/(--)+/",'',$sql);
 mysql_query($sql);
-$Message = "¦¨¥\\§ï³y¤F¡I<br>®ÄªG­È: $pc_res_suc < ¦¨¥\\²v: $pc_cust_suc";
+$Message = "æˆåŠŸæ”¹é€ äº†ï¼<br>æ•ˆæœå€¼: $pc_res_suc < æˆåŠŸç‡: $pc_cust_suc";
 }
 else {
-	$Message = "§ï³y¥¢±Ñ¤F¡C<br>®ÄªG­È: $pc_res_suc > ¦¨¥\\²v: $pc_cust_suc";
+	$Message = "æ”¹é€ å¤±æ•—äº†ã€‚<br>æ•ˆæœå€¼: $pc_res_suc > æˆåŠŸç‡: $pc_cust_suc";
 	if ($secureCustom){
-		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `$TargetRec` = '".$TactFactory['c_wep']."<!>0<!>0<!>0<!>0<!>0<!>0<!>0' WHERE `username` = '$Pl_Value[USERNAME]' LIMIT 1;");
+		$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_user_game_info` SET `$TargetRec` = '".$TactFactory['c_wep']."<!>0<!>0<!>0<!>0<!>0<!>0<!>0' WHERE `username` = '$_SESSION[username]' LIMIT 1;");
 		$sql = preg_replace("/(--)+/",'',$sql);
 		mysql_query($sql);
 		unset($sql);
-		$Message .= "<br>¤uµ{®v­Ì¦¨¥\\­×¦n·lÃa¤FªºªZ¾¹";
+		$Message .= "<br>å·¥ç¨‹å¸«å€‘æˆåŠŸä¿®å¥½æå£äº†çš„æ­¦å™¨";
 	}
 }
 
 echo "<form action=tactfactory.php?action=main method=post name=freect target=$SecTarget>";
 echo "<input type=hidden value='none' name=actionb>";
 echo "<input type=hidden value='none' name=actionc>";
-echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
 echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 echo "</form>";
 echo "<form action=gmscrn_main.php?action=proc method=post name=frmreturn target=$PriTarget>";
-echo "<p align=center style=\"font-size: 16pt\">$Message<br><input type=submit value=\"ªğ¦^\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"><input type=submit value=\"Ä~Äò\" onClick=\"freect.submit()\"></p>";
-echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+echo "<p align=center style=\"font-size: 16pt\">$Message<br><input type=submit value=\"è¿”å›\" onClick=\"parent.$SecTarget.location.replace('gen_info.php')\"><input type=submit value=\"ç¹¼çºŒ\" onClick=\"freect.submit()\"></p>";
+
+
 echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 echo "</form>";	
 }
 //Process Customing Main
 elseif ($actionb == 'none' && $actionc=='none'){
-	echo "§L¾¹±M¥Î¤Æ¤u³õ<hr>";
+	echo "å…µå™¨å°ˆç”¨åŒ–å·¥å ´<hr>";
 	echo "<form action=tactfactory.php?action=custom method=post name=mainform target=$SecTarget>";
 	echo "<input type=hidden value='none' name=actionb>";
 	echo "<input type=hidden value='none' name=actionc>";
-	echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-	echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
 	echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 
 //Start Table -- User's Information
 echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"font-size: 12pt; border-collapse: collapse\" bordercolor=\"#111111\" width=\"400\" id=\"AutoNumber1\">";
-echo "<tr><td width=400 colspan=2><b>»¡©ú</b></td></tr>";
-echo "<tr><td width=400 colspan=2>·íªZ¾¹ª¬ºA­È¹F +250% ®É¡A¥i¥H¶i¦æ±M¥Î¤Æ¡C<br>±M¥Î¤Æ¯à°÷Åı§A§ï³yªZ¾¹¡B´£¤É«Â¤O©M®Ä²v¡C";
-echo "<br>±ø¥ó¦p¤U:<br>";
-echo "&nbsp;- ªZ¾¹ª¬ºA­È¹F +250%<br>";
-echo "&nbsp;- ªZ¾¹´¿¨S¦³¶i¦æ±M¥Î¤Æ<br>";
-echo "&nbsp;- ±M¥Î¤Æ§¹¦¨«á¡AªZ¾¹ª¬ºA­ÈÂk¹s (¡Ó0%)¡C<br>";
-echo "½Ğª`·N¡A¥ô¦ó¸m©ñ¦bº²¸ÑÄl(¥]¬AªZ¾¹±M¥Î¤Æ§ï³yªºº²¸ÑÄl)ªºªZ¾¹¡A±N·|¥¢¥h©Ò¦³ª¬ºA­È¡I<br>ÁÙ¦³¡A¹L¥÷§ï³y¥i¯à·|¥OªZ¾¹¤Î­ì®Æ¥Ã¤[¯}Ãa¡I½Ğ¤p¤ß¡I<br>";
-echo "¥t¥~¡A­ì®ÆµLªk±M¥Î¤Æ¡A³Q¸m©ñªº­ì®Æ·|ª½±µÂà¤Æ¬°§ï³yÂI¼Æ¡C<br>±zªº§ï³yÂI¼Æ: $TactFactory[c_point]";
+echo "<tr><td width=400 colspan=2><b>èªªæ˜</b></td></tr>";
+echo "<tr><td width=400 colspan=2>ç•¶æ­¦å™¨ç‹€æ…‹å€¼é” +250% æ™‚ï¼Œå¯ä»¥é€²è¡Œå°ˆç”¨åŒ–ã€‚<br>å°ˆç”¨åŒ–èƒ½å¤ è®“ä½ æ”¹é€ æ­¦å™¨ã€æå‡å¨åŠ›å’Œæ•ˆç‡ã€‚";
+echo "<br>æ¢ä»¶å¦‚ä¸‹:<br>";
+echo "&nbsp;- æ­¦å™¨ç‹€æ…‹å€¼é” +250%<br>";
+echo "&nbsp;- æ­¦å™¨æ›¾æ²’æœ‰é€²è¡Œå°ˆç”¨åŒ–<br>";
+echo "&nbsp;- å°ˆç”¨åŒ–å®Œæˆå¾Œï¼Œæ­¦å™¨ç‹€æ…‹å€¼æ­¸é›¶ (Â±0%)ã€‚<br>";
+echo "è«‹æ³¨æ„ï¼Œä»»ä½•ç½®æ”¾åœ¨ç†”è§£çˆ(åŒ…æ‹¬æ­¦å™¨å°ˆç”¨åŒ–æ”¹é€ çš„ç†”è§£çˆ)çš„æ­¦å™¨ï¼Œå°‡æœƒå¤±å»æ‰€æœ‰ç‹€æ…‹å€¼ï¼<br>é‚„æœ‰ï¼Œéä»½æ”¹é€ å¯èƒ½æœƒä»¤æ­¦å™¨åŠåŸæ–™æ°¸ä¹…ç ´å£ï¼è«‹å°å¿ƒï¼<br>";
+echo "å¦å¤–ï¼ŒåŸæ–™ç„¡æ³•å°ˆç”¨åŒ–ï¼Œè¢«ç½®æ”¾çš„åŸæ–™æœƒç›´æ¥è½‰åŒ–ç‚ºæ”¹é€ é»æ•¸ã€‚<br>æ‚¨çš„æ”¹é€ é»æ•¸: $TactFactory[c_point]";
 echo "<hr></td></tr>";
-echo "<tr><td width=350><b>³Æ¥Î¸Ë³ÆB:</b><font style=\"font-size: 10pt\"><br>".getWeaponName($UsrWepB[0]);
+echo "<tr><td width=350><b>å‚™ç”¨è£å‚™B:</b><font style=\"font-size: 10pt\"><br>".getWeaponName($UsrWepB[0]);
 
-if($UsrWepB[1] == 0) $DisXpB = '¡Ó0%';
+if($UsrWepB[1] == 0) $DisXpB = 'Â±0%';
 else $DisXpB = ($UsrWepB[1] > 0) ? '+'.($UsrWepB[1]/100) : ($UsrWepB[1]/100);
-if($UsrWepC[1] == 0) $DisXpC = '¡Ó0%';
+if($UsrWepC[1] == 0) $DisXpC = 'Â±0%';
 else $DisXpC = ($UsrWepC[1] > 0) ? '+'.($UsrWepC[1]/100) : ($UsrWepC[1]/100);
 
-if ($UsrWepB[1]) echo "<br>(ª¬ºA­È: ".$DisXpB."%)";
+if ($UsrWepB[1]) echo "<br>(ç‹€æ…‹å€¼: ".$DisXpB."%)";
 echo "</font></td><td width=50 align=center>";
-if (($UsrWepB[0] && $UsrWepB[1] >= 25000 && !$UsrWepB[2] && !$TactFactory['c_wep']) || $UsrWepB[0] == $AlloyID) echo "<input type=button name='putb' value='¸m©ñ' onClick=\"actionb.value='put';actionc.value='wepb';mainform.submit()\">";
+if (($UsrWepB[0] && $UsrWepB[1] >= 25000 && !$UsrWepB[2] && !$TactFactory['c_wep']) || $UsrWepB[0] == $AlloyID) echo "<input type=button name='putb' value='ç½®æ”¾' onClick=\"actionb.value='put';actionc.value='wepb';mainform.submit()\">";
 else echo "&nbsp;";
 echo "</td></tr>";
-echo "<tr><td width=350><b>³Æ¥Î¸Ë³ÆC:</b><font style=\"font-size: 10pt\"><br>".getWeaponName($UsrWepC[0]);
-if ($UsrWepC[1]) echo "<br>(ª¬ºA­È: ".$DisXpC."%)";
+echo "<tr><td width=350><b>å‚™ç”¨è£å‚™C:</b><font style=\"font-size: 10pt\"><br>".getWeaponName($UsrWepC[0]);
+if ($UsrWepC[1]) echo "<br>(ç‹€æ…‹å€¼: ".$DisXpC."%)";
 echo "</font></td><td width=50 align=center>";
-if (($UsrWepC[0] && $UsrWepC[1] >= 25000 && !$UsrWepC[2] && !$TactFactory['c_wep']) || $UsrWepC[0] == $AlloyID) echo "<input type=button name='putc' value='¸m©ñ' onClick=\"actionb.value='put';actionc.value='wepc';mainform.submit()\">";
+if (($UsrWepC[0] && $UsrWepC[1] >= 25000 && !$UsrWepC[2] && !$TactFactory['c_wep']) || $UsrWepC[0] == $AlloyID) echo "<input type=button name='putc' value='ç½®æ”¾' onClick=\"actionb.value='put';actionc.value='wepc';mainform.submit()\">";
 else echo "&nbsp;";
 echo "</td></tr>";
 
 		// Raw Materials
-		echo "<tr><td align=center colspan=2><b>¥[¤J­ì®Æ</b></td></tr><tr><td align=center>";
+		echo "<tr><td align=center colspan=2><b>åŠ å…¥åŸæ–™</b></td></tr><tr><td align=center>";
 		$pFormatStr = '%s: <input type=text maxlength=3 name="raw[%d]" value=0 style="height: 14pt; width: 30px; text-align: center; '.$BStyleA.'" onClick="this.value=\'\'" onChange="this.value=parseInt(this.value)"> &nbsp; &nbsp;';
 		for($i = 1; $i <= 8; $i++){
 			printf($pFormatStr, $product_id_list[$i], $i);
 			if($i == 4) echo '<br>';
-			if($i == 1 || $i == 6) echo '¡@';
+			if($i == 1 || $i == 6) echo 'ã€€';
 		}
-		echo "</td><td><input type=button name='putc' value='¥[¤J' onClick=\"actionb.value='put';actionc.value='rawMaterials';mainform.submit()\"></td>";
+		echo "</td><td><input type=button name='putc' value='åŠ å…¥' onClick=\"actionb.value='put';actionc.value='rawMaterials';mainform.submit()\"></td>";
 		echo "</tr>";
 
 echo "</table><hr>";
 //End Table -- User's Information
 echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#111111\" width=\"700\">";
-echo "<tr><td colspan=6 align=center>±M¥Î¤Æ§ï³yªº­ì®Æ®w</td></tr>";
-echo "<tr><td width=150>§Y±N¶i¦æ±M¥Î¤Æ¤u§ÇªºªZ¾¹:</td>";
+echo "<tr><td colspan=6 align=center>å°ˆç”¨åŒ–æ”¹é€ çš„åŸæ–™åº«</td></tr>";
+echo "<tr><td width=150>å³å°‡é€²è¡Œå°ˆç”¨åŒ–å·¥åºçš„æ­¦å™¨:</td>";
 if (!$TactFactory['c_wep'])
-echo "<td colspan=5>¨S¦³";
+echo "<td colspan=5>æ²’æœ‰";
 else {
 GetWeaponDetails("$TactFactory[c_wep]",'CustWepS');
-echo "<td colspan=4 width=500>$CustWepS[name]</td><td width=50 align=right><input type=button name='reclaimc' value='¦^¦¬' onClick=\"mainform.action='tactfactory.php?action=main';actionb.value='reclaim';actionc.value='c_wep';mainform.submit()\">";}
+echo "<td colspan=4 width=500>$CustWepS[name]</td><td width=50 align=right><input type=button name='reclaimc' value='å›æ”¶' onClick=\"mainform.action='tactfactory.php?action=main';actionb.value='reclaim';actionc.value='c_wep';mainform.submit()\">";}
 echo "</td></tr>";
 if ($TactFactory['c_wep']){
 echo "<tr><td colspan=6>";
 echo "<table align=center border=\"0\" width=\"100%\">";
 echo "<tr>";
 echo "<td width=50%>";
-echo "<b>¤w¨Ï¥Îªº§ï³yÂI¼Æ: </b><span style=\"color: DodgerBlue\" id=pt_left>0</span> / <span id=\"c_points\">$TactFactory[c_point]</span>";
-echo "</td><td><b>§ï³y¦¨¥\\²v: </b><span id=successpc>100</span>% (ªZ¾¹½ÆÂø«×: <span id='SysGrade'>$CustWepS[complexity]</span>)";
+echo "<b>å·²ä½¿ç”¨çš„æ”¹é€ é»æ•¸: </b><span style=\"color: DodgerBlue\" id=pt_left>0</span> / <span id=\"c_points\">$TactFactory[c_point]</span>";
+echo "</td><td><b>æ”¹é€ æˆåŠŸç‡: </b><span id=successpc>100</span>% (æ­¦å™¨è¤‡é›œåº¦: <span id='SysGrade'>$CustWepS[complexity]</span>)";
 echo "</td></tr><tr><td>";
 $ENCMin = ceil($CustWepS['enc']*0.7);
 $AtkMax = floor($CustWepS['atk']+$CustWepS['atk']*(100-($CustWepS['complexity']-1)*2)*0.005);
 
-echo "<b style=\"color: yellow\">§ğÀ»¤O±j¤Æ: </b><br><span id='SysAtk'>$CustWepS[atk]</span> => <b style=\"color: DodgerBlue\" id=atkc>$CustWepS[atk]</b> (¤W­­: $AtkMax)<br>¨Ï¥ÎÂI¼Æ: <select name=\"atkc_pt\" onchange=\"custom('atk');\">";
+echo "<b style=\"color: yellow\">æ”»æ“ŠåŠ›å¼·åŒ–: </b><br><span id='SysAtk'>$CustWepS[atk]</span> => <b style=\"color: DodgerBlue\" id=atkc>$CustWepS[atk]</b> (ä¸Šé™: $AtkMax)<br>ä½¿ç”¨é»æ•¸: <select name=\"atkc_pt\" onchange=\"custom('atk');\">";
 for($PtUse_Atk=0;$PtUse_Atk <= $TactFactory['c_point'] && $PtUse_Atk <= (100-($CustWepS['complexity']-1)*2);$PtUse_Atk++){
 echo "<option value=$PtUse_Atk>$PtUse_Atk";}
-echo "</select>ÂI";
+echo "</select>é»";
 echo "</td><td>";
 $HitMax = floor($CustWepS['hit']+$CustWepS['hit']*(50-($CustWepS['complexity']-1)*2)*0.005);
-echo "<b style=\"color: yellow\">©R¤¤¤O±j¤Æ: </b><br><span id='SysHit'>$CustWepS[hit]</span> => <b style=\"color: DodgerBlue\" id=hitc>$CustWepS[hit]</b> (¤W­­: $HitMax)<br>¨Ï¥ÎÂI¼Æ: <select name=\"hitc_pt\" onchange=\"custom('hit');\">";
+echo "<b style=\"color: yellow\">å‘½ä¸­åŠ›å¼·åŒ–: </b><br><span id='SysHit'>$CustWepS[hit]</span> => <b style=\"color: DodgerBlue\" id=hitc>$CustWepS[hit]</b> (ä¸Šé™: $HitMax)<br>ä½¿ç”¨é»æ•¸: <select name=\"hitc_pt\" onchange=\"custom('hit');\">";
 for($PtUse_Hit=0;$PtUse_Hit <= $TactFactory['c_point'] && $PtUse_Hit <= (50-($CustWepS['complexity']-1)*2);$PtUse_Hit++){
 echo "<option value=$PtUse_Hit>$PtUse_Hit";}
-echo "</select>ÂI";
+echo "</select>é»";
 echo "</td></tr><tr><td>";
-$RdMax = floor($CustWepS['rd']*1.5);
-echo "<b style=\"color: yellow\">¦^¼Æ¼W¥[: </b><br><span id='SysRds'>$CustWepS[rd]</span> => <b style=\"color: DodgerBlue\" id=rdc>$CustWepS[rd]</b> (¤W­­: $RdMax)<br>¨Ï¥ÎÂI¼Æ: <select name=\"rdc_pt\" onchange=\"custom('rd');\">";
+if($CustWepS['rd'] != 1){
+	$RdMax = floor($CustWepS['rd']*1.5);
+}else{
+	$RdMax = 2;
+}
+echo "<b style=\"color: yellow\">å›æ•¸å¢åŠ : </b><br><span id='SysRds'>$CustWepS[rd]</span> => <b style=\"color: DodgerBlue\" id=rdc>$CustWepS[rd]</b> (ä¸Šé™: $RdMax)<br>ä½¿ç”¨é»æ•¸: <select name=\"rdc_pt\" onchange=\"custom('rd');\">";
 for($PtUse_Rd=0;$PtUse_Rd <= $TactFactory['c_point'] && $PtUse_Rd <= 100;$PtUse_Rd++){
 echo "<option value=$PtUse_Rd>$PtUse_Rd";}
-echo "</select>ÂI";
+echo "</select>é»";
 echo "</td><td>";
-echo "<b style=\"color: yellow\">¯à·½®ø¯Ó: </b><br><span id='SysEnc'>$CustWepS[enc]</span> => <b style=\"color: DodgerBlue\" id=encc>$CustWepS[enc]</b> (¤U­­: <span id=enccmin>$ENCMin</span>)<br>¨Ï¥ÎÂI¼Æ: <select name=\"encc_pt\" onchange=\"custom('enc');\">";
+echo "<b style=\"color: yellow\">èƒ½æºæ¶ˆè€—: </b><br><span id='SysEnc'>$CustWepS[enc]</span> => <b style=\"color: DodgerBlue\" id=encc>$CustWepS[enc]</b> (ä¸‹é™: <span id=enccmin>$ENCMin</span>)<br>ä½¿ç”¨é»æ•¸: <select name=\"encc_pt\" onchange=\"custom('enc');\">";
 for($PtUse_EN=0;$PtUse_EN <= $TactFactory['c_point'] && $PtUse_EN <= 60;$PtUse_EN++){
 echo "<option value=$PtUse_EN>$PtUse_EN";}
-echo "</select>ÂI";
+echo "</select>é»";
 echo "</td></tr><tr><td>";
-echo "ªZ¾¹¦WºÙ§óÅÜ: <input type=text value=\"$Game[gamename]±M¥Î\" name=fixedname maxlength=32 onChange=\"ModName(this.value);\"><br>§óÅÜÃş«¬: <input type=radio name=namefix value=1 checked onclick=\"switchnfix('pre');\"> ¦r­ºªş¥[ <input type=radio name=namefix value=2 onclick=\"switchnfix('suf');\"> ¦r§Àªş¥[";
-echo "</td><td>¦WºÙ¹wÄı:<br><span id=namepre>$Game[gamename]±M¥Î</span>$CustWepS[name]<span id=namesuf></span><sub>&copy;</sub>";
+echo "æ­¦å™¨åç¨±æ›´æ›: <input type=text value=\"$Game[gamename]å°ˆç”¨\" name=fixedname maxlength=32 onChange=\"ModName(this.value);\"><br>æ›´æ›é¡å‹: <input type=radio name=namefix value=1 checked onclick=\"switchnfix('pre');\"> å­—é¦–é™„åŠ  <input type=radio name=namefix value=2 onclick=\"switchnfix('suf');\"> å­—å°¾é™„åŠ ";
+echo "</td><td>åç¨±é è¦½:<br><span id=namepre>$Game[gamename]å°ˆç”¨</span>$CustWepS[name]<span id=namesuf></span><sub>&copy;</sub>";
 echo "</td></tr>";
 echo "<tr>";
-echo "<td>«OÀI¾÷¨î: <input type=checkbox name=secureCustom onClick=\"custom('');\" value=true> (®ø¯Ó ".($CustWepS['complexity']*10)." ÂI§ï³yÂI¼Æ)</td><td>®ø¯Ó¤@©wªº§ï³yÂI©ó¥¢±Ñ«á®¾¦^·lÃaªºªZ¾¹¡C</td>";
+echo "<td>ä¿éšªæ©Ÿåˆ¶: <input type=checkbox name=secureCustom onClick=\"custom('');\" value=true> (æ¶ˆè€— ".($CustWepS['complexity']*10)." é»æ”¹é€ é»æ•¸)</td><td>æ¶ˆè€—ä¸€å®šçš„æ”¹é€ é»æ–¼å¤±æ•—å¾ŒæŒ½å›æå£çš„æ­¦å™¨ã€‚</td>";
 echo "</tr><tr><td colspan=2 align=center>";
-echo "<input type=submit value='½T»{§ï³y' onClick='return confirmCustom()'>";
+echo "<input type=submit value='ç¢ºèªæ”¹é€ ' onClick='return confirmCustom()'>";
 echo "</td></tr></table>";
 echo "</td></tr>";
 
@@ -294,8 +319,8 @@ var oEncCPt = document.mainform.encc_pt;
 
 function switchnfix(type){
 if(type == 'pre'){
-	document.mainform.fixedname.value='$Game[gamename]±M¥Î';
-	document.getElementById('namepre').innerHTML='$Game[gamename]±M¥Î';
+	document.mainform.fixedname.value='$Game[gamename]å°ˆç”¨';
+	document.getElementById('namepre').innerHTML='$Game[gamename]å°ˆç”¨';
 	document.getElementById('namesuf').innerHTML='';
 }
 else if(type == 'suf'){
@@ -315,9 +340,9 @@ document.getElementById('namesuf').innerHTML=val;
 mainform.fixedname.value=val;
 }
 function confirmCustom(){
-	if (document.getElementById('pt_left').innerHTML > $TactFactory[c_point]){alert('§ï³yÂI¼Æ¤£¨¬¡I\\nµLªk¶i¦æ§ï³y¡C');return false;}
+	if (document.getElementById('pt_left').innerHTML > $TactFactory[c_point]){alert('æ”¹é€ é»æ•¸ä¸è¶³ï¼\\nç„¡æ³•é€²è¡Œæ”¹é€ ã€‚');return false;}
 	else {
-		if (confirm('§Y±N¶i¦æ§ï³y¡A½Ğ½T«O©Ò¦³¸ê®Æ¥¿½T¡C\\n¥i¥H¶}©l§ï³y¶Ü¡H')==true){mainform.actionb.value='start';return true;}
+		if (confirm('å³å°‡é€²è¡Œæ”¹é€ ï¼Œè«‹ç¢ºä¿æ‰€æœ‰è³‡æ–™æ­£ç¢ºã€‚\\nå¯ä»¥é–‹å§‹æ”¹é€ å—ï¼Ÿ')==true){mainform.actionb.value='start';return true;}
 		else {return false;}
 	}
 }

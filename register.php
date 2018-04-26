@@ -1,6 +1,5 @@
 <?php
 include('cfu.php');
-if (empty($CFU_RegLowerCaseOnly)) $CFU_RegLowerCaseOnly = '1';
 ?>
 <html>
 
@@ -8,9 +7,9 @@ if (empty($CFU_RegLowerCaseOnly)) $CFU_RegLowerCaseOnly = '1';
 <meta http-equiv="Content-Language" content="en-us">
 <meta name="GENERATOR" content="Microsoft FrontPage 5.0">
 <meta name="ProgId" content="FrontPage.Editor.Document">
-<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
-<title>User Registration - ¥Î¤áµù¥U</title>
+<title>ç„¡ç›¡çš„æˆ°é¬¥ - è¨»å†Š</title>
 </head>
 
 <?php
@@ -18,28 +17,8 @@ if (empty($CFU_RegLowerCaseOnly)) $CFU_RegLowerCaseOnly = '1';
 function reg_pFoot(){
 	$mcfu_time = explode(' ', microtime());
 	$cfu_ptime = number_format(($mcfu_time[1] + $mcfu_time[0] - $GLOBALS['cfu_stime']), 6);
-	echo "<p align=center style=\"font-size: 10pt\">Registration System - v0.5 Version";
-	echo "<br>&copy; 2005-2006 v2Alliance. All Rights Reserved.¡@ª©Åv©Ò¦³ ¤£±oÂà¸ü<br>";
 	if ($GLOBALS['Show_ptime'])
 	echo "<font style=\"font-size: 7pt\">Processed in ".$cfu_ptime." second(s).</font></p>";
-}
-
-//Anti-Direct Connection
-if (!$disabled_AUC){
-	if (strpos($HTTP_REFERER,'index2.php') === false && strpos($HTTP_REFERER,'register.php') === false){
-	echo "Unauthorized Connection Detected<br>Referer: $HTTP_REFERER<br>";
-	echo "IP: $REMOTE_ADDR Logged<br>";
-	postFooter();
-	$contents = '/*'."Date: `$CFU_Date' \n Logged Username: `$Pl_Value[USERNAME]' \t\t Logged Password: `$Pl_Value[PASSWORD]'\n";
-	$contents .= "IP: `$REMOTE_ADDR' \t\t Referer: `$HTTP_REFERER'\n";
-	$contents .= "REQUEST_METHOD: `$REQUEST_METHOD' \t\t SCRIPT_FILENAME: `$SCRIPT_FILENAME' \nQUERY_STRING: `$QUERY_STRING '\n";
-	$contents .= '_______________________________________________________';
-	$contents .= '_______________________________________________________*/'."\n";
-	$fp = fopen($AUC_Log,"r+");
-	fwrite($fp,$contents);
-	fclose($fp);
-	exit;
-	}
 }
 
 if ($MAX_PLAYERS){
@@ -47,31 +26,30 @@ $NumPlSQL = ("SELECT count(*) FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_i
 $NumPlSQL_Query = mysql_query($NumPlSQL);
 $NumPl = mysql_fetch_row($NumPlSQL_Query);
 	if ($NumPl[0] >= $MAX_PLAYERS){
-		echo "<center><br><br>µn¿ı¤H¼Æ¤Ó¦h¡C<br>²{µn¿ı¤H¼Æ: $OnlinePlNum[0]<br>µn¿ı¤H¼Æ¤W­­: $MAX_PLAYERS<br><a href=\"index2.php\" target='_top' style=\"text-decoration: none\">¦^¨ì­º­¶</a><br><br>";
+		echo "<center><br><br>ç™»éŒ„äººæ•¸å¤ªå¤šã€‚<br>ç¾ç™»éŒ„äººæ•¸: $OnlinePlNum[0]<br>ç™»éŒ„äººæ•¸ä¸Šé™: $MAX_PLAYERS<br><a href=\"index.php\" target='_top' style=\"text-decoration: none\">å›åˆ°é¦–é </a><br><br>";
 		postFooter();exit;
 	}
 }
 
 if ($OLimit){
 	$Online_Time = time() - $Offline_Time;
-	$OnlineSQL = ("SELECT count(time2) FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` WHERE `time2` > '$Online_Time' AND `regkey` != 'npc';");
+	$OnlineSQL = ("SELECT count(lastlogin) FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` WHERE `lastlogin` > '$Online_Time' AND `regkey` != 'npc';");
 	$OnlineSQL_Query = mysql_query($OnlineSQL);
 	$OnlinePlNum = mysql_fetch_row($OnlineSQL_Query);
 		if ($OnlinePlNum[0] >= $OLimit){
-			echo "<center><br><br>¤W½u¤H¼Æ¤Ó¦h¡C<br>²{¤W½u¤H¼Æ: $OnlinePlNum[0]<br>¤W½u¤H¼Æ¤W­­: $OLimit<br><a href=\"index2.php\" target='_top' style=\"text-decoration: none\">¦^¨ì­º­¶</a><br><br>";
+			echo "<center><br><br>ä¸Šç·šäººæ•¸å¤ªå¤šã€‚<br>ç¾ä¸Šç·šäººæ•¸: $OnlinePlNum[0]<br>ä¸Šç·šäººæ•¸ä¸Šé™: $OLimit<br><a href=\"index.php\" target='_top' style=\"text-decoration: none\">å›åˆ°é¦–é </a><br><br>";
 			postFooter();exit;
 		}
 }
 
 $REGISTER_S1 = (isset($REGISTER_S1)) ? $REGISTER_S1 : 0;
 if (!$REGISTER_S1){
-if ($CFU_Time >= $TIMEAUTH+$TIME_OUT_TIME || $TIMEAUTH <= $CFU_Time-$TIME_OUT_TIME){echo "³s½u¹O®É¡I<br><a href=\"index2.php\" target='_top' style=\"text-decoration: none\">¦^¨ì­º­¶</a>";exit;}
 echo "<script langauge=\"Javascript\">";
 echo "window.status ='";
 if ($MAX_PLAYERS)
-echo "¡@µn¿ı¤H¼Æ: ".$NumPl[0]."/".$MAX_PLAYERS;
+echo "ã€€ç™»éŒ„äººæ•¸: ".$NumPl[0]."/".$MAX_PLAYERS;
 if ($OLimit)
-echo "¡@¤W½u¤H¼Æ: ".$OnlinePlNum[0]."/".$OLimit;
+echo "ã€€ä¸Šç·šäººæ•¸: ".$OnlinePlNum[0]."/".$OLimit;
 
 echo "';";
 	$restriction = array("|","`","'","--","\"","\\");
@@ -92,26 +70,28 @@ function checkC(str){
 			}
 			else if((code >= 'a') && (code <= 'z')){
 				continue;
-			}";
-if(!$CFU_RegLowerCaseOnly)
-echo "			else if((code >= 'A') && (code <= 'Z')){
+			}
+			else if((code >= 'A') && (code <= 'Z')){
 				continue;
-			}";
-echo "			else{
+			}
+			else{
 				return false;
 			}
 		}
 		return true;
 	}
 function checkRegister(){
-	if (document.regform.reg_username.value ==''){alert('½Ğ¿é¤J¨Ï¥ÎªÌ¦WºÙ¡C');return false}
-	else if(checkGname(document.regform.reg_gamename.value) == false){alert('¹CÀ¸¤ºªº¦WºÙ¥X¿ù¡C\\n½Ğ½T©w¦WºÙ¨S§t¦³¡u\\\¡v, ¡u|¡v, ¡u`¡v, ¡u\\'¡v,¡u\"¡v');return false}
-	else if(document.regform.reg_password.value ==''){alert('½Ğ¿é¤J±K½X¡C');return false}
-	else if(checkC(document.regform.reg_username.value) == false){alert('¨Ï¥ÎªÌ¦WºÙ¥u¥i¥H¬O";if($CFU_RegLowerCaseOnly) echo "¤p¼g";echo "­^¤å¦r¥À»P¼Æ¦r²Õ¦¨¡I\\n¦Ó¥B¤£¯à¥H¡u0¡v¶}­º¡I');return false;}
-	else if(checkC(document.regform.reg_password.value) == false){alert('±K½X¥u¥i¥H¬O";if($CFU_RegLowerCaseOnly) echo "¤p¼g";echo "­^¤å¦r¥À»P¼Æ¦r²Õ¦¨¡I\\n¦Ó¥B¤£¯à¥H¡u0¡v¶}­º¡I');return false;}
-	else if(document.regform.reg_password.value != document.regform.reg_passwordconf.value){alert('­«·s¿é¤Jªº±K½X¤£¬Û¦P¡A½Ğ­«·s¿é¤J¡C');return false;}
-	else if(pt_cal.innerHTML != 22){alert('¯à¤OÂI¼Æ¦X­p¤£¬O22¡I');return false;}
-	else {if (confirm('¥H¤W¸ê®Æ¬Ò¥¿½T¡B¥i¥H¶}©lµn¿ı¶Ü¡H') == true){return true}else {return false}}
+	if (document.regform.reg_username.value == ''){alert('è«‹è¼¸å…¥ç™»å…¥å¸³æˆ¶ã€‚');return false}
+	else if(document.regform.reg_username.value == 'NPC'){alert('ç¦æ­¢ä»¥NPCä½œç‚ºç™»å…¥å¸³æˆ¶!!!');return false;}
+	else if(checkGname(document.regform.reg_gamename.value) == false){alert('éŠæˆ²å…§çš„åç¨±å‡ºéŒ¯ã€‚\\nè«‹ç¢ºå®šåç¨±æ²’å«æœ‰ã€Œ\\\ã€, ã€Œ|ã€, ã€Œ`ã€, ã€Œ\\'ã€,ã€Œ\"ã€');return false}
+	else if(document.regform.reg_password.value == ''){alert('è«‹è¼¸å…¥å¯†ç¢¼ã€‚');return false}
+	else if(document.regform.reg_gamename.value == 'NPC'){alert('ç¦æ­¢ä»¥NPCä½œç‚ºéŠæˆ²åç¨±!!!');return false;}
+	else if(regform.reg_gamename.value.trim().length == 0){alert('éŠæˆ²åç¨±åªå¯ä»¥ç”±ä¸­æ–‡,è‹±æ–‡æˆ–æ•¸å­—çµ„æˆ!!!');return false;}
+	else if(checkC(document.regform.reg_username.value) == false){alert('ç™»å…¥å¸³æˆ¶åªå¯ä»¥æ˜¯ç”±è‹±æ–‡å­—æ¯èˆ‡æ•¸å­—çµ„æˆ!!!');return false;}
+	else if(checkC(document.regform.reg_password.value) == false){alert('å¯†ç¢¼åªå¯ä»¥æ˜¯ç”±è‹±æ–‡å­—æ¯èˆ‡æ•¸å­—çµ„æˆ!!!');return false;}
+	else if(document.regform.reg_password.value != document.regform.reg_passwordconf.value){alert('é‡æ–°è¼¸å…¥çš„å¯†ç¢¼ä¸ç›¸åŒï¼Œè«‹é‡æ–°è¼¸å…¥ã€‚');return false;}
+	else if(pt_cal.innerHTML != 22){alert('èƒ½åŠ›é»æ•¸åˆè¨ˆä¸æ˜¯22ï¼');return false;}
+	else {if (confirm('ä»¥ä¸Šè³‡æ–™çš†æ­£ç¢ºã€å¯ä»¥é–‹å§‹ç™»éŒ„å—ï¼Ÿ') == true){return true}else {return false}}
 }
 function calstatpt(){
 	var At = 1*(document.regform.reg_at.value);
@@ -132,24 +112,23 @@ function calstatpt(){
 </script>
 <body bgcolor=\"#000000\" text=#dcdcdc link=#dcdcdc style=\"margin:0px 0px 0px 0px;\" style=\"font-family: Arial\" oncontextmenu=\"return false;\">
 
-<p align=\"center\" style=\"font-size: 18pt;font-weight: 800\">User Registration - ¥Î¤áµù¥U</p>
+<center>
+<p align=\"center\" style=\"font-size: 18pt;font-weight: 800\">è¨»å†Š</p>
 <form action=register.php method=POST name=regform>
 <input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">
   <center>
   <table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#111111\" width=\"80%\" id=\"AutoNumber1\">
     <tr>
-      <td width=\"33%\" style=\"font-size: 12pt;font-weight: 800\">ID:";if($CFU_RegLowerCaseOnly) echo "<font style=\"font-size: 9pt\">(¥u¯à¥Î¤p¼g­^¤å¦r¥À¤Î¼Æ¦r)</font>";echo "<br><input type=text name=reg_username maxlength=16></td>
-      <td width=\"33%\" rowspan=\"4\" align=center><input type=\"submit\" name=\"Form[Submitbutton]\" value =\"Register - µù¥U\" onClick=\"return checkRegister()\"></td>
-      <td width=\"34%\" rowspan=\"4\">&#12288;</td>
+      <td width=\"100%\" style=\"font-size: 12pt;font-weight: 800\" align=\"center\">ç™»å…¥å¸³æˆ¶:<font style=\"font-size: 9pt\">(åªèƒ½ç”¨å¤§å°å¯«è‹±æ–‡å­—æ¯åŠæ•¸å­—)</font><br><input type=text name=reg_username maxlength=16></td>
     </tr>
     <tr>
-      <td width=\"33%\" style=\"font-size: 12pt;font-weight: 800\">Game Name:<font style=\"font-size: 9pt\">(¨¤¦â¦WºÙ)</font><br><input type=text name=reg_gamename maxlength=16></td>
+      <td width=\"100%\" style=\"font-size: 12pt;font-weight: 800\" align=\"center\">éŠæˆ²åç¨±:<br><input type=text name=reg_gamename maxlength=16></td>
     </tr>
     <tr>
-      <td width=\"33%\" style=\"font-size: 12pt;font-weight: 800\">Password:<font style=\"font-size: 9pt\">(±K½X)</font><br><input type=password name=reg_password maxlength=16></td>
+      <td width=\"100%\" style=\"font-size: 12pt;font-weight: 800\" align=\"center\">å¯†ç¢¼:<font style=\"font-size: 9pt\">(åªèƒ½ç”¨å¤§å°å¯«è‹±æ–‡å­—æ¯åŠæ•¸å­—)</font><br><input type=password name=reg_password maxlength=16></td>
     </tr>
     <tr>
-      <td width=\"33%\" style=\"font-size: 12pt;font-weight: 800\">Re-Enter:<font style=\"font-size: 9pt\">(­«·s½T»{±K½X)</font><br><input type=password name=reg_passwordconf maxlength=16></td>
+      <td width=\"100%\" style=\"font-size: 12pt;font-weight: 800\" align=\"center\">ç¢ºèªå¯†ç¢¼:<br><input type=password name=reg_passwordconf maxlength=16></td>
     </tr>
   </table>
   </center>
@@ -157,10 +136,6 @@ function calstatpt(){
   <center>
   <table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#111111\" width=\"95%\" id=\"AutoNumber2\">
     <tr>
-      <td width=\"100%\" style=\"font-size: 12pt;font-weight: 800\">µù¥U½X: ";
-if ($CFU_CheckRegKey) echo "<input type=text name=reg_key maxlength=10>";
-else echo "N/A - ¤£¾A¥Î";
-echo "</td>
     </tr>
   </table>
   </center>
@@ -168,41 +143,44 @@ echo "</td>
 
 <table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#111111\" width=\"100%\" id=\"AutoNumber3\">
   <tr rowspan=2>
-    <td width=\"50%\" rowspan=\"3\" valign=top style=\"font-size: 12pt;font-weight: 800\">Color:<font style=\"font-size: 9pt\">(½Ğ¬D¿ïÃC¦â)</font><br>";
+    <td width=\"50%\" rowspan=\"3\" valign=top style=\"font-size: 12pt;font-weight: 800\" align=\"right\">ä»£è¡¨é¡è‰²:<font style=\"font-size: 9pt\">(è«‹æŒ‘é¸é¡è‰²)</font><br>";
 
 $br=0;$ct_default=0;
 foreach ($MainColors as $CVAL){$br++;$ct_default++;
 echo "<input type=\"radio\" name=\"REG_VAL[COLOR]\" value=#".$CVAL;
 if ($ct_default==1) echo " checked";
-echo "><font color=#".$CVAL.">¡½</font>&nbsp;";
+echo "><font color=#".$CVAL.">â– </font>&nbsp;";
 if ($br==6){echo"<br>";$br=0;}
 }
 
 
 echo "</td>
-    <td width=\"33%\" style=\"font-size: 12pt;font-weight: 800\">Type:<font style=\"font-size: 9pt\">(½Ğ¬D¿ï¤Hª«Ãş«¬)</font><br><select size=6 name=\"REG_VAL[TYPE]\">
-    <option value='nat' selected>¤@¯ë¤H</option>
+    <td width=\"50%\" style=\"font-size: 12pt;font-weight: 800\">ç¨®æ—:<font style=\"font-size: 9pt\">(è«‹æŒ‘é¸äººç‰©é¡å‹)</font><br><select size=6 name=\"REG_VAL[TYPE]\">
+    <option value='nat' selected>ä¸€èˆ¬äºº</option>
     <option value='ext'>Extended</option>
-    <option value='enh'>±j¤Æ¤H</option>
-    <option value='psy'>©À°Ê¤O</option>
+    <option value='enh'>å¼·åŒ–äºº</option>
+    <option value='psy'>å¿µå‹•åŠ›</option>
     <option value='nt'>NT</option>
     <option value='co'>Coordinator</option>
     </select></td>
   </tr>
     <tr style=\"font-size: 10pt;\">
-    <td width=\"34%\"><span lang=\"zh-tw\" style=\"font-size: 12pt;font-weight: 800\">¯à¤OÂI¼Æ(¦X­p»İ­n¬°22ÂI):</span><br>§ğÀ»§Ş¥©: <select size=1 name=\"reg_at\"  onChange=\"calstatpt()\">
+    <td width=\"34%\"><span lang=\"zh-tw\" style=\"font-size: 12pt;font-weight: 800\">èƒ½åŠ›é»æ•¸(åˆè¨ˆéœ€è¦ç‚º22é»):</span><br>æ”»æ“Šèƒ½åŠ›: <select size=1 name=\"reg_at\"  onChange=\"calstatpt()\">
     <option value='1'>1<option value='2'>2<option value='3'>3<option value='4'>4<option value='5'>5<option value='6'>6<option value='7'>7<option value='8'>8<option value='9'>9<option value='10'>10
-    </select><br>¨¾¿m¯à¤O: <select size=1 name=\"reg_de\" onChange=\"calstatpt()\">
+    </select><br>é˜²ç¦¦èƒ½åŠ›: <select size=1 name=\"reg_de\" onChange=\"calstatpt()\">
     <option value=1>1<option value=2>2<option value=3>3<option value=4>4<option value=5>5<option value=6>6<option value=7>7<option value=8>8<option value=9>9<option value=10>10
-    </select><br>©R¤¤¯à¤O: <select size=1 name=\"reg_ta\" onChange=\"calstatpt()\">
+    </select><br>å‘½ä¸­èƒ½åŠ›: <select size=1 name=\"reg_ta\" onChange=\"calstatpt()\">
     <option value=1>1<option value=2>2<option value=3>3<option value=4>4<option value=5>5<option value=6>6<option value=7>7<option value=8>8<option value=9>9<option value=10>10
-    </select><br>¤ÏÀ³¤O: <select size=1 name=\"reg_re\" onChange=\"calstatpt()\">
+    </select><br>è¿´é¿èƒ½åŠ›: <select size=1 name=\"reg_re\" onChange=\"calstatpt()\">
     <option value=1>1<option value=2>2<option value=3>3<option value=4>4<option value=5>5<option value=6>6<option value=7>7<option value=8>8<option value=9>9<option value=10>10
-    </select><br>¦X­p­È: <span id=pt_cal style>4</span>
+    </select><br>åˆè¨ˆå€¼: <span id=pt_cal style>4</span>
     </td>
   </tr>
 </table>
 <input type=hidden name=REGISTER_S1 value='1'>
+<br>
+<td width=\"33%\" rowspan=\"4\" align=center><input type=\"submit\" name=\"Form[Submitbutton]\" value =\"è¨»å†Š\" onClick=\"return checkRegister()\"></td>
+</center>
 </form>
 </body>
 
@@ -211,47 +189,26 @@ echo "</td>
 
 elseif ($REGISTER_S1){
 echo "<body bgcolor=\"#000000\" text=#dcdcdc link=#dcdcdc style=\"margin:0px 0px 0px 0px;\" oncontextmenu=\"return false;\" style=\"font-family: Arial\">";
-if ($reg_password != $reg_passwordconf) {echo "±K½X¤£¬Û¹ï";
+if ($reg_password != $reg_passwordconf) {echo "å¯†ç¢¼èˆ‡ç¢ºèªå¯†ç¢¼ä¸ç›¸åŒï¼";
 exit;
 }
 
-if ($reg_username == '<AttackFort>'){echo "¦WºÙ¤£¥i¥H¬O­n¶ë¡C";exit;}
-if (preg_match("/^NPC/",$reg_username)){echo "¦WºÙ¤£¥i¥H¬ONPC¶}­º¡C";exit;}
-if (preg_match("/^NPC/",$reg_gamename)){echo "¦WºÙ¤£¥i¥H¬ONPC¶}­º¡C";exit;}
+if ($reg_username == '<AttackFort>'){echo "éŠæˆ²åç¨±ä¸å¯ä»¥æ˜¯è¦å¡ã€‚";exit;}
+if (preg_match("/^NPC/i",$reg_username)){echo "ç™»å…¥å¸³æˆ¶ä¸å¯ä»¥æ˜¯NPCã€‚";exit;}
+if (preg_match("/^NPC/i",$reg_gamename)){echo "éŠæˆ²åç¨±ä¸å¯ä»¥æ˜¯NPCã€‚";exit;}
 $reg_username = str_replace("[\|\`(--)]+",'',$reg_username);
-if ($CFU_RegLowerCaseOnly) $reg_username = strtolower($reg_username);
 
-if($CFU_CheckRegKey){
-	if ($reg_key != $NPC_RegKey){
-unset($sql);
-$sql= ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_regkeys` WHERE `regkey` = ".$reg_key." ");
-$RegKeyQuery = mysql_query($sql);
-$numsRKey = mysql_num_rows($RegKeyQuery);
-if (!$numsRKey){echo "¥¼¯à¨ú±oµù¥U½Xªº¸ê°T¡C";postFooter();exit;}
-$RegKeyData = mysql_fetch_array($RegKeyQuery);
-if ($RegKeyData['status']){echo "µù¥U½X¤w¸g³Q¨Ï¥Î¡C";postFooter();exit;}
-if($CFU_CheckIP){
-$sql= ("SELECT count(*) FROM `".$GLOBALS['DBPrefix']."phpeb_regkeys` WHERE `ip` = ".$REMOTE_ADDR." ");
-$ReadyReg = 0;
-$RegKeyQuery = mysql_query($sql) or $ReadyReg = 1;
-if(!$ReadyReg)
-$RegKeyIPCheck = mysql_fetch_row($RegKeyQuery);
-if ($RegKeyIPCheck >= 1){echo "IP¤w¸g³Q¨Ï¥Î¡C";postFooter();exit;}
-}
-}}
-else $reg_key = '';
 $statusptmax=22;
 if ($reg_at+$reg_de+$reg_ta+$reg_re != $statusptmax){
-echo "¯à¤OÂI¼ÆÁ`©M¤£¬O $statusptmax ¡I";postFooter();exit;
+echo "èƒ½åŠ›é»æ•¸ç¸½å’Œä¸æ˜¯ $statusptmax ï¼";postFooter();exit;
 }
 $CASH_BASE=120000;
 $CASH=$CASH_BASE;
-if ($CFU_Time >= $TIMEAUTH+$TIME_OUT_TIME || $TIMEAUTH <= $CFU_Time-$TIME_OUT_TIME){echo "³s½u¹O®É¡I";exit;}
-if (!preg_match('/^(nat|ext|enh|psy|nt|co)$/',$REG_VAL['TYPE'])) {echo "¨t²Î¥¼¯à½T»{±zªºÃş«¬¡A½Ğ­«·s½à¸Õ¡C";postFooter();exit;}
+if (!preg_match('/^(nat|ext|enh|psy|nt|co)$/',$REG_VAL['TYPE'])) {echo "ç³»çµ±æœªèƒ½ç¢ºèªæ‚¨çš„ç¨®æ—ï¼Œè«‹é‡æ–°è³è©¦ã€‚";postFooter();exit;}
 else $CASH=$CASH_BASE*3;
 
-if ($reg_at>10 || $reg_de>10 || $reg_ta>10 || $reg_re>10){echo "¯à¤O¹L°ª¡I";postFooter();exit;}
-if ($reg_at<=0 || $reg_de<=0 || $reg_ta<=0 || $reg_re<=0){echo "¯à¤O¹L§C¡I";postFooter();exit;}
+if ($reg_at>10 || $reg_de>10 || $reg_ta>10 || $reg_re>10){echo "èƒ½åŠ›éé«˜ï¼";postFooter();exit;}
+if ($reg_at<=0 || $reg_de<=0 || $reg_ta<=0 || $reg_re<=0){echo "èƒ½åŠ›éä½ï¼";postFooter();exit;}
 
 $CASH=floor($CASH);
 $t_now=time();
@@ -276,7 +233,14 @@ switch(mt_rand(0,3)){
 	case 2: $CoordinatesSt .= 'S';break;
 	default: $CoordinatesSt .= 'W';break;
 }
-
+	
+	$onlineip = $_SERVER['REMOTE_ADDR'];
+	
+	$reg_username = mysql_real_escape_string($reg_username);
+	$reg_password = mysql_real_escape_string($reg_password);
+	$REG_VAL['COLOR'] = mysql_real_escape_string($REG_VAL['COLOR']);
+	$REG_VAL['TYPE'] = mysql_real_escape_string($REG_VAL['TYPE']);
+	
 	//Check Username
 	$sql= ("SELECT `username` FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info`");
 	$CheckUsrQ = mysql_query($sql);
@@ -288,9 +252,9 @@ switch(mt_rand(0,3)){
 		break;
 	}
 	if($UsrC_Halt) {
-		echo "<p align=center>ID¤w¦³¤H¨Ï¥Î<br>ID is already in use<br>ID: $reg_username";
-		echo "<form action=index2.php method=post>";
-		echo "<center><input type=submit value=Back name=backtoindex></form>";
+		echo "<p align=center style='color: red'>ç™»å…¥å¸³æˆ¶å·²æœ‰äººä½¿ç”¨<br>ç™»å…¥å¸³æˆ¶: $reg_username";
+		echo "<form action=register.php method=post>";
+		echo "<center><input type=submit value=å›åˆ°è¨»å†Š name=backtoreg></form><br><br>";
 		reg_pFoot();
 		exit;
 	}
@@ -304,46 +268,41 @@ switch(mt_rand(0,3)){
 	$GnmC_Halt += $CountGameName;
 
 	if($GnmC_Halt) {
-		echo "<p align=center>¹CÀ¸¦WºÙ¤w¦³¤H¨Ï¥Î<br>Game Name is already in use<br>Game Name: $reg_gamename";
-		echo "<form action=index2.php method=post>";
-		echo "<center><input type=submit value=Back name=backtoindex></form>";
+		echo "<p align=center style='color: red'>éŠæˆ²åç¨±å·²æœ‰äººä½¿ç”¨<br>éŠæˆ²åç¨±: $reg_gamename";
+		echo "<form action=register.php method=post>";
+		echo "<center><input type=submit value=å›åˆ°è¨»å†Š name=backtoreg></form><br><br>";
 		reg_pFoot();
 		exit;
 	}
 
 	//Enter General Info
-	$sql = ("INSERT INTO ".$GLOBALS['DBPrefix']."phpeb_user_general_info (username, password, regkey,cash,color,avatar,msuit,typech,growth,time1,time2,btltime,coordinates) VALUES('$reg_username',md5('$reg_password'),'$reg_key','$CASH','$REG_VAL[COLOR]','nil','0','$REG_VAL[TYPE]','0','$t_now' ,'$t_now' ,'','$CoordinatesSt')");
-	mysql_query($sql) or die ('<br><center>¥¼¯à§¹¦¨µù¥U (Location ID: Register01)<br>­ì¦]:' . mysql_error() . '<br>');
+	$sql = ("INSERT INTO ".$GLOBALS['DBPrefix']."phpeb_user_general_info (username, password, cash,color,avatar,msuit,typech,growth,time1,time2,btltime,coordinates,lastlogin,lastip) VALUES('$reg_username',md5('$reg_password'),'$CASH','$REG_VAL[COLOR]','nil','0','$REG_VAL[TYPE]','0','$t_now' ,'$t_now' ,'','$CoordinatesSt','$t_now','$onlineip')");
+	mysql_query($sql) or die ('<br><center>æœªèƒ½å®Œæˆè¨»å†Š (Location ID: Register01)<br>åŸå› :' . mysql_error() . '<br>');
 
 	//Enter Game Info
 	$sql = ("INSERT INTO ".$GLOBALS['DBPrefix']."phpeb_user_game_info (username, gamename,attacking,defending,reacting,targeting) VALUES('$reg_username','$reg_gamename','$reg_at','$reg_de','$reg_re','$reg_ta')");
-	mysql_query($sql) or die ('<br><center>¥¼¯à§¹¦¨µù¥U (Location ID: Register02)<br>­ì¦]:' . mysql_error() . '<br>');
+	mysql_query($sql) or die ('<br><center>æœªèƒ½å®Œæˆè¨»å†Š (Location ID: Register02)<br>åŸå› :' . mysql_error() . '<br>');
 
 	//Enter Settings
 	$sql = ("INSERT INTO ".$GLOBALS['DBPrefix']."phpeb_user_settings (username) VALUES('$reg_username')");
-	mysql_query($sql) or die ('<br><center>¥¼¯à§¹¦¨µù¥U (Location ID: Register05)<br>­ì¦]:' . mysql_error() . '<br>');
+	mysql_query($sql) or die ('<br><center>æœªèƒ½å®Œæˆè¨»å†Š (Location ID: Register05)<br>åŸå› :' . mysql_error() . '<br>');
 
 	//Enter Log
-	$sql = ("INSERT INTO ".$GLOBALS['DBPrefix']."phpeb_user_log (username,log1, time1) VALUES('$reg_username','Åwªï¨Ó¨ìphp-ebªº¥@¬É¡I',UNIX_TIMESTAMP())");
-	mysql_query($sql) or die ('<br><center>¥¼¯à§¹¦¨µù¥U (Location ID: Register03)<br>­ì¦]:' . mysql_error() . '<br>');
+	$sql = ("INSERT INTO ".$GLOBALS['DBPrefix']."phpeb_user_log (username,log1, time1) VALUES('$reg_username','æ­¡è¿ä¾†åˆ°php-ebçš„ä¸–ç•Œï¼',UNIX_TIMESTAMP())");
+	mysql_query($sql) or die ('<br><center>æœªèƒ½å®Œæˆè¨»å†Š (Location ID: Register03)<br>åŸå› :' . mysql_error() . '<br>');
 
 	//Enter Bank
 	$sql = ("INSERT INTO `".$GLOBALS['DBPrefix']."phpeb_user_bank` (username) VALUES('$reg_username')");
-	mysql_query($sql) or die ('<br><center>¥¼¯à§¹¦¨µù¥U (Location ID: Register04)<br>­ì¦]:' . mysql_error() . '<br>');
+	mysql_query($sql) or die ('<br><center>æœªèƒ½å®Œæˆè¨»å†Š (Location ID: Register04)<br>åŸå› :' . mysql_error() . '<br>');
 
 
-	if($CFU_CheckRegKey){
-	//Update Reg Key
-	$sql = ("UPDATE `".$GLOBALS['DBPrefix']."phpeb_regkeys` SET `username` = '$reg_username',`status`  = '1', `ip` = '$REMOTE_ADDR' WHERE  `regkey` = '$RegKeyData[regkey]' LIMIT 1 ;");
-	mysql_query($sql) or die ('<br><center>¥¼¯à§¹¦¨µù¥U (Location ID: Register04)<br>­ì¦]:' . mysql_error() . '<br>');
-	}
-
-	echo "<p align=center>Register Complete!<br>µù¥U§¹¦¨¡I<br>ID: $reg_username<br>Please Remeber Your ID!<br>½Ğºò°O±zªº ID ¡I";
-	echo "<br><br><br><font color=".$REG_VAL['COLOR'].">This is your Color! ~ ³o´N¬O±zªº¥NªíÃC¦â¡I</font>";
+	echo "<p align=center>Register Complete!<br>è¨»å†Šå®Œæˆï¼<br>ID: $reg_username<br>è«‹ç·Šè¨˜æ‚¨çš„ ID ï¼";
+	echo "<br><br><br><font color=".$REG_VAL['COLOR'].">é€™å°±æ˜¯æ‚¨çš„ä»£è¡¨é¡è‰²ï¼</font>";
 	?>
-<form action=index2.php method=post>
-<center><input type=submit value=Back name=backtoindex>
+<form action=index.php method=post>
+<center><input type=submit value=å›åˆ°ä¸»é  name=backtoindex>
 </form>
+<br><br>
 <?php
 reg_pFoot();
 }

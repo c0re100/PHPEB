@@ -5,6 +5,7 @@ $mode = ( isset($_GET['action']) ) ? $_GET['action'] : $_POST['action'];
 $RkSbAct = ( isset($RkSbAct) ) ? $RkSbAct : false;
 if ($mode == 'var'){echo $SCRIPT_FILENAME." <br><hr>".$H."-".$i."-".$nu;}
 if ($mode == 'cal'){CalcExp('','','1');postFooter();exit;}
+if ($mode == 'cal2'){CalcMsExp('','','1');postFooter();exit;}
 if ($mode == 'Footer'){echo "<br><br><br><br><br><br><br><br><br><br><br><br>";postFooter();exit;}
 if ($mode == 'calpt'){$bb=3;$cc=2;$bbc=0;$ccc=0;
 for($aa=1;$aa<=100;$aa++){
@@ -15,7 +16,7 @@ for($aa=1;$aa<=100;$aa++){
 	if (($aa-1)%10 == 0 && $aa>1)$cc++;
 	}exit;
 }
-if ($mode == 'time'){$timenow1 =time();$TT = cfu_time_convert($timenow1);$timenow2 = getdate();$hihihihi=strlen("$CFU_Date"); echo "$timenow1<br>$timenow2[year]¦~$timenow2[mon]¤ë$timenow2[mday]¤é<br>$CFU_Date<br>$hihihihi<hr>$TT";exit;}
+if ($mode == 'time'){$timenow1 =time();$TT = cfu_time_convert($timenow1);$timenow2 = getdate();$hihihihi=strlen("$CFU_Date"); echo "$timenow1<br>$timenow2[year]å¹´$timenow2[mon]æœˆ$timenow2[mday]æ—¥<br>$CFU_Date<br>$hihihihi<hr>$TT";exit;}
 	//Weapon List
 if ($mode == 'weplist'){
 	$sql_wep_listQ = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_sys_wep` ORDER BY `tier`, `name` ");
@@ -35,7 +36,7 @@ if ($mode == 'weplist'){
 	$Next_Ev .= "$Next_Ev_Inf[name]<br>";
 	}
 	}
-	else $Next_Ev= '¨S¦³';
+	else $Next_Ev= 'æ²’æœ‰';
 
 	if ($search_wep_inf['familyid'] && $search_wep_inf['familyid'] != $search_wep_inf['id']){
 	$search_wep_prev_listQ = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_sys_wep` WHERE `nextev` REGEXP '($search_wep_inf[id])+'");
@@ -44,10 +45,10 @@ if ($mode == 'weplist'){
 	$Pre_Ev='';
 	do{$Pre_Ev .= "$Pre_Ev_Inf[name]<br>";}
 	while ($Pre_Ev_Inf  = mysql_fetch_array($search_wep_prev_list));
-	}else $Pre_Ev='¨S¦³';
+	}else $Pre_Ev='æ²’æœ‰';
 	}
 	else {$Pre_Ev=$Next_Ev=" --- ";}
-	echo "<p align=center style=\"font-size: 24; font-family: Arial\">php-eb ªZ¾¹¦Cªí</p>";
+	echo "<p align=center style=\"font-size: 24; font-family: Arial\">php-eb æ­¦å™¨åˆ—è¡¨</p>";
 	echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse;font-size: 12; font-family: Arial\" bordercolor=\"#FFFFFF\" width=\"600\">";
 	echo "<form action=gen_info.php?action=weplist method=post name=searchwepform>";
 	echo "<tr align=center valign=top height=75>";
@@ -63,33 +64,33 @@ if ($mode == 'weplist'){
 	echo ">$selected_wep[name]\n";
 	}
 	while ($selected_wep = mysql_fetch_array($query_wep_list));
-	echo "</select><input type=submit value=ÀËµø></td>";
+	echo "</select><input type=submit value=æª¢è¦–></td>";
 	echo "<td>";
 	echo "Next Evolution<br>$Next_Ev</td>";
 	echo "</tr></form>";
 	if ($SearchField['Name']){
 	echo "<tr>";
-	echo "<td colspan=3>¡@<span style=\"font-size: 20;color: yellow;font-weight:600;font-family: Arial\">$search_wep_inf[name]</span><br>".sprintTHR('70%');
+	echo "<td colspan=3>ã€€<span style=\"font-size: 20;color: yellow;font-weight:600;font-family: Arial\">$search_wep_inf[name]</span><br>".sprintTHR('70%');
 	echo "<table align=center border=\"0\" width=\"100%\" style=\"font-size: 12; font-family: Arial\">";
 	echo "<tr align=center>";
 	echo "<td width=33%>Evolution Grade:<br>";
 	if ($search_wep_inf['familyid']){
 		GetWeaponDetails($search_wep_inf['familyid'],"searchfamilyinf");
-	echo "<b style=\"font-size: 15; color: blue\">$searchfamilyinf[name]¨t</b><font style=\"font-size: 15; color: red\">²Ä$search_wep_inf[complexity]¥N</font>";}
-	else echo "¤£¾A¥Î";
+	echo "<b style=\"font-size: 15; color: blue\">$searchfamilyinf[name]ç³»</b><font style=\"font-size: 15; color: red\">ç¬¬$search_wep_inf[complexity]ä»£</font>";}
+	else echo "ä¸é©ç”¨";
 	echo "</font></td>";
-	echo "<td width=34%>Price: ".number_format($search_wep_inf['price'])."¤¸</td>";
+	echo "<td width=34%>Price: ".number_format($search_wep_inf['price'])."å…ƒ</td>";
 	echo "<td width=33%>Enery Cost: ".number_format($search_wep_inf['enc'])."</td>";
 	echo "</tr><tr><td colspan=3>".sprintTHR('70%')."</td></tr>";
 	echo "<tr height=300 style=\"font-size: 16;\">";
-	echo "<td valign=top width=20%><b>§ğÀ»¤O:</b> <br>";
+	echo "<td valign=top width=20%><b>æ”»æ“ŠåŠ›:</b> <br>";
 	echo number_format($search_wep_inf['atk']);
-	echo "<br><br><b>§ğÀ»¦^¼Æ:</b><br>";
+	echo "<br><br><b>æ”»æ“Šå›æ•¸:</b><br>";
 	echo number_format($search_wep_inf['rd']);
-	echo "<br><br><b>©R¤¤:</b><br>";
+	echo "<br><br><b>å‘½ä¸­:</b><br>";
 	echo number_format($search_wep_inf['hit']);
 	echo "</td>";
-	echo "<td colspan=2 valign=top width=80%><b>¯S®í®ÄªG:</b><br>";
+	echo "<td colspan=2 valign=top width=80%><b>ç‰¹æ®Šæ•ˆæœ:</b><br>";
 	$search_wep_specs=ReturnSpecs($search_wep_inf['spec']);
 	echo "$search_wep_specs</td>";
 	echo "</tr>";
@@ -113,7 +114,7 @@ if ($mode == 'mslist'){
 	$search_ms_inf_list = mysql_query($search_ms_inf_listQ);
 	$search_ms_inf = mysql_fetch_array($search_ms_inf_list);
 	}
-	echo "<p align=center style=\"font-size: 24; font-family: Arial\">php-eb ¾÷Åé¦Cªí</p>";
+	echo "<p align=center style=\"font-size: 24; font-family: Arial\">php-eb æ©Ÿé«”åˆ—è¡¨</p>";
 	printTHR('70%');
 	echo "<div align=center><form action=gen_info.php?action=mslist method=post name=searchmsform><select name=SearchField[Name]>";
 	do
@@ -125,7 +126,7 @@ if ($mode == 'mslist'){
 	if ($selected_ms['id']) echo ">$selected_ms[msname]\n";
 	}
 	while ($selected_ms = mysql_fetch_array($query_ms_list));
-	echo "</select><input type=submit value=ÀËµø>";
+	echo "</select><input type=submit value=æª¢è¦–>";
 	echo "</form>";
 	echo "</div>".sprintTHR('70%');
 	if ($SearchField['Name']){
@@ -134,27 +135,27 @@ if ($mode == 'mslist'){
 	echo "<td width=20%><b style=\"font-size: 18\">$search_ms_inf[msname]<b><br>";
 	echo "<img src='".$Unit_Image_Dir."/$search_ms_inf[image]'></td>";
 	echo "<td width=4%>";
-	echo "¡@</td>";
+	echo "ã€€</td>";
 	echo "<td width=38%>";
-	echo "Hp¤W­­¥[¦¨: ".number_format($search_ms_inf['hpfix']);
-	echo "<br>En¤W­­¥[¦¨: ".number_format($search_ms_inf['enfix']);
+	echo "Hpä¸Šé™åŠ æˆ: ".number_format($search_ms_inf['hpfix']);
+	echo "<br>Enä¸Šé™åŠ æˆ: ".number_format($search_ms_inf['enfix']);
 	printTHR('100%');
-	echo "Attacking¥[¦¨: $search_ms_inf[atf]";
-	echo "<br>Reacting¥[¦¨: $search_ms_inf[ref]".sprintTHR('100%');
-	echo "<br>°â»ù: ".number_format($search_ms_inf['price']);
+	echo "AttackingåŠ æˆ: $search_ms_inf[atf]";
+	echo "<br>ReactingåŠ æˆ: $search_ms_inf[ref]".sprintTHR('100%');
+	echo "<br>å”®åƒ¹: ".number_format($search_ms_inf['price']);
 	echo "</td>";
-	if (intval($search_ms_inf['hprec']) >= 1)$ShowHpRec=(intval($search_ms_inf['hprec'])+$HP_BASE_RECOVERY).'/¬í';
-	elseif ($search_ms_inf['hprec'] < 1 && $search_ms_inf['hprec'] != 0)$ShowHpRec=($search_ms_inf['hprec']*100).'% /¬í';
-	else $ShowHpRec='¤£·|¦^´_';
-	if ($search_ms_inf['enrec'] >= 1)$ShowEnRec=(intval($search_ms_inf['enrec'])+$EN_BASE_RECOVERY).'/¬í';
-	elseif ($search_ms_inf['enrec'] < 1 && $search_ms_inf['enrec'] != 0)$ShowEnRec=($search_ms_inf['enrec']*100).'% /¬í';
-	else $ShowEnRec='¤£·|¦^´_';
+	if (intval($search_ms_inf['hprec']) >= 1)$ShowHpRec=(intval($search_ms_inf['hprec'])+$HP_BASE_RECOVERY).'/ç§’';
+	elseif ($search_ms_inf['hprec'] < 1 && $search_ms_inf['hprec'] != 0)$ShowHpRec=($search_ms_inf['hprec']*100).'% /ç§’';
+	else $ShowHpRec='ä¸æœƒå›å¾©';
+	if ($search_ms_inf['enrec'] >= 1)$ShowEnRec=(intval($search_ms_inf['enrec'])+$EN_BASE_RECOVERY).'/ç§’';
+	elseif ($search_ms_inf['enrec'] < 1 && $search_ms_inf['enrec'] != 0)$ShowEnRec=($search_ms_inf['enrec']*100).'% /ç§’';
+	else $ShowEnRec='ä¸æœƒå›å¾©';
 	echo "<td width=38%>";
-	echo "Hp¦^´_²v: $ShowHpRec";
-	echo "<br>En¦^´_²v: $ShowEnRec";
+	echo "Hpå›å¾©ç‡: $ShowHpRec";
+	echo "<br>Enå›å¾©ç‡: $ShowEnRec";
 	printTHR('100%');
-	echo "Defending¥[¦¨: $search_ms_inf[def]";
-	echo "<br>Targeting¥[¦¨: $search_ms_inf[taf]".sprintTHR('100%');
+	echo "DefendingåŠ æˆ: $search_ms_inf[def]";
+	echo "<br>TargetingåŠ æˆ: $search_ms_inf[taf]".sprintTHR('100%');
 	echo "</td>";
 	echo "</tr>";
 	echo "</table>";
@@ -168,24 +169,24 @@ echo "<form action='gen_info.php?action=ranks' method='post' name='typerkfrm'>";
 echo "<input type=hidden name=\"RkSbAct\" value='none'>";
 echo "<input type=hidden name=\"ByID\" value='true'>";
 echo "<input type=hidden name=\"searchPlayer\" value=''>";
-echo "<input type=hidden value='$Pl_Value[USERNAME]' name=Pl_Value[USERNAME]>";
-echo "<input type=hidden value='$Pl_Value[PASSWORD]' name=Pl_Value[PASSWORD]>";
+
+
 echo "<input type=hidden name=\"TIMEAUTH\" value=\"$CFU_Time\">";
 echo "<table width=100% height=100%><tr><td align=center>";
 echo "<table cellspacing=2 cellpadding=3>";
-echo "<tr><td colspan=3><center><b><font size=4>¤Q¤j±Æ¦æº]</font></b></center></td></tr>";
-echo "<td align=center><input type=submit value=\"¤Q¤j´I¯Î\" onClick=\"typerkfrm.RkSbAct.value='Property'\">";
-echo "<input type=submit value=\"¤Q¤j¦W¤H\" onClick=\"typerkfrm.RkSbAct.value='Famed'\">";
-echo "<input type=submit value=\"¤Q¤j´c¤H\" onClick=\"typerkfrm.RkSbAct.value='Notorous'\">";
-echo "<input type=submit value=\"¤Q¤jÄa½à\" onClick=\"typerkfrm.RkSbAct.value='Bounty'\">";
-echo "<input type=submit value=\"¤Q¤j¸Ë¥Ò\" onClick=\"typerkfrm.RkSbAct.value='HP'\">";
-echo "<input type=submit value=\"¤Q¤j¯à·½\" onClick=\"typerkfrm.RkSbAct.value='EN'\"></td>";
-echo "<tr><td align=center><input type=submit value=\"¤Q¤j§ğÀ»\" onClick=\"typerkfrm.RkSbAct.value='Att'\">";
-echo "<input type=submit value=\"¤Q¤j©R¤¤\" onClick=\"typerkfrm.RkSbAct.value='Tar'\">";
-echo "<input type=submit value=\"¤Q¤j°jÁ×\" onClick=\"typerkfrm.RkSbAct.value='Re'\">";
-echo "<input type=submit value=\"¤Q¤j¨¾¿m\" onClick=\"typerkfrm.RkSbAct.value='Def'\">";
-echo "<input type=submit value=\"¤Q¤jµ¥¯Å\" onClick=\"typerkfrm.RkSbAct.value='Level'\">";
-echo "<input type=submit value=\"¤Q¤j³Ó§Q\" onClick=\"typerkfrm.RkSbAct.value='Victory'\"></td></tr>";
+echo "<tr><td colspan=3><center><b><font size=4>åå¤§æ’è¡Œæ¦œ</font></b></center></td></tr>";
+echo "<td align=center><input type=submit value=\"åå¤§å¯Œç¿\" onClick=\"typerkfrm.RkSbAct.value='Property'\">";
+echo "<input type=submit value=\"åå¤§åäºº\" onClick=\"typerkfrm.RkSbAct.value='Famed'\">";
+echo "<input type=submit value=\"åå¤§æƒ¡äºº\" onClick=\"typerkfrm.RkSbAct.value='Notorous'\">";
+echo "<input type=submit value=\"åå¤§æ‡¸è³\" onClick=\"typerkfrm.RkSbAct.value='Bounty'\">";
+echo "<input type=submit value=\"åå¤§è£ç”²\" onClick=\"typerkfrm.RkSbAct.value='HP'\">";
+echo "<input type=submit value=\"åå¤§èƒ½æº\" onClick=\"typerkfrm.RkSbAct.value='EN'\"></td>";
+echo "<tr><td align=center><input type=submit value=\"åå¤§æ”»æ“Š\" onClick=\"typerkfrm.RkSbAct.value='Att'\">";
+echo "<input type=submit value=\"åå¤§å‘½ä¸­\" onClick=\"typerkfrm.RkSbAct.value='Tar'\">";
+echo "<input type=submit value=\"åå¤§è¿´é¿\" onClick=\"typerkfrm.RkSbAct.value='Re'\">";
+echo "<input type=submit value=\"åå¤§é˜²ç¦¦\" onClick=\"typerkfrm.RkSbAct.value='Def'\">";
+echo "<input type=submit value=\"åå¤§ç­‰ç´š\" onClick=\"typerkfrm.RkSbAct.value='Level'\">";
+echo "<input type=submit value=\"åå¤§å‹åˆ©\" onClick=\"typerkfrm.RkSbAct.value='Victory'\"></td></tr>";
 echo "</tr>";
 echo "<script language=\"JavaScript\">";
 echo "function getPlayerInfo(player){";
@@ -205,12 +206,12 @@ function printPlayerLink($gamename, $username){
 if ($RkSbAct == 'Property'){
 echo "<tr><td>";
 echo "<table width=100% height=100% cellspacing=2 cellpadding=3 style=\"font-size:16px;\" border=1>";
-echo "<tr><td colspan=6><center><b>¤Q¤j´I¯Î±Æ¦æº]</b></center></td></tr>";
-echo "<tr><td>¦W¦¸</td><td>¾r¨Ï­û¦WºÙ</td><td>©ÒÄİ°ê®a</td><td>°]²£Á`­È</td><td colspan=2>©Ò¥Î¾÷Åé</td></tr>";
+echo "<tr><td colspan=6><center><b>åå¤§å¯Œç¿æ’è¡Œæ¦œ</b></center></td></tr>";
+echo "<tr><td>åæ¬¡</td><td>é§•é§›å“¡åç¨±</td><td>æ‰€å±¬çµ„ç¹”</td><td>è²¡ç”¢ç¸½å€¼</td><td colspan=2>æ‰€ç”¨æ©Ÿé«”</td></tr>";
 $sqlgen  = ("SELECT a.cash AS property,gamename AS game,a.username AS user,e.name AS org,msname,image FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` a,`".$GLOBALS['DBPrefix']."phpeb_user_game_info` b,`".$GLOBALS['DBPrefix']."phpeb_user_bank` c,`".$GLOBALS['DBPrefix']."phpeb_sys_ms` d,`".$GLOBALS['DBPrefix']."phpeb_user_organization` e ");
-$sqlgen .= ("WHERE a.username = b.username AND c.username = a.username AND d.id = msuit AND b.organization = e.id ");
+$sqlgen .= ("WHERE a.username = b.username AND c.username = a.username AND d.id = msuit AND b.organization = e.id AND b.isnpc=0 ");
 $sqlgen .= ("ORDER BY `property` DESC LIMIT 10");
-$query_gen = mysql_query($sqlgen) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+$query_gen = mysql_query($sqlgen) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 $counter = 0;
 while($PropInf = mysql_fetch_array($query_gen)){
 $counter++;
@@ -225,13 +226,13 @@ echo "</tr></td>";
 elseif ($RkSbAct == 'Notorous'){
 echo "<tr><td>";
 echo "<table width=100% height=100% cellspacing=2 cellpadding=3 style=\"font-size:16px;\" border=1>";
-echo "<tr><td colspan=6><center><b>¤Q¤j´c¤H±Æ¦æº]</b></center></td></tr>";
-echo "<tr><td>¦W¦¸</td><td>¾r¨Ï­û¦WºÙ</td><td>©ÒÄİ°ê®a</td><td>´c¦W­È</td><td colspan=2>©Ò¥Î¾÷Åé</td></tr>";
+echo "<tr><td colspan=6><center><b>åå¤§æƒ¡äººæ’è¡Œæ¦œ</b></center></td></tr>";
+echo "<tr><td>åæ¬¡</td><td>é§•é§›å“¡åç¨±</td><td>æ‰€å±¬çµ„ç¹”</td><td>æƒ¡åå€¼</td><td colspan=2>æ‰€ç”¨æ©Ÿé«”</td></tr>";
 
 $sqlgen  = ("SELECT fame,gamename AS game,a.username AS user,d.name AS org,msname,image FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` a,`".$GLOBALS['DBPrefix']."phpeb_user_game_info` b,`".$GLOBALS['DBPrefix']."phpeb_sys_ms` c,`".$GLOBALS['DBPrefix']."phpeb_user_organization` d ");
-$sqlgen .= ("WHERE a.username = b.username AND c.id = msuit AND d.id = organization AND `fame` < 0 ");
+$sqlgen .= ("WHERE a.username = b.username AND c.id = msuit AND d.id = organization AND `fame` < 0 AND b.isnpc=0 ");
 $sqlgen .= ("ORDER BY `fame` ASC LIMIT 10");
-$query_gen = mysql_query($sqlgen) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+$query_gen = mysql_query($sqlgen) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 $counter = 0;
 while($R_Inf = mysql_fetch_array($query_gen)){
 $Notoriety = abs($R_Inf['fame']);
@@ -245,12 +246,12 @@ echo "</tr></td>";
 elseif ($RkSbAct == 'Famed'){
 echo "<tr><td>";
 echo "<table width=100% height=100% cellspacing=2 cellpadding=3 style=\"font-size:16px;\" border=1>";
-echo "<tr><td colspan=6><center><b>¤Q¤j¦W¤H±Æ¦æº]</b></center></td></tr>";
-echo "<tr><td>¦W¦¸</td><td>¾r¨Ï­û¦WºÙ</td><td>©ÒÄİ°ê®a</td><td>¦WÁn­È</td><td colspan=2>©Ò¥Î¾÷Åé</td></tr>";
+echo "<tr><td colspan=6><center><b>åå¤§åäººæ’è¡Œæ¦œ</b></center></td></tr>";
+echo "<tr><td>åæ¬¡</td><td>é§•é§›å“¡åç¨±</td><td>æ‰€å±¬çµ„ç¹”</td><td>åè²å€¼</td><td colspan=2>æ‰€ç”¨æ©Ÿé«”</td></tr>";
 $sqlgen  = ("SELECT fame,gamename AS game,a.username AS user,d.name AS org,msname,image FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` a,`".$GLOBALS['DBPrefix']."phpeb_user_game_info` b,`".$GLOBALS['DBPrefix']."phpeb_sys_ms` c,`".$GLOBALS['DBPrefix']."phpeb_user_organization` d ");
-$sqlgen .= ("WHERE a.username = b.username AND c.id = msuit AND d.id = organization AND `fame` > 0 ");
+$sqlgen .= ("WHERE a.username = b.username AND c.id = msuit AND d.id = organization AND `fame` > 0 AND b.isnpc=0 ");
 $sqlgen .= ("ORDER BY `fame` DESC LIMIT 10");
-$query_gen = mysql_query($sqlgen) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+$query_gen = mysql_query($sqlgen) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 $counter = 0;
 while($R_Inf = mysql_fetch_array($query_gen)){
 $counter++;
@@ -264,12 +265,12 @@ echo "</tr></td>";
 elseif ($RkSbAct == 'Bounty'){
 echo "<tr><td>";
 echo "<table width=100% height=100% cellspacing=2 cellpadding=3 style=\"font-size:16px;\" border=1>";
-echo "<tr><td colspan=6><center><b>¤Q¤jÄa½àª÷±Æ¦æº]</b></center></td></tr>";
-echo "<tr><td>¦W¦¸</td><td>¾r¨Ï­û¦WºÙ</td><td>©ÒÄİ°ê®a</td><td>Äa½àª÷</td><td colspan=2>©Ò¥Î¾÷Åé</td></tr>";
+echo "<tr><td colspan=6><center><b>åå¤§æ‡¸è³é‡‘æ’è¡Œæ¦œ</b></center></td></tr>";
+echo "<tr><td>åæ¬¡</td><td>é§•é§›å“¡åç¨±</td><td>æ‰€å±¬çµ„ç¹”</td><td>æ‡¸è³é‡‘</td><td colspan=2>æ‰€ç”¨æ©Ÿé«”</td></tr>";
 $sqlgen  = ("SELECT bounty,gamename AS game,a.username AS user,d.name AS org,msname,image FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` a,`".$GLOBALS['DBPrefix']."phpeb_user_game_info` b,`".$GLOBALS['DBPrefix']."phpeb_sys_ms` c,`".$GLOBALS['DBPrefix']."phpeb_user_organization` d ");
-$sqlgen .= ("WHERE a.username = b.username AND c.id = msuit AND d.id = organization AND `bounty` > 0 ");
+$sqlgen .= ("WHERE a.username = b.username AND c.id = msuit AND d.id = organization AND `bounty` > 0 AND b.isnpc=0 ");
 $sqlgen .= ("ORDER BY `bounty` DESC LIMIT 10");
-$query_gen = mysql_query($sqlgen) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+$query_gen = mysql_query($sqlgen) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 $counter = 0;
 while($R_Inf = mysql_fetch_array($query_gen)){
 $counter++;
@@ -283,12 +284,12 @@ echo "</tr></td>";
 elseif ($RkSbAct == 'Level'){
 echo "<tr><td>";
 echo "<table width=100% height=100% cellspacing=2 cellpadding=3 style=\"font-size:16px;\" border=1>";
-echo "<tr><td colspan=6><center><b>¤Q¤jµ¥¯Å±Æ¦æº]</b></center></td></tr>";
-echo "<tr><td>¦W¦¸</td><td>¾r¨Ï­û¦WºÙ</td><td>©ÒÄİ°ê®a</td><td>µ¥¯Å</td><td colspan=2>©Ò¥Î¾÷Åé</td></tr>";
+echo "<tr><td colspan=6><center><b>åå¤§ç­‰ç´šæ’è¡Œæ¦œ</b></center></td></tr>";
+echo "<tr><td>åæ¬¡</td><td>é§•é§›å“¡åç¨±</td><td>æ‰€å±¬çµ„ç¹”</td><td>ç­‰ç´š</td><td colspan=2>æ‰€ç”¨æ©Ÿé«”</td></tr>";
 $sqlgen  = ("SELECT level,gamename AS game,a.username AS user,d.name AS org,msname,image FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` a,`".$GLOBALS['DBPrefix']."phpeb_user_game_info` b,`".$GLOBALS['DBPrefix']."phpeb_sys_ms` c,`".$GLOBALS['DBPrefix']."phpeb_user_organization` d ");
-$sqlgen .= ("WHERE a.username = b.username AND c.id = msuit AND d.id = organization AND `level` > 0 ");
+$sqlgen .= ("WHERE a.username = b.username AND c.id = msuit AND d.id = organization AND `level` > 0 AND b.isnpc=0 ");
 $sqlgen .= ("ORDER BY `level` DESC LIMIT 10");
-$query_gen = mysql_query($sqlgen) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+$query_gen = mysql_query($sqlgen) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 $counter = 0;
 while($R_Inf = mysql_fetch_array($query_gen)){
 $counter++;
@@ -301,12 +302,12 @@ echo "</tr></td>";
 elseif ($RkSbAct == 'HP'){
 echo "<tr><td>";
 echo "<table width=100% height=100% cellspacing=2 cellpadding=3 style=\"font-size:16px;\" border=1>";
-echo "<tr><td colspan=6><center><b>¤Q¤j¸Ë¥Ò±Æ¦æº]</b></center></td></tr>";
-echo "<tr><td>¦W¦¸</td><td>¾r¨Ï­û¦WºÙ</td><td>©ÒÄİ°ê®a</td><td>¸Ë¥Ò</td><td colspan=2>©Ò¥Î¾÷Åé</td></tr>";
+echo "<tr><td colspan=6><center><b>åå¤§è£ç”²æ’è¡Œæ¦œ</b></center></td></tr>";
+echo "<tr><td>åæ¬¡</td><td>é§•é§›å“¡åç¨±</td><td>æ‰€å±¬çµ„ç¹”</td><td>è£ç”²</td><td colspan=2>æ‰€ç”¨æ©Ÿé«”</td></tr>";
 $sqlgen  = ("SELECT hpmax,gamename AS game,a.username AS user,d.name AS org,msname,image FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` a,`".$GLOBALS['DBPrefix']."phpeb_user_game_info` b,`".$GLOBALS['DBPrefix']."phpeb_sys_ms` c,`".$GLOBALS['DBPrefix']."phpeb_user_organization` d ");
-$sqlgen .= ("WHERE a.username = b.username AND c.id = msuit AND d.id = organization AND `hpmax` > 0 ");
+$sqlgen .= ("WHERE a.username = b.username AND c.id = msuit AND d.id = organization AND `hpmax` > 0 AND b.isnpc=0 ");
 $sqlgen .= ("ORDER BY `hpmax` DESC LIMIT 10");
-$query_gen = mysql_query($sqlgen) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+$query_gen = mysql_query($sqlgen) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 $counter = 0;
 while($R_Inf = mysql_fetch_array($query_gen)){
 $counter++;
@@ -319,12 +320,12 @@ echo "</tr></td>";
 elseif ($RkSbAct == 'EN'){
 echo "<tr><td>";
 echo "<table width=100% height=100% cellspacing=2 cellpadding=3 style=\"font-size:16px;\" border=1>";
-echo "<tr><td colspan=6><center><b>¤Q¤j¯à·½±Æ¦æº]</b></center></td></tr>";
-echo "<tr><td>¦W¦¸</td><td>¾r¨Ï­û¦WºÙ</td><td>©ÒÄİ°ê®a</td><td>¯à·½</td><td colspan=2>©Ò¥Î¾÷Åé</td></tr>";
+echo "<tr><td colspan=6><center><b>åå¤§èƒ½æºæ’è¡Œæ¦œ</b></center></td></tr>";
+echo "<tr><td>åæ¬¡</td><td>é§•é§›å“¡åç¨±</td><td>æ‰€å±¬çµ„ç¹”</td><td>èƒ½æº</td><td colspan=2>æ‰€ç”¨æ©Ÿé«”</td></tr>";
 $sqlgen  = ("SELECT enmax,gamename AS game,a.username AS user,d.name AS org,msname,image FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` a,`".$GLOBALS['DBPrefix']."phpeb_user_game_info` b,`".$GLOBALS['DBPrefix']."phpeb_sys_ms` c,`".$GLOBALS['DBPrefix']."phpeb_user_organization` d ");
-$sqlgen .= ("WHERE a.username = b.username AND c.id = msuit AND d.id = organization AND `enmax` > 0 ");
+$sqlgen .= ("WHERE a.username = b.username AND c.id = msuit AND d.id = organization AND `enmax` > 0 AND b.isnpc=0 ");
 $sqlgen .= ("ORDER BY `enmax` DESC LIMIT 10");
-$query_gen = mysql_query($sqlgen) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+$query_gen = mysql_query($sqlgen) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 $counter = 0;
 while($R_Inf = mysql_fetch_array($query_gen)){
 $counter++;
@@ -337,12 +338,12 @@ echo "</tr></td>";
 elseif ($RkSbAct == 'Victory'){
 echo "<tr><td>";
 echo "<table width=100% height=100% cellspacing=2 cellpadding=3 style=\"font-size:16px;\" border=1>";
-echo "<tr><td colspan=6><center><b>¤Q¤j³Ó§Q±Æ¦æº]</b></center></td></tr>";
-echo "<tr><td>¦W¦¸</td><td>¾r¨Ï­û¦WºÙ</td><td>©ÒÄİ°ê®a</td><td>³Ó§QÁZ¤À/³Ó§Q¦¸¼Æ</td><td colspan=2>©Ò¥Î¾÷Åé</td></tr>";
+echo "<tr><td colspan=6><center><b>åå¤§å‹åˆ©æ’è¡Œæ¦œ</b></center></td></tr>";
+echo "<tr><td>åæ¬¡</td><td>é§•é§›å“¡åç¨±</td><td>æ‰€å±¬çµ„ç¹”</td><td>å‹åˆ©ç©åˆ†/å‹åˆ©æ¬¡æ•¸</td><td colspan=2>æ‰€ç”¨æ©Ÿé«”</td></tr>";
 $sqlgen  = ("SELECT victory,v_points,gamename AS game,a.username AS user,d.name AS org,msname,image FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` a,`".$GLOBALS['DBPrefix']."phpeb_user_game_info` b,`".$GLOBALS['DBPrefix']."phpeb_sys_ms` c,`".$GLOBALS['DBPrefix']."phpeb_user_organization` d ");
-$sqlgen .= ("WHERE a.username = b.username AND c.id = msuit AND d.id = organization AND `victory` > 0 ");
+$sqlgen .= ("WHERE a.username = b.username AND c.id = msuit AND d.id = organization AND `victory` > 0 AND b.isnpc=0 ");
 $sqlgen .= ("ORDER BY `victory` DESC LIMIT 10");
-$query_gen = mysql_query($sqlgen) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+$query_gen = mysql_query($sqlgen) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 $counter = 0;
 while($R_Inf = mysql_fetch_array($query_gen)){
 $counter++;
@@ -355,12 +356,12 @@ echo "</tr></td>";
 elseif ($RkSbAct == 'Att'){
 echo "<tr><td>";
 echo "<table width=100% height=100% cellspacing=2 cellpadding=3 style=\"font-size:16px;\" border=1>";
-echo "<tr><td colspan=6><center><b>¤Q¤j§ğÀ»±Æ¦æº]</b></center></td></tr>";
-echo "<tr><td>¦W¦¸</td><td>¾r¨Ï­û¦WºÙ</td><td>©ÒÄİ°ê®a</td><td>§ğÀ»¤O</td><td colspan=2>©Ò¥Î¾÷Åé</td></tr>";
+echo "<tr><td colspan=6><center><b>åå¤§æ”»æ“Šæ’è¡Œæ¦œ</b></center></td></tr>";
+echo "<tr><td>åæ¬¡</td><td>é§•é§›å“¡åç¨±</td><td>æ‰€å±¬çµ„ç¹”</td><td>æ”»æ“ŠåŠ›</td><td colspan=2>æ‰€ç”¨æ©Ÿé«”</td></tr>";
 $sqlgen  = ("SELECT attacking,gamename AS game,a.username AS user,d.name AS org,msname,image FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` a,`".$GLOBALS['DBPrefix']."phpeb_user_game_info` b,`".$GLOBALS['DBPrefix']."phpeb_sys_ms` c,`".$GLOBALS['DBPrefix']."phpeb_user_organization` d ");
-$sqlgen .= ("WHERE a.username = b.username AND c.id = msuit AND d.id = organization AND `attacking` > 0 ");
+$sqlgen .= ("WHERE a.username = b.username AND c.id = msuit AND d.id = organization AND `attacking` > 0 AND b.isnpc=0 ");
 $sqlgen .= ("ORDER BY `attacking` DESC LIMIT 10");
-$query_gen = mysql_query($sqlgen) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+$query_gen = mysql_query($sqlgen) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 $counter = 0;
 while($R_Inf = mysql_fetch_array($query_gen)){
 $counter++;
@@ -373,12 +374,12 @@ echo "</tr></td>";
 elseif ($RkSbAct == 'Tar'){
 echo "<tr><td>";
 echo "<table width=100% height=100% cellspacing=2 cellpadding=3 style=\"font-size:16px;\" border=1>";
-echo "<tr><td colspan=6><center><b>¤Q¤j©R¤¤±Æ¦æº]</b></center></td></tr>";
-echo "<tr><td>¦W¦¸</td><td>¾r¨Ï­û¦WºÙ</td><td>©ÒÄİ°ê®a</td><td>©R¤¤</td><td colspan=2>©Ò¥Î¾÷Åé</td></tr>";
+echo "<tr><td colspan=6><center><b>åå¤§å‘½ä¸­æ’è¡Œæ¦œ</b></center></td></tr>";
+echo "<tr><td>åæ¬¡</td><td>é§•é§›å“¡åç¨±</td><td>æ‰€å±¬çµ„ç¹”</td><td>å‘½ä¸­</td><td colspan=2>æ‰€ç”¨æ©Ÿé«”</td></tr>";
 $sqlgen  = ("SELECT targeting,gamename AS game,a.username AS user,d.name AS org,msname,image FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` a,`".$GLOBALS['DBPrefix']."phpeb_user_game_info` b,`".$GLOBALS['DBPrefix']."phpeb_sys_ms` c,`".$GLOBALS['DBPrefix']."phpeb_user_organization` d ");
-$sqlgen .= ("WHERE a.username = b.username AND c.id = msuit AND d.id = organization AND `targeting` > 0 ");
+$sqlgen .= ("WHERE a.username = b.username AND c.id = msuit AND d.id = organization AND `targeting` > 0 AND b.isnpc=0 ");
 $sqlgen .= ("ORDER BY `targeting` DESC LIMIT 10");
-$query_gen = mysql_query($sqlgen) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+$query_gen = mysql_query($sqlgen) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 $counter = 0;
 while($R_Inf = mysql_fetch_array($query_gen)){
 $counter++;
@@ -391,12 +392,12 @@ echo "</tr></td>";
 elseif ($RkSbAct == 'Re'){
 echo "<tr><td>";
 echo "<table width=100% height=100% cellspacing=2 cellpadding=3 style=\"font-size:16px;\" border=1>";
-echo "<tr><td colspan=6><center><b>¤Q¤j°jÁ×±Æ¦æº]</b></center></td></tr>";
-echo "<tr><td>¦W¦¸</td><td>¾r¨Ï­û¦WºÙ</td><td>©ÒÄİ°ê®a</td><td>°jÁ×</td><td colspan=2>©Ò¥Î¾÷Åé</td></tr>";
+echo "<tr><td colspan=6><center><b>åå¤§è¿´é¿æ’è¡Œæ¦œ</b></center></td></tr>";
+echo "<tr><td>åæ¬¡</td><td>é§•é§›å“¡åç¨±</td><td>æ‰€å±¬çµ„ç¹”</td><td>è¿´é¿</td><td colspan=2>æ‰€ç”¨æ©Ÿé«”</td></tr>";
 $sqlgen  = ("SELECT reacting,gamename AS game,a.username AS user,d.name AS org,msname,image FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` a,`".$GLOBALS['DBPrefix']."phpeb_user_game_info` b,`".$GLOBALS['DBPrefix']."phpeb_sys_ms` c,`".$GLOBALS['DBPrefix']."phpeb_user_organization` d ");
-$sqlgen .= ("WHERE a.username = b.username AND c.id = msuit AND d.id = organization AND `reacting` > 0 ");
+$sqlgen .= ("WHERE a.username = b.username AND c.id = msuit AND d.id = organization AND `reacting` > 0 AND b.isnpc=0 ");
 $sqlgen .= ("ORDER BY `reacting` DESC LIMIT 10");
-$query_gen = mysql_query($sqlgen) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+$query_gen = mysql_query($sqlgen) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 $counter = 0;
 while($R_Inf = mysql_fetch_array($query_gen)){
 $counter++;
@@ -409,12 +410,12 @@ echo "</tr></td>";
 elseif ($RkSbAct == 'Def'){
 echo "<tr><td>";
 echo "<table width=100% height=100% cellspacing=2 cellpadding=3 style=\"font-size:16px;\" border=1>";
-echo "<tr><td colspan=6><center><b>¤Q¤j¨¾¿m±Æ¦æº]</b></center></td></tr>";
-echo "<tr><td>¦W¦¸</td><td>¾r¨Ï­û¦WºÙ</td><td>©ÒÄİ°ê®a</td><td>¨¾¿m</td><td colspan=2>©Ò¥Î¾÷Åé</td></tr>";
+echo "<tr><td colspan=6><center><b>åå¤§é˜²ç¦¦æ’è¡Œæ¦œ</b></center></td></tr>";
+echo "<tr><td>åæ¬¡</td><td>é§•é§›å“¡åç¨±</td><td>æ‰€å±¬çµ„ç¹”</td><td>é˜²ç¦¦</td><td colspan=2>æ‰€ç”¨æ©Ÿé«”</td></tr>";
 $sqlgen  = ("SELECT defending,gamename AS game,a.username AS user,d.name AS org,msname,image FROM `".$GLOBALS['DBPrefix']."phpeb_user_general_info` a,`".$GLOBALS['DBPrefix']."phpeb_user_game_info` b,`".$GLOBALS['DBPrefix']."phpeb_sys_ms` c,`".$GLOBALS['DBPrefix']."phpeb_user_organization` d ");
-$sqlgen .= ("WHERE a.username = b.username AND c.id = msuit AND d.id = organization AND `defending` > 0 ");
+$sqlgen .= ("WHERE a.username = b.username AND c.id = msuit AND d.id = organization AND `defending` > 0 AND b.isnpc=0 ");
 $sqlgen .= ("ORDER BY `defending` DESC LIMIT 10");
-$query_gen = mysql_query($sqlgen) or die ('µLªk¨ú±o°ò¥»¸ê°T, ­ì¦]:' . mysql_error() . '<br>');
+$query_gen = mysql_query($sqlgen) or die ('ç„¡æ³•å–å¾—åŸºæœ¬è³‡è¨Š, åŸå› :' . mysql_error() . '<br>');
 $counter = 0;
 while($R_Inf = mysql_fetch_array($query_gen)){
 $counter++;
@@ -431,7 +432,7 @@ if ($mode == 'history'){
 		
 echo "<table align=center border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#111111\" width=\"70%\" >";
 
-echo "<tr><td align=center style=\"font-size:16px;\"><b>¾ú¥v<b></tr></td>";
+echo "<tr><td align=center style=\"font-size:16px;\"><b>æ­·å²<b></tr></td>";
 
 $sql = ("SELECT * FROM `".$GLOBALS['DBPrefix']."phpeb_game_history` ORDER BY `time` DESC LIMIT 0 , 30");
 $query = mysql_query($sql);
@@ -453,7 +454,7 @@ exit;
 if (!$mode){
 
 echo "<br><br><br>";
-echo "<center><iframe name='history' src='gen_info.php?action=history' width=75% height='200' marginheight=0 marginwidth=0 frameborder=0>";
+echo "<center><iframe name='history' src='gen_info.php?action=history' width=75% height='400' marginheight=0 marginwidth=0 frameborder=0>";
 echo '</iframe>';
 }
 
